@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-5">
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <table class="table table-bordered table-striped">
+
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            <td>{{ row.label }} </td>
+                            <td>{{ row.data }} </td>
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+                {% for field in form %}
+                    <div>
+                        <label for="">{{ field.label }}</label>
+                        {{ field }} <span style="color:red">{{ field.errors.0 }}</span>
+                    </div>
+
+                {% endfor %}
+                <div style="margin-top:10px">
+                    <a href="{{ return_url }}" class="btn btn-info">返回</a>
+                    <input type="submit" value="下一步" class="btn btn-warning">
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+{% endblock %}

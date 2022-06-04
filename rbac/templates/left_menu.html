@@ -1,0 +1,39 @@
+<div class="menu-body">
+
+    <style>
+        .sub-titles .hilight{
+            border-left: 5px solid #79a4cf;}
+
+    </style>
+
+    <div class="">
+
+
+        <div class="multi-menu">
+
+
+            {% for menu in menu_list %}
+                <div class="item">
+
+                    <div class="title active"><i class="fa {{ menu.icon }} fa-fw"></i>&nbsp; {{ menu.title }}</div>
+                    <div class="sub-titles {{ menu.class }}">
+                        {% for child in menu.children %}
+                            <a class="body list-group-item  {{ child.class }}" href="{{ child.url }}"><i
+                                    class="fa {{ child.icon }} fa-fw"></i>&nbsp; {{ child.title }}</a>
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+
+
+        </div>
+
+
+    </div>
+
+</div>
+

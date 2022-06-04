@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {#        角色列表#}
+    <div>
+        <h3>一级菜单列表</h3>
+        <span id="msg">{{ msg }}</span>
+        <div><a href="{% url 'rbac:menu_add' %}" class="btn btn-primary">添加</a></div>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <th>编号</th>
+            <th>序号</th>
+            <th>菜单名</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for row in menus %}
+                <tr>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.sequence }}</td>
+                    <td>{{ row.title }}</td>
+
+                    <td>
+                        <a href="{% url 'rbac:menu_edit' pk=row.id %}" class="btn btn-success">编辑</a>
+                        <a href="{% url 'rbac:menu_del' pk=row.id %}" class="btn btn-warning">删除</a>
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+
+        .search-group .row {
+            margin-left: 5px;
+        }
+
+        .search-group .row a {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid lightgrey;
+            font-size: 13px;
+        }
+
+        .search-group .row a.active {
+            background-color: paleturquoise;
+        }
+
+        .search-group .others{
+            display: inline-block;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-12">
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-filter"></i> 快速筛选
+                    </div>
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                                <div class="search-group">
+                                    <div class="row">
+                                        {% for each in row %}
+                                            {{ each|safe }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-right">
+
+                    <input name="q" type="text" value="{{user_query}}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+
+                </form>
+            {% endif %}
+
+
+            <form action="" method="post">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+
+                    <select name="handle_type">
+                        <option value="">请选择处理方式</option>
+                        {% for func,text in batch_process_dict.items %}
+                            <option value="{{ func }}">{{ text }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit" class="btn btn-primary">执行</button>
+
+                {% endif %}
+
+                <!-- 添加按钮 -->
+                {% if add_btn %}
+                    {{ add_btn|safe }}
+                {% endif %}
+
+                <div>{{ msg }}</div>
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+                    {% for item in header_list %}
+                        <th> {{ item }}</th>
+                    {% endfor %}
+
+
+                    </thead>
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            {% for item in row %}
+                                <td>{{ item }} </td>
+                            {% endfor %}
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </form>
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

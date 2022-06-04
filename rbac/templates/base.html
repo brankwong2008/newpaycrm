@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% load menu_list %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单收款系统</title>
+    <link rel="stylesheet" href="{% static '/plugins/bootstrap/css/bootstrap.css' %}" >
+    <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static '/plugins/bootstrap/js/bootstrap.js' %}"></script>
+    {#    图标文件系统#}
+    <link rel="stylesheet" href="{% static '/plugins/font-awesome/css/font-awesome.css' %}">
+
+    <link rel="stylesheet" href="{% static '/rbac/rbac.css' %}">
+
+    <style>
+        i {
+            margin-right: 7px;
+
+        }
+
+    </style>
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">订单收款</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-ul">
+                <li><a href="/orders/">订单</a></li>
+                <li><a href="/payments/">收款</a></li>
+                <li><a href="/customers/">客户</a></li>
+
+            </ul>
+
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if request.user.username %}
+                    <li><a href="#">用户:{{ request.user.username }}</a></li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false"> 我的 <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">个人资料</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="/logout/">注销</a></li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <li><a href="/login/">登录</a></li>
+                    <li><a href="/register/">注册</a></li>
+                {% endif %}
+
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div class="col-md-2">
+
+            <div class="pg-body">
+
+
+                {%  left_menu request %}
+
+
+            </div>
+
+
+
+
+            {% block side_panel %}
+
+
+
+
+            {% endblock %}
+
+        </div>
+
+        <div class="col-md-10">
+        <div>
+            <a href="/index/">首页</a>
+
+            {% for item in request.navi_list %}
+               <span> >>  </span> <a href="{{ item.urls }}" class="active">{{ item.title }}</a>
+            {% endfor %}
+            <hr>
+
+        </div>
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+</body>
+
+<script src="{% static '/rbac/rbac.js' %}"></script>
+
+</html>

@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block css %}
+    <style>
+    form ul{
+        list-style: none;
+    }
+
+    form ul li{
+        float: left;
+        margin-left:20px ;
+
+    }
+    form ul li i{
+        font-size: 10px;
+        margin-left: 5px;
+    }
+    {#.clearfix:before{#}
+    {#    display: block;#}
+    {#    content: " ";#}
+    {#    clear: both;#}
+    {#}#}
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    {#        添加和编辑的表单#}
+        <div>
+            <h3>{{ handle }}</h3>
+            <form action="" method="post">
+                {% csrf_token  %}
+
+                  <label for="">{{ form.title.label }}</label>
+                   <div >{{ form.title }}</div> <span style="color: red;font-size: smaller">{{ form.title.errors.0 }}</span>
+                  <label for="">{{ form.icon.label }}</label>
+                 <div >{{ form.icon }}</div> <span class='clearfix' style="color: red;font-size: smaller">{{ form.icon.errors.0 }}</span>
+
+                <div ><input type="submit" value="提交" class="btn btn-primary" style="margin:5px 0"></div>
+
+            </form></div>
+
+        </div>
+
+
+{% endblock %}

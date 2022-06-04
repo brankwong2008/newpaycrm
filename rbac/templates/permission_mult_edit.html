@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% load menu_list %}
+{% block css %}
+
+    <style>
+        tr.active {
+            border-left: 3px solid orange;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+
+        <h3>批量修改权限</h3>
+        <form  method="post">
+            {% csrf_token %}
+           {{ formset.management_form }}
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                <th>权限名</th>
+                <th>URL</th>
+                <th>URL别名</th>
+                <th>二级菜单</th>
+                </thead>
+                <tbody>
+                {% for row in formset %}
+                    <tr>
+                        {% for field in row %}
+                            {% if forloop.first %}
+                               {{ field }}
+                            {% else %}
+                                  <td>{{ field }} <span>{{ field.errors.0 }}</span></td>
+                            {% endif %}
+
+                        {% endfor %}
+
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-success">提交</button>
+
+
+        </form>
+
+
+    </div>
+
+
+{% endblock %}

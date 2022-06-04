@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-5">
+
+            <h4>批量上传订单</h4>
+            <p>
+               上传模板文件说明：<a href="{{ download_file_url }}">模板文件</a>
+            </p>
+            <p>
+               文件类型： excel文件
+            </p>
+
+            <form action="" method="post" enctype="multipart/form-data">
+                {%  csrf_token %}
+                 <input type="file" value="上传订单excel文件" name="upload_file">
+                <div style="margin-top:10px">
+                    <input type="submit" value="确认" class="btn btn-primary">
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

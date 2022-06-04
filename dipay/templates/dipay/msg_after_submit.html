@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-5">
+
+            <p class="btn btn-default" style="margin-bottom: 20px"> 消息Box </p>
+
+            <p class="bs-clipboard">  </p>
+
+             <div>
+
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <strong>提醒：</strong> {{ msg }}
+            </div>
+        </div>
+
+
+
+
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

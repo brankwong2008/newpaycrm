@@ -1,0 +1,165 @@
+{% extends 'layout_fullpage.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+{% endblock %}
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-12">
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-filter"></i> 快速筛选
+                    </div>
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-right">
+
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+
+                </form>
+            {% endif %}
+
+
+            <form action="" method="post">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+                    <div class="pull-left">
+
+                        <select name="handle_type">
+                            <option value="">请选择处理方式</option>
+                            {% for func,text in batch_process_dict.items %}
+                                <option value="{{ func }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">执行</button>
+
+                    </div>
+
+                {% endif %}
+
+                <!-- 添加按钮 -->
+                {% if add_btn %}
+                    {{ add_btn|safe }}
+                {% endif %}
+
+                <div>{{ msg }}</div>
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+                    {% for item in header_list %}
+                        <th>{{ item }} </th>
+
+                    {% endfor %}
+
+
+                    </thead>
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            {% for item in row %}
+                                {% if forloop.counter == 2 %}
+                                    <td class="txt-ell" nowrap>{{ item }} </td>
+                                {% else %}
+                                    <td class="txt-ell">{{ item }} </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </form>
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- 这个方法有点麻烦，后面再研究 用模态框解决临时弹出输入问题  Button trigger modal -->
+    {#<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">#}
+    {#  Launch demo modal#}
+    {#</button>#}
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <label for="">备货</label> <input type="radio" name="order_status" value="0">
+                    </p>
+                    <p>
+                        <label for="">排产</label> <input type="radio" name="order_status" value="1">
+                    </p>
+                    <p>
+                        <label for="">单据</label> <input type="radio" name="order_status" value="2">
+                    </p>
+                    <p>
+                        <label for="">等款</label> <input type="radio" name="order_status" value="3">
+                    </p>
+                    <p>
+                        <label for="">完成</label> <input type="radio" name="order_status" value="4">
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+
+
+
+{% endblock %}

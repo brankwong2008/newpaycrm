@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-6">
+
+            <h4> 申请订单号 </h4>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <label for="">{{ field.label }}</label>
+                    {% if field.name == 'customer' %}
+                        <a href="{% url 'stark:dipay_customer_create' %}" onclick="return showAPP(this)"
+                           style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                        <div class="form-row">
+
+                            {{ field }}
+
+                            <span style="color:#ff0000">{{ field.errors.0 }}</span>
+                        </div>
+                    {% else %}
+                        <p>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></p>
+                    {% endif %}
+
+                {% endfor %}
+
+
+                <div style="margin-bottom:100px">
+                    <input type="submit" value="提交" class="btn btn-success">
+                    <a href="{{ back_url }}" class="btn btn-warning">取消</a>
+
+
+                </div>
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+    <script>
+
+        function showAPP(tag) {
+            var href = tag.href;
+            var name = '登录'
+            var win = window.open(href, name, 'left=500,top=300,width=400,height=300');
+            win.focus();
+            return false
+
+        }
+
+        function closePopup(win, newID, newRepr, id) {
+            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>')
+            win.close();
+        }
+
+
+    </script>
+
+{% endblock %}

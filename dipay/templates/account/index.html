@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+    <!--   待确认待关联款项表  -->
+    <div class="col-md-10">
+        <div style="margin-bottom: 10px">
+            <span class="btn btn-primary">待确认待关联款项表</span>
+        </div>
+
+        <table class="table table-bordered table-striped">
+
+            <thead>
+            {% for item in payment_header_list %}
+                <th> {{ item }}</th>
+            {% endfor %}
+            </thead>
+            <tbody>
+            {% for row in payment_data_list %}
+                <tr>
+                    {% for item in row %}
+                        <td>{{ item }} </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+{#    <!--  待处理订单表  -->#}
+{#    <div class="col-md-10">#}
+{#        <div style="margin-bottom: 10px">#}
+{#            <h5 class="btn btn-success">待处理订单表</h5>#}
+{#        </div>#}
+{##}
+{#        <table class="table table-bordered table-striped">#}
+{##}
+{#            <thead>#}
+{#            {% for item in order_header_list %}#}
+{#                <th> {{ item }}</th>#}
+{#            {% endfor %}#}
+{#            </thead>#}
+{#            <tbody>#}
+{#            {% for row in order_data_list %}#}
+{#                <tr>#}
+{#                    {% for item in row %}#}
+{#                        <td>{{ item }} </td>#}
+{#                    {% endfor %}#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#            </tbody>#}
+{#        </table>#}
+{##}
+{#        <div style="margin-bottom: 100px"><a href="{% url 'stark:dipay_applyorder_list' %} "><span>更多</span></a></div>#}
+{##}
+{##}
+{#    </div>#}
+{##}
+{##}
+
+
+
+{% endblock %}

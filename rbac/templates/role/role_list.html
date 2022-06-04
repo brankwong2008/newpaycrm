@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    {#        角色列表#}
+    <div>
+        <h3>角色列表</h3>
+        <span id="msg">{{ msg }}</span>
+        <div><a href="{% url 'rbac:role_add' %}" class="btn btn-primary">添加</a></div>
+        <table class="table table-bordered table-striped">
+            <thead>
+            <th>编号</th>
+            <th>角色</th>
+            <th>操作</th>
+            </thead>
+            <tbody>
+            {% for role in roles %}
+                <tr>
+                    <td>{{ role.id }}</td>
+                    <td>{{ role.title }}</td>
+
+                    <td>
+                        <a href="{% url 'rbac:role_edit' pk=role.id %}" class="btn btn-success">编辑</a>
+                        <a href="{% url 'rbac:role_del' pk=role.id %}" class="btn btn-warning">删除</a>
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+
+    </div>
+
+{% endblock %}

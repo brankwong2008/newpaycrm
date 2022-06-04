@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-5">
+
+            <h3>删除数据</h3>
+
+
+            <form action="" method="post">
+                     {% csrf_token %}
+                <p style="color: darkred">您要删除的信息非常的重要，如果是误操作，请取消，如果确认要删除，请点确认删除</p>
+
+            <div>
+                <a href="{{ back_url }}" class="btn btn-success">取消</a>
+                <button class="btn btn-warning">确认删除</button>
+            </div>
+
+            </form>
+
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% load menu_list %}
+{% load static %}
+{% block css %}
+
+
+
+    <style>
+        tr.active {
+            border-left: 3px solid orange;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+
+        <div class="col-md-3">
+            <div class="panel panel-info">
+                <!-- 用户表 -->
+                <div class="panel-heading"><i class="fa fa-get-pocket"></i>用户
+
+                </div>
+
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>用户名</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr class="{% if user.id|safe == uid %} active {% endif %} ">
+                            <td>{{ forloop.counter }}</td>
+
+                            <td><a href="?uid={{ user.id }}">{{ user }}</a></td>
+
+                        </tr>
+
+                    {% endfor %}
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 角色列表 -->
+        <div class="col-md-3">
+            <form action="?uid={{ uid }}" method="post">
+                {% csrf_token %}
+                <div class="panel panel-info">
+                    <div class="panel-heading"><i class="fa fa-building"></i> 角色
+                        <!-- 保存选择按钮 -->
+                        <button type="submit" class="btn btn-primary btn-sm pull-right" style="margin-top:-4px">
+                            <i class="fa fa-plus-square"></i> 保存
+                        </button>
+                    </div>
+                    <input type="hidden" name="type" value="add_role_to_user">
+
+                    <!-- Role Table -->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>角色名称</th>
+                            <th>选择</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for row in roles %}
+                            <tr {% if rid == row.id|safe %}class="active"{% endif %}>
+                                <td>{{ forloop.counter }}</td>
+                                {% if uid %}
+                                    <td><a href="?uid={{ uid }}&rid={{ row.id }}">{{ row.title }}</a></td>
+                                {% else %}
+                                    <td><a href="?rid={{ row.id }}">{{ row.title }}</a></td>
+                                {% endif %}
+
+                                <td>
+                                    <input type="checkbox" name="rid" value="{{ row.id }}"
+                                            {% if row.id in role_list %} checked {% endif %}>
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </form>
+        </div>
+
+        <!-- 权限列表 -->
+        <div class="col-md-6">
+            <form action="?{% if uid %}uid={{ uid }}&{% endif %}rid={{ rid }}&type=add_permission_to_role"
+                  method="post">
+                {% csrf_token %}
+                <div class="panel panel-info">
+                    <!-- 权限列表 -->
+                    <div class="panel-heading">
+                        <i class="fa fa-briefcase"></i>权限
+                        <!-- 权限选择保存按钮 -->
+                        {% if rid %}
+                            <button class="btn btn-primary btn-sm pull-right" style="margin-top:-4px">
+                                <i class="fa fa-plus-square"></i> 保存
+                            </button>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                {% for menu in permission_list %}
+
+                    <div class="panel panel-default">
+
+                        <div class="panel-heading">
+                            <i class="fa fa-briefcase"></i>{{ menu.title }}
+                            <div class="pull-right"><label for="check_all_{{ menu.title }}">全选</label> <input
+                                    id="check_all_{{ menu.title }}" type="checkbox"></div>
+
+                        </div>
+                        <div class="panel-body">
+
+                            {% for row in menu.children %}
+                                <p>{{ row.title }}
+                                    <input type="checkbox" name="p_id" value="{{ row.id }}"
+                                           class="check_all_{{ menu.title }}"
+                                           {% if row.id in has_permission_dict %}checked{% endif %}></p>
+                                <p style="margin-left: 20px">
+                                    {% for row in row.children %}
+                                        {{ row.title }}<input type="checkbox" name="p_id" value="{{ row.id }}"
+                                                              class="check_all_{{ menu.title }}"
+                                                              {% if row.id in has_permission_dict %}checked{% endif %}>
+                                    {% endfor %}
+                                </p>
+                            {% endfor %}
+
+                        </div>
+
+
+                    </div>
+
+                {% endfor %}
+            </form>
+        </div>
+
+    </div>
+
+    </div>
+
+
+    <script src="{% static "rbac/permission_distribute.js" %}"></script>
+
+{% endblock %}

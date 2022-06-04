@@ -1,0 +1,62 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-7">
+
+
+            <div class="panel panel-success">
+                <div class="panel-heading"><i class="fa fa-send"></i> 下单
+
+                </div>
+                <div class="panel-body">
+                       <form action="" method="post">
+                {% csrf_token %}
+
+                {% for field in form %}
+                    <div>
+                        <label for="">{{ field.label }}</label>
+                        {{ field }} <span style="color:red">{{ field.errors.0 }}</span>
+                    </div>
+
+                {% endfor %}
+                <div style="margin-top:10px; margin-bottom: 100px">
+                    <a href="{{ return_url }}" class="btn btn-info">返回</a>
+                    <input type="submit" value="下单确认" class="btn btn-warning">
+
+                </div>
+
+
+            </form>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+    </div>
+
+{% endblock %}

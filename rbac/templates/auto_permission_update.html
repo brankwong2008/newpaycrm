@@ -1,0 +1,213 @@
+{% extends "layout.html" %}
+{% load menu_list %}
+{% block css %}
+
+    <style>
+        tr.active {
+            border-left: 3px solid orange;
+        }
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+    <div class="container-fluid">
+        <h3> 自动同步项目和数据库中的url信息</h3>
+        <div>
+            <span class="btn btn-info">待添加的url权限信息</span>
+            <form method="post" action="?type=add">
+                {% csrf_token %}
+                {{ add_formset_list.management_form }}
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <th>权限名</th>
+                    <th>URL</th>
+                    <th>URL别名</th>
+                    <th>父权限</th>
+                    <th>菜单</th>
+                    </thead>
+                    <tbody>
+
+                    {% for row in add_formset_list %}
+                        <tr>
+                            {% for field in row %}
+                                <td>{{ field }} <span style="color:orangered">{{ field.errors.0 }}</span></td>
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">提交</button>
+
+
+            </form>
+        </div>
+
+        <hr>
+
+        <div>
+            <button class="btn btn-info">更新三级菜单权限信息</button>
+            <form method="post" action="?type=update_urlname">
+                {% csrf_token %}
+                {{ to_update_menu_n_pid_list.management_form }}
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <th>权限名</th>
+                    <th>URL</th>
+                    <th>URL别名</th>
+                    <th>父权限</th>
+                    <th>菜单</th>
+                    </thead>
+                    <tbody>
+                    {% for row in to_update_menu_n_pid_list %}
+                        <tr>
+                            {% for field in row %}
+                                {% if forloop.first %}
+                                    {{ field }}
+                                {% else %}
+                                    <td>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></td>
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">提交</button>
+
+
+            </form>
+        </div>
+
+        <hr>
+
+        <div>
+            <button class="btn btn-info">待更新的urlname权限信息</button>
+            <form method="post" action="?type=update_urlname">
+                {% csrf_token %}
+                {{ to_update_name_list.management_form }}
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <th>权限名</th>
+                    <th>URL</th>
+                    <th>URL别名</th>
+                    <th>父权限</th>
+                    <th>菜单</th>
+                    </thead>
+                    <tbody>
+                    {% for row in to_update_name_list %}
+                        <tr>
+                            {% for field in row %}
+                                {% if forloop.first %}
+                                    {{ field }}
+                                {% else %}
+                                    <td>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></td>
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">提交</button>
+
+
+            </form>
+        </div>
+
+        <hr>
+
+        <div>
+            <button class="btn btn-info">待更新的url权限信息</button>
+            <form method="post" action="?type=update_url">
+                {% csrf_token %}
+                {{ to_update_url_list.management_form }}
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <th>权限名</th>
+                    <th>URL</th>
+                    <th>URL别名</th>
+                    <th>父权限</th>
+                    <th>菜单</th>
+                    </thead>
+                    <tbody>
+                    {% for row in to_update_url_list %}
+                        <tr>
+                            {% for field in row %}
+                                {% if forloop.first %}
+                                    {{ field }}
+                                {% else %}
+                                    <td>{{ field }} <span>{{ field.errors.0 }}</span></td>
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">提交</button>
+
+
+            </form>
+        </div>
+
+        <hr>
+
+        <div>
+            <button class="btn btn-info">待删除的url权限信息</button>
+            <form method="post">
+                {% csrf_token %}
+                {{ to_del_url_list.management_form }}
+
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <th>权限名</th>
+                    <th>URL</th>
+                    <th>URL别名</th>
+                    <th>父权限</th>
+                    <th>菜单</th>
+                    <th>删除</th>
+                    </thead>
+                    <tbody>
+                    {% for row in to_del_url_list %}
+                        <tr>
+                            <td>{{ row.title }}</td>
+                            <td>{{ row.urls }}</td>
+                            <td>{{ row.name }}</td>
+                            <td>{{ row.parent_id }}</td>
+                            <td>{{ row.menu_id }}</td>
+                            <td>
+                                <a href="{% url "rbac:multi_permission_del" pk=row.id %}"> <i class="fa fa-trash-o"></i></a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success">提交</button>
+
+
+            </form>
+        </div>
+
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% load menu_list %}
+{% load static %}
+{% block css %}
+
+
+
+    <style>
+        tr.active {
+            border-left: 3px solid orange;
+        }
+    .relate-btn {
+
+        margin-right: 35px;
+    }
+
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container-fluid">
+
+        <div class="col-md-12">
+            <!-- 收款记录 -->
+            <div class="panel panel-info">
+
+                <div class="panel-heading"><i class="fa fa-get-pocket"></i>收款记录
+
+                </div>
+
+                <!-- Table -->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>付款日期</th>
+                        <th>付款人</th>
+                        <th>客户</th>
+                        <th>币种金额</th>
+                        <th>收款银行</th>
+                        <th>待关联金额</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{ inwardpay_obj.create_date|date:"Y-m-d" }}</td>
+                        <td>{{ inwardpay_obj.payer.title }}</td>
+                        <td>{{ inwardpay_obj.customer.shortname }}</td>
+                        <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.amount }}</td>
+                        <td>{{ inwardpay_obj.bank.title }}</td>
+                        <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 可关联订单列表 -->
+        <div class="col-md-12">
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading"><i class="fa fa-building"></i> 可关联订单列表
+
+                        <a href='{{ add_order_url }}' target="_blank" class="btn btn-success btn-sm pull-right relate-btn">
+                            <i class="fa fa-plus-square"></i> 新增订单
+                        </a></div>
+                    <div class="panel-body">
+                         <!-- 待关联订单列表 -->
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>订单号</th>
+                            <th>客户名</th>
+                            <th>订单金额</th>
+                            <th>已收金额</th>
+                            <th>应收金额</th>
+                            <th>关联金额</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{ formset.management_form }}
+                        {% for form in formset %}
+                            <tr>
+                             {{ form.id }}
+
+                                <td>{{ form.instance.order_number }}</td>
+                                <td>{{ form.instance.customer.shortname }}</td>
+                                <td>{{ form.instance.currency.icon }}{{ form.instance.amount }}</td>
+                                <td>{{ form.instance.currency.icon }}{{ form.instance.rcvd_amount }}</td>
+                                <td>{{ form.instance.currency.icon }}{{ form.instance.collect_amount }}</td>
+
+                                <td>{{ form.dist_amount }} <span style="color: #ff4500">{{ form.dist_amount.errors.0 }}</span></td>
+
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+
+                    <!-- 提交关联金额按钮 -->
+                    <input type="submit" class="btn btn-warning btn-sm pull-right relate-btn" value="确认关联">
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+
+    </div>
+
+    </div>
+
+
+    <script src="{% static "rbac/permission_distribute.js" %}"></script>
+
+{% endblock %}

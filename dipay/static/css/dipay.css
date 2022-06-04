@@ -1,0 +1,94 @@
+
+  tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+
+        .search-group .row {
+            margin-left: 5px;
+        }
+
+        .search-group .row a {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid lightgrey;
+            font-size: 13px;
+        }
+
+        .search-group .row a.active {
+            background-color: paleturquoise;
+        }
+
+        .search-group .others {
+            display: inline-block;
+        }
+
+        .sequence-input {
+            width: 50px;
+
+        }
+
+        .save-sequence {
+            cursor: pointer;
+            color: dodgerblue;
+        }
+
+        textarea[id^="book_info"], textarea[id^="load_info"], textarea[id^="produce_info"] {
+            width: 250px;
+            height: 50px;
+        }
+
+         textarea[id^="load_info"]{
+            width: 350px;
+            height: 80px;
+        }
+
+        textarea[id^="produce_sequence"] {
+            width: 50px;
+            height: 20px;
+        }
+        textarea[id^="amount"] {
+            width: 87px;
+            height: 36px;
+        }
+
+    .text-display, .date-display, .status-display, .invoice-amount-display {
+        cursor: pointer;
+
+    }
+
+    .fa-check {
+        color:green;
+        font-size: 20px;
+    }
+
+    /*排产*/
+    .status-display.status-1 {
+        color:red;
+
+  }
+      /*单据*/
+    .status-display.status-2 {
+        color:orange;
+
+  }
+    /*等款*/
+       .status-display.status-3 {
+        color:blue;
+  }
+       /*发票号*/
+       .invoice-number-display {
+           font-weight: bolder;
+       }
+
+       .invoice-amount-display {
+
+       }
