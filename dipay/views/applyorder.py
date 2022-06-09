@@ -267,22 +267,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
                 return HttpResponse('成功上传 %s 条收款数据,错误行号 ☺' % (count,))
 
-        # 上传之订单号预处理
 
-    def parse_order_number(self, order_number):
-        order_number = order_number.strip()
-        type_choices = {item[1]: item[0] for item in ApplyOrder.type_choices}
-        order_type = type_choices.get(order_number[0])
-        sequence = order_number[1:5]
-        order_split = order_number.split('-')
-        sub_sequence = '0' if len(order_split) < 2 else order_split[-1]
-        if not sub_sequence.isdigit():
-            for num, letter in enumerate(['A','B','C','D']):
-                if letter in sub_sequence:
-                    sub_sequence = sub_sequence[0] + str(num+1)
-                    order_number = order_split[0]+'-'+sub_sequence
-                    break
-        return order_number, order_type, sequence, sub_sequence
 
     # 跟单文件导入的细节处理
     def parse_order_file(self, ws):
@@ -305,8 +290,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             count += 1
             row = ws[i]
             row_dict = {}
-            if not row[0].value or not re.match(Regex.order_number,row[0].value):
+            if not row[0].value or not re.match(Regex.order_number, row[0].value):
                 continue
+
             pass_flag = False
 
             # 读取一条数据
@@ -389,7 +375,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
                     continue
 
-                order_number, order_type, sequence, sub_sequence = self.parse_order_number(order_number)
+                order_type, sequence, sub_sequence = self.parse_order_number(order_number)
                 deposit = ' 定金：'
                 if d.get('deposit'):
                     deposit = deposit + '%s' % d.get('deposit')
@@ -551,6 +537,17 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
         return count, errors_list
 
+        # 上传之订单号预处理
+
+    def parse_order_number(self, order_number):
+        order_number = order_number.strip()
+        type_choices = {item[1]: item[0] for item in ApplyOrder.type_choices}
+        order_type = type_choices.get(order_number[0])
+        sequence = order_number[1:5]
+        order_split = order_number.split('-')
+        sub_sequence = '0' if len(order_split) < 2 else order_split[-1]
+
+        return order_type, sequence, sub_sequence
 
     # 下载上传用的模板文件
     def download(self, request, file_name, *args, **kwargs):
@@ -649,7 +646,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 # 匹配模式的类
 class Regex:
     # 提取订单号：
-    order_number = r"([J,M,X]\d+-?\d)"
+    order_number = r"(^[J,M,X]\d+-?\d$)"
     # 提取金额
     amount = r'\d+[.]?\d*'
     # 提取公司名

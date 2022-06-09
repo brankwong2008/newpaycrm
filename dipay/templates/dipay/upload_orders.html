@@ -20,6 +20,11 @@
         margin-bottom:20px ;
         background-color: #fafaf4;
     }
+    p.remark {
+        font-size: 12px;
+        margin: 10px 0;
+
+    }
 
     </style>
 
@@ -50,7 +55,8 @@
                         <div class="upload-order">
                             <label for="id-upload-order">同步跟单记录</label>
                             <input type="file" value="上传订单excel文件" id="id-upload-order" name="upload_order">
-                             <span> * 只同步2020年以后的订单</span>
+                             <p class="remark"> * 只同步2020年以后的订单</p>
+                             <p class="remark"> * 下单日为空的不导入，订单号必须是Jxxxx或者Jxxxx-1的形式</p>
 
                         </div>
 
