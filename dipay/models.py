@@ -62,7 +62,7 @@ class ApplyOrder(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,
                                  verbose_name='币种',
                                  default= 1 )
-    amount = models.DecimalField(max_digits=15,decimal_places=2,verbose_name='发票金额',null=True)
+    amount = models.DecimalField(max_digits=15,decimal_places=2,verbose_name='发票金额',default=0)
     rcvd_amount = models.DecimalField(max_digits=15,decimal_places=2,verbose_name='到账金额',default=0)
     collect_amount = models.DecimalField(max_digits=15,decimal_places=2,verbose_name='应收金额',default=0)
     term_choices = [(0, 'FOB'),
@@ -100,7 +100,7 @@ class FollowOrder(models.Model):
                     ]
     pay_term = models.SmallIntegerField(choices=payterm_choices, verbose_name='付款方式',default=1)
     follow_choices =  [(0, '备货'),
-                    (1, '排产'),
+                    (1, '发货'),
                     (2, '单据'),
                     (3, '等款'),
                     (4, '完成'),
@@ -129,7 +129,7 @@ class Payer(models.Model):
 
 class Inwardpay(models.Model):
     create_date = models.DateField(verbose_name='汇入日期',default=datetime.now())
-    payer = models.ForeignKey(to=Payer, on_delete=models.CASCADE,verbose_name='付款人')
+    payer = models.ForeignKey(to=Payer, on_delete=models.CASCADE,verbose_name='付款人',null=True)
     keyin_user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='录入人',default=3)
     bank =models.ForeignKey(to=Bank, on_delete=models.CASCADE,verbose_name='收款行')
     customer =models.ForeignKey(to=Customer, on_delete=models.CASCADE,verbose_name='客户',null=True,blank=True)

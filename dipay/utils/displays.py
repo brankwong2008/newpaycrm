@@ -45,6 +45,81 @@ def sales_display(handler, obj=None, is_header=False, *args, **kwargs):
 
         return nickname[0] if nickname else "-"
 
+def goods_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """
+           显示销售人员名称首字母
+           :param obj:
+           :param is_header:
+           :return:
+           """
+    if is_header:
+        return '货物'
+    else:
+        return obj.order.goods[:15]
+
+def customer_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """
+           显示客户简名
+           :param obj:
+           :param is_header:
+           :return:
+           """
+    if is_header:
+        return '客户'
+    else:
+        if obj.order.customer:
+            customer_name = obj.order.customer.shortname[:10]
+        else:
+            customer_name = '-'
+        return customer_name
+
+ # 下单日期
+def confirm_date_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """
+           显示销售人员名称首字母
+           :param obj:
+           :param is_header:
+           :return:
+           """
+    if is_header:
+        return '下单日'
+    else:
+        if obj.order.confirm_date:
+            return obj.order.confirm_date.strftime('%m/%d')
+        else:
+            return '-'
+
+# 成交条款
+def term_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """
+           显示 运输条款
+           :param obj:
+           :param is_header:
+           :return:
+           """
+    if is_header:
+        return 'Term'
+    else:
+        return obj.order.get_term_display()
+
+# 应收金额
+def collect_amount_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '应收款'
+    else:
+        return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
+
+# 发票金额
+def amount_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '发票金额'
+    else:
+        amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
+            'amount',obj.pk,obj.order.amount, obj.order.currency.icon, obj.order.amount
+        )
+        return mark_safe(amount_tag)
+
+# 起运港和目的港
 def port_display(field, title=None):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """功能：ETD ETA日期字段的显示 """
@@ -62,6 +137,7 @@ def port_display(field, title=None):
                              "id='%s-id-%s' > %s </span>" % (field, obj.pk, port_name))
     return inner
 
+# 订舱，装箱，生产信息
 def info_display(field, title=None, time_format="%Y-%m-%d"):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
@@ -89,6 +165,7 @@ def info_display(field, title=None, time_format="%Y-%m-%d"):
 
     return inner
 
+# ETA ETD等显示
 def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """

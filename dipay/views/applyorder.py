@@ -6,10 +6,11 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.forms.forms import AddApplyOrderModelForm, EditApplyOrderModelForm,ConfirmApplyOrderModelForm,ManualAddApplyOrderModelForm
-from dipay.models import CurrentNumber, Customer, FollowOrder,ApplyOrder
+from dipay.models import CurrentNumber, Customer, FollowOrder,ApplyOrder, Currency, Inwardpay, Bank, Pay2Orders, UserInfo
 from openpyxl import load_workbook
 from django.conf.urls import url
 from django.db import transaction
+import re
 
 
 
@@ -222,7 +223,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         ]
         return patterns
 
-    #  批量上传订单信息
+    #  批量上传订单跟单和收款信息
     def upload(self, request, *args, **kwargs):
         print(request.POST, request.FILES)
 
@@ -231,7 +232,11 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return render(request, 'dipay/upload_orders.html', locals())
 
         if request.method == "POST":
-            upload_file = request.FILES.get('upload_file')
+            # 跟单文件导入
+            upload_order_file = request.FILES.get('upload_order')
+            # 收款文件导入
+            upload_pay_file = request.FILES.get('upload_pay')
+            upload_file = upload_pay_file or upload_order_file
             if upload_file is None:
                 return HttpResponse('文件不存在')
             print('yes upload', upload_file)
@@ -244,40 +249,307 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     f.write(line)
 
             # 读取excel文件
-            excel_file = load_workbook(file_path)
+            excel_file = load_workbook(file_path, data_only=True)
             ws = excel_file.active
             count = 0
 
-            # 遍历每行，获取每一行信息
-            # 存储字段名
-            field_list = []
-            for i,field in enumerate(ws[1]):
-                if field.value:
-                    field_list.append((i,field.value))
+            # 跟单文件的导入
+            if upload_order_file:
+                count, count1, count2, errors = self.parse_order_file(ws)
+                excel_file.close()
+                msg = '成功读取 %s 条记录，更新%s条记录，新增%s条记录☺' % (count,count1, count2)
+                return render(request,'dipay/msg_after_submit.html',{"msg":msg, 'errors':errors})
 
-            print('field list:',field_list)
+            # 付款文件的导入
+            if upload_pay_file:
+                count, errors_list = self.parse_pay_file(ws)
+                excel_file.close()
 
-            for row in ws.iter_rows(2):
-                # 用户存储每一行的数据
-                data_dict = {}
-                # 查询系统里面是否有该订单号
-                for num, field in field_list:
-                    if row[num].value:
-                        data_dict[field] = row[num].value
+                return HttpResponse('成功上传 %s 条收款数据,错误行号 ☺' % (count,))
 
-                invoice_number = data_dict.pop('order')
-                order_obj = FollowOrder.objects.filter(order__order_number=invoice_number).first()
-                if not order_obj:
+        # 上传之订单号预处理
+
+    def parse_order_number(self, order_number):
+        order_number = order_number.strip()
+        type_choices = {item[1]: item[0] for item in ApplyOrder.type_choices}
+        order_type = type_choices.get(order_number[0])
+        sequence = order_number[1:5]
+        order_split = order_number.split('-')
+        sub_sequence = '0' if len(order_split) < 2 else order_split[-1]
+        if not sub_sequence.isdigit():
+            for num, letter in enumerate(['A','B','C','D']):
+                if letter in sub_sequence:
+                    sub_sequence = sub_sequence[0] + str(num+1)
+                    order_number = order_split[0]+'-'+sub_sequence
+                    break
+        return order_number, order_type, sequence, sub_sequence
+
+    # 跟单文件导入的细节处理
+    def parse_order_file(self, ws):
+        count = 0     # 读入记录数
+        count1 = 0    # 更新记录数
+        count2 = 0    # 新增记录数
+        field_list = [(0, 'order_number'), (1, 'salesperson'), (3, 'status'), (4, 'customer'),
+                      (6, 'goods'), (7, 'term'), (8, 'ports'), (9, 'confirm_date'), (10, 'ETD'),
+                      (11, 'ETA'), (12, 'load_info'), (13, 'book_info'), (14, 'payterm'), (15, 'amount'),
+                      (16, 'deposit'), (17, 'balance_USD'), (18, 'balance_RMB'), (19, 'payment1'),(20,'payment2')]
+
+        # 准备基础信息源，避免多次撞库
+        salespersons = { obj.nickname[0]:obj for obj in UserInfo.objects.all()}
+        status_dict = {item[1]: item[0] for item in FollowOrder.follow_choices}
+        customers = {obj.title : obj for obj in Customer.objects.all()}
+        errors = []
+
+        # 读入并清理数据
+        for i in range(4, ws.max_row+1):
+            count += 1
+            row = ws[i]
+            row_dict = {}
+            if not row[0].value or not re.match(Regex.order_number,row[0].value):
+                continue
+            pass_flag = False
+
+            # 读取一条数据
+            for n, field in field_list:
+                row_dict[field] = row[n].value
+                if n==1:
+                    row_dict[field] = salespersons.get(row[n].value)
+                elif n==3:
+                    row_dict[field] = status_dict.get(row[n].value)
+                elif n==4:
+                    exists_customer = False
+                    if row[n].value:
+                        for title, obj in customers.items():
+                            if row[n].value[:6] in title:
+                                row_dict[field] = obj
+                                exists_customer = True
+                                break
+                    if not exists_customer:
+                        row_dict[field] = None
+                elif n==8:
+                    if row[n].value:
+                        port_list = row[n].value.split('-')
+                        if len(port_list)==1:
+                            row_dict['load_port'], row_dict['discharge_port'] = None, row[n].value
+                        else:
+                            row_dict['load_port'], row_dict['discharge_port']= port_list[0], port_list[1]
+                elif n==9:
+                    # 控制导入时间
+                    confirm_date = row[n].value
+                    if not confirm_date or confirm_date < datetime(2020,1,1):
+                        pass_flag = True
+                        break
+                    else:
+                        row_dict[field] = confirm_date
+                elif n == 15:
+                    amount = row[n].value
+                    row_dict[field] = amount
+                    if amount and not (isinstance(amount, float) or isinstance(amount, int)):
+                        amount_match = re.search(Regex.amount, amount)
+                        if amount_match:
+                            row_dict[field] = amount_match.group()
+
+            print(row_dict)
+
+            # 创建一条记录
+            if not pass_flag:
+                d = row_dict
+                # 前面已经排除了order_number为空的情况
+                order_number = d['order_number'].strip()
+                order_obj = ApplyOrder.objects.filter(order_number=order_number).first()
+
+                if order_obj:
+                    for field in ['amount', 'confirm_date', 'customer', 'goods','salesperson']:
+                        if d.get(field):
+                            setattr(order_obj, field, d[field])
+
+                    # 如果订单存在，且跟单记录存在，则更新ETD, ETA, load_info, book_info
+                    followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
+                    if followorder_obj:
+                        for field in ['ETA', 'ETD', 'load_info', 'book_info', 'status']:
+                            if d[field]:
+                                setattr(followorder_obj, field, d[field])
+
+                    # 如果订单不存在，则创建跟单记录
+                    else:
+                        followorder_obj = FollowOrder(order=order_obj)
+                        for field in ['load_port', 'discharge_port', 'ETA', 'ETD', 'load_info', 'book_info', 'status']:
+                            if d.get(field):
+                                setattr(followorder_obj, field, d[field])
+                    try:
+                        order_obj.save()
+                        followorder_obj.save()
+                        count1 += 1
+                    except Exception as e:
+                        errors.append('错误行号：%s，订单号：%s' %(i+4, order_number))
                     continue
 
-                # 把数据存入跟单对象记录
-                for field,val in data_dict.items():
-                    setattr(order_obj,field,val)
+                # order_obj不存在时，新建
+                if not re.match(Regex.order_number,order_number):
+                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    continue
 
-                # order_obj.save()
-                count += 1
+                order_number, order_type, sequence, sub_sequence = self.parse_order_number(order_number)
+                deposit = ' 定金：'
+                if d.get('deposit'):
+                    deposit = deposit + '%s' % d.get('deposit')
+                balance = ' 尾款：'
+                for item in ['payment1','payment2']:
+                    if d.get(item):
+                        balance = balance + '%s ' % d.get(item)
 
-            return HttpResponse('成功上传 %s 条数据 ☺' % count)
+                order_obj = ApplyOrder(order_number=order_number, order_type=order_type,
+                                       sequence=sequence, sub_sequence=sub_sequence,
+                                       status=2, remark= deposit+balance)
+                for field in ['confirm_date','customer', 'salesperson', 'goods','amount']:
+                    if d.get(field):
+                        setattr(order_obj, field, d[field])
+                try:
+                    order_obj.save()
+                except Exception as e:
+                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    continue
+
+                followorder_obj = FollowOrder(order=order_obj)
+                followorder_obj.sales_remark = deposit+balance
+                for field in ['load_port', 'discharge_port', 'ETA', 'ETD', 'load_info', 'book_info', 'status']:
+                    if d.get(field):
+                        setattr(followorder_obj, field, d[field])
+                try:
+                    followorder_obj.save()
+                    count2 += 1
+                except Exception as e :
+                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    continue
+
+
+        return count, count1, count2, errors
+
+    # 收款文件导入的细节处理
+    def parse_pay_file(self, ws):
+        """
+        :param ws: 打开的workbook.activ_sheet
+        :return:   处理完的count数，和没有成功导入的行号列表
+        pay_list的数据格式
+          {  date:2022/5/6  got_amount:23000.00 currency_id 1  related_order: [{'order_number':J3155, amount:$2500]     }
+        """
+
+        field_list = [(0, 'create_date'), (1, 'order_number'), (2, 'customer'), (5, 'got_amount'), (6, 'origin_pay')]
+        bank_list = ['稠州','东亚','广发','花旗','连连']
+        payment_list = []
+        count = 0
+
+        # 第一步清理并读入数据
+        for i in range(2,ws.max_row+1):
+            row=ws[i]
+            row_pay_dict = {}
+            row_order_dict = {}
+            for n, field in field_list:
+                # 避免读入空行
+                if not row[0].value:
+                    break
+                if n == 1:
+                    order_number = re.search(Regex.order_number, row[n].value)
+                    if order_number:
+                        row_pay_dict[field] = order_number.group()
+                    else:
+                        row_pay_dict['error'] = i
+                        row_pay_dict[field] = False
+                elif n == 2:
+                    row_pay_dict['bank']= '广发'
+                    for each in bank_list:
+                        if each in row[n].value:
+                            row_pay_dict['bank']= each
+                            break
+                    if '加拿大' in row[n].value:
+                        currency = '加元'
+                    elif '人民币' in row[n].value:
+                        currency  = '人民币'
+                    else:
+                        currency  = '美元'
+                    row_pay_dict['currency'] = currency
+                    # 提取客户公司名
+                    customer = re.findall(Regex.customer, row[n].value)
+                    if customer:
+                        customer = customer[0]
+                    else:
+                        customer = '--'
+                    row_pay_dict['customer'] = customer
+
+                elif n == 6 :
+                    if row[n].value:
+                        payment = re.search(Regex.amount,row[n].value)
+                        payment = payment.group() if payment else 0
+                    else:
+                        payment = 0
+                    row_pay_dict[field] = payment
+                else:
+                    row_pay_dict['remark'] = '%s %s %s' %( row[1].value , row[2].value , row[6].value)
+
+            print(row_pay_dict)
+            payment_list.append(row_pay_dict)
+            count += 1
+
+        # 第二步 将数据存入数据库
+        order_list = []
+        paystack = []
+        errors_list = []
+        # for item in payment_list:
+        #     # 检查该行是否有错误
+        #     if item.get('error'):
+        #         errors_list.append(item.get('error'))
+        #         continue
+        #     # 获取银行和货币对象
+        #     currency = Currency.objects.filter(title__icontains=item['currency']).first()
+        #     bank = Bank.objects.filter(title__icontains=item['bank']).first()
+        #
+        #     if not bank:
+        #         bank = Bank.objects.get(pk=1)
+        #     # 检查订单号是否存在
+        #     order_obj = ApplyOrder.objects.filter(order_number__icontains=item['order_number']).first()
+        #     # 如果订单不存在，创建他
+        #     if not order_obj:
+        #         order_type, sequence, sub_sequence = self.parse_order_number(item['order_number'])
+        #         neworder_obj = ApplyOrder(order_type=order_type, sequence=sequence, sub_sequence=sub_sequence,
+        #                                   order_number=item['order_number'], amount=10000,
+        #                                   status=2, currency=currency)
+        #         neworder_obj.save()
+        #         order_obj = neworder_obj
+        #
+        #     if not item['origin_pay']:
+        #         # 直接保存收款记录, 特别注意payer不能为空
+        #         inwardpay_obj = Inwardpay(create_date=item['create_date'],got_amount=item['got_amount'],
+        #                                   amount= item['got_amount'], currency=currency,bank=bank)
+        #         inwardpay_obj.save()
+        #         # 并关联订单
+        #         Pay2Orders.objects.create(relate_date=item['create_date'],payment=inwardpay_obj, order=order_obj,
+        #                                   amount = item['got_amount'] )
+        #         paystack = []
+        #     # 存在款项跨订单分配的情况
+        #     else:
+        #         # 判断分配订单的情况，用堆栈处理
+        #         last_inwardpay = 999999
+        #         if paystack:
+        #             last_inwardpay_obj = paystack.pop()
+        #             last_inwardpay = last_inwardpay_obj.got_amount
+        #
+        #         # 这里面分两种情况，是否同一笔款
+        #         if last_inwardpay == float(item['origin_pay']):
+        #             Pay2Orders.objects.create(relate_date=item['create_date'], payment=last_inwardpay_obj,
+        #                                       order=order_obj,
+        #                                       amount=item['got_amount'])
+        #             paystack.append(last_inwardpay_obj)
+        #         else:
+        #             got_amount = item['origin_pay']
+        #             inwardpay_obj = Inwardpay(create_date=item['create_date'], got_amount=got_amount,
+        #                                       amount=got_amount,currency=currency, bank=bank)
+        #             inwardpay_obj.save()
+        #             Pay2Orders.objects.create( payment=inwardpay_obj, order=order_obj,
+        #                                       amount=item['got_amount'])
+        #             #把该笔款存入堆栈，等待后续处理
+        #             paystack.append(inwardpay_obj)
+
+        return count, errors_list
 
 
     # 下载上传用的模板文件
@@ -371,11 +643,14 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return render(request, "dipay/manual_add_new_order.html", locals())
 
-    # 上传之订单号预处理
-    def order_number_process(self, order_number):
-        order_number = order_number.strip()
-        type_choices = ApplyOrder.type_choices
-        order_type = [item[0] for item in type_choices if item[1] == order_number[0]][0]
-        sequence = order_number[1:5]
-        sub_sequence = 0 if len(order_number.split('-')) < 2 else order_number.split('-')[-1]
-        return order_type, sequence, sub_sequence
+
+
+
+# 匹配模式的类
+class Regex:
+    # 提取订单号：
+    order_number = r"([J,M,X]\d+-?\d)"
+    # 提取金额
+    amount = r'\d+[.]?\d*'
+    # 提取公司名
+    customer = r'[a-zA-Z]{1,}'

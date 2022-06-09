@@ -58,6 +58,15 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                 return status
             return mark_safe("<a href= '%s' class='torelate-status-%s' > %s </a>" % (related_url,obj.status, status ))
 
+    # 付款人的显示
+    def payer_display(self, obj=None, is_header=False,*args,**kwargs):
+        if is_header:
+            return '付款人'
+        else:
+            if obj.payer:
+                return obj.payer.title
+            return '-'
+
     def got_confirm_status_display(self, obj=None, is_header=False, *args, **kwargs):
         """
                显示币种和金额
@@ -84,7 +93,7 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             else:
                 return  display_text
 
-    fields_display = [ get_date_display('create_date'), 'payer', got_amount_display,
+    fields_display = [ get_date_display('create_date'), payer_display, got_amount_display,
                        'bank',  got_confirm_status_display , status_display,]
 
     detail_fields_display = fields_display
