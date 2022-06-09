@@ -353,7 +353,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
                     if followorder_obj:
                         for field in ['ETA', 'ETD', 'load_info', 'book_info', 'status']:
-                            if d[field]:
+                            if d.get(field):
                                 setattr(followorder_obj, field, d[field])
 
                     # 如果订单不存在，则创建跟单记录
