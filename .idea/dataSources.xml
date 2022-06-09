@@ -7,5 +7,13 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://localhost:3306/distpay</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="Django default" uuid="c0413f04-7c63-4135-9698-d89424c2d4c4">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>$PROJECT_DIR$/paycrm/settings.py</remarks>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://0.0.0.0:3306/paycrm</jdbc-url>
+    </data-source>
   </component>
 </project>

@@ -4,7 +4,8 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.utils.displays import status_display,  info_display, save_display, follow_date_display,  \
-    port_display,order_number_display, sales_display
+    port_display,order_number_display, sales_display,goods_display, confirm_date_display,\
+    customer_display
 from dipay.models import CurrentNumber, Customer, FollowOrder
 from django.conf.urls import url
 from django.http import JsonResponse
@@ -45,70 +46,6 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
                 return mark_safe("<i class='fa fa-edit'></i>")
             else:
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
-
-    def customer_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示客户简名
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '客户'
-        else:
-            if obj.order.customer.shortname:
-                customer_name = obj.order.customer.shortname[:10]
-            else:
-                customer_name = '-'
-            return customer_name
-
-    def goods_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示销售人员名称首字母
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '货物'
-        else:
-            return obj.order.goods[:15]
-
-    def confirm_date_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示销售人员名称首字母
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '下单日'
-        else:
-            return obj.order.confirm_date.strftime('%m/%d')
-
-    def term_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 运输条款
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return 'Term'
-        else:
-            return obj.order.get_term_display()
-
-    def collect_amount_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 运输条款
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '应收款'
-        else:
-            return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
 
 
     # 跟单列表显示的字段内容
