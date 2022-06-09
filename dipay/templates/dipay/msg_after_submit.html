@@ -28,19 +28,34 @@
 
             <p class="btn btn-default" style="margin-bottom: 20px"> 消息Box </p>
 
-            <p class="bs-clipboard">  </p>
+            <p class="bs-clipboard"></p>
 
-             <div>
+            <div>
 
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <strong>提醒：</strong> {{ msg }}
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>提醒：</strong> {{ msg }}
+                </div>
+
+
+                {#                  错误提醒#}
+                <div class="alert alert-info alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span>
+                    </button>
+                    <strong>错误：</strong>
+
+                    {% for each in errors %}
+                        <p>
+                            {{ each }}
+                        </p>
+                    {% endfor %}
+                </div>
+
+
             </div>
-        </div>
-
-
-
 
 
         </div>

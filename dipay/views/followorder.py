@@ -5,7 +5,8 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display
 from dipay.utils.displays import status_display,  info_display, save_display, \
-    follow_date_display,order_number_display, sales_display, port_display
+    follow_date_display,order_number_display, sales_display, port_display, goods_display, customer_display, \
+    term_display, amount_display,confirm_date_display
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
@@ -25,7 +26,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         # Option(field='depart'),
     ]
 
-    """ [(0, '备货'), (1, '排产'), (2, '单据'),   (3, '等款'), (4, '完成'),"""
+    """ [(0, '备货'), (1, '发货'), (2, '单据'),   (3, '等款'), (4, '完成'),"""
 
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains']
     search_placeholder = '搜索 订单号/客户/货物'
@@ -151,96 +152,15 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
-    def customer_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示客户简名
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '客户'
-        else:
-            if obj.order.customer.shortname:
-                customer_name = obj.order.customer.shortname[:20]
-            else:
-                customer_name = '-'
-            return customer_name
-
-    def goods_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示销售人员名称首字母
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '货物'
-        else:
-            return obj.order.goods[:10]
-
-    def confirm_date_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示销售人员名称首字母
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '下单日'
-        else:
-            return obj.order.confirm_date.strftime('%m/%d')
-
-
-    def term_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 运输条款
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return 'Term'
-        else:
-            return obj.order.get_term_display()
-
-    def collect_amount_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 运输条款
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '应收款'
-        else:
-            return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
-
-    def amount_display(self, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 发票金额
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '发票金额'
-        else:
-            amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
-                'amount',obj.pk,obj.order.amount, obj.order.currency.icon, obj.order.amount
-            )
-            return mark_safe(amount_tag)
-
 
     # 跟单列表显示的字段内容
-    fields_display = [checkbox_display, order_number_display, sales_display, status_display, customer_display, goods_display,
+    fields_display = [checkbox_display, order_number_display, customer_display,sales_display, status_display, goods_display,
                       port_display('discharge_port'), term_display, confirm_date_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
                       amount_display,
                       save_display,
-
                       ]
 
     def get_queryset_data(self, request, *args, **kwargs):
@@ -264,18 +184,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
         return patterns
 
+    # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
         if request.is_ajax():
             data_dict = request.POST.dict()
             pk = data_dict.get('pk')
             data_dict.pop('csrfmiddlewaretoken')
-            print(1213123, data_dict)
 
             followorder_obj = self.model_class.objects.filter(pk=pk).first()
             if not followorder_obj:
                 res = {'status': False, 'msg': 'obj not found'}
             else:
                 for item, val in data_dict.items():
+                    # 金额要保存到applyorder表
                     if item == 'amount':
                         applyorder_obj = followorder_obj.order
                         try:

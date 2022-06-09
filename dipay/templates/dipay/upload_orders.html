@@ -11,8 +11,21 @@
         }
 
         .panel-body {
-            font-size: 12px;
+            font-size: 14px;
         }
+
+    .upload-order, .upload-pay,.upload-update_order {
+        padding: 20px;
+        margin-top: 20px;
+        margin-bottom:20px ;
+        background-color: #fafaf4;
+    }
+    p.remark {
+        font-size: 12px;
+        margin: 10px 0;
+
+    }
+
     </style>
 
 {% endblock %}
@@ -22,25 +35,45 @@
 {% block content %}
     <div class="luffy-container">
 
-        <div class="col-md-5">
+        <div class="col-md-7">
 
-            <h4>批量上传订单</h4>
-            <p>
-               上传模板文件说明：<a href="{{ download_file_url }}">模板文件</a>
-            </p>
-            <p>
-               文件类型： excel文件
-            </p>
 
-            <form action="" method="post" enctype="multipart/form-data">
-                {%  csrf_token %}
-                 <input type="file" value="上传订单excel文件" name="upload_file">
-                <div style="margin-top:10px">
-                    <input type="submit" value="确认" class="btn btn-primary">
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-upload"></i> 批量上传订单
 
                 </div>
+                <div class="panel-body">
+                    <!-- panel body -->
 
-            </form>
+                    <p>
+                        上传模板文件说明：<a href="{{ download_file_url }}">excel模板文件</a>
+                    </p>
+
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="upload-order">
+                            <label for="id-upload-order">同步跟单记录</label>
+                            <input type="file" value="上传订单excel文件" id="id-upload-order" name="upload_order">
+                             <p class="remark"> * 只同步2020年以后的订单</p>
+                             <p class="remark"> * 下单日为空的不导入，订单号必须是Jxxxx或者Jxxxx-1的形式</p>
+
+                        </div>
+
+                        <div class="upload-pay">
+                            <label for="id-upload-pay">上传收款文件</label>
+                            <input type="file" value="上传订单excel文件" id="id-upload-pay" name="upload_pay">
+
+                        </div>
+
+
+                        <input type="submit" value="确认" class="btn btn-success">
+
+
+                    </form>
+                </div>
+            </div>
+
 
         </div>
 
