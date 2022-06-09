@@ -367,12 +367,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         followorder_obj.save()
                         count1 += 1
                     except Exception as e:
-                        errors.append('错误行号：%s，订单号：%s' %(i+4, order_number))
+                        errors.append('错误行号：%s，订单号：%s' %(i, order_number))
                     continue
 
                 # order_obj不存在时，新建
                 if not re.match(Regex.order_number,order_number):
-                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    errors.append('错误行号：%s，订单号：%s' % (i, order_number))
                     continue
 
                 order_type, sequence, sub_sequence = self.parse_order_number(order_number)
@@ -393,7 +393,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 try:
                     order_obj.save()
                 except Exception as e:
-                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    errors.append('错误行号：%s，订单号：%s' % (i, order_number))
                     continue
 
                 followorder_obj = FollowOrder(order=order_obj)
@@ -405,7 +405,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     followorder_obj.save()
                     count2 += 1
                 except Exception as e :
-                    errors.append('错误行号：%s，订单号：%s' % (i + 4, order_number))
+                    errors.append('错误行号：%s，订单号：%s' % (i, order_number))
                     continue
 
 
