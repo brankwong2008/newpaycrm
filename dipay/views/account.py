@@ -58,30 +58,6 @@ def index(request):
 
         payment_data_list.append((create_date,got_amount,payer,bank,confirm_status, status))
 
-    order_header_list = ['日期', '业务', '订单号', '客户', '数量货物', '发票金额','订单状态','已收款']
-
-    department_dict = {item[1]:item[0] for item in MyUserInfo.department_choices}
-    if request.user.department == department_dict.get('业务部'):     # 跟单部
-        order_queryset = models.ApplyOrder.objects.filter(salesperson=request.user,status__lte=2)
-    elif request.user.department == department_dict.get('跟单部'):
-        order_queryset = models.ApplyOrder.objects.filter(status__lte=2)
-    else:
-        order_queryset = models.ApplyOrder.objects.all()
-    order_data_list = []
-    print(111111, order_queryset)
-    for obj in order_queryset:
-        create_date = obj.create_date.strftime('%Y-%m-%d')
-        salesperson = obj.salesperson.nickname[0]
-        order_number = obj.order_number
-        customer = obj.customer.title[:10] if obj.customer else '-'
-        goods = obj.goods[:10]
-        amount = '%s %s' % ( obj.currency.icon , obj.amount)
-        order_status = obj.get_status_display()
-        rcvd_amount_url_name = "%s:%s" % ('stark', 'dipay_pay2orders_list')
-        rcvd_amount_url = reverse(rcvd_amount_url_name,kwargs={'order_id':obj.id})
-        rcvd_amount = mark_safe("<a href='%s'>%s %s</a>" % (rcvd_amount_url, obj.currency.icon , obj.rcvd_amount))
-        order_data_list.append([create_date,salesperson,order_number,customer,goods, amount,order_status, rcvd_amount])
-
     return render(request,"account/index.html",locals())
 
 
