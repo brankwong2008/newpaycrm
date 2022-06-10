@@ -90,8 +90,8 @@ class FollowOrder(models.Model):
     discharge_port = models.CharField(max_length=32, verbose_name='目的港',default='-')
     ETD = models.DateField(verbose_name='ETD', null=True, blank=True)
     ETA = models.DateField(verbose_name='ETA', null=True, blank=True)
-    book_info = models.CharField(max_length=128, verbose_name='订舱信息',default='订舱:')
-    load_info = models.CharField(max_length=128, verbose_name='装箱信息',default='装箱:')
+    book_info = models.CharField(max_length=255, verbose_name='订舱信息',default='订舱:')
+    load_info = models.CharField(max_length=255, verbose_name='装箱信息',default='装箱:')
     produce_info = models.CharField(max_length=128, verbose_name='生产情况',default='生产:')
     sales_remark = models.CharField(max_length=128,verbose_name='业务备注', default='-')
     payterm_choices = [(0, '到港付'),
