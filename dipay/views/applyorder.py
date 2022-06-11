@@ -16,6 +16,10 @@ import re
 
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
+    # 每页显示记录数
+    def get_per_page(self):
+        return 10
+
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = ['customer', ]
 
@@ -145,9 +149,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return self.model_class.objects.filter(salesperson=request.user, status__lte=3)
         return self.model_class.objects.all()
 
-    def get_per_page(self):
-        return 10
-
+    # 申请订单号
     def add_list(self, request, *args, **kwargs):
         """ 申请/添加订单号  """
         if request.method == "GET":
@@ -171,6 +173,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return render(request, self.add_list_template or "stark/apply_new_order.html", locals())
 
+    # 保存表单数据
     def save_form(self, form, request, is_update=False, *args, **kwargs):
         order_type = form.instance.get_order_type_display()
         # order_number 只显示订单类型
@@ -192,8 +195,17 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         # 新增订单的情况下
 
         # 获取当前最新订单序号，并把新申请订单号置为：最新单号+1
-        current_num_obj = CurrentNumber.objects.get(pk=1)
-        form.instance.sequence = current_num_obj.num + 1
+        current_num_obj =  CurrentNumber.objects.get(pk=1)
+        sequence = current_num_obj.num + 1
+        # 检查订单序号是否已经存在，如果存在的话，sequence号顺序后移
+        while True:
+            order_obj = ApplyOrder.objects.filter(sequence=sequence)
+            if order_obj:
+                sequence += 1
+            else:
+                break
+
+        form.instance.sequence = sequence
 
         form.instance.order_number = "%s%s" % (order_type, form.instance.sequence)
         # 应收初始金额等于订单金额
@@ -208,12 +220,19 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         form.save()
 
         # 同步更新最新订单号
-        current_num_obj.num += 1
+        current_num_obj.num = sequence
         current_num_obj.save()
-        msg = '订单号申请提交成功，等待部门经理审核'
+
+        # 反馈给用户的信息，加上快速发邮件的功能，节约大家的时间
+        send_time = datetime.now().strftime("%Y-%m-%d")
+        subject = '申请合同号 %s %s %s' % (form.instance.customer.shortname, form.instance.goods, send_time)
+        content = '经理: %0A%0C%0A%0C请审核。' + form.instance.remark
+        mailto = f'<a href="mailto:brank@diligen.cn?subject={subject}&body={content}">点击快速发申请邮件</a>'
+        msg = mark_safe('订单号申请提交成功，%s' % mailto)
 
         return render(request, 'dipay/msg_after_submit.html', {'msg': msg})
 
+    # 自定义路由： 上传，下载，下单，手动新增订单
     def get_extra_urls(self):
         patterns = [
             url("^upload/$", self.wrapper(self.upload), name=self.get_url_name('upload')),
@@ -266,8 +285,6 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 excel_file.close()
 
                 return HttpResponse('成功上传 %s 条收款数据,错误行号 ☺' % (count,))
-
-
 
     # 跟单文件导入的细节处理
     def parse_order_file(self, ws):

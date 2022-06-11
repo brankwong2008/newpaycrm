@@ -112,14 +112,15 @@ class Option:
 
 
 class StarkHandler(object):
-    edit_list_template = None
-    add_list_template = None
-    del_list_template = None
-    show_list_template = None
-    fields_display = []
+    edit_list_template = None  # 编辑页面模板
+    add_list_template = None   # 添加页面模板
+    del_list_template = None   # 删除页面模板
+    show_list_template = None  # 显示页面模板
+    fields_display = []    # 显示的列字段
+    tabs = None     # 标签导航
     has_add_btn = True
     detail_fields_display = '__all__'
-    detail_extra_btn = None
+    detail_extra_btn = None    # 详情页显示的额外按钮
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = []
     search_placeholder = ''
@@ -192,6 +193,7 @@ class StarkHandler(object):
             else:
                 if query_dict.get(option.field):
                     filter_condition[option.field]= query_dict.get(option.field)
+
         return filter_condition
 
     def get_edit_obj(self,request,pk,*args,**kwargs):
@@ -206,12 +208,16 @@ class StarkHandler(object):
     def get_queryset_data(self,request,*args,**kwargs):
         return self.model_class.objects.all()
 
+    def get_tabs(self,request,*args,**kwargs):
+        return self.tabs
+
     # 列表页面
     def show_list(self, request,*args,**kwargs):
 
         fields_display = self.get_fields_display(request,*args,**kwargs)
         header_list = []
         data_list = []
+        tabs = self.get_tabs(request,*args,**kwargs)
 
         ############## 1. 批量删除或者初始化 ###############
 
@@ -279,7 +285,7 @@ class StarkHandler(object):
                 elif field_filter_exists == 'all':
                     del filter_condition[option_obj.field]
 
-                print(1010101, field_filter_exists, option_obj.field,option_obj.default)
+                # print(1010101, field_filter_exists, option_obj.field,option_obj.default)
                 # 这个字典的键值是可迭代对象，给出页面需要的html标签
                 option_group_dict[option_obj.field] = option_obj.get_data(self.model_class,request.GET)
 

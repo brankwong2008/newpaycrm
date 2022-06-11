@@ -92,3 +92,10 @@
        .invoice-amount-display {
 
        }
+
+        /*标签导航active*/
+        .nav-tabs li.active a {
+            color: darkorange;
+            font-weight: bolder;
+            font-size: larger;
+        }
