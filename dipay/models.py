@@ -101,6 +101,7 @@ class FollowOrder(models.Model):
     pay_term = models.SmallIntegerField(choices=payterm_choices, verbose_name='付款方式',default=1)
     follow_choices =  [(0, '备货'),
                     (1, '发货'),
+                    (5, '货好'),
                     (2, '单据'),
                     (3, '等款'),
                     (4, '完成'),
