@@ -22,8 +22,9 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
         tabs = []
 
         for status in self.tab_list:
+            status_val = str(self.status_dict.get(status[0]))
             row = {
-                'url': '?status=%s' % self.status_dict.get(status[0]),
+                'url': '?status=%s' % status_val,
                 'label': status[1],
                 'active': status[2],
             }
@@ -31,11 +32,11 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
                 query_dict = request.GET.copy()
                 query_dict._mutable = True
                 if query_dict.get('status'):
-                    if query_dict.get('status')==str(self.status_dict.get(status[0])):
+                    if query_dict.get('status')==status_val:
                         row['active'] = 'active'
                     else:
                         row['active'] = ''
-                query_dict["status"] = self.status_dict.get(status[0])
+                query_dict["status"] = status_val
                 row['url'] = '?%s' % query_dict.urlencode()
 
             tabs.append(row)

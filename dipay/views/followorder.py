@@ -22,7 +22,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
-        Option(field='status'),
+        Option(field='status',is_multi=False),
         # Option(field='depart'),
     ]
 
