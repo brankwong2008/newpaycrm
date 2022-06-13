@@ -22,6 +22,7 @@ class Option:
         self.field = field
         self.filter_param = filter_param if filter_param else {}
         self.is_multi = is_multi
+        self.is_choice = False
         self.default = default
 
     class RenderData:
@@ -47,21 +48,14 @@ class Option:
             query_dict = self.query_dict.copy()
             query_dict._mutable = True
 
-            # 这句话什么意思，为什么删除键值，因为全部按钮的url里面的筛选条件是field_name=all
+            # 这句话什么意思，为什么删除键值，因为全部按钮的url里面的筛选条件是空
             res = query_dict.get(self.field,None)
             default_flag = False
-            if res == 'all':
+            # 如果筛选是全部，则该键值为空
+            if not res:
                 yield '<a href="?%s" class="active">全部</a>' % (query_dict.urlencode())
-            elif res is None:
-                if self.option.default is not None:
-                    query_dict[self.option.field] = 'all'
-                    default_flag = True
-                    yield '<a href="?%s">全部</a>' % (query_dict.urlencode())
-                else:
-                    query_dict[self.option.field] = 'all'
-                    yield '<a href="?%s" class="active" >全部</a>' % (query_dict.urlencode())
             else:
-                query_dict[self.option.field] = 'all'
+                query_dict.pop(self.option.field)
                 yield '<a href="?%s">全部</a>' % (query_dict.urlencode())
 
 
@@ -73,30 +67,30 @@ class Option:
                     val_list.append(self.option.default)
                 query_dict._mutable = True
 
-                if isinstance(self.data, QuerySet):
-                    if not self.option.is_multi:
-                        query_dict[self.field] = item.id
-                        if str(item.id) in val_list:
-                            is_active = "active"
-                            query_dict.pop(self.field)
-                        else:
-                            is_active = ""
+                text = self.option.get_text(item)
+                val = self.option.get_value(item)
+                if not self.option.is_multi:
+                    query_dict[self.field] = val
+                    if val in val_list:
+                        is_active = "active"
+                        query_dict.pop(self.field)
                     else:
-                        if str(item.id) not in val_list:
-                            val_list.append(str(item.id))
-                            is_active = ""
-                        else:
-                            val_list.remove(str(item.id))
-                            is_active = "active"
-
-                        # 给每个筛选按钮定制url，要考虑下次点击之后的效果
-                        query_dict.setlist(self.field,val_list)
-
-                    yield '<a href="?%s" class="%s">%s</a>' % (query_dict.urlencode(), is_active,item.name)
+                        is_active = ""
                 else:
-                    query_dict[self.field] = item[0]
-                    is_active = "active" if str(item[0]) in val_list else ""
-                    yield '<a href="?%s" class="%s">%s</a>' % (query_dict.urlencode(),is_active, item[1])
+                    if val not in val_list:
+                        print(55555,val,type(val),val_list)
+                        val_list.append(val)
+                        is_active = ""
+                    else:
+                        val_list.remove(val)
+                        is_active = "active"
+                    print(1233454, 'val_list',val_list)
+
+                    # 给每个筛选按钮定制url，要考虑下次点击之后的效果
+                    query_dict.setlist(self.field,val_list)
+
+                yield '<a href="?%s" class="%s">%s</a>' % (query_dict.urlencode(), is_active,text)
+
             yield '</div>'
 
     def get_data(self,model_class,query_dict):
@@ -108,18 +102,33 @@ class Option:
             temp_model = field_obj.related_model
             return self.RenderData(temp_model.objects.filter(**self.filter_param),self.field,verbose_name,query_dict,self)
         else:
+            self.is_choice = True
             return  self.RenderData(field_obj.choices,self.field,verbose_name,query_dict,self)
 
+    # 获取字段的每个值的显示名称
+    def get_text(self,field_obj):
+        if self.is_choice:
+            return field_obj[1]
+        else:
+            return str(field_obj)
+
+    # 获取字段每个名称对应的数据库里面的值
+    def get_value(self,field_obj):
+        if self.is_choice:
+            return str(field_obj[0])
+        else:
+            return str(field_obj.pk)
 
 class StarkHandler(object):
-    edit_list_template = None
-    add_list_template = None
-    del_list_template = None
-    show_list_template = None
-    fields_display = []
+    edit_list_template = None  # 编辑页面模板
+    add_list_template = None   # 添加页面模板
+    del_list_template = None   # 删除页面模板
+    show_list_template = None  # 显示页面模板
+    fields_display = []    # 显示的列字段
+    tabs = None     # 标签导航
     has_add_btn = True
     detail_fields_display = '__all__'
-    detail_extra_btn = None
+    detail_extra_btn = None    # 详情页显示的额外按钮
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = []
     search_placeholder = ''
@@ -192,6 +201,7 @@ class StarkHandler(object):
             else:
                 if query_dict.get(option.field):
                     filter_condition[option.field]= query_dict.get(option.field)
+
         return filter_condition
 
     def get_edit_obj(self,request,pk,*args,**kwargs):
@@ -206,12 +216,16 @@ class StarkHandler(object):
     def get_queryset_data(self,request,*args,**kwargs):
         return self.model_class.objects.all()
 
+    def get_tabs(self,request,*args,**kwargs):
+        return self.tabs
+
     # 列表页面
     def show_list(self, request,*args,**kwargs):
 
         fields_display = self.get_fields_display(request,*args,**kwargs)
         header_list = []
         data_list = []
+        tabs = self.get_tabs(request,*args,**kwargs)
 
         ############## 1. 批量删除或者初始化 ###############
 
@@ -271,15 +285,7 @@ class StarkHandler(object):
             option_group_dict = {}
             group_filter = {}
             for option_obj in self.option_group:
-                # 检查筛选项是否有默认值，有且用户没有选，则把默认值定位选项，
-                field_filter_exists = filter_condition.get(option_obj.field, None)
-
-                if field_filter_exists is None and option_obj.default is not None and not user_query:
-                    filter_condition[option_obj.field] = option_obj.default
-                elif field_filter_exists == 'all':
-                    del filter_condition[option_obj.field]
-
-                print(1010101, field_filter_exists, option_obj.field,option_obj.default)
+                # print(1010101, field_filter_exists, option_obj.field,option_obj.default)
                 # 这个字典的键值是可迭代对象，给出页面需要的html标签
                 option_group_dict[option_obj.field] = option_obj.get_data(self.model_class,request.GET)
 

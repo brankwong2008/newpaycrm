@@ -1,7 +1,7 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from django.conf import settings
 from django.utils.safestring import mark_safe
-from stark.service.starksite import StarkHandler
+from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.utils.displays import status_display,  info_display, save_display, follow_date_display,  \
     port_display,order_number_display, sales_display,goods_display, confirm_date_display,\
@@ -9,11 +9,41 @@ from dipay.utils.displays import status_display,  info_display, save_display, fo
 from dipay.models import CurrentNumber, Customer, FollowOrder
 from django.conf.urls import url
 from django.http import JsonResponse
-
+from django.http import QueryDict
 
 
 class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/weekly_plan_list.html'
+
+    # 标签导航显示
+    tab_list = [('发货','排产中','active'),('货好','已齐活','')]
+    status_dict = {item[1]: item[0] for item in FollowOrder.follow_choices}
+    def get_tabs(self,request,*args,**kwargs):
+        tabs = []
+
+        for status in self.tab_list:
+            status_val = str(self.status_dict.get(status[0]))
+            row = {
+                'url': '?status=%s' % status_val,
+                'label': status[1],
+                'active': status[2],
+            }
+            if request.GET:
+                query_dict = request.GET.copy()
+                query_dict._mutable = True
+                if query_dict.get('status'):
+                    if query_dict.get('status')==status_val:
+                        row['active'] = 'active'
+                    else:
+                        row['active'] = ''
+                query_dict["status"] = status_val
+                row['url'] = '?%s' % query_dict.urlencode()
+
+            tabs.append(row)
+        return tabs
+
+    # 按状态筛选
+    option_group = [Option(field='status'),]
 
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     # popup_list = ['customer',]
@@ -68,8 +98,13 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
             return []
 
     def get_queryset_data(self, request, *args, **kwargs):
-
-        return self.model_class.objects.filter(status=1)
+        # status 1 排产  5 货好
+        if not request.GET.get('status'):
+            for item in self.tab_list:
+                if item[2] == 'active':
+                    return self.model_class.objects.filter(status=self.status_dict.get(item[0]))
+        else:
+            return self.model_class.objects.filter(status__in=[1,5])
 
     def get_per_page(self):
         return 20
