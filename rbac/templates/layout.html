@@ -17,14 +17,9 @@
     <script src="{% static "plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js" %}"></script>
     <link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">
 
-    <style>
-        i {
-            margin-right: 7px;
-
-        }
+     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
 
 
-    </style>
 
     {% block css %}
 
@@ -34,7 +29,7 @@
 <body>
 
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -44,14 +39,26 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-ul">
+                {% if request.current_url_name == 'stark:dipay_inwardpay_list' %}
+                     <li><a href="{% url 'stark:dipay_inwardpay_list' %}" class="active">收款</a></li>
+                {% else %}
+                     <li><a href="{% url 'stark:dipay_inwardpay_list' %}">收款</a></li>
+                {% endif %}
 
-                <li><a href="{% url 'stark:dipay_inwardpay_list' %}">收款</a></li>
-                <li><a href="{% url 'stark:dipay_followorder_list' %}">跟单</a></li>
-                <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
-                {#                <li><a href="/payments/">提交作业</a></li>#}
-                {#                <li><a href="/customers/">销售管理</a></li>#}
+            {% if request.current_url_name == 'stark:dipay_followorder_list' %}
+                     <li><a href="{% url 'stark:dipay_followorder_list' %}" class="active">跟单</a></li>
+                {% else %}
+                      <li><a href="{% url 'stark:dipay_followorder_list' %}">跟单</a></li>
+                {% endif %}
+
+             {% if request.current_url_name == 'stark:dipay_followorder_list_plan' %}
+                     <li><a href="{% url 'stark:dipay_followorder_list_plan' %}" class="active">排产</a></li>
+                {% else %}
+                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
+                {% endif %}
 
             </ul>
+
 
 
             <ul class="nav navbar-nav navbar-right">
@@ -107,7 +114,7 @@
 
         <div class="col-md-10">
             {#        路径导航#}
-            <div>
+            <div class="my_navilist">
                 {% for item in request.navi_list %}
                     {% if forloop.first %}
                         <a href="{{ item.url }}" class="active">{{ item.title }}</a>

@@ -84,6 +84,11 @@
        .status-display.status-3 {
         color:blue;
   }
+
+  /*货好*/
+       .status-display.status-5 {
+        color:green;
+  }
        /*发票号*/
        .invoice-number-display {
            font-weight: bolder;
@@ -92,6 +97,13 @@
        .invoice-amount-display {
 
        }
+
+       /*标签导航active*/
+        .nav-tabs li a {
+            font-weight: bolder;
+            font-size: larger;
+        }
+
 
         /*标签导航active*/
         .nav-tabs li.active a {

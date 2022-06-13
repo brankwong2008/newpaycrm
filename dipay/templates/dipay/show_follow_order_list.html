@@ -37,7 +37,7 @@
 
             {% if search_list %}
 
-                <form action="" method="get" class="form-group pull-right">
+                <form action="" method="get" class="form-group pull-left">
 
                     <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
                     <button type="submit"><i class="fa fa-search"></i></button>
@@ -50,9 +50,9 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
-                    <div class="pull-left">
+                    <div class="pull-right">
 
-                        <select name="handle_type">
+                        <select name="handle_type" >
                             <option value="">请选择处理方式</option>
                             {% for func,text in batch_process_dict.items %}
                                 <option value="{{ func }}">{{ text }}</option>

@@ -3,7 +3,7 @@ from stark.service.starksite import StarkHandler
 from stark.utils.display import PermissionHanlder
 from django.conf.urls import url
 from django.shortcuts import render,HttpResponse
-from openpyxl import load_workbook, workbook
+from openpyxl import load_workbook
 
 class CustomerHandler(PermissionHanlder,StarkHandler):
 
@@ -12,7 +12,7 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
     def get_per_page(self):
         return 10
 
-    search_list = ['title__contains','owner__username__contains']
+    search_list = ['title__icontains','owner__username__icontains']
 
     def get_queryset_data(self,request,*args,**kwargs):
         if request.user.department == 8:
@@ -23,7 +23,6 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
         return [
             url("^upload/$", self.wrapper(self.upload_customer), name=self.get_url_name('upload_customer')),
         ]
-
 
 
     def upload_customer(self,request, *args, **kwargs):

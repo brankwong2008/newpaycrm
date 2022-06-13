@@ -32,11 +32,10 @@ class RbacMiddleWare(MiddlewareMixin):
             return HttpResponse(link)
 
         # 确保自动权限也支持导航栏，所以这句话要提前
-        request.navi_list = [{"title": "> 首页", "url": '/index/'}, ]
+        request.navi_list = [{"title": "首页", "url": '/index/'}, ]
 
         # 2.  如果访问的是要登录但无需权限的名单内的，登录后放行
         for reg in settings.NO_PERMISSION_LIST:
-            print(8777, reg,current_url)
             if re.match(reg, current_url):
                 return
 
@@ -54,9 +53,10 @@ class RbacMiddleWare(MiddlewareMixin):
 
         # 判断用户的访问路径是否在权限里面
         if permission_dict:
-            for item in permission_dict.values():
+            for key,item in permission_dict.items():
                 reg = "^{}$".format(item["url"])
                 if re.match(reg, current_url):
+                    request.current_url_name = key
                     request.menu = request.session.get(settings.MENU_LIST_KEY)
                     # 设置导航条的nav_list, 如果pid存在，则是三级菜单，显示一级和二级菜单
                     if item['pid']:

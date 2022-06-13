@@ -1,4 +1,5 @@
 {% extends 'layout.html' %}
+{% load static %}
 
 {% block css %}
     <style>
@@ -61,23 +62,7 @@
 
     </div>
 
-    <script>
-
-        function showAPP(tag) {
-            var href = tag.href;
-            var name = '登录'
-            var win = window.open(href, name, 'left=500,top=300,width=400,height=300');
-            win.focus();
-            return false
-
-        }
-
-        function closePopup(win, newID, newRepr, id) {
-            $(id).append('<option value=' + newID + ' selected >' + newRepr + '</option>')
-            win.close();
-        }
-
-
-    </script>
+      <!-- js代码：处理外键字段快速新增一条记录 -->
+    <script src="{% static 'js/popup_create.js' %}"></script>
 
 {% endblock %}
