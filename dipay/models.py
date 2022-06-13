@@ -68,6 +68,7 @@ class ApplyOrder(models.Model):
     term_choices = [(0, 'FOB'),
                     (1, 'CFR'),
                     (2, 'CIF'),
+                    (3, 'EXW'),
                     ]
     term = models.SmallIntegerField(choices=term_choices, verbose_name='贸易条款',default=0)
 
