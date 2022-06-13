@@ -440,123 +440,75 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         pay_list的数据格式
           {  date:2022/5/6  got_amount:23000.00 currency_id 1  related_order: [{'order_number':J3155, amount:$2500]     }
         """
-
-        field_list = [(0, 'create_date'), (1, 'order_number'), (2, 'customer'), (5, 'got_amount'), (6, 'origin_pay')]
+        # 准备基本信息
+        field_list = [(0, 'create_date'), (1, 'order_number'), (2, 'payer'), (5, 'got_amount'), (6, 'origin_pay')]
         bank_list = ['稠州','东亚','广发','花旗','连连']
+        banks = {}
+        for item in bank_list:
+            bank_obj = Bank.objects.filter(title__icontains=item).first()
+            if bank_obj:
+                banks[item]= bank_obj.pk
+        currencies = {}
+        for item in ['美元','加元','人民币']:
+            currency_obj = Currency.objects.filter(title__contains=item).first()
+            if currency_obj:
+                currencies[item]=currency_obj.pk
         payment_list = []
-        count = 0
+        count = 0   # 分配记录数
+        count1 = 0  # 收款记录数
+        errors = []   # 错误列表
+        lastpay_obj = None
 
-        # 第一步清理并读入数据
+        # 第一步清理并读入数据和处理数据
         for i in range(2,ws.max_row+1):
             row=ws[i]
-            row_pay_dict = {}
-            row_order_dict = {}
-            for n, field in field_list:
-                # 避免读入空行
-                if not row[0].value:
-                    break
-                if n == 1:
-                    order_number = re.search(Regex.order_number, row[n].value)
-                    if order_number:
-                        row_pay_dict[field] = order_number.group()
-                    else:
-                        row_pay_dict['error'] = i
-                        row_pay_dict[field] = False
-                elif n == 2:
-                    row_pay_dict['bank']= '广发'
-                    for each in bank_list:
-                        if each in row[n].value:
-                            row_pay_dict['bank']= each
-                            break
-                    if '加拿大' in row[n].value:
-                        currency = '加元'
-                    elif '人民币' in row[n].value:
-                        currency  = '人民币'
-                    else:
-                        currency  = '美元'
-                    row_pay_dict['currency'] = currency
-                    # 提取客户公司名
-                    customer = re.findall(Regex.customer, row[n].value)
-                    if customer:
-                        customer = customer[0]
-                    else:
-                        customer = '--'
-                    row_pay_dict['customer'] = customer
-
-                elif n == 6 :
-                    if row[n].value:
-                        payment = re.search(Regex.amount,row[n].value)
-                        payment = payment.group() if payment else 0
-                    else:
-                        payment = 0
-                    row_pay_dict[field] = payment
-                else:
-                    row_pay_dict['remark'] = '%s %s %s' %( row[1].value , row[2].value , row[6].value)
-
+            row_pay_dict = self.read_pay_record(row,field_list,bank_list)
+            if not row_pay_dict:
+                break
+            if row_pay_dict.get('error'):
+                continue
             print(row_pay_dict)
-            payment_list.append(row_pay_dict)
+
+            # 第二步 创建收款记录
+
+            # 1. 先判断是否有必要创建新的记录，origin_pay有值，且与上一个付款记录的收款值不同
+            new_payment = False
+            if not row_pay_dict.get('origin_pay'):
+                pay_obj = PayObj(float(row_pay_dict.get('got_amount')))
+                # 创建关联，分配款项
+                print(row_pay_dict.get('order_number'),'分配金额:',float(row_pay_dict.get('got_amount')))
+                pay_obj.torelate_amount = 0
+                lastpay_obj = pay_obj
+            else:
+                orgin_pay = float(row_pay_dict.get('origin_pay'))
+                if not lastpay_obj:
+                    new_payment = True
+                elif orgin_pay != lastpay_obj.got_amount:
+                    new_payment = True
+                # 2. 如果收款值相同但是上一个收款已经分配完了，也是一笔新的收款
+                elif lastpay_obj.torelate_amount - float(row_pay_dict.get('got_amount')) < 0  :
+                    new_payment = True
+
+                if new_payment:
+                    pay_obj = PayObj(orgin_pay)
+                    # 创建关联，分配款项
+                    pay_obj.torelate_amount -= float(row_pay_dict.get('got_amount'))
+                    print(row_pay_dict.get('order_number'), '分配金额:', float(row_pay_dict.get('got_amount')))
+                    lastpay_obj = pay_obj
+                else:
+                    # 直接分配金额
+                    lastpay_obj.torelate_amount -= float(row_pay_dict.get('got_amount'))
+
+
+
+            # 第三步 创建收款分配记录
+
             count += 1
 
-        # 第二步 将数据存入数据库
-        order_list = []
-        paystack = []
-        errors_list = []
-        # for item in payment_list:
-        #     # 检查该行是否有错误
-        #     if item.get('error'):
-        #         errors_list.append(item.get('error'))
-        #         continue
-        #     # 获取银行和货币对象
-        #     currency = Currency.objects.filter(title__icontains=item['currency']).first()
-        #     bank = Bank.objects.filter(title__icontains=item['bank']).first()
-        #
-        #     if not bank:
-        #         bank = Bank.objects.get(pk=1)
-        #     # 检查订单号是否存在
-        #     order_obj = ApplyOrder.objects.filter(order_number__icontains=item['order_number']).first()
-        #     # 如果订单不存在，创建他
-        #     if not order_obj:
-        #         order_type, sequence, sub_sequence = self.parse_order_number(item['order_number'])
-        #         neworder_obj = ApplyOrder(order_type=order_type, sequence=sequence, sub_sequence=sub_sequence,
-        #                                   order_number=item['order_number'], amount=10000,
-        #                                   status=2, currency=currency)
-        #         neworder_obj.save()
-        #         order_obj = neworder_obj
-        #
-        #     if not item['origin_pay']:
-        #         # 直接保存收款记录, 特别注意payer不能为空
-        #         inwardpay_obj = Inwardpay(create_date=item['create_date'],got_amount=item['got_amount'],
-        #                                   amount= item['got_amount'], currency=currency,bank=bank)
-        #         inwardpay_obj.save()
-        #         # 并关联订单
-        #         Pay2Orders.objects.create(relate_date=item['create_date'],payment=inwardpay_obj, order=order_obj,
-        #                                   amount = item['got_amount'] )
-        #         paystack = []
-        #     # 存在款项跨订单分配的情况
-        #     else:
-        #         # 判断分配订单的情况，用堆栈处理
-        #         last_inwardpay = 999999
-        #         if paystack:
-        #             last_inwardpay_obj = paystack.pop()
-        #             last_inwardpay = last_inwardpay_obj.got_amount
-        #
-        #         # 这里面分两种情况，是否同一笔款
-        #         if last_inwardpay == float(item['origin_pay']):
-        #             Pay2Orders.objects.create(relate_date=item['create_date'], payment=last_inwardpay_obj,
-        #                                       order=order_obj,
-        #                                       amount=item['got_amount'])
-        #             paystack.append(last_inwardpay_obj)
-        #         else:
-        #             got_amount = item['origin_pay']
-        #             inwardpay_obj = Inwardpay(create_date=item['create_date'], got_amount=got_amount,
-        #                                       amount=got_amount,currency=currency, bank=bank)
-        #             inwardpay_obj.save()
-        #             Pay2Orders.objects.create( payment=inwardpay_obj, order=order_obj,
-        #                                       amount=item['got_amount'])
-        #             #把该笔款存入堆栈，等待后续处理
-        #             paystack.append(inwardpay_obj)
 
-        return count, errors_list
+
+
+        return count, errors
 
         # 上传之订单号预处理
 
@@ -569,6 +521,52 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         sub_sequence = '0' if len(order_split) < 2 else order_split[-1]
 
         return order_type, sequence, sub_sequence
+
+    def read_pay_record(self,row,field_list,bank_list):
+        row_pay_dict = {}
+        for n, field in field_list:
+            # 避免读入空行
+            if not row[0].value or not row[1].value:
+                break
+            # 默认的处理
+            row_pay_dict[field]=row[n].value
+            # 发票号, 原内容格式： 收汇 Jxxxx-2  印尼James
+            if n == 1:
+                order_number = re.search(Regex.pay_order_number, row[n].value)
+                if order_number:
+                    row_pay_dict[field] = order_number.group(1)  # group() 全部匹配到的内容，group(1) 提取的内容
+                else:
+                    row_pay_dict['error'] = '不是收汇或发票号未找到'
+                    break
+            # 银行和货币
+            elif n == 2:
+                row_pay_dict['bank'] = '广发'
+                row_pay_dict['currency']= '美元'
+                for each in bank_list:
+                    if each in row[n].value:
+                        row_pay_dict['bank'] = each
+                        break
+                if '加拿大' in row[n].value:
+                    row_pay_dict['currency'] = '加元'
+                elif '人民币' in row[n].value:
+                    row_pay_dict['currency'] = '人民币'
+
+                # 提取付款公司名
+                payer = re.findall(Regex.payer, row[n].value)
+                if payer:
+                    row_pay_dict[field] = ' '.join(payer[:2])
+
+            # 需分配金额  原内容格式： "从 USD15866"
+            elif n == 6:
+                payment = 0
+                # 这个地方加判断，因为origin_pay可能是空或者数值
+                if isinstance(row[n].value,str) and re.match(Regex.pay_from_payment_match,row[n].value):
+                    payment_search = re.search(Regex.pay_from_payment, row[n].value)
+                    payment = payment_search.group(1) if payment_search else 0
+                row_pay_dict[field] = payment
+            else:
+                row_pay_dict['remark'] = '%s %s %s' % (row[1].value, row[2].value, row[6].value)
+        return row_pay_dict
 
     # 下载上传用的模板文件
     def download(self, request, file_name, *args, **kwargs):
@@ -670,5 +668,17 @@ class Regex:
     order_number = r"(^[J,M,X]\d+-?\d$)"
     # 提取金额
     amount = r'\d+[.]?\d*'
-    # 提取公司名
-    customer = r'[a-zA-Z]{1,}'
+    # 提取付款公司名
+    payer = r'[a-zA-Z]{1,}'
+    # 从收款表中提取订单号，需要考虑带有收汇两个字
+    pay_order_number = r"收汇\s*([J,M,X]\d+-?\d)"
+    # 从收款表的最后一行提取金额，
+    pay_from_payment_match = r".*从.*"
+    pay_from_payment = r"(\d+\.?\d*)"
+
+class PayObj:
+    got_amount = 0
+    torelate_amount = 0
+    def __init__(self,got_amount):
+        self.got_amount = got_amount
+        self.torelate_amount = got_amount
