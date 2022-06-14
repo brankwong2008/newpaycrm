@@ -141,6 +141,10 @@ class StarkHandler(object):
         self.prev = prev
         self.namespace = site.namespace
 
+    # 用于控制对某一列数据的编辑权限
+    def get_editable(self,field):
+        # 返回true 说明可编辑
+        return True
 
     def get_fields_display(self,request,*args,**kwargs):
         val = []

@@ -68,6 +68,7 @@ class ManualAddApplyOrderModelForm(StarkForm):
 
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+            'customer': forms.Select(attrs={'required': True}),
             'create_date': forms.DateInput(attrs={'type': 'date'}),
             'confirm_date': forms.DateInput(attrs={'type': 'date'}),
 
