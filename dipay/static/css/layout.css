@@ -7,7 +7,7 @@ i {
 
 /* 导航栏的active字体 */
 .navbar li a.active {
-    color: darkblue;
+    color: darkorange;
     font-weight: bolder;
 }
 

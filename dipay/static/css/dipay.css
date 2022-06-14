@@ -111,3 +111,48 @@
             font-weight: bolder;
             font-size: larger;
         }
+
+        /*批量操作的select标签样式*/
+         select.handle-select, button.handle-btn {
+        height: 26px;
+        vertical-align: middle;
+    }
+          /*批量操作的select标签后面的执行按钮样式*/
+    button.handle-btn {
+        padding: 2px 4px;
+        line-height: 20px;
+    }
+
+
+      tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+
+        .search-group .row {
+            margin-left: 5px;
+        }
+
+        .search-group .row a {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid lightgrey;
+            font-size: 13px;
+        }
+
+        .search-group .row a.active {
+            background-color: paleturquoise;
+        }
+
+        .search-group .others {
+            display: inline-block;
+        }
+

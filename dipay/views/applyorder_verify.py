@@ -8,6 +8,7 @@ from datetime import datetime
 
 
 class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
+    has_add_btn =  False
     # 加入一个组合筛选框
     option_group = [
         Option(field='status'),

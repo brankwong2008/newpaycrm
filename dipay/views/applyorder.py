@@ -375,6 +375,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     if followorder_obj:
                         for field in ['ETA', 'ETD', 'load_info', 'book_info', 'status']:
                             if d.get(field):
+                                # 如果表里面的statu落后于CRM中则不更新
                                 if field == 'status' and d.get(field) < followorder_obj.status:
                                     continue
                                 setattr(followorder_obj, field, d[field])

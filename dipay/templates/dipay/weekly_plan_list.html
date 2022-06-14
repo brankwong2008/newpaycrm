@@ -11,9 +11,6 @@
     <div class="luffy-container">
 
         <div class="col-md-12">
-
-
-
                     <!-- 组合筛选功能区 -->
                     {% if option_group_dict %}
                         <div class="panel panel-default hidden">
@@ -44,7 +41,7 @@
 
                             <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
                             <button type="submit"><i class="fa fa-search"></i></button>
-
+                            <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"></i></button>
 
                         </form>
                     {% endif %}
@@ -125,6 +122,8 @@
     </div>
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
+
+
 
 
 {% endblock %}

@@ -102,9 +102,9 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
         if not request.GET.get('status'):
             for item in self.tab_list:
                 if item[2] == 'active':
-                    return self.model_class.objects.filter(status=self.status_dict.get(item[0]))
+                    return self.model_class.objects.filter(status=self.status_dict.get(item[0])).exclude(order__order_type=2)
         else:
-            return self.model_class.objects.filter(status__in=[1,5])
+            return self.model_class.objects.filter(status__in=[1,5]).exclude(order__order_type=2)
 
     def get_per_page(self):
         return 20
