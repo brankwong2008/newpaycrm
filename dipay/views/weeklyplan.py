@@ -77,6 +77,22 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
             else:
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
+    role_edit_dict = {
+        '外销员':['sales_remark',],
+        '外贸部经理':"__all__",
+        '外贸跟单':"__all__",
+        '工厂跟单':['produce_info',],
+    }
+    def get_editable(self,field):
+        user = self.request.user
+        for role in user.roles.all():
+            editable_list = self.role_edit_dict.get(role.title)
+            if editable_list == '__all__':
+                return True
+            if field in editable_list:
+                print(field, '在可编辑列表中',role)
+                return True
+
 
     # 跟单列表显示的字段内容
     fields_display = [order_number_display, customer_display, sales_display, status_display,
@@ -84,7 +100,8 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
                       port_display('discharge_port'), confirm_date_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
-                      info_display('load_info'), info_display('book_info'), info_display('produce_info'),
+                      info_display('load_info'), info_display('book_info'), info_display('produce_info',title='生产'),
+                      info_display('sales_remark',title='业务'),
                       ]
 
     # 自定义按钮的权限控制

@@ -138,7 +138,7 @@ def port_display(field, title=None):
     return inner
 
 # 订舱，装箱，生产信息
-def info_display(field, title=None, time_format="%Y-%m-%d"):
+def info_display(field, title=None,):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -159,9 +159,14 @@ def info_display(field, title=None, time_format="%Y-%m-%d"):
             if isinstance(field_val, models.DateTimeField):
                 pass
 
-            return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
+            # 判断用户是否有此字段的编辑权限
+            is_editable = handler_obj.get_editable(field)
+            if is_editable:
+                return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
                              "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
-            # return info_field
+            else:
+                return mark_safe("<span class='text-display' "
+                                 "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
 
     return inner
 
@@ -187,8 +192,13 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
                     year = datetime_obj.year
                 except:
                     create_date = '日期格式错误'
-            return mark_safe("<span class='date-display' year='%s' onclick='showInputBox(this)' "
+            is_editable = handler_obj.get_editable(field)
+            if is_editable:
+                return mark_safe("<span class='date-display' year='%s' onclick='showInputBox(this)' "
                              "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
+            else:
+                return mark_safe("<span class='date-display' year='%s' "
+                                 "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
 
     return inner
 
