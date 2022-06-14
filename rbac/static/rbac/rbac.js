@@ -19,3 +19,9 @@
 
     });
 })(jQuery);
+
+// 清楚搜索框的内容的js
+function clearSearch() {
+        $("input[name='q']").val('');
+
+    }

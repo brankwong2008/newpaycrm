@@ -1,0 +1,18 @@
+
+/* 图标大小 */
+i {
+    margin-right: 7px;
+
+}
+
+/* 导航栏的active字体 */
+.navbar li a.active {
+    color: darkorange;
+    font-weight: bolder;
+}
+
+/* 路径导航 */
+.my_navilist {
+    margin-left: 17px;
+    font-size: 10px;
+}

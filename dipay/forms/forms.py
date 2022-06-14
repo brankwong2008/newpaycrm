@@ -23,20 +23,11 @@ class AddApplyOrderModelForm(StarkForm):
         fields = ['order_type', 'customer', 'goods', 'term', 'currency', 'amount', 'remark']
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+            'customer': forms.Select(attrs={'required':True}),
             'create_date': forms.DateInput(attrs={'type': 'date'}),
-            # 'customer': forms.Select(attrs={'data-live-search': 'true',
-            #                                 'style': "display: none;",
-            #                                 })
+
         }
 
-    # def __init__(self, *args, **kwargs):
-    #     super(AddApplyOrderModelForm, self).__init__(*args, **kwargs)
-    #     for name, field in self.fields.items():
-    #         if name == 'customer':
-    #             print('name', name)
-    #             field.widget.attrs["class"] = "selectpicker bla bli form-control"
-    #         else:
-    #             field.widget.attrs["class"] = "form-control"
 
 
 class EditApplyOrderModelForm(StarkForm):

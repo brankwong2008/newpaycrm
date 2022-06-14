@@ -317,6 +317,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 row_dict[field] = row[n].value
                 if n==1:
                     row_dict[field] = salespersons.get(row[n].value)
+                # 读取状态
                 elif n==3:
                     row_dict[field] = status_dict.get(row[n].value)
                 elif n==4:
@@ -365,12 +366,18 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     for field in ['amount', 'confirm_date', 'customer', 'goods','salesperson']:
                         if d.get(field):
                             setattr(order_obj, field, d[field])
+                        if field=='customer' and not d.get(field):
+                            e = '客户名没有添加到系统'
+                            errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
 
                     # 如果订单存在，且跟单记录存在，则更新ETD, ETA, load_info, book_info
                     followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
                     if followorder_obj:
                         for field in ['ETA', 'ETD', 'load_info', 'book_info', 'status']:
                             if d.get(field):
+                                # 如果表里面的statu落后于CRM中则不更新
+                                if field == 'status' and d.get(field) < followorder_obj.status:
+                                    continue
                                 setattr(followorder_obj, field, d[field])
 
                     # 如果订单不存在，则创建跟单记录

@@ -1,45 +1,9 @@
 {% extends 'layout.html' %}
+{% load static %}
 
 {% block css %}
-    <style>
-        tr.active {
-            border-left: 3px solid #fdc00f;
-        }
-
-        table {
-            font-size: 12px;
-        }
-
-        .panel-body {
-            font-size: 12px;
-        }
-
-        .search-group .row {
-            margin-left: 5px;
-        }
-
-        .search-group .row a {
-            display: inline-block;
-            padding: 5px;
-            margin: 5px;
-            border: 1px solid lightgrey;
-            font-size: 13px;
-        }
-
-        .search-group .row a.active {
-            background-color: paleturquoise;
-        }
-
-        .search-group .others{
-            display: inline-block;
-        }
-
-
-    </style>
-
+      <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
 {% endblock %}
-
-
 
 
 {% block content %}
@@ -56,13 +20,13 @@
                     <div class="panel-body">
                         {% for field, row in option_group_dict.items %}
 
-                                <div class="search-group">
-                                    <div class="row">
-                                        {% for each in row %}
-                                            {{ each|safe }}
-                                        {% endfor %}
-                                    </div>
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
                                 </div>
+                            </div>
 
                         {% endfor %}
                     </div>
@@ -75,8 +39,10 @@
 
                 <form action="" method="get" class="form-group pull-left">
 
-                    <input name="q" type="text" value="{{user_query}}" placeholder="{{ search_placeholder }}">
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
                     <button type="submit"><i class="fa fa-search"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"></i></button>
+
 
                 </form>
             {% endif %}
@@ -86,14 +52,16 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
+                    <div class="pull-right">
 
-                    <select name="handle_type">
+                    <select name="handle_type" class="handle-select">
                         <option value="">请选择处理方式</option>
                         {% for func,text in batch_process_dict.items %}
                             <option value="{{ func }}">{{ text }}</option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-primary">执行</button>
+                    <button type="submit" class="btn btn-primary handle-btn" ><i class="fa fa-send"></i></button>
+                    </div>
 
                 {% endif %}
 

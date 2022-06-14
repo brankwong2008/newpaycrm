@@ -12,6 +12,7 @@ from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay
 from django.db import transaction
 
 class InwardPayHandler(PermissionHanlder,StarkHandler):
+    has_add_btn =  False
     def get_model_form(self,type=None):
         if type == 'add':
             return AddInwardPayModelForm
