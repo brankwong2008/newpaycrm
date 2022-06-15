@@ -247,7 +247,7 @@ class PermissionHanlder:
         get_add_url_name = '%s:%s' % (self.namespace, self.get_add_url_name)
         if get_add_url_name in permission_dict and self.has_add_btn:
             add_url = self.reverse_add_url(*args, **kwargs)
-            return "<a href='%s' class='btn btn-primary'>添加</a>" % (add_url)
+            return "<a href='%s' class='btn btn-primary add-record-btn'>添加</a>" % (add_url)
         else:
             return None
 

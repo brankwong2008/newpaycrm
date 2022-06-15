@@ -162,7 +162,7 @@ class StarkHandler(object):
     def add_btn_display(self,request,*args,**kwargs):
         if self.has_add_btn:
             add_url = self.reverse_add_url(*args,**kwargs)
-            return "<a href='%s' class='btn btn-primary'>添加</a>" % (add_url)
+            return "<a href='%s' class='btn btn-primary add-record'> 添加 </a>" % (add_url)
         else:
             return None
 
@@ -217,7 +217,7 @@ class StarkHandler(object):
     def save_form(self,form,request,is_update=False,*args, **kwargs):
         form.save()
 
-    def get_queryset_data(self,request,*args,**kwargs):
+    def get_queryset_data(self,request,is_search=None,*args,**kwargs):
         return self.model_class.objects.all()
 
     def get_tabs(self,request,*args,**kwargs):
@@ -277,7 +277,8 @@ class StarkHandler(object):
             for item in search_list:
                 # 使用ORM的Q函数来构造OR条件的查询
                 conn.children.append((item, user_query.strip()))
-            searched_queryset = self.model_class.objects.filter(conn)
+            # 搜索专门指定数据集，比显示的略宽一些 
+            searched_queryset = self.get_queryset_data(request,is_search=True).filter(conn)
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
         filter_condition = self.get_url_filter()
