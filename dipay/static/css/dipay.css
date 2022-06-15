@@ -1,158 +1,173 @@
 
-  tr.active {
-            border-left: 3px solid #fdc00f;
-        }
+tr.active {
+    border-left: 3px solid #fdc00f;
+}
 
-        table {
-            font-size: 12px;
-        }
+table {
+    font-size: 12px;
+}
 
-        .panel-body {
-            font-size: 12px;
-        }
+.panel-body {
+    font-size: 12px;
+}
 
-        .search-group .row {
-            margin-left: 5px;
-        }
+.search-group .row {
+    margin-left: 5px;
+}
 
-        .search-group .row a {
-            display: inline-block;
-            padding: 5px;
-            margin: 5px;
-            border: 1px solid lightgrey;
-            font-size: 13px;
-        }
+.search-group .row a {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid lightgrey;
+    font-size: 13px;
+}
 
-        .search-group .row a.active {
-            background-color: paleturquoise;
-        }
+.search-group .row a.active {
+    background-color: paleturquoise;
+}
 
-        .search-group .others {
-            display: inline-block;
-        }
+.search-group .others {
+    display: inline-block;
+}
 
-        .sequence-input {
-            width: 50px;
+.sequence-input {
+    width: 50px;
 
-        }
+}
 
-        .save-sequence {
-            cursor: pointer;
-            color: dodgerblue;
-        }
+.save-sequence {
+    cursor: pointer;
+    color: dodgerblue;
+}
 
-        textarea[id^="book_info"], textarea[id^="load_info"], textarea[id^="produce_info"] {
-            width: 250px;
-            height: 50px;
-        }
+textarea[id^="book_info"], textarea[id^="load_info"], textarea[id^="produce_info"] {
+    width: 250px;
+    height: 50px;
+}
 
-         textarea[id^="load_info"]{
-            width: 350px;
-            height: 80px;
-        }
+textarea[id^="load_info"] {
+    width: 350px;
+    height: 80px;
+}
 
-        textarea[id^="produce_sequence"] {
-            width: 50px;
-            height: 20px;
-        }
-        textarea[id^="amount"] {
-            width: 87px;
-            height: 36px;
-        }
+textarea[id^="produce_sequence"] {
+    width: 50px;
+    height: 20px;
+}
 
-    .text-display, .date-display, .status-display, .invoice-amount-display {
-        cursor: pointer;
+textarea[id^="amount"] {
+    width: 87px;
+    height: 36px;
+}
 
-    }
+.text-display, .date-display, .status-display, .invoice-amount-display {
+    cursor: pointer;
 
-    .fa-check {
-        color:green;
-        font-size: 20px;
-    }
+}
 
-    /*排产*/
-    .status-display.status-1 {
-        color:red;
+.fa-check {
+    color: green;
+    font-size: 20px;
+}
 
-  }
-      /*单据*/
-    .status-display.status-2 {
-        color:orange;
+/*排产*/
+.status-display.status-1 {
+    color: red;
 
-  }
-    /*等款*/
-       .status-display.status-3 {
-        color:blue;
-  }
+}
 
-  /*货好*/
-       .status-display.status-5 {
-        color:green;
-  }
-       /*发票号*/
-       .invoice-number-display {
-           font-weight: bolder;
-       }
+/*单据*/
+.status-display.status-2 {
+    color: orange;
 
-       .invoice-amount-display {
+}
 
-       }
+/*等款*/
+.status-display.status-3 {
+    color: blue;
+}
 
-       /*标签导航active*/
-        .nav-tabs li a {
-            font-weight: bolder;
-            font-size: larger;
-        }
+/*货好*/
+.status-display.status-5 {
+    color: green;
+}
 
+/*发票号*/
+.invoice-number-display {
+    font-weight: bolder;
+}
 
-        /*标签导航active*/
-        .nav-tabs li.active a {
-            color: darkorange;
-            font-weight: bolder;
-            font-size: larger;
-        }
+.invoice-amount-display {
 
-        /*批量操作的select标签样式*/
-         select.handle-select, button.handle-btn {
-        height: 26px;
-        vertical-align: middle;
-    }
-          /*批量操作的select标签后面的执行按钮样式*/
-    button.handle-btn {
-        padding: 2px 4px;
-        line-height: 20px;
-    }
+}
+
+/*标签导航active*/
+.nav-tabs li a {
+    font-weight: bolder;
+    font-size: larger;
+}
 
 
-      tr.active {
-            border-left: 3px solid #fdc00f;
-        }
+/*标签导航active*/
+.nav-tabs li.active a {
+    color: darkorange;
+    font-weight: bolder;
+    font-size: larger;
+}
 
-        table {
-            font-size: 12px;
-        }
+/*批量操作的select标签样式*/
+select.handle-select, button.handle-btn {
+    height: 26px;
+    vertical-align: middle;
+}
 
-        .panel-body {
-            font-size: 12px;
-        }
+/*批量操作的select标签后面的执行按钮样式*/
+button.handle-btn {
+    padding: 2px 4px;
+    line-height: 20px;
+}
 
-        .search-group .row {
-            margin-left: 5px;
-        }
+/* 列表页的添加按钮 */
+a.add-record-btn {
 
-        .search-group .row a {
-            display: inline-block;
-            padding: 5px;
-            margin: 5px;
-            border: 1px solid lightgrey;
-            font-size: 13px;
-        }
+    vertical-align: middle;
+     height: 28px;
+    margin: 0 20px;
+    padding: 2px 3px;
+    line-height: 20px;
+}
 
-        .search-group .row a.active {
-            background-color: paleturquoise;
-        }
 
-        .search-group .others {
-            display: inline-block;
-        }
+tr.active {
+    border-left: 3px solid #fdc00f;
+}
+
+table {
+    font-size: 12px;
+}
+
+.panel-body {
+    font-size: 12px;
+}
+
+.search-group .row {
+    margin-left: 5px;
+}
+
+.search-group .row a {
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid lightgrey;
+    font-size: 13px;
+}
+
+.search-group .row a.active {
+    background-color: paleturquoise;
+}
+
+.search-group .others {
+    display: inline-block;
+}
 

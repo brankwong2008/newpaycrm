@@ -160,8 +160,18 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
                       amount_display,
-                      save_display,
                       ]
+
+    # 自定义按钮的权限控制
+    def get_extra_fields_display(self, request, *args, **kwargs):
+        permission_dict = request.session.get(settings.PERMISSION_KEY)
+        save_url_name = '%s:%s' % (self.namespace, self.get_url_name('save'))
+
+        if save_url_name in permission_dict:
+            return [save_display, ]
+        else:
+            return []
+
 
     def get_queryset_data(self, request, *args, **kwargs):
         if request.user.username == 'brank':

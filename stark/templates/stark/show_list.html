@@ -3,6 +3,13 @@
 
 {% block css %}
       <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+
+
+
+    </style>
+
 {% endblock %}
 
 
@@ -66,9 +73,13 @@
                 {% endif %}
 
                 <!-- 添加按钮 -->
-                {% if add_btn %}
+                <div class="pull-left">
+                     {% if add_btn %}
                     {{ add_btn|safe }}
                 {% endif %}
+
+                </div>
+
 
                 <div>{{ msg }}</div>
 

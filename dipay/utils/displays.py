@@ -2,7 +2,8 @@ from django.utils.safestring import mark_safe
 from django.db import models
 import json
 
-def status_display(handler, obj=None, is_header=False, *args, **kwargs):
+
+def status_display(handler_obj, obj=None, is_header=False, *args, **kwargs):
     """
            显示 followorder, weeklyplan的状态
            :param obj: 该行记录对象
@@ -12,24 +13,34 @@ def status_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
         return '状态'
     else:
-        status_choices = handler.model_class.follow_choices
+        status_choices = handler_obj.model_class.follow_choices
         status_choices = json.dumps(status_choices)
         # class中加入obj.status, 便于css来操作颜色
-        return mark_safe("<span class='status-display status-%s' id='%s-id-%s' choice='%s' onclick='showInputBox(this)' > %s </span>"
-                         % (obj.status, 'status',obj.pk, status_choices, obj.get_status_display()) )
+
+        # 判断用户是否有此字段的编辑权限
+        is_editable = handler_obj.get_editable('status')
+        if is_editable:
+            return mark_safe(
+                "<span class='status-display status-%s' id='%s-id-%s' choice='%s' onclick='showInputBox(this)' > %s </span>"
+                % (obj.status, 'status', obj.pk, status_choices, obj.get_status_display()))
+        else:
+            return mark_safe(
+                "<span class='status-display status-%s' id='%s-id-%s' choice='%s'  > %s </span>"
+                % (obj.status, 'status', obj.pk, status_choices, obj.get_status_display()))
 
 
 def order_number_display(handler, obj=None, is_header=False, *args, **kwargs):
-        """
-               显示 发票金额
-               :param obj:
-               :param is_header:
-               :return:
-               """
-        if is_header:
-            return '发票号'
-        else:
-            return mark_safe('<span class="invoice-number-display">%s</span>' % (obj.order.order_number))
+    """
+           显示 发票金额
+           :param obj:
+           :param is_header:
+           :return:
+           """
+    if is_header:
+        return '发票号'
+    else:
+        return mark_safe('<span class="invoice-number-display">%s</span>' % (obj.order.order_number))
+
 
 def sales_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
@@ -45,6 +56,7 @@ def sales_display(handler, obj=None, is_header=False, *args, **kwargs):
 
         return nickname[0] if nickname else "-"
 
+
 def goods_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示销售人员名称首字母
@@ -56,6 +68,7 @@ def goods_display(handler, obj=None, is_header=False, *args, **kwargs):
         return '货物'
     else:
         return obj.order.goods[:15]
+
 
 def customer_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
@@ -73,7 +86,8 @@ def customer_display(handler, obj=None, is_header=False, *args, **kwargs):
             customer_name = '-'
         return customer_name
 
- # 下单日期
+
+# 下单日期
 def confirm_date_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示销售人员名称首字母
@@ -89,6 +103,7 @@ def confirm_date_display(handler, obj=None, is_header=False, *args, **kwargs):
         else:
             return '-'
 
+
 # 成交条款
 def term_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
@@ -102,6 +117,7 @@ def term_display(handler, obj=None, is_header=False, *args, **kwargs):
     else:
         return obj.order.get_term_display()
 
+
 # 应收金额
 def collect_amount_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
@@ -109,15 +125,17 @@ def collect_amount_display(handler, obj=None, is_header=False, *args, **kwargs):
     else:
         return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
 
+
 # 发票金额
 def amount_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
         return '发票金额'
     else:
         amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
-            'amount',obj.pk,obj.order.amount, obj.order.currency.icon, obj.order.amount
+            'amount', obj.pk, obj.order.amount, obj.order.currency.icon, obj.order.amount
         )
         return mark_safe(amount_tag)
+
 
 # 起运港和目的港
 def port_display(field, title=None):
@@ -130,15 +148,17 @@ def port_display(field, title=None):
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             port_name = getattr(obj, field)
-            if not port_name or port_name=='-':
-                 port_name = "---"
+            if not port_name or port_name == '-':
+                port_name = "---"
 
             return mark_safe("<span class='text-display'  onclick='showInputBox(this)' "
                              "id='%s-id-%s' > %s </span>" % (field, obj.pk, port_name))
+
     return inner
 
+
 # 订舱，装箱，生产信息
-def info_display(field, title=None,):
+def info_display(field, title=None, ):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -163,12 +183,13 @@ def info_display(field, title=None,):
             is_editable = handler_obj.get_editable(field)
             if is_editable:
                 return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
-                             "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
+                                 "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
             else:
                 return mark_safe("<span class='text-display' "
                                  "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
 
     return inner
+
 
 # ETA ETD等显示
 def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
@@ -185,7 +206,7 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
             datetime_obj = getattr(obj, field)
             year = ''
             if not datetime_obj:
-                create_date =  "--"
+                create_date = "--"
             else:
                 try:
                     create_date = datetime_obj.strftime(time_format)
@@ -195,12 +216,13 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
             is_editable = handler_obj.get_editable(field)
             if is_editable:
                 return mark_safe("<span class='date-display' year='%s' onclick='showInputBox(this)' "
-                             "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
+                                 "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
             else:
                 return mark_safe("<span class='date-display' year='%s' "
                                  "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
 
     return inner
+
 
 # 保存跟单列表每行数据
 def save_display(handler, obj=None, is_header=False, *args, **kwargs):
