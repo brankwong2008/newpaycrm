@@ -7,6 +7,8 @@ class PayerHandler(PermissionHanlder,StarkHandler):
     fields_display = ['id','title','customer']
 
     def get_queryset_data(self,request,*args,**kwargs):
+        if request.user.username == "brank":
+            return self.model_class.objects.all()
         if request.user.department == 8:
             return self.model_class.objects.all()
         elif request.user.department == 1:

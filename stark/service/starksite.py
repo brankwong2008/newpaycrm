@@ -277,7 +277,7 @@ class StarkHandler(object):
             for item in search_list:
                 # 使用ORM的Q函数来构造OR条件的查询
                 conn.children.append((item, user_query.strip()))
-            # 搜索专门指定数据集，比显示的略宽一些 
+            # 搜索专门指定数据集，比显示的略宽一些
             searched_queryset = self.get_queryset_data(request,is_search=True).filter(conn)
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
