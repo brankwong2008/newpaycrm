@@ -12,7 +12,7 @@ from django.shortcuts import HttpResponse,render,redirect,reverse
 from dipay.forms.forms import StarkForm
 
 class Option:
-    def __init__(self,field,filter_param=None,is_multi = False,default=None):
+    def __init__(self,field,filter_param=None,is_multi = False,default=None,verbose_name=None):
         """
         封装choice或者foreign key字段关联的数据源，在前端展示进行组合筛选
         :param field: 字段名
@@ -24,6 +24,7 @@ class Option:
         self.is_multi = is_multi
         self.is_choice = False
         self.default = default
+        self.verbose_name = verbose_name
 
     class RenderData:
         def __init__(self, data,field,verbose_name,query_dict,option):
@@ -95,7 +96,7 @@ class Option:
 
     def get_data(self,model_class,query_dict):
         field_obj = model_class._meta.get_field(self.field)
-        verbose_name = field_obj.verbose_name
+        verbose_name = self.verbose_name if self.verbose_name else field_obj.verbose_name
 
 
         if isinstance(field_obj, ForeignKey) or isinstance(field_obj, ManyToManyField):
@@ -175,7 +176,7 @@ class StarkHandler(object):
 
 
     def get_per_page(self):
-        return 5
+        return 10
 
 
     order_by_list = []
@@ -277,7 +278,7 @@ class StarkHandler(object):
             for item in search_list:
                 # 使用ORM的Q函数来构造OR条件的查询
                 conn.children.append((item, user_query.strip()))
-            # 搜索专门指定数据集，比显示的略宽一些 
+            # 搜索专门指定数据集，比显示的略宽一些
             searched_queryset = self.get_queryset_data(request,is_search=True).filter(conn)
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
