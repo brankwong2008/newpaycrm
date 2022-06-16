@@ -13,6 +13,7 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
         return 10
 
     search_list = ['title__icontains','owner__username__icontains']
+    search_placeholder = '搜索 客户名'
 
     def get_queryset_data(self,request,*args,**kwargs):
         if request.user.department == 8:
