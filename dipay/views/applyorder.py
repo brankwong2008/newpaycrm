@@ -382,7 +382,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
                     # 如果订单不存在，则创建跟单记录
                     else:
-                        followorder_obj = FollowOrder(order=order_obj)
+                        followorder_obj = FollowOrder(order=order_obj, salesman = order_obj.salesperson)
                         for field in ['load_port', 'discharge_port', 'ETA', 'ETD', 'load_info', 'book_info', 'status']:
                             if d.get(field):
                                 setattr(followorder_obj, field, d[field])
@@ -609,7 +609,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 if not form.instance.confirm_date:
                     form.instance.confirm_date =  datetime.now()
                 # 下单的动作3，创建一条新的跟单记录
-                FollowOrder.objects.create(order=order_obj)
+                FollowOrder.objects.create(order=order_obj, salesman = order_obj.salesperson)
 
                 form.save()
                 msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单'
@@ -655,7 +655,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         apply_obj = form.save()
                         apply_obj.validate_unique()
                         # 同时创建跟单记录
-                        follow_order_obj = FollowOrder(order=apply_obj,status=1)
+                        follow_order_obj = FollowOrder(order=apply_obj,status=1,salesman=apply_obj.salesperson)
                         follow_order_obj.save()
 
                     msg = '手动创建%s成功，同时生成了跟单记录，请查看跟单表' % apply_obj

@@ -72,6 +72,7 @@ class ApplyOrder(models.Model):
                     ]
     term = models.SmallIntegerField(choices=term_choices, verbose_name='贸易条款',default=0)
 
+
     status_choices = [(0, '申请中'),
                     (1, '已配单号'),
                     (2, '已下单'),
@@ -95,6 +96,10 @@ class FollowOrder(models.Model):
     load_info = models.CharField(max_length=255, verbose_name='装箱信息',default='装箱:')
     produce_info = models.CharField(max_length=128, verbose_name='生产情况',default='生产:')
     sales_remark = models.CharField(max_length=128,verbose_name='业务备注', default='-')
+    salesman = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,
+                                    verbose_name='外销员',
+                                    limit_choices_to={"roles__title": "外销员"},
+                                    null=True, )
     payterm_choices = [(0, '到港付'),
                     (1, '出厂付'),
                     (2, '预付'),

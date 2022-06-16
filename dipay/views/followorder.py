@@ -23,6 +23,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
         Option(field='status',is_multi=False),
+        Option(field='salesman',filter_param={'roles__title':'外销员'}, verbose_name='业务'),
         # Option(field='depart'),
     ]
 
@@ -118,6 +119,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     followorder_obj.ETA = None
                     followorder_obj.status = 0
                     followorder_obj.book_info = '订舱'
+                    followorder_obj.salesman = order_obj.salesperson
                     followorder_obj.save()
                 except Exception as e:
                     msg = '订单号可能重复，请检查。 错误内容：%s' % e
@@ -190,6 +192,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         patterns = [
             url("^save/$", self.wrapper(self.save_record), name=self.get_url_name('save')),
             url("^split/(?P<pk>\d+)/$", self.wrapper(self.split_record), name=self.get_url_name('split')),
+            url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
         ]
 
         return patterns
@@ -223,3 +226,11 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 res = data_dict
             return JsonResponse(res)
 
+    # 预留的接口，用户批量整理数据资料
+    def neating(self, request, *args, **kwargs):
+        count=0
+        for obj in self.model_class.objects.all():
+            obj.salesman = obj.order.salesperson
+            obj.save()
+            count += 1
+        return HttpResponse('整理成功%s条数据' % count)
