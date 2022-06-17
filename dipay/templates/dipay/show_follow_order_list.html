@@ -53,7 +53,7 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
-                    <div class="pull-right">
+                    <div class="pull-right hidden-xs">
 
                         <select name="handle_type" class="handle-select">
                             <option value="">请选择处理方式</option>

@@ -96,7 +96,7 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
 
     # 跟单列表显示的字段内容   hidden_xs指定的列在手机版式下不显示
     fields_display = [order_number_display, customer_display, sales_display, status_display,
-                      info_display('produce_sequence'), goods_display,
+                      info_display('produce_sequence',hidden_xs='hidden-xs'), goods_display,
                       port_display('discharge_port',hidden_xs='hidden-xs'), confirm_date_display,
                       follow_date_display('ETD', time_format='%m/%d',),
                       follow_date_display('ETA', time_format='%m/%d',hidden_xs='hidden-xs'),
