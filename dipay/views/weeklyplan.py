@@ -94,14 +94,14 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
                 return True
 
 
-    # 跟单列表显示的字段内容
+    # 跟单列表显示的字段内容   hidden_xs指定的列在手机版式下不显示
     fields_display = [order_number_display, customer_display, sales_display, status_display,
                       info_display('produce_sequence'), goods_display,
-                      port_display('discharge_port'), confirm_date_display,
-                      follow_date_display('ETD', time_format='%m/%d'),
-                      follow_date_display('ETA', time_format='%m/%d'),
-                      info_display('load_info'), info_display('book_info'), info_display('produce_info',title='生产'),
-                      info_display('sales_remark',title='业务'),
+                      port_display('discharge_port',hidden_xs='hidden-xs'), confirm_date_display,
+                      follow_date_display('ETD', time_format='%m/%d',),
+                      follow_date_display('ETA', time_format='%m/%d',hidden_xs='hidden-xs'),
+                      info_display('load_info',hidden_xs='hidden-xs'), info_display('book_info',hidden_xs='hidden-xs'), info_display('produce_info',title='生产',hidden_xs='hidden-xs'),
+                      info_display('sales_remark',title='业务', hidden_xs='hidden-xs'),
                       ]
 
     # 自定义按钮的权限控制

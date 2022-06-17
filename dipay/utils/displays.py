@@ -138,27 +138,29 @@ def amount_display(handler, obj=None, is_header=False, *args, **kwargs):
 
 
 # 起运港和目的港
-def port_display(field, title=None):
+def port_display(field, title=None, hidden_xs=''):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """功能：ETD ETA日期字段的显示 """
         if is_header:
             if title:
-                return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+                name = title
+            else:
+                name = handler_obj.model_class._meta.get_field(field).verbose_name
+            return mark_safe("<span class='%s'>%s</span>" % (hidden_xs, name))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             port_name = getattr(obj, field)
             if not port_name or port_name == '-':
                 port_name = "---"
 
-            return mark_safe("<span class='text-display'  onclick='showInputBox(this)' "
-                             "id='%s-id-%s' > %s </span>" % (field, obj.pk, port_name))
+            return mark_safe("<span class='text-display %s'  onclick='showInputBox(this)' "
+                             "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, port_name))
 
     return inner
 
 
 # 订舱，装箱，生产信息
-def info_display(field, title=None, ):
+def info_display(field, title=None, hidden_xs=''):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -169,8 +171,12 @@ def info_display(field, title=None, ):
         """
         if is_header:
             if title:
-                return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+                name = title
+            else:
+                name = handler_obj.model_class._meta.get_field(field).verbose_name
+
+            return mark_safe("<span class='%s'> %s </span>" % (hidden_xs, name))
+
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             field_val = getattr(obj, field)
@@ -182,25 +188,28 @@ def info_display(field, title=None, ):
             # 判断用户是否有此字段的编辑权限
             is_editable = handler_obj.get_editable(field)
             if is_editable:
-                return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
-                                 "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
+                return mark_safe("<span class='text-display %s' onclick='showInputBox(this)' "
+                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, field_val))
             else:
-                return mark_safe("<span class='text-display' "
-                                 "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
+                return mark_safe("<span class='text-display %s' "
+                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, field_val))
 
     return inner
 
 
 # ETA ETD等显示
-def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
+def follow_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs=""):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：ETD ETA日期字段的显示
         """
         if is_header:
             if title:
-                return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+                name = title
+            else:
+                name = handler_obj.model_class._meta.get_field(field).verbose_name
+
+            return mark_safe("<span class='%s'> %s </span>" % (hidden_xs, name))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             datetime_obj = getattr(obj, field)
@@ -215,11 +224,11 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
                     create_date = '日期格式错误'
             is_editable = handler_obj.get_editable(field)
             if is_editable:
-                return mark_safe("<span class='date-display' year='%s' onclick='showInputBox(this)' "
-                                 "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
+                return mark_safe("<span class='date-display %s' year='%s' onclick='showInputBox(this)' "
+                                 "id='%s-id-%s' > %s </span>" % (hidden_xs,year, field, obj.pk, create_date))
             else:
-                return mark_safe("<span class='date-display' year='%s' "
-                                 "id='%s-id-%s' > %s </span>" % (year, field, obj.pk, create_date))
+                return mark_safe("<span class='date-display %s' year='%s' "
+                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, year, field, obj.pk, create_date))
 
     return inner
 
@@ -228,8 +237,8 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
 def save_display(handler, obj=None, is_header=False, *args, **kwargs):
     """  显示 保存当条跟单记录 """
     if is_header:
-        return '保存'
+        return mark_safe("<span class='hidden-xs'> 保存 </span>" )
     else:
         save_url = handler.reverse_url('save')
-        return mark_safe("<span class='save-sequence' pk='%s' url='%s' onclick='savePlan(this)'>"
+        return mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
                          " <i class='fa fa-check-square-o'></i> </span>" % (obj.pk, save_url))
