@@ -222,6 +222,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             applyorder_obj.save()
                     else:
                         setattr(followorder_obj, item, val)
+                        # 如果follow_order完结，更新applyorder的status
+                        if followorder_obj.status == '4' or followorder_obj.status == 4:
+                            followorder_obj.order.status = 3
+                            followorder_obj.order.save()
                 followorder_obj.save()
                 data_dict['status'] = True
                 res = data_dict

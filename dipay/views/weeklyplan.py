@@ -148,6 +148,11 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
             else:
                 for item, val in data_dict.items():
                     setattr(followorder_obj, item, val)
+                # 如果follow_order完结，更新applyorder的status
+                print(9999999, followorder_obj.status,type(followorder_obj.status))
+                if followorder_obj.status == '4' or followorder_obj.status == 4:
+                    followorder_obj.order.status = 3
+                    followorder_obj.order.save()
                 followorder_obj.save()
                 data_dict['status'] = True
                 res = data_dict
