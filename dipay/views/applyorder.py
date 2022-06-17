@@ -387,6 +387,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                             if d.get(field):
                                 setattr(followorder_obj, field, d[field])
                     try:
+                        # 跟单状态4：完成  ， 订单状态3：完结
+                        if followorder_obj.status == 4:
+                            order_obj.status = 3
                         order_obj.save()
                         followorder_obj.save()
                         count1 += 1
@@ -429,6 +432,10 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     if d.get(field):
                         setattr(followorder_obj, field, d[field])
                 try:
+                    # 如果已经完结的订单，订单status要更新
+                    if followorder_obj.status == 4:
+                        order_obj.status = 3
+                        order_obj.save()
                     followorder_obj.save()
                     count2 += 1
                 except Exception as e :
@@ -608,8 +615,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 # 下单的动作2，把下单日期改为当日
                 if not form.instance.confirm_date:
                     form.instance.confirm_date =  datetime.now()
-                # 下单的动作3，创建一条新的跟单记录
-                FollowOrder.objects.create(order=order_obj, salesman = order_obj.salesperson)
+                # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
+                if not order_obj.followorder:
+                    FollowOrder.objects.create(order=order_obj, salesman = order_obj.salesperson)
 
                 form.save()
                 msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单'

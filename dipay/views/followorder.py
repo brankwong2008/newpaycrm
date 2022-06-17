@@ -193,6 +193,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             url("^save/$", self.wrapper(self.save_record), name=self.get_url_name('save')),
             url("^split/(?P<pk>\d+)/$", self.wrapper(self.split_record), name=self.get_url_name('split')),
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
+            url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
         ]
 
         return patterns
@@ -234,3 +235,9 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             obj.save()
             count += 1
         return HttpResponse('整理成功%s条数据' % count)
+
+    # 预留的接口，用户批量整理数据资料
+    def tests(self, request, *args, **kwargs):
+        count = 0
+
+        return render(request, 'dipay/tests.html')
