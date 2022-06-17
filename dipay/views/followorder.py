@@ -193,6 +193,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             url("^save/$", self.wrapper(self.save_record), name=self.get_url_name('save')),
             url("^split/(?P<pk>\d+)/$", self.wrapper(self.split_record), name=self.get_url_name('split')),
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
+            url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
         ]
 
         return patterns
@@ -221,6 +222,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             applyorder_obj.save()
                     else:
                         setattr(followorder_obj, item, val)
+                        # 如果follow_order完结，更新applyorder的status
+                        if followorder_obj.status == '4' or followorder_obj.status == 4:
+                            followorder_obj.order.status = 3
+                            followorder_obj.order.save()
                 followorder_obj.save()
                 data_dict['status'] = True
                 res = data_dict
@@ -234,3 +239,9 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             obj.save()
             count += 1
         return HttpResponse('整理成功%s条数据' % count)
+
+    # 预留的接口，用户批量整理数据资料
+    def tests(self, request, *args, **kwargs):
+        count = 0
+
+        return render(request, 'dipay/tests.html')
