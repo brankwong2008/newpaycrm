@@ -93,7 +93,7 @@
                                         {% if forloop.first %}
                                             <td class="txt-ell" nowrap>{{ item }} </td>
                                         {% else %}
-                                            <td class="txt-ell">{{ item }} </td>
+                                            <td class="txt-ell hidden-xs">{{ item }} </td>
                                         {% endif %}
                                     {% endfor %}
                                 </tr>
@@ -122,14 +122,6 @@
     </div>
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
-
-    <script>
-    $('span.hidden-xs').parent().addClass('hidden-xs');
-
-
-    </script>
-
-
 
 
 {% endblock %}

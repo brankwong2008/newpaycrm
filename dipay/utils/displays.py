@@ -126,6 +126,16 @@ def collect_amount_display(handler, obj=None, is_header=False, *args, **kwargs):
         return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
 
 
+# 应收金额
+def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '已收和应收'
+    else:
+        return mark_safe('<p>收:%s</p><p>欠:%s</p>' % (obj.order.rcvd_amount, obj.order.collect_amount))
+
+
+
+
 # 发票金额
 def amount_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
@@ -237,7 +247,7 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs="")
 def save_display(handler, obj=None, is_header=False, *args, **kwargs):
     """  显示 保存当条跟单记录 """
     if is_header:
-        return mark_safe("<span class='hidden-xs'> 保存 </span>" )
+        return mark_safe("<span class='hidden-xs save-sequence'> 保存 </span>" )
     else:
         save_url = handler.reverse_url('save')
         return mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"

@@ -6,7 +6,7 @@ from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display
 from dipay.utils.displays import status_display,  info_display, save_display, \
     follow_date_display,order_number_display, sales_display, port_display, goods_display, customer_display, \
-    term_display, amount_display,confirm_date_display
+    term_display, amount_display,confirm_date_display,rcvd_amount_blance_display
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
@@ -161,7 +161,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
-                      amount_display,
+                      amount_display, rcvd_amount_blance_display
                       ]
 
     # 自定义按钮的权限控制

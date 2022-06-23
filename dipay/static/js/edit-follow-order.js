@@ -103,3 +103,8 @@ function fastInfoSave(btn) {
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
 }
 
+
+
+//  隐藏每行的保存按钮
+$('span.hidden-xs').parent().addClass('hidden-xs');
+$('span.save-sequence').parent().addClass('save-sequence')
