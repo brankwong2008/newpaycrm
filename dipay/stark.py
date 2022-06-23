@@ -53,6 +53,8 @@ site.register(models.Payer,PayerHandler)
 # 最新编码
 site.register(models.CurrentNumber)
 
+# 款项关联记录
+site.register(models.Pay2Orders)
 
 
 

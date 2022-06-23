@@ -55,6 +55,7 @@ class ApplyOrder(models.Model):
     type_choices = [  (0, 'J'),
                       (1, 'M'),
                       (2, 'X'),
+                      (3, 'D'),
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号',unique=True, null=True,blank=True)
@@ -172,6 +173,10 @@ class Pay2Orders(models.Model):
     order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='关联金额')
     dist_ref = models.IntegerField(verbose_name='分配编号',default=10000)
+
+    def __str__(self):
+        return '%s %s  %s' % (self.payment.create_date.strftime('%Y/%m/%d'),self.order.order_number,self.amount)
+
 
 class Book(models.Model):
     title = models.CharField(max_length=30,verbose_name="AuthorName")
