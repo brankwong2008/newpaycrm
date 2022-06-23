@@ -224,7 +224,7 @@ class AutoPermissionAddModelForm(forms.Form):
 
 
 class AutoPermissionEditModelForm(forms.Form):
-    second_menu_choices = models.Permission.objects.filter(menu__isnull=False).values_list("id", "title")
+    second_menu_choices = [item for item in models.Permission.objects.filter(menu__isnull=False).values_list("id", "title") ]
     menu_choices = models.Menu.objects.values_list("id", "title")
     # second_menu_choices = [(1, "x1"), (2, "x2")]
     # menu_choices = [(1, "x1"), (2, "x2")]
@@ -239,4 +239,5 @@ class AutoPermissionEditModelForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(AutoPermissionEditModelForm, self).__init__(*args, **kwargs)
         self.fields["parent_id"].choices += self.second_menu_choices
+        print(9999999, self.second_menu_choices)
         self.fields["menu_id"].choices += self.menu_choices

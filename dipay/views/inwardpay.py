@@ -53,7 +53,8 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
         if is_header:
             return '关联状态'
         else:
-            related_url = self.reverse_url('relate2order', inwardpay_id=obj.pk, payer_id=obj.payer.pk )
+
+            related_url = self.reverse_url('relate2order', inwardpay_id=obj.pk )
             status = obj.get_status_display()
             if obj.confirm_status ==0:
                 return status
@@ -65,7 +66,16 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             return '付款人'
         else:
             if obj.payer:
-                return obj.payer.title
+                return obj.payer.title[:20]
+            return '-'
+
+    # 客户的显示
+    def customer_display(self, obj=None, is_header=False, *args, **kwargs):
+        if is_header:
+            return '客户'
+        else:
+            if obj.customer:
+                return obj.customer.shortname
             return '-'
 
     def got_confirm_status_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -94,7 +104,7 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             else:
                 return  display_text
 
-    fields_display = [ get_date_display('create_date'), payer_display, got_amount_display,
+    fields_display = [ get_date_display('create_date'), payer_display,customer_display, got_amount_display,
                        'bank',  got_confirm_status_display , status_display,]
 
     detail_fields_display = fields_display
@@ -125,7 +135,7 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
     def get_extra_urls(self):
         """ 收款关联订单的url  """
         extra_pattern = [
-            url("^relate2orders/(?P<inwardpay_id>\d+)/(?P<payer_id>\d+)/$", self.wrapper(self.relate2order), name= self.get_url_name('relate2order')),
+            url("^relate2orders/(?P<inwardpay_id>\d+)/$", self.wrapper(self.relate2order), name= self.get_url_name('relate2order')),
             url("^confirm/(?P<inwardpay_id>\d+)/$", self.wrapper(self.confirm_pay), name= self.get_url_name('confirm_pay')),
         ]
         return extra_pattern

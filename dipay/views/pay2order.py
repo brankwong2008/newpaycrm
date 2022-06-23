@@ -60,7 +60,7 @@ class  Pay2OrdersHandler(StarkHandler):
 
         return mark_safe(" <a href='%s?%s' target='_blank'> %s </a>" % (payment_origin_url,param, obj.payment ))
 
-    fields_display = ['order',get_relate_amount_display, get_date_display('relate_date'),get_payment_display,]
+    fields_display = ['order',get_relate_amount_display, get_payment_display, get_date_display('relate_date'),]
 
     has_add_btn = False
 

@@ -139,6 +139,8 @@ a.add-record-btn {
 }
 
 
+
+
 tr.active {
     border-left: 3px solid #fdc00f;
 }
@@ -171,3 +173,6 @@ table {
     display: inline-block;
 }
 
+th.save-sequence, td.save-sequence {
+    display: none;
+}

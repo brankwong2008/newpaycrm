@@ -23,6 +23,8 @@ class Customer(models.Model):
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='所属外销员',
                                     limit_choices_to={"department":1} , null=True)
     def __str__(self):
+        if self is None:
+            return '-'
         return self.shortname
 
 
@@ -35,9 +37,11 @@ class Currency(models.Model):
 
 class CurrentNumber(models.Model):
     num = models.IntegerField(verbose_name='序号')
+    reference = models.IntegerField(verbose_name='收款编号')
+    dist_ref = models.IntegerField(verbose_name='款项分配编号',default=6000)
 
     def __str__(self):
-        return str(self.num)
+        return '最新订单号：%s 最新收款编号：%s' %(self.num,self.reference)
 
 
 class ApplyOrder(models.Model):
@@ -51,6 +55,7 @@ class ApplyOrder(models.Model):
     type_choices = [  (0, 'J'),
                       (1, 'M'),
                       (2, 'X'),
+                      (3, 'D'),
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号',unique=True, null=True,blank=True)
@@ -155,9 +160,11 @@ class Inwardpay(models.Model):
     confirm_status = models.SmallIntegerField(choices=confirm_choices, verbose_name='确认',default=0)
     orders = models.ManyToManyField(to=ApplyOrder, through="Pay2Orders", verbose_name='关联记录',blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
+    reference = models.IntegerField(verbose_name='收款编号',help_text='避免出现重复记录',null=True)
 
     def __str__(self):
-        return "%s %s%s" % (self.payer.title,self.currency.icon, str(self.amount))
+        create_date = self.create_date.strftime("%Y-%m-%d")
+        return "%s: %s %s%s" % (create_date, self.customer,self.currency.icon, str(self.amount))
 
 
 class Pay2Orders(models.Model):
@@ -165,6 +172,11 @@ class Pay2Orders(models.Model):
     payment = models.ForeignKey(to=Inwardpay, on_delete=models.CASCADE,verbose_name='收款')
     order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='关联金额')
+    dist_ref = models.IntegerField(verbose_name='分配编号',default=10000)
+
+    def __str__(self):
+        return '%s %s  %s' % (self.payment.create_date.strftime('%Y/%m/%d'),self.order.order_number,self.amount)
+
 
 class Book(models.Model):
     title = models.CharField(max_length=30,verbose_name="AuthorName")
