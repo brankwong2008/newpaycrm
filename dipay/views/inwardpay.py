@@ -8,7 +8,7 @@ from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
 from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, EditInwardPayModelForm
-from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay
+from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
 from django.db import transaction
 
 class InwardPayHandler(PermissionHanlder,StarkHandler):
@@ -122,7 +122,11 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             if form.is_valid():
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
                 form.instance.torelate_amount = form.instance.got_amount
+                currentnumber_obj = CurrentNumber.objects.get(pk=1)
+                form.instance.reference = currentnumber_obj.reference + 1
+                currentnumber_obj.reference += 1
                 form.save()
+                currentnumber_obj.save()
                 return  redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, 'dipay/inwardpay_add.html', locals())
@@ -152,14 +156,21 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
     # 认领款项
     def confirm_pay(self,request,inwardpay_id,*args,**kwargs):
         obj = Inwardpay.objects.filter(pk=inwardpay_id).first()
-        customer = obj.payer.customer
+        payer = '-'
+        if obj.payer:
+            customer = obj.payer.customer
+            payer = obj.payer.title
+        elif obj.customer:
+            customer = obj.customer
+        else:
+            return render(request,'dipay/msg_after_submit.html',{'msg':'付款人和客户都没填，请先补充完整任何一项'})
         data_list = []
         # fields_display = [get_date_display('create_date'), 'payer', got_amount_display,
         #                   'bank', status_display, got_confirm_status_display]
         data_list.append({'label':'收款日期',
                            'data':obj.create_date.strftime('%Y-%m-%d')})
         data_list.append({'label': '付款人',
-                          'data': obj.payer.title})
+                          'data': payer})
         data_list.append({'label': '实收款',
                           'data': '%s %s' % (obj.currency.icon,obj.got_amount)})
         data_list.append({'label': '收款行',
@@ -173,12 +184,11 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
 
         if request.method == "GET":
             form = ConfirmInwardpayModelForm(instance=obj,initial={'customer':customer})
-            form.instance.customer_id = obj.payer.customer_id
+            form.instance.customer_id =customer.pk
 
             return render(request, 'dipay/confirm_pay.html',locals())
 
         if request.method == "POST":
-
             customer_id = request.POST.get('customer')
             amount = float(request.POST.get('amount'))
             form = ConfirmInwardpayModelForm(request.POST,instance=obj)
@@ -192,7 +202,7 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                     # payers = customer_obj.payer_set.all()
 
                     # 校验客户和付款人的关系
-                    if obj.payer.customer_id != int(customer_id):
+                    if customer.pk != int(customer_id):
                         form.errors.update({'customer': ['客户和付款人关联不正确', ]})
                         raise forms.ValidationError()
 
@@ -208,17 +218,19 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                     form.instance.confirm_status += 1
                     form.instance.torelate_amount = amount
                     form.save()
-                    torelate_url = self.reverse_url('relate2order', inwardpay_id=obj.pk, payer_id=obj.payer.pk )
+                    torelate_url = self.reverse_url('relate2order', inwardpay_id=obj.pk)
                     return redirect(torelate_url)
             else:
                 return render(request, 'dipay/confirm_pay.html', locals())
 
     # 关联款项
-    def relate2order(self,request,*args,**kwargs):
-        inwardpay_id = kwargs.get('inwardpay_id')
-        payer_id = kwargs.get('payer_id')
-        customer_obj = Payer.objects.filter(pk=payer_id).first().customer
+    def relate2order(self,request,inwardpay_id, *args,**kwargs):
         inwardpay_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
+        if inwardpay_obj.customer:
+            customer_obj = inwardpay_obj.customer
+        elif inwardpay_obj.payer:
+            customer_obj = inwardpay_obj.payer.customer
+
         torelate_amount = inwardpay_obj.torelate_amount
         topay_order_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
         # 检查其中的应收金额，确保一致性
