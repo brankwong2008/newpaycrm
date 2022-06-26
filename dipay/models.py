@@ -20,6 +20,8 @@ class UserInfo(MyUser):
 class Customer(models.Model):
     title = models.CharField(max_length=128, unique=True, verbose_name='客户名')
     shortname = models.CharField(max_length=20, verbose_name='客户简称',default='-')
+    remark = models.TextField(verbose_name='客户详情', default='--')
+    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='所属外销员',
                                     limit_choices_to={"department":1} , null=True)
     def __str__(self):
@@ -182,6 +184,14 @@ class Book(models.Model):
     title = models.CharField(max_length=30,verbose_name="AuthorName")
     def __str__(self):
         return self.title
+
+class ExchangeRate(models.Model):
+    update_date = models.DateField(auto_now_add=True, verbose_name='日期')
+    currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,verbose_name='货币')
+    rate = models.DecimalField(max_digits=9, decimal_places=3, verbose_name='汇率')
+
+    def __str__(self):
+        return '%s %s: %s' % (self.update_date.strftime('%Y/%m/%d'), self.currency.title, self.rate)
 
 
 

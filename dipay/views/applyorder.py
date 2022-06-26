@@ -574,8 +574,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             pay_obj.save()
             count_dist += 1
 
-            # 刷新订单的收款金额, values_list出来的是列表里面套tuple的结构
+            # 刷新订单的总收款金额和应收款金额 values_list出来的是列表里面套tuple的结构
             order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
+            order_obj.collect_amount = float(order_obj.amount) - order_obj.rcvd_amount
+            if order_obj.collect_amount < 0:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '应收款不能为负数，请检查'))
+                continue
             order_obj.save()
 
         # count分配记录数，count1收款记录数

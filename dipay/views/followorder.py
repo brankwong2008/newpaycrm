@@ -11,7 +11,7 @@ from dipay.utils.displays import status_display,  info_display, save_display, \
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
 from django.conf.urls import url
-from dipay.models import ApplyOrder
+from dipay.models import ApplyOrder, Pay2Orders
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -29,7 +29,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     """ [(0, '备货'), (1, '发货'), (2, '单据'),   (3, '等款'), (4, '完成'),"""
 
-    search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains']
+    search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
+                   'order__customer__title__icontains']
     search_placeholder = '搜索 订单号/客户/货物'
 
     # 模糊搜索
@@ -192,11 +193,34 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         patterns = [
             url("^save/$", self.wrapper(self.save_record), name=self.get_url_name('save')),
             url("^split/(?P<pk>\d+)/$", self.wrapper(self.split_record), name=self.get_url_name('split')),
+            url("^show_pay_details/(?P<order_id>\d+)/$", self.wrapper(self.show_pay_details), name=self.get_url_name('show_pay_details')),
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
             url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
         ]
 
         return patterns
+
+    def show_pay_details(self,request,order_id,*args, **kwarg):
+        order_obj = ApplyOrder.objects.filter(pk=order_id).first()
+        if not order_obj:
+            return HttpResponse('订单号不存在'
+                                '')
+        payment_list = Pay2Orders.objects.filter(order=order_obj)
+        mail = {}
+        mail['email'] = order_obj.customer.email
+        mail['subject'] = order_obj.order_number + ' order shipping status and balance '
+        ETD = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
+        ETA = order_obj.followorder.ETA if order_obj.followorder.ETA else 'to be updated'
+        mail['content'] =  'Dear '+ '%0A%0C%0A%0C' + \
+                           f"The order of {order_obj.order_number} shipping status as below:"+ '%0A%0C%0A%0C' + \
+                           f"Date of departure: {ETD} " + '%0A%0C' +\
+                           f"Date of arrival: {ETA}" +  '%0A%0C%0A%0C' +  \
+                           f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' +  \
+                           f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' +  \
+                           f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}"+ '%0A%0C%0A%0C'
+
+
+        return render(request,'dipay/order_payment_record.html',locals())
 
     # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
@@ -219,6 +243,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             data_dict['status'] = False
                         else:
                             applyorder_obj.amount = val
+                            # 同时更新应收款
+                            applyorder_obj.collect_amount = applyorder_obj.amount - applyorder_obj.rcvd_amount
                             applyorder_obj.save()
                     else:
                         setattr(followorder_obj, item, val)
