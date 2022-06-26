@@ -31,8 +31,14 @@ function savePlan(btn) {
         // 当响应正常的时候执行success，responses是响应的json数据
         success: function (response) {
             console.log(response);
-            location.reload();
-            // $(".error").html(response.msg);
+            if (response.status) {
+            location.reload(); }
+            else {
+                var name = response.field;
+                var $target =  $(`[id='${name}-id-${pk}']`);
+                $target.next().after(`<p class="error">${response.error}</p>`)
+
+            }
         }
     })
 }
@@ -108,3 +114,15 @@ function fastInfoSave(btn) {
 //  隐藏每行的保存按钮
 $('span.hidden-xs').parent().addClass('hidden-xs');
 $('span.save-sequence').parent().addClass('save-sequence')
+
+
+// 已收和应收的点击弹出收款明细的方法
+function showPayDetails(tag) {
+    var href = tag.href;
+    var name = '登录'
+    // var left = window.screen.availWidth -300
+    var win = window.open(href, name, 'left=600,top=300,width=600,height=300');
+    win.focus();
+    return false
+
+}

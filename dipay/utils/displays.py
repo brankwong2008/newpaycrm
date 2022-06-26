@@ -126,12 +126,13 @@ def collect_amount_display(handler, obj=None, is_header=False, *args, **kwargs):
         return '%s%s' % (obj.order.currency.icon, obj.order.collect_amount)
 
 
-# 应收金额
+# 已收和应收金额
 def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
         return '已收和应收'
     else:
-        return mark_safe('<p>收:%s</p><p>欠:%s</p>' % (obj.order.rcvd_amount, obj.order.collect_amount))
+        return_url = handler.reverse_url('show_pay_details',order_id = obj.order.pk )
+        return mark_safe("<a onclick='return showPayDetails(this)' href='%s'><p>收:%s</p><p>欠:%s</p></a>" % (return_url, obj.order.rcvd_amount, obj.order.collect_amount))
 
 
 

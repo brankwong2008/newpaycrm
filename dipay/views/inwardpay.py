@@ -1,5 +1,6 @@
 
 from django.shortcuts import HttpResponse,redirect,render,reverse
+from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q
 from django.utils.safestring import mark_safe
@@ -224,90 +225,185 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                 return render(request, 'dipay/confirm_pay.html', locals())
 
     # 关联款项
+    # def relate2order(self,request,inwardpay_id, *args,**kwargs):
+    #     inwardpay_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
+    #     if inwardpay_obj.customer:
+    #         customer_obj = inwardpay_obj.customer
+    #     elif inwardpay_obj.payer:
+    #         customer_obj = inwardpay_obj.payer.customer
+    #
+    #     torelate_amount = inwardpay_obj.torelate_amount
+    #     topay_order_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
+    #     # 检查其中的应收金额，确保一致性
+    #     for item in topay_order_queryset:
+    #         item.collect_amount = item.amount - item.rcvd_amount
+    #         item.save()
+    #     # 还是放弃formset_factory的方式, 而用modelformset_factory, 是收集数据的方式更高效
+    #     formset_class = modelformset_factory(model=ApplyOrder,form=Inwardpay2OrdersModelForm,extra=0)
+    #
+    #     if request.method == "GET":
+    #         formset = formset_class(queryset=topay_order_queryset)
+    #
+    #         add_order_url = reverse("stark:dipay_applyorder_add")
+    #         return render(request,'dipay/related_to_orders.html',locals())
+    #
+    #     if request.method == "POST":
+    #         print(11111, request.POST)
+    #         formset = formset_class(data=request.POST)
+    #         if formset.is_valid():
+    #             # 手动解析cleaned_data数据，从其中提取有用的信息，手动更新数据库
+    #             row_list = formset.cleaned_data
+    #             failure = False
+    #             total_dist_amount = 0
+    #             # 检查是否查过总的可分配金额
+    #             for i, row in enumerate(row_list):
+    #                 total_dist_amount += row["dist_amount"]
+    #             if total_dist_amount > torelate_amount:
+    #                 formset.errors[0].update({'dist_amount': ['超过可分配总金额，请重新分配', ]})
+    #                 return render(request, 'dipay/related_to_orders.html', locals())
+    #
+    #             # 分别检查每一行数据，是否超过应收金额，是否小于0
+    #             for i, row in enumerate(row_list):
+    #                 dist_amount = row["dist_amount"]
+    #                 # 这个地方比较神奇，存的是model_obj
+    #                 applyorder_obj = row["id"]
+    #                 if dist_amount == 0:
+    #                     continue
+    #                 try:
+    #                     if dist_amount > applyorder_obj.amount-applyorder_obj.rcvd_amount:
+    #                         # formset的errors信息的格式: {字段：[错误信息，]}
+    #                         formset.errors[i].update({'dist_amount': ['关联金额不能大于应收金额',]})
+    #                         raise forms.ValidationError()
+    #                     elif dist_amount < 0:
+    #                         formset.errors[i].update({'dist_amount': ['关联金额必须大于0', ]})
+    #                         raise forms.ValidationError()
+    #
+    #                     pay2order_obj = Pay2Orders(order=applyorder_obj, payment=inwardpay_obj, amount=dist_amount)
+    #                     # 采用事务管理，避免数据同步不一致
+    #                     with transaction.atomic():
+    #                         # 待分配金额更新
+    #                         inwardpay_obj.torelate_amount -=  dist_amount
+    #                         # 已收金额更新
+    #                         applyorder_obj.rcvd_amount += dist_amount
+    #                         # 应收金额更新
+    #                         applyorder_obj.collect_amount += applyorder_obj.amount - applyorder_obj.rcvd_amount
+    #                         # 收款待分配状态更新
+    #                         if inwardpay_obj.torelate_amount < 0:
+    #                             formset.errors[0].update({'dist_amount': ['超过可分配金额',]})
+    #                             raise forms.ValidationError()
+    #                         if inwardpay_obj.torelate_amount == 0:
+    #                             inwardpay_obj.status = 1
+    #
+    #                         pay2order_obj.save()
+    #                         inwardpay_obj.save()
+    #                         applyorder_obj.save()
+    #                 except Exception as e:
+    #                     print(e)
+    #                     # formset.errors[i].update({'dist_amount':e.messages})
+    #                     failure = True
+    #             if failure:
+    #                 return render(request, 'dipay/related_to_orders.html', locals())
+    #             else:
+    #                 msg='收款关联成功'
+    #                 return render(request,'dipay/msg_after_submit.html',locals())
+    #
+    #         else:
+    #             print(formset.errors, type(formset.errors))
+    #             return render(request, 'dipay/related_to_orders.html', locals())
+    #
+
+
+
+
+    # 关联款项 第二版设计，不用formset，改为一个一个订单的关联，采用阿里的模式
     def relate2order(self,request,inwardpay_id, *args,**kwargs):
         inwardpay_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
+        total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj) ])
+        inwardpay_obj.torelate_amount = inwardpay_obj.amount - total_dist_amounts
+        inwardpay_obj.save()
+
         if inwardpay_obj.customer:
             customer_obj = inwardpay_obj.customer
-        elif inwardpay_obj.payer:
+        else :
             customer_obj = inwardpay_obj.payer.customer
 
         torelate_amount = inwardpay_obj.torelate_amount
-        topay_order_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
-        # 检查其中的应收金额，确保一致性
-        for item in topay_order_queryset:
-            item.collect_amount = item.amount - item.rcvd_amount
-            item.save()
-        # 还是放弃formset_factory的方式, 而用modelformset_factory, 是收集数据的方式更高效
-        formset_class = modelformset_factory(model=ApplyOrder,form=Inwardpay2OrdersModelForm,extra=0)
+        torelate_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
+        torelate_order_list = []
+        # 检查其中的应收金额，确保一致性, 整理可关联订单数据
+        for order_obj in torelate_queryset:
+            order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
+            order_obj.save()
+            row = {}
+            for each in ['order_number', 'customer', 'currency', 'amount', 'rcvd_amount']:
+                row[each]= getattr(order_obj, each)
+            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj,order=order_obj).first()
+            dist_amount  = pay2order_obj.amount if pay2order_obj else 0
+            display_dist_amount = '%s%s' % (order_obj.currency.icon,dist_amount) if dist_amount else '--'
+
+            amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s</span>" % (
+                'amount', order_obj.pk, dist_amount, display_dist_amount
+            )
+            row['dist_amount']= mark_safe(amount_tag)
+            row['dist_value'] = dist_amount
+
+            save_url = self.reverse_url('relate2order',inwardpay_id= inwardpay_obj.pk)
+            save_btn = mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
+                             " <i class='fa fa-check-square-o'></i> </span>" % (order_obj.pk, save_url))
+            row['save_btn'] = save_btn
+            torelate_order_list.append(row)
+
+        # 按关联金额大小排序
+        torelate_order_list.sort(key=lambda x: x['dist_value'],reverse=True)
+
+        # 整理已关联订单数据
+        related_order_list = Pay2Orders.objects.filter(payment=inwardpay_obj)
 
         if request.method == "GET":
-            formset = formset_class(queryset=topay_order_queryset)
-
-            add_order_url = reverse("stark:dipay_applyorder_add")
             return render(request,'dipay/related_to_orders.html',locals())
 
-        if request.method == "POST":
+        if request.is_ajax():
             print(11111, request.POST)
-            formset = formset_class(data=request.POST)
-            if formset.is_valid():
-                # 手动解析cleaned_data数据，从其中提取有用的信息，手动更新数据库
-                row_list = formset.cleaned_data
-                failure = False
-                total_dist_amount = 0
-                # 检查是否查过总的可分配金额
-                for i, row in enumerate(row_list):
-                    total_dist_amount += row["dist_amount"]
-                if total_dist_amount > torelate_amount:
-                    formset.errors[0].update({'dist_amount': ['超过可分配总金额，请重新分配', ]})
-                    return render(request, 'dipay/related_to_orders.html', locals())
+            order_id = request.POST.get('pk')
+            dist_amount = request.POST.get('amount')
+            try:
+                dist_amount = float(dist_amount)
+            except Exception as e:
+                return JsonResponse( {'status':False, 'field':'amount', 'error':'必须填数值'})
 
-                # 分别检查每一行数据，是否超过应收金额，是否小于0
-                for i, row in enumerate(row_list):
-                    dist_amount = row["dist_amount"]
-                    # 这个地方比较神奇，存的是model_obj
-                    applyorder_obj = row["id"]
-                    if dist_amount == 0:
-                        continue
-                    try:
-                        if dist_amount > applyorder_obj.amount-applyorder_obj.rcvd_amount:
-                            # formset的errors信息的格式: {字段：[错误信息，]}
-                            formset.errors[i].update({'dist_amount': ['关联金额不能大于应收金额',]})
-                            raise forms.ValidationError()
-                        elif dist_amount < 0:
-                            formset.errors[i].update({'dist_amount': ['关联金额必须大于0', ]})
-                            raise forms.ValidationError()
+            if dist_amount <= 0:
+                return JsonResponse({'status': False, 'field':'amount','error': '必须填大于0的数值'})
 
-                        pay2order_obj = Pay2Orders(order=applyorder_obj, payment=inwardpay_obj, amount=dist_amount)
-                        # 采用事务管理，避免数据同步不一致
-                        with transaction.atomic():
-                            # 待分配金额更新
-                            inwardpay_obj.torelate_amount -=  dist_amount
-                            # 已收金额更新
-                            applyorder_obj.rcvd_amount += dist_amount
-                            # 应收金额更新
-                            applyorder_obj.collect_amount += applyorder_obj.amount - applyorder_obj.rcvd_amount
-                            # 收款待分配状态更新
-                            if inwardpay_obj.torelate_amount < 0:
-                                formset.errors[0].update({'dist_amount': ['超过可分配金额',]})
-                                raise forms.ValidationError()
-                            if inwardpay_obj.torelate_amount == 0:
-                                inwardpay_obj.status = 1
+            if dist_amount > inwardpay_obj.torelate_amount:
+                return JsonResponse({'status': False,'field':'amount', 'error': '不能大于可分配的金额'})
 
-                            pay2order_obj.save()
-                            inwardpay_obj.save()
-                            applyorder_obj.save()
-                    except Exception as e:
-                        print(e)
-                        # formset.errors[i].update({'dist_amount':e.messages})
-                        failure = True
-                if failure:
-                    return render(request, 'dipay/related_to_orders.html', locals())
-                else:
-                    msg='收款关联成功'
-                    return render(request,'dipay/msg_after_submit.html',locals())
+            order_obj = ApplyOrder.objects.filter(pk=order_id).first()
+            if not order_obj:
+                res = {'status':False, 'field':'amount','error':'没找到订单号'}
+                return JsonResponse(res)
+
+            if dist_amount > order_obj.collect_amount:
+                return JsonResponse({'status': False, 'field':'amount','error': '不能大于订单应收金额'})
+
+            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj,order=order_obj).first()
+
+            if pay2order_obj:
+                old_dist_amount = float(pay2order_obj.amount)
+                pay2order_obj.amount = dist_amount
+                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount- old_dist_amount
+                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount + old_dist_amount
 
             else:
-                print(formset.errors, type(formset.errors))
-                return render(request, 'dipay/related_to_orders.html', locals())
+                pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount)
+                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
+                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount
+            try:
+                order_obj.save()
+                inwardpay_obj.save()
+                pay2order_obj.save()
+            except Exception as e:
+                return  JsonResponse({'status':False,'field':'amount', 'error':'分配收款失败'})
+
+            return JsonResponse({'status':True, 'msg':'分配收款成功'})
 
 
