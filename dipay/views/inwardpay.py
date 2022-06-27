@@ -1,26 +1,28 @@
-
-from django.shortcuts import HttpResponse,redirect,render,reverse
+from django.shortcuts import HttpResponse, redirect, render, reverse
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q
 from django.utils.safestring import mark_safe
-from django.forms.models import modelformset_factory,formset_factory
+from django.forms.models import modelformset_factory, formset_factory
 from django import forms
 from stark.service.starksite import StarkHandler
-from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
-from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, EditInwardPayModelForm
+from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
+from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
+    EditInwardPayModelForm
 from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
 from django.db import transaction
 
-class InwardPayHandler(PermissionHanlder,StarkHandler):
-    has_add_btn =  False
-    def get_model_form(self,type=None):
+
+class InwardPayHandler(PermissionHanlder, StarkHandler):
+    has_add_btn = False
+
+    def get_model_form(self, type=None):
         if type == 'add':
             return AddInwardPayModelForm
         if type == 'edit':
             return EditInwardPayModelForm
 
-    def amount_display(self, obj=None, is_header=False,*args,**kwargs):
+    def amount_display(self, obj=None, is_header=False, *args, **kwargs):
         """
                显示币种和金额
                :param obj:
@@ -28,9 +30,9 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                :return:
                """
         if is_header:
-            return  "客户水单金额"
+            return "客户水单金额"
         else:
-            return "%s %s" %(obj.currency.icon, obj.amount)
+            return "%s %s" % (obj.currency.icon, obj.amount)
 
     def got_amount_display(self, obj=None, is_header=False, *args, **kwargs):
         """
@@ -44,7 +46,7 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
         else:
             return "%s %s" % (obj.currency.icon, obj.got_amount)
 
-    def status_display(self, obj=None, is_header=False,*args,**kwargs):
+    def status_display(self, obj=None, is_header=False, *args, **kwargs):
         """
                显示币种和金额
                :param obj:
@@ -55,14 +57,14 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             return '关联状态'
         else:
 
-            related_url = self.reverse_url('relate2order', inwardpay_id=obj.pk )
+            related_url = self.reverse_url('relate2order', inwardpay_id=obj.pk)
             status = obj.get_status_display()
-            if obj.confirm_status ==0:
+            if obj.confirm_status == 0:
                 return status
-            return mark_safe("<a href= '%s' class='torelate-status-%s' > %s </a>" % (related_url,obj.status, status ))
+            return mark_safe("<a href= '%s' class='torelate-status-%s' > %s </a>" % (related_url, obj.status, status))
 
     # 付款人的显示
-    def payer_display(self, obj=None, is_header=False,*args,**kwargs):
+    def payer_display(self, obj=None, is_header=False, *args, **kwargs):
         if is_header:
             return '付款人'
         else:
@@ -89,29 +91,29 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
         if is_header:
             return "业务确认状态"
         else:
-            confirm_url = self.reverse_url('confirm_pay',inwardpay_id=obj.pk)
+            confirm_url = self.reverse_url('confirm_pay', inwardpay_id=obj.pk)
             confirm_display_choices = [(0, '请认领'),
-                               (1, '已认领-待确认'),
-                               (2, '待业务-财务确认'),
-                               (4, '待跟单-业务确认'),
-                               (3, '待财务确认'),
-                               (5, '待跟单确认'),
-                               (6, '待业务确认'),
-                               (7, '全部确认'),
-                               ]
-            display_text =  [ item[1] for item in confirm_display_choices if item[0]==obj.confirm_status][0]
+                                       (1, '已认领-待确认'),
+                                       (2, '待业务-财务确认'),
+                                       (4, '待跟单-业务确认'),
+                                       (3, '待财务确认'),
+                                       (5, '待跟单确认'),
+                                       (6, '待业务确认'),
+                                       (7, '全部确认'),
+                                       ]
+            display_text = [item[1] for item in confirm_display_choices if item[0] == obj.confirm_status][0]
             if obj.confirm_status == 0:
-                return  mark_safe("<a href='%s' target='_blank'> %s </a>" % (confirm_url, display_text))
+                return mark_safe("<a href='%s' target='_blank'> %s </a>" % (confirm_url, display_text))
             else:
-                return  display_text
+                return display_text
 
-    fields_display = [ get_date_display('create_date'), payer_display,customer_display, got_amount_display,
-                       'bank',  got_confirm_status_display , status_display,]
+    fields_display = [get_date_display('create_date'), payer_display, customer_display, got_amount_display,
+                      'bank', got_confirm_status_display, status_display, ]
 
     detail_fields_display = fields_display
 
     # 自定义添加记录view
-    def add_list(self, request,*args,**kwargs):
+    def add_list(self, request, *args, **kwargs):
         fast_add_list = ['payer', ]
         if request.method == "GET":
             form = self.get_model_form("add")()
@@ -128,34 +130,33 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                 currentnumber_obj.reference += 1
                 form.save()
                 currentnumber_obj.save()
-                return  redirect(self.reverse_list_url(*args, **kwargs))
+                return redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, 'dipay/inwardpay_add.html', locals())
 
-
-    def get_detail_extra_btn(self,request, pk, *args,**kwargs):
-        detail_confirm_url = self.reverse_url('confirm_pay',inwardpay_id=pk)
+    def get_detail_extra_btn(self, request, pk, *args, **kwargs):
+        detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
         return "<a href='%s' class='btn btn-warning'> 确认 </a>" % detail_confirm_url
 
     def get_extra_urls(self):
         """ 收款关联订单的url  """
         extra_pattern = [
-            url("^relate2orders/(?P<inwardpay_id>\d+)/$", self.wrapper(self.relate2order), name= self.get_url_name('relate2order')),
-            url("^confirm/(?P<inwardpay_id>\d+)/$", self.wrapper(self.confirm_pay), name= self.get_url_name('confirm_pay')),
+            url("^relate2orders/(?P<inwardpay_id>\d+)/$", self.wrapper(self.relate2order),
+                name=self.get_url_name('relate2order')),
+            url("^confirm/(?P<inwardpay_id>\d+)/$", self.wrapper(self.confirm_pay),
+                name=self.get_url_name('confirm_pay')),
         ]
         return extra_pattern
 
-
-    def get_queryset_data(self,request,*args,**kwargs):
+    def get_queryset_data(self, request, *args, **kwargs):
         pk = request.GET.get('pk')
         if pk:
             return self.model_class.objects.filter(pk=pk)
         else:
             return self.model_class.objects.all()
 
-
     # 认领款项
-    def confirm_pay(self,request,inwardpay_id,*args,**kwargs):
+    def confirm_pay(self, request, inwardpay_id, *args, **kwargs):
         obj = Inwardpay.objects.filter(pk=inwardpay_id).first()
         payer = '-'
         if obj.payer:
@@ -164,16 +165,16 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
         elif obj.customer:
             customer = obj.customer
         else:
-            return render(request,'dipay/msg_after_submit.html',{'msg':'付款人和客户都没填，请先补充完整任何一项'})
+            return render(request, 'dipay/msg_after_submit.html', {'msg': '付款人和客户都没填，请先补充完整任何一项'})
         data_list = []
         # fields_display = [get_date_display('create_date'), 'payer', got_amount_display,
         #                   'bank', status_display, got_confirm_status_display]
-        data_list.append({'label':'收款日期',
-                           'data':obj.create_date.strftime('%Y-%m-%d')})
+        data_list.append({'label': '收款日期',
+                          'data': obj.create_date.strftime('%Y-%m-%d')})
         data_list.append({'label': '付款人',
                           'data': payer})
         data_list.append({'label': '实收款',
-                          'data': '%s %s' % (obj.currency.icon,obj.got_amount)})
+                          'data': '%s %s' % (obj.currency.icon, obj.got_amount)})
         data_list.append({'label': '收款行',
                           'data': obj.bank.title})
         data_list.append({'label': '关联状态',
@@ -184,15 +185,15 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
         return_url = self.reverse_url('list')
 
         if request.method == "GET":
-            form = ConfirmInwardpayModelForm(instance=obj,initial={'customer':customer})
-            form.instance.customer_id =customer.pk
+            form = ConfirmInwardpayModelForm(instance=obj, initial={'customer': customer})
+            form.instance.customer_id = customer.pk
 
-            return render(request, 'dipay/confirm_pay.html',locals())
+            return render(request, 'dipay/confirm_pay.html', locals())
 
         if request.method == "POST":
             customer_id = request.POST.get('customer')
             amount = float(request.POST.get('amount'))
-            form = ConfirmInwardpayModelForm(request.POST,instance=obj)
+            form = ConfirmInwardpayModelForm(request.POST, instance=obj)
 
             if form.is_valid():
                 try:
@@ -208,13 +209,13 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                         raise forms.ValidationError()
 
                     # 校验水单金额和实收金额
-                    if amount< obj.got_amount:
+                    if amount < obj.got_amount:
                         form.errors.update({'amount': ['水单金额应不小于实收金额', ]})
                         raise forms.ValidationError()
 
                 except Exception as e:
-                    print('error',e)
-                    return render(request, 'dipay/confirm_pay.html',locals())
+                    print('error', e)
+                    return render(request, 'dipay/confirm_pay.html', locals())
                 else:
                     form.instance.confirm_status += 1
                     form.instance.torelate_amount = amount
@@ -312,19 +313,16 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
     #             return render(request, 'dipay/related_to_orders.html', locals())
     #
 
-
-
-
     # 关联款项 第二版设计，不用formset，改为一个一个订单的关联，采用阿里的模式
-    def relate2order(self,request,inwardpay_id, *args,**kwargs):
+    def relate2order(self, request, inwardpay_id, *args, **kwargs):
         inwardpay_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
-        total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj) ])
+        total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj)])
         inwardpay_obj.torelate_amount = inwardpay_obj.amount - total_dist_amounts
         inwardpay_obj.save()
 
         if inwardpay_obj.customer:
             customer_obj = inwardpay_obj.customer
-        else :
+        else:
             customer_obj = inwardpay_obj.payer.customer
 
         torelate_amount = inwardpay_obj.torelate_amount
@@ -335,32 +333,32 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
             order_obj.save()
             row = {}
-            for each in ['order_number', 'customer', 'currency', 'amount', 'rcvd_amount']:
-                row[each]= getattr(order_obj, each)
-            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj,order=order_obj).first()
-            dist_amount  = pay2order_obj.amount if pay2order_obj else 0
-            display_dist_amount = '%s%s' % (order_obj.currency.icon,dist_amount) if dist_amount else '--'
-
+            for each in ['order_number', 'customer', 'currency', 'amount', 'rcvd_amount','collect_amount']:
+                row[each] = getattr(order_obj, each)
+            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
+            dist_amount = pay2order_obj.amount if pay2order_obj else 0
+            display_dist_amount = '%s%s' % (order_obj.currency.icon, dist_amount) if dist_amount else '--'
+            # 分配金额加上span标签和class，便于js操作，链接showinputbox,点击直接编辑
             amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s</span>" % (
                 'amount', order_obj.pk, dist_amount, display_dist_amount
             )
-            row['dist_amount']= mark_safe(amount_tag)
+            row['dist_amount'] = mark_safe(amount_tag)
             row['dist_value'] = dist_amount
 
-            save_url = self.reverse_url('relate2order',inwardpay_id= inwardpay_obj.pk)
+            save_url = self.reverse_url('relate2order', inwardpay_id=inwardpay_obj.pk)
             save_btn = mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
-                             " <i class='fa fa-check-square-o'></i> </span>" % (order_obj.pk, save_url))
+                                 " <i class='fa fa-check-square-o'></i> </span>" % (order_obj.pk, save_url))
             row['save_btn'] = save_btn
             torelate_order_list.append(row)
 
         # 按关联金额大小排序
-        torelate_order_list.sort(key=lambda x: x['dist_value'],reverse=True)
+        torelate_order_list.sort(key=lambda x: x['dist_value'], reverse=True)
 
         # 整理已关联订单数据
         related_order_list = Pay2Orders.objects.filter(payment=inwardpay_obj)
 
         if request.method == "GET":
-            return render(request,'dipay/related_to_orders.html',locals())
+            return render(request, 'dipay/related_to_orders.html', locals())
 
         if request.is_ajax():
             print(11111, request.POST)
@@ -369,31 +367,36 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
             try:
                 dist_amount = float(dist_amount)
             except Exception as e:
-                return JsonResponse( {'status':False, 'field':'amount', 'error':'必须填数值'})
+                return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填数值'})
 
             if dist_amount <= 0:
-                return JsonResponse({'status': False, 'field':'amount','error': '必须填大于0的数值'})
-
-            if dist_amount > inwardpay_obj.torelate_amount:
-                return JsonResponse({'status': False,'field':'amount', 'error': '不能大于可分配的金额'})
+                return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填大于0的数值'})
 
             order_obj = ApplyOrder.objects.filter(pk=order_id).first()
             if not order_obj:
-                res = {'status':False, 'field':'amount','error':'没找到订单号'}
+                res = {'status': False, 'field': 'amount', 'error': '没找到订单号'}
                 return JsonResponse(res)
 
-            if dist_amount > order_obj.collect_amount:
-                return JsonResponse({'status': False, 'field':'amount','error': '不能大于订单应收金额'})
 
-            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj,order=order_obj).first()
+            pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
 
             if pay2order_obj:
-                old_dist_amount = float(pay2order_obj.amount)
-                pay2order_obj.amount = dist_amount
-                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount- old_dist_amount
-                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount + old_dist_amount
+                diff_amount = dist_amount- float(pay2order_obj.amount)
+                if diff_amount > inwardpay_obj.torelate_amount:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
+                if diff_amount > order_obj.collect_amount:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
+                pay2order_obj.amount = dist_amount
+                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + diff_amount
+                order_obj.collect_amount =  float(order_obj.collect_amount) -diff_amount
+                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - diff_amount
             else:
+                if dist_amount > inwardpay_obj.torelate_amount:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
+                if dist_amount > order_obj.collect_amount:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
+
                 pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount)
                 order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
                 inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount
@@ -402,8 +405,6 @@ class InwardPayHandler(PermissionHanlder,StarkHandler):
                 inwardpay_obj.save()
                 pay2order_obj.save()
             except Exception as e:
-                return  JsonResponse({'status':False,'field':'amount', 'error':'分配收款失败'})
+                return JsonResponse({'status': False, 'field': 'amount', 'error': '分配收款失败'})
 
-            return JsonResponse({'status':True, 'msg':'分配收款成功'})
-
-
+            return JsonResponse({'status': True, 'msg': '分配收款成功'})

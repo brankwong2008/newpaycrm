@@ -128,6 +128,7 @@
                             <th>客户名</th>
                             <th>订单金额</th>
                             <th>已收金额</th>
+                            <th>应收账款</th>
                             <th>已关联金额</th>
                             <th>操作</th>
 
@@ -141,6 +142,7 @@
                                 <td>{{ row.customer.shortname }}</td>
                                 <td>{{ row.currency.icon }}{{ row.amount }}</td>
                                 <td>{{ row.currency.icon }}{{ row.rcvd_amount }}</td>
+                                <td>{{ row.currency.icon }}{{ row.collect_amount }}</td>
                                 <td class="dist-amount"> {{ row.dist_amount }} </td>
                                 <td>{{ row.save_btn }}</td>
 
