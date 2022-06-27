@@ -91,6 +91,7 @@
                             <th>订单金额</th>
                             <th>已收金额</th>
                             <th>已关联金额</th>
+                            <th>操作</th>
 
 
                         </tr>
@@ -104,6 +105,7 @@
                                 <td>{{ row.order.currency.icon }}{{ row.order.amount }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.rcvd_amount }}</td>
                                 <td class="dist-amount">{{ row.order.currency.icon }} {{ row.amount }} </td>
+                                <td ><a href="{% url 'stark:dipay_pay2orders_edit'  row.pk  %}"><i class="fa fa-edit"></i></a> </td>
 
                             </tr>
                         {% endfor %}
