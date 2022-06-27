@@ -5,17 +5,11 @@ from django.utils.safestring import mark_safe
 from django.forms.models import modelformset_factory
 from django import forms
 from stark.service.starksite import StarkHandler
-from stark.utils.display import get_date_display,get_choice_text
+from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
 from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm
 from dipay.models import ApplyOrder, Customer, Payer, Pay2Orders
 
-class  Pay2OrdersHandler(StarkHandler):
-    def get_fields_display(self, request, *args, **kwargs):
-        val = []
-        val.extend(self.fields_display)
-        if self.fields_display:
-            val.extend([self.get_del_display, ])
-        return val
+class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
 
     def get_del_display(self, obj=None, is_header=False,*args,**kwargs):
         """
@@ -67,7 +61,8 @@ class  Pay2OrdersHandler(StarkHandler):
     def get_urls(self):
         patterns = [
             #url("^order_related_paylist/(?P<order_id>\d+)/$", self.wrapper(self.order_related_paylist), name=self.get_url_name('order_related_paylist')),
-            url("^list/(?P<order_id>\d+)/$", self.wrapper(self.show_list), name=self.get_list_url_name),
+            # url("^list/(?P<order_id>\d+)/$", self.wrapper(self.show_list), name=self.get_list_url_name),
+            url("^list/$", self.wrapper(self.show_list), name=self.get_list_url_name),
             url("^edit/(?P<pk>\d+)/$", self.wrapper(self.edit_list), name=self.get_edit_url_name),
             url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name), ]
 
@@ -78,6 +73,9 @@ class  Pay2OrdersHandler(StarkHandler):
 
 
     def get_queryset_data(self, request, *args, **kwargs):
-        order_id = kwargs.get('order_id')
+        order_id = request.GET.get('order_id')
         print(self.model_class)
-        return self.model_class.objects.filter(order_id=order_id)
+        if order_id:
+            return self.model_class.objects.filter(order_id=order_id)
+        else:
+            return self.model_class.objects.all()
