@@ -126,8 +126,11 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
                 form.instance.torelate_amount = form.instance.got_amount
                 currentnumber_obj = CurrentNumber.objects.get(pk=1)
-                form.instance.reference = currentnumber_obj.reference + 1
-                currentnumber_obj.reference += 1
+                new_reference = currentnumber_obj.reference + 1
+                while Inwardpay.objects.filter(reference=new_reference).exists():
+                    new_reference += 1
+                form.instance.reference = new_reference
+                currentnumber_obj.reference = new_reference
                 form.save()
                 currentnumber_obj.save()
                 return redirect(self.reverse_list_url(*args, **kwargs))
@@ -361,7 +364,6 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             return render(request, 'dipay/related_to_orders.html', locals())
 
         if request.is_ajax():
-            print(11111, request.POST)
             order_id = request.POST.get('pk')
             dist_amount = request.POST.get('amount')
             try:
@@ -398,12 +400,23 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount)
+                current_number_obj = CurrentNumber.objects.get(pk=1)
+
+                # 给每一个新增的分配记录自动的加上分配编号，同时更新currentnumber_obj
+                new_dist_ref = current_number_obj.dist_ref + 1
+                while Pay2Orders.objects.filter(dist_ref=new_dist_ref).exists():
+                    new_dist_ref += 1
+                pay2order_obj.dist_ref = new_dist_ref
+                current_number_obj.dist_ref = new_dist_ref
+                current_number_obj.save()
+
                 order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
                 inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount
             try:
                 order_obj.save()
                 inwardpay_obj.save()
                 pay2order_obj.save()
+
             except Exception as e:
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '分配收款失败'})
 
