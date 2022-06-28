@@ -79,37 +79,7 @@ def permission_del(request, pk):
         to_delete_permission.delete()
         return redirect(cancel)
 
-def permission_mult_add(request,sid):
-    Formset_class = formset_factory(PermissionMultAddModelForm,extra=0)
 
-    if request.method == "GET":
-        initial = [{"parent_id":item} for item in [sid,]*2]
-        formset = Formset_class(initial= initial)
-        return render(request,"permission_mult_add.html", {"formset":formset})
-
-    if request.method == "POST":
-        formset = Formset_class(data=request.POST)
-
-        if formset.is_valid():
-            valid_data = formset.cleaned_data
-            flag = True
-            for i in range(0,formset.total_form_count()):
-                item = valid_data[i]
-                if not item:
-                    continue
-                new_permission = models.Permission(**item)
-
-                try:
-                    new_permission.validate_unique()
-                    new_permission.save()
-                except Exception as e:
-                    formset.errors[i].update(e)
-                    flag = False
-            if flag:
-                return HttpResponse("批量添加成功")
-
-        return render(request,"permission_mult_add.html", {"formset":formset})
-#
 # def permission_mult_add(request,sid):
 #     """ 按modelformset_factory方式的添加权限 """
 #
