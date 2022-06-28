@@ -166,7 +166,7 @@ class Inwardpay(models.Model):
 
     def __str__(self):
         create_date = self.create_date.strftime("%Y-%m-%d")
-        return "%s: %s %s%s" % (create_date, self.customer,self.currency.icon, str(self.amount))
+        return "%s: %s %s%s" % (create_date, self.customer, self.currency.icon, str(self.amount))
 
 
 class Pay2Orders(models.Model):

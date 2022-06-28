@@ -30,7 +30,7 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
             return '已收款'
         else:
             payments_url_name = "%s:%s" % (self.namespace, 'dipay_pay2orders_list')
-            payments_url = reverse(payments_url_name, kwargs={'order_id': obj.id})
+            payments_url = reverse(payments_url_name)+'?order_id=%s' % obj.pk
             return mark_safe("<a href=%s target='_blank'> %s </a>" % (payments_url, obj.rcvd_amount))
 
     def batch_verify(self, request, *args, **kwargs):

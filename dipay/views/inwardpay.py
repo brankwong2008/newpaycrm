@@ -16,6 +16,9 @@ from django.db import transaction
 class InwardPayHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
 
+    search_list = ['create_date','amount','customer__title__icontains',]
+    search_placeholder = '搜索 日期 金额 客户名 '
+
     def get_model_form(self, type=None):
         if type == 'add':
             return AddInwardPayModelForm
