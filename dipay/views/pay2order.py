@@ -56,7 +56,6 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
 
     fields_display = ['order',get_relate_amount_display, get_payment_display, get_date_display('relate_date'),]
 
-    has_add_btn = False
 
     def get_urls(self):
         patterns = [
