@@ -21,7 +21,6 @@ urlpatterns = [
 
     path('permission/list/', permission.permission_list, name="permission_list"),
     re_path(r'permission/add/(?P<sid>\d+)/', permission.permission_add, name="permission_add"),
-    re_path(r'permission/mult_add/(?P<sid>\d+)/', permission.permission_mult_add, name="permission_mult_add"),
     re_path(r'permission/mult_edit/(?P<sid>\d+)/', permission.permission_mult_edit, name="permission_mult_edit"),
     re_path(r'permission/edit/(?P<pk>\d+)/', permission.permission_edit, name="permission_edit"),
     re_path(r'^permission/del/(?P<pk>\d+)/$', permission.permission_del, name="permission_del"),

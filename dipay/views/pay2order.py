@@ -2,12 +2,10 @@
 from django.shortcuts import HttpResponse,redirect,render,reverse
 from django.conf.urls import url
 from django.utils.safestring import mark_safe
-from django.forms.models import modelformset_factory
 from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
-from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm
-from dipay.models import ApplyOrder, Customer, Payer, Pay2Orders
+from dipay.models import Pay2Orders, CurrentNumber
 
 class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
 
@@ -63,7 +61,10 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
             # url("^list/(?P<order_id>\d+)/$", self.wrapper(self.show_list), name=self.get_list_url_name),
             url("^list/$", self.wrapper(self.show_list), name=self.get_list_url_name),
             url("^edit/(?P<pk>\d+)/$", self.wrapper(self.edit_list), name=self.get_edit_url_name),
-            url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name), ]
+            url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name),
+            url("^add/$", self.wrapper(self.add_list), name=self.get_add_url_name),
+
+        ]
 
         # extend方法没有返回值，直接改变自身
         patterns.extend(self.get_extra_urls())
@@ -78,3 +79,18 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
             return self.model_class.objects.filter(order_id=order_id)
         else:
             return self.model_class.objects.all()
+
+
+    def save_form(self,form,request,is_update=False,*args, **kwargs):
+        if is_update:
+            form.save()
+        else:
+            current_number_obj = CurrentNumber.objects.get(pk=1)
+            # 给每一个新增的分配记录自动的加上分配编号，同时更新currentnumber_obj
+            new_dist_ref = current_number_obj.dist_ref + 1
+            while Pay2Orders.objects.filter(dist_ref=new_dist_ref).exists():
+                new_dist_ref += 1
+            form.instance.dist_ref = new_dist_ref
+            form.save()
+            current_number_obj.dist_ref = new_dist_ref
+            current_number_obj.save()
