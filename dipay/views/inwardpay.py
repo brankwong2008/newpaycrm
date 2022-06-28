@@ -417,6 +417,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount
             try:
                 order_obj.save()
+                if inwardpay_obj.torelate_amount == 0:
+                    inwardpay_obj.status = 1 
                 inwardpay_obj.save()
                 pay2order_obj.save()
 
