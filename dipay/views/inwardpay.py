@@ -332,7 +332,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             customer_obj = inwardpay_obj.payer.customer
 
         torelate_amount = inwardpay_obj.torelate_amount
-        torelate_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
+        # torelate_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
+        torelate_queryset = ApplyOrder.objects.filter(customer=customer_obj)
         torelate_order_list = []
         # 检查其中的应收金额，确保一致性, 整理可关联订单数据
         for order_obj in torelate_queryset:
