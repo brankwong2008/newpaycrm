@@ -138,6 +138,7 @@ class SecondMenuModelForm(ModelForm):
             [item['icon'] for item in models.Permission.objects.filter(icon__isnull=False).values("icon")])
         avatar_set = menu_iconset | set(settings.AVATAR_CHOICES)
 
+        icon_choices.append((None,'------'))
         for item in avatar_set:
             node = (item, mark_safe(f"<i class='fa {item}'></i>"))
             icon_choices.append(node)

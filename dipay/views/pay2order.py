@@ -93,3 +93,15 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
             form.save()
             current_number_obj.dist_ref = new_dist_ref
             current_number_obj.save()
+
+        # 同时更新订单和收款记录
+        order_obj = form.instance.order
+        order_obj.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order=order_obj)])
+        order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
+        order_obj.save()
+
+        payment_obj = form.instance.payment
+        related_amount = sum([item.amount for item in Pay2Orders.objects.filter(payment=payment_obj)])
+        payment_obj.torelate_amount = payment_obj.amount - related_amount
+        payment_obj.save()
+

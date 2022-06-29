@@ -150,6 +150,7 @@ class Inwardpay(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,verbose_name='币种')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='水单金额',default=0)
     got_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='实收金额',default=0)
+    ttcopy = models.ImageField(upload_to="ttcopy", verbose_name='电汇水单', null=True, blank=True)
     torelate_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='待关联金额',default=0)
 
     status_choices = [(0,'待关联'),
@@ -162,7 +163,8 @@ class Inwardpay(models.Model):
     confirm_status = models.SmallIntegerField(choices=confirm_choices, verbose_name='确认',default=0)
     orders = models.ManyToManyField(to=ApplyOrder, through="Pay2Orders", verbose_name='关联记录',blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
-    reference = models.IntegerField(verbose_name='收款编号',help_text='避免出现重复记录',null=True)
+    reference = models.IntegerField(verbose_name='收款编号',help_text='避免出现重复记录',null=True,default=1000)
+
 
     def __str__(self):
         create_date = self.create_date.strftime("%Y-%m-%d")
