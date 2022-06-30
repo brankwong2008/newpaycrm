@@ -87,6 +87,8 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
         user = self.request.user
         for role in user.roles.all():
             editable_list = self.role_edit_dict.get(role.title)
+            if not editable_list :
+                return False
             if editable_list == '__all__':
                 return True
             if field in editable_list:
