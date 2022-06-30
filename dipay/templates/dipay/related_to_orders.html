@@ -105,7 +105,10 @@
                                 <td>{{ row.order.currency.icon }}{{ row.order.amount }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.rcvd_amount }}</td>
                                 <td class="dist-amount">{{ row.order.currency.icon }} {{ row.amount }} </td>
-                                <td ><a href="{% url 'stark:dipay_pay2orders_edit'  row.pk  %}"><i class="fa fa-edit"></i></a> </td>
+                                <td >
+                                    <a href="{% url 'stark:dipay_pay2orders_edit'  row.pk  %}"><i class="fa fa-edit"></i></a>
+
+                                </td>
 
                             </tr>
                         {% endfor %}
@@ -146,7 +149,11 @@
                                 <td>{{ row.currency.icon }}{{ row.rcvd_amount }}</td>
                                 <td>{{ row.currency.icon }}{{ row.collect_amount }}</td>
                                 <td class="dist-amount"> {{ row.dist_amount }} </td>
-                                <td>{{ row.save_btn }}</td>
+                                <td>
+                                    {{ row.save_btn }}
+                                    {{ row.del_btn }}
+
+                                </td>
 
                             </tr>
                         {% endfor %}
