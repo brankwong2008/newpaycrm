@@ -138,6 +138,16 @@ a.add-record-btn {
     line-height: 20px;
 }
 
+/* 收款业的待收款状态 待收齐 */
+.torelate-status-0 {
+
+}
+
+/* 收款业的待收款状态 收齐 */
+.torelate-status-1 {
+    color: dimgrey;
+
+}
 
 
 

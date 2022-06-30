@@ -551,12 +551,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
             ## 检查是否超过订单的尾款金额
             dist_amount = d.get('dist_amount') or d.get('got_amount')
-            if order_obj.amount - order_obj.rcvd_amount - Decimal(dist_amount) < 0:
+            dist_amount = Decimal(str(dist_amount))
+            if order_obj.amount - order_obj.rcvd_amount - dist_amount < 0:
                 errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '超过订单应收款'))
                 continue
 
             ## 检查是否超过收款可分配金额
-            if float(pay_obj.torelate_amount) - dist_amount< 0:
+            if pay_obj.torelate_amount -dist_amount< 0:
                 errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '超过收款可分配金额'))
                 continue
 
@@ -570,13 +571,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
             new_dist_obj.save()
             # 扣减可关联金额
-            pay_obj.torelate_amount =float(pay_obj.torelate_amount) - dist_amount
+            pay_obj.torelate_amount = pay_obj.torelate_amount - dist_amount
             pay_obj.save()
             count_dist += 1
 
             # 刷新订单的总收款金额和应收款金额 values_list出来的是列表里面套tuple的结构
-            order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
-            order_obj.collect_amount = float(order_obj.amount) - order_obj.rcvd_amount
+            order_obj.rcvd_amount =  order_obj.rcvd_amount + dist_amount
+            order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
             if order_obj.collect_amount < 0:
                 errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '应收款不能为负数，请检查'))
                 continue
@@ -645,7 +646,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             # 提取分配金额
             elif field == "got_amount":
                 try:
-                    row_pay_dict[field] = float(row[n].value)
+                    row_pay_dict[field] = Decimal(str(row[n].value))
 
                     remark = '%s %s' % (remark, row[n].value)
                 except:
