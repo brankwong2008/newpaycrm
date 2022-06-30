@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
+from decimal import Decimal
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q
@@ -57,14 +58,13 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                :return:
                """
         if is_header:
-            return '关联状态'
+            return '待关联金额'
         else:
 
             related_url = self.reverse_url('relate2order', inwardpay_id=obj.pk)
-            status = obj.get_status_display()
-            if obj.confirm_status == 0:
-                return status
-            return mark_safe("<a href= '%s' class='torelate-status-%s' > %s </a>" % (related_url, obj.status, status))
+            torelate_amount = obj.torelate_amount if obj.torelate_amount else '已关联'
+            status = 0 if obj.torelate_amount  else 1
+            return mark_safe("<a href= '%s' class='torelate-status-%s' > %s </a>" % (related_url, status, torelate_amount))
 
     # 付款人的显示
     def payer_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -198,7 +198,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
         if request.method == "POST":
             customer_id = request.POST.get('customer')
-            amount = float(request.POST.get('amount'))
+            amount = Decimal(request.POST.get('amount'))
             form = ConfirmInwardpayModelForm(request.POST, instance=obj)
 
             if form.is_valid():
@@ -371,7 +371,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             order_id = request.POST.get('pk')
             dist_amount = request.POST.get('amount')
             try:
-                dist_amount = float(dist_amount)
+                dist_amount = Decimal(dist_amount)
             except Exception as e:
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填数值'})
 
@@ -387,16 +387,16 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
 
             if pay2order_obj:
-                diff_amount = dist_amount- float(pay2order_obj.amount)
+                diff_amount = dist_amount- Decimal(pay2order_obj.amount)
                 if diff_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
                 if diff_amount > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj.amount = dist_amount
-                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + diff_amount
-                order_obj.collect_amount =  float(order_obj.collect_amount) -diff_amount
-                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - diff_amount
+                order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount
+                order_obj.collect_amount =  order_obj.collect_amount -diff_amount
+                inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 if dist_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
@@ -414,8 +414,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 current_number_obj.dist_ref = new_dist_ref
                 current_number_obj.save()
 
-                order_obj.rcvd_amount = float(order_obj.rcvd_amount) + dist_amount
-                inwardpay_obj.torelate_amount = float(inwardpay_obj.torelate_amount) - dist_amount
+                order_obj.rcvd_amount = order_obj.rcvd_amount + dist_amount
+                inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - dist_amount
             try:
                 order_obj.save()
                 if inwardpay_obj.torelate_amount == 0:
