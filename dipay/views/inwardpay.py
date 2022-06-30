@@ -356,6 +356,12 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             save_btn = mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
                                  " <i class='fa fa-check-square-o'></i> </span>" % (order_obj.pk, save_url))
             row['save_btn'] = save_btn
+            if pay2order_obj:
+                del_url = reverse('stark:dipay_pay2orders_del', kwargs={'pk':pay2order_obj.pk})
+                row['del_btn'] = mark_safe("<a href=%s><i class='fa fa-trash'></i></a>" % del_url)
+            else:
+                row['del_btn'] = ''
+
             torelate_order_list.append(row)
 
         # 按关联金额大小排序

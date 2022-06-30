@@ -81,6 +81,7 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
         '外销员':['sales_remark',],
         '外贸部经理':"__all__",
         '外贸跟单':"__all__",
+        '总经理':"__all__",
         '工厂跟单':['produce_info',],
     }
     def get_editable(self,field):
