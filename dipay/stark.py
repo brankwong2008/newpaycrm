@@ -10,7 +10,8 @@ from dipay.views.customer import CustomerHandler
 from dipay.views.payer import PayerHandler
 from dipay.views.followorder import FollowOrderHandler
 from dipay.views.weeklyplan import WeekelyPlanHandler
-
+from dipay.views.applyrelease import ApplyReleaseHandler
+from dipay.views.applyrelease_verify import ApplyReleaseVerifyHandler
 
 
 # 用户信息管理
@@ -43,7 +44,6 @@ site.register(models.Inwardpay, InwardPayHandler)
 # 收款记录
 site.register(models.Inwardpay, InwardPayHandler)
 
-
 # 收款订单关联记录
 site.register(models.Pay2Orders, Pay2OrdersHandler)
 
@@ -53,6 +53,9 @@ site.register(models.Payer,PayerHandler)
 # 最新编码
 site.register(models.CurrentNumber)
 
+# 申请放单
+site.register(models.ApplyRelease, ApplyReleaseHandler)
 
-
+# 申请放单审核
+site.register(models.ApplyRelease, ApplyReleaseVerifyHandler,prev='verify')
 

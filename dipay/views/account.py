@@ -16,6 +16,7 @@ def login(request):
         username = request.POST.get("username")
         pwd = gen_md5(request.POST.get("pwd"))
         user_obj = MyUserInfo.objects.filter(username=username,password=pwd).first()
+        print(username,pwd,user_obj)
         if user_obj:
             request.session[settings.LOGIN_KEY] = {"username":user_obj.username, "id":user_obj.id}
             request.user = user_obj

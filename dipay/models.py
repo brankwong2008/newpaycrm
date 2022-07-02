@@ -53,11 +53,13 @@ class ApplyOrder(models.Model):
                                     verbose_name='外销员',
                                     limit_choices_to={"roles__title":"外销员"} ,
                                     null=True,
-                                    )
+                                 )
+    # D 代理订单， L 临时账户（每个客户只能有一个临时账户，预留L1000以下的编号给临时账户使用）
     type_choices = [  (0, 'J'),
                       (1, 'M'),
                       (2, 'X'),
                       (3, 'D'),
+                      (4, 'L'),
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号',unique=True, null=True,blank=True)
@@ -79,10 +81,10 @@ class ApplyOrder(models.Model):
                     ]
     term = models.SmallIntegerField(choices=term_choices, verbose_name='贸易条款',default=0)
 
-
     status_choices = [(0, '申请中'),
                     (1, '已配单号'),
                     (2, '已下单'),
+                    (6, '款齐'),
                     (3, '完结'),
                     (4, '固定账户'),
                     (5, '无效'),
@@ -197,11 +199,23 @@ class ExchangeRate(models.Model):
 
 
 
+# 申请放单
+class ApplyRelease(models.Model):
+    apply_date =  models.DateField(auto_now_add=True, verbose_name='申请日期')
+    applier = models.ForeignKey(to=UserInfo, related_name='applier', on_delete=models.CASCADE, verbose_name='申请人')
+    verify_date =  models.DateField(verbose_name='审批日期', null=True, blank=True)
+    verifier = models.ForeignKey(to=UserInfo,related_name='verifier', on_delete=models.CASCADE, verbose_name='审批人')
+    remark =  models.TextField(verbose_name='备注', default='-')
+    decision = models.BooleanField(verbose_name='审批意见', null=True)
+    order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
+
+    def __str__(self):
+        return '%s 放单申请 %s' % (self.apply_date.strftime('%Y/%m/%d'),self.order.order_number)
+
 """
 
 日期	付款人	客户	收款行	货币	金额	状态 
 4月10日	Studworks 	Studworks 	Hero广发	美元	15000	待关联
-
 
 """
 
