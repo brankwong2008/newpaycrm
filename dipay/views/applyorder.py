@@ -143,8 +143,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         else:
             return ManualAddApplyOrderModelForm
 
+    # 根据用户筛选数据源
     def get_queryset_data(self, request, *args, **kwargs):
-        if request.user.username == 'brank':
+        if request.user.username in ['brank','tony'] :
             return self.model_class.objects.all()
         if request.user:
             return self.model_class.objects.filter(salesperson=request.user, status__lte=3)

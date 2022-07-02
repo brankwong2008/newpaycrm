@@ -1,17 +1,18 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
+from datetime import datetime
 from django.conf import settings
 from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display
-from dipay.utils.displays import status_display,  info_display, save_display, \
-    follow_date_display,order_number_display, sales_display, port_display, goods_display, customer_display, \
-    term_display, amount_display,confirm_date_display,rcvd_amount_blance_display
+from dipay.utils.displays import status_display, info_display, save_display, \
+    follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
+    term_display, amount_display, confirm_date_display, rcvd_amount_blance_display
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
 from django.conf.urls import url
-from dipay.models import ApplyOrder, Pay2Orders
+from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -22,8 +23,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
-        Option(field='status',is_multi=False),
-        Option(field='salesman',filter_param={'roles__title':'外销员'}, verbose_name='业务'),
+        Option(field='status', is_multi=False),
+        Option(field='salesman', filter_param={'roles__title': '外销员'}, verbose_name='业务'),
         # Option(field='depart'),
     ]
 
@@ -47,9 +48,9 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     def batch_to_produce(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
         for pk in pk_list:
-            order_obj = self.model_class.objects.filter(pk=pk).first()
-            order_obj.status = 1
-            order_obj.save()
+            followorder_obj = self.model_class.objects.filter(pk=pk).first()
+            followorder_obj.status = 1
+            followorder_obj.save()
         return redirect(self.reverse_list_url())
 
     batch_to_produce.text = '批量排产'
@@ -79,7 +80,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
             data_list.append([order_number, customer, sub_sequence, goods, amount])
             sub_sequence = mark_safe(
-                "<input name='sub_sequence' type='text' value='%s'>" % (sub_sequence_num+1))
+                "<input name='sub_sequence' type='text' value='%s'>" % (sub_sequence_num + 1))
 
             data_list.append([order_number, customer, sub_sequence, goods, amount])
 
@@ -88,7 +89,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 拆分订单的view
     def split_record(self, request, pk, *args, **kwargs):
 
-        fields_list =  ['sub_sequence','goods','amount']
+        fields_list = ['sub_sequence', 'goods', 'amount']
         length = len(request.POST.getlist(fields_list[0]))
         # 初始化数据列表，含n个字典
         data_list = [{} for i in range(length)]
@@ -106,8 +107,9 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
             for key, val in data_list[i].items():
                 setattr(order_obj, key, val)
-            order_obj.order_number = "%s%s-%s" % (order_obj.get_order_type_display(),order_obj.sequence,order_obj.sub_sequence)
-            splited_order_list.append( order_obj.order_number)
+            order_obj.order_number = "%s%s-%s" % (
+            order_obj.get_order_type_display(), order_obj.sequence, order_obj.sub_sequence)
+            splited_order_list.append(order_obj.order_number)
             if i != 0:
                 try:
                     # 新增拆分的订单, 把id置为None即可
@@ -124,20 +126,44 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     followorder_obj.save()
                 except Exception as e:
                     msg = '订单号可能重复，请检查。 错误内容：%s' % e
-                    return render(request,'dipay/msg_after_submit.html',locals())
+                    return render(request, 'dipay/msg_after_submit.html', locals())
             else:
                 order_obj.save()
             count += 1
             list_url = self.reverse_list_url()
-            order_list = [ f"<a href='{list_url}?q={order_number[:5]}'> {order_number} </a>" for order_number in splited_order_list]
+            order_list = [f"<a href='{list_url}?q={order_number[:5]}'> {order_number} </a>" for order_number in
+                          splited_order_list]
 
         msg = mark_safe('成功拆分%s个订单: %s ' % (count, ' '.join(order_list)))
-        return render(request,'dipay/msg_after_submit.html',locals())
+        return render(request, 'dipay/msg_after_submit.html', locals())
 
     batch_split_order.text = '拆分订单'
 
+    # 申请放单
+    def apply_release(self, request, *args, **kwargs):
+        pk_list = request.POST.getlist('pk')
+        if len(pk_list) > 1:
+            return render(request, 'dipay/msg_after_submit.html', {'msg': '只能申请一单'})
+        for pk in pk_list:
+            followorder_obj = self.model_class.objects.filter(pk=pk).first()
+            order_obj = followorder_obj.order
+            user = request.user
+            verifier = UserInfo.objects.filter(roles__title__contains='财务').first()
+            applyrelease_obj = ApplyRelease(apply_date=datetime.now(),
+                                            applier= user,
+                                            order=order_obj,
+                                            verifier=verifier,
+                                            )
+            applyrelease_obj.save()
+        apply_release_url = reverse('stark:dipay_applyrelease_list')
+        return redirect(apply_release_url)
+
+
+    apply_release.text = '申请放单'
+
     # 批量处理列表
-    batch_process_list = [batch_to_produce, batch_split_order]
+    batch_process_list = [batch_to_produce, batch_split_order, apply_release]
+
 
     def edit_display(self, obj=None, is_header=False, *args, **kwargs):
         """
@@ -157,13 +183,15 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
 
     # 跟单列表显示的字段内容
-    fields_display = [checkbox_display, order_number_display, customer_display,sales_display, status_display, goods_display,
+    fields_display = [checkbox_display, order_number_display, customer_display, sales_display, status_display,
+                      goods_display,
                       port_display('discharge_port'), term_display, confirm_date_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
                       amount_display, rcvd_amount_blance_display
                       ]
+
 
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):
@@ -183,8 +211,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return self.model_class.objects.all()
         return self.model_class.objects.all()
 
+
     def get_per_page(self):
         return 20
+
 
     def get_model_form(self, type=None):
         return EditFollowOrderModelForm
@@ -193,14 +223,15 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         patterns = [
             url("^save/$", self.wrapper(self.save_record), name=self.get_url_name('save')),
             url("^split/(?P<pk>\d+)/$", self.wrapper(self.split_record), name=self.get_url_name('split')),
-            url("^show_pay_details/(?P<order_id>\d+)/$", self.wrapper(self.show_pay_details), name=self.get_url_name('show_pay_details')),
+            url("^show_pay_details/(?P<order_id>\d+)/$", self.wrapper(self.show_pay_details),
+                name=self.get_url_name('show_pay_details')),
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
             url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
         ]
 
         return patterns
 
-    def show_pay_details(self,request,order_id,*args, **kwarg):
+    def show_pay_details(self, request, order_id, *args, **kwarg):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()
         if not order_obj:
             return HttpResponse('订单号不存在'
@@ -211,16 +242,15 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         mail['subject'] = order_obj.order_number + ' order shipping status and balance '
         ETD = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
         ETA = order_obj.followorder.ETA if order_obj.followorder.ETA else 'to be updated'
-        mail['content'] =  'Dear '+ '%0A%0C%0A%0C' + \
-                           f"The order of {order_obj.order_number} shipping status as below:"+ '%0A%0C%0A%0C' + \
-                           f"Date of departure: {ETD} " + '%0A%0C' +\
-                           f"Date of arrival: {ETA}" +  '%0A%0C%0A%0C' +  \
-                           f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' +  \
-                           f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' +  \
-                           f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}"+ '%0A%0C%0A%0C'
+        mail['content'] = 'Dear ' + '%0A%0C%0A%0C' + \
+                          f"The order of {order_obj.order_number} shipping status as below:" + '%0A%0C%0A%0C' + \
+                          f"Date of departure: {ETD} " + '%0A%0C' + \
+                          f"Date of arrival: {ETA}" + '%0A%0C%0A%0C' + \
+                          f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' + \
+                          f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
+                          f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
 
-
-        return render(request,'dipay/order_payment_record.html',locals())
+        return render(request, 'dipay/order_payment_record.html', locals())
 
     # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
@@ -257,14 +287,16 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 res = data_dict
             return JsonResponse(res)
 
+
     # 预留的接口，用户批量整理数据资料
     def neating(self, request, *args, **kwargs):
-        count=0
+        count = 0
         for obj in self.model_class.objects.all():
             obj.salesman = obj.order.salesperson
             obj.save()
             count += 1
         return HttpResponse('整理成功%s条数据' % count)
+
 
     # 预留的接口，用户批量整理数据资料
     def tests(self, request, *args, **kwargs):

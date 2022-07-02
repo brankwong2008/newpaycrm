@@ -149,6 +149,22 @@ a.add-record-btn {
 
 }
 
+/* 放单申请审批状态： 等待审批 */
+.wait-confirm-release{
+
+}
+
+/* 放单申请审批状态： 不同意放单 */
+.not-agree-release{
+    color: orange;
+}
+
+/* 放单申请审批状态： 可以放单 */
+.agree-release{
+    color:green;
+
+}
+
 
 
 tr.active {

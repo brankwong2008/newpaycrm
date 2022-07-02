@@ -113,7 +113,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     fields_display = [get_date_display('create_date'), payer_display, customer_display, got_amount_display,
                       'bank', got_confirm_status_display, status_display, ]
 
-    detail_fields_display = fields_display
+    detail_fields_display = fields_display + ['remark','keyin_user','ttcopy']
 
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
