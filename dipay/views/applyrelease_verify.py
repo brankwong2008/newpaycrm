@@ -1,5 +1,5 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
-from decimal import Decimal
+from datetime import datetime
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q
@@ -38,6 +38,7 @@ class ApplyReleaseVerifyHandler(PermissionHanlder, StarkHandler):
             if is_agree == "True":
                 msg = '同意放单，审批成功'
                 applyrelease_obj.decision = True
+                applyrelease_obj.verify_date = datetime.now()
             else:
                 msg = '不同意放单，审批完成'
                 applyrelease_obj.decision = False

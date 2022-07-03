@@ -117,12 +117,31 @@ $('span.save-sequence').parent().addClass('save-sequence')
 
 
 // 已收和应收的点击弹出收款明细的方法
+// function showPayDetails(tag) {
+//     var href = tag.href;
+//     var name = '登录'
+//     // var left = window.screen.availWidth -300
+//     var win = window.open(href, name, 'left=600,top=300,width=600,height=450');
+//     win.focus();
+//     return false
+// }
+
+
+
+// 已收和应收的点击弹出收款明细的方法
 function showPayDetails(tag) {
     var href = tag.href;
-    var name = '登录'
-    // var left = window.screen.availWidth -300
-    var win = window.open(href, name, 'left=600,top=300,width=600,height=300');
-    win.focus();
-    return false
+    $.ajax({
+        url:href,
+        type: 'get',
+        data: '',
+        success: function(respond){
+            console.log(respond);
+            $('#myModal .modal-body .payment-details').replaceWith(respond);
+            $('#myModal').modal('show');
+        }
 
+    });
+
+    return false
 }
