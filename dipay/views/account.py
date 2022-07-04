@@ -1,10 +1,8 @@
 from django.shortcuts import render, HttpResponse,redirect,reverse
 from django.conf import settings
 from django.utils.module_loading import import_string
-from stark.utils.common import gen_md5
-from django.utils.safestring import mark_safe
+from rbac.utils.common import gen_md5
 from rbac.utils.permissions import init_permissions
-from dipay import models
 
 MyUserInfo = import_string(settings.RBAC_USER_MODLE_CLASS)   # 使用import_string 增加代码的通用性
 

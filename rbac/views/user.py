@@ -1,6 +1,7 @@
 from rbac.forms.forms import *
 from django.shortcuts import redirect,render,reverse,HttpResponse
 from rbac import models
+from rbac.utils.common import gen_md5
 
 def user_list(request):
     """用户列表"""
@@ -60,7 +61,6 @@ def user_del(request, pk):
 
 def user_reset_pwd(request, pk):
     """用户密码重置"""
-    print(8888888888888)
     user_obj = models.MyUser.objects.filter(pk=pk).first()
     if request.method == "GET":
         if not user_obj:
@@ -77,7 +77,7 @@ def user_reset_pwd(request, pk):
         if form.is_valid():
             pwd = form.cleaned_data.get("password")
             print("pwd", pwd, user_obj)
-            user_obj.set_password(pwd)
+            user_obj.password = gen_md5(pwd)
             user_obj.save()
 
             return redirect(reverse("rbac:user_list"))

@@ -12,6 +12,8 @@ from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, 
     EditInwardPayModelForm
 from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
 from django.db import transaction
+import threading
+from rbac.utils.common import compress_image
 
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
@@ -124,7 +126,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             return render(request, "dipay/inwardpay_add.html", locals())
 
         if request.method == "POST":
-            form = self.get_model_form("add")(data=request.POST)
+            # 如果要上传文件，必须加上request.FILES, 再试试
+            print(12345, request.POST, request.FILES.get('ttcopy'))
+            form = self.get_model_form("add")(request.POST,request.FILES)
             if form.is_valid():
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
                 form.instance.torelate_amount = form.instance.got_amount
@@ -136,6 +140,18 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 currentnumber_obj.reference = new_reference
                 form.save()
                 currentnumber_obj.save()
+                # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理
+
+                def task(file_path):
+                    # print(1111,form.instance.ttcopy.name)
+                    print('inwardpay ttcopy.path',form.instance.ttcopy.path)
+                    # print(3333,form.instance.ttcopy.url)
+
+                    result = compress_image(outfile=file_path)
+                    print(result)
+                t = threading.Thread(target=task,args=(form.instance.ttcopy.path,))
+                t.start()
+
                 return redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, 'dipay/inwardpay_add.html', locals())

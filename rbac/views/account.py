@@ -31,7 +31,6 @@ class LoginView(View):
             # 初始化权限和菜单字典
             init_permissions(request,user)
 
-            print(1111111, request.session[settings.MENU_LIST_KEY])
             print(22222, request.session[settings.PERMISSION_KEY])
 
             return redirect("/index/")
