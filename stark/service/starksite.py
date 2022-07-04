@@ -400,7 +400,7 @@ class StarkHandler(object):
             return render(request,self.add_list_template or "stark/change_list.html",locals())
 
         if request.method == "POST":
-            form = self.get_model_form("add")(data = request.POST)
+            form = self.get_model_form("add")(request.POST,request.FILES)
 
             if form.is_valid():
                 result = self.save_form(form,request,False,*args, **kwargs)

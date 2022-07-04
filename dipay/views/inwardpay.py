@@ -13,7 +13,7 @@ from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, 
 from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
 from django.db import transaction
 import threading
-from rbac.utils.common import compress_image
+from rbac.utils.common import compress_image_task
 
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
@@ -141,20 +141,21 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 form.save()
                 currentnumber_obj.save()
                 # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理
-
-                def task(file_path):
-                    # print(1111,form.instance.ttcopy.name)
-                    print('inwardpay ttcopy.path',form.instance.ttcopy.path)
-                    # print(3333,form.instance.ttcopy.url)
-
-                    result = compress_image(outfile=file_path)
-                    print(result)
-                t = threading.Thread(target=task,args=(form.instance.ttcopy.path,))
+                t = threading.Thread(target=compress_image_task,args=(form.instance.ttcopy.path,))
                 t.start()
 
                 return redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, 'dipay/inwardpay_add.html', locals())
+
+    def save_form(self,form,request,is_update=False,*args, **kwargs):
+        if is_update:
+            form.save()
+            # 压缩图片 
+            t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,))
+            t.start()
+        else:
+            form.save()
 
     def get_detail_extra_btn(self, request, pk, *args, **kwargs):
         detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
