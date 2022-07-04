@@ -18,6 +18,8 @@ from django.urls import path,include
 from django.conf.urls import url
 from stark.service.starksite import site
 from dipay.views import account
+from django.views.static import serve
+from django.conf import settings
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -27,5 +29,6 @@ urlpatterns = [
     url(r'^logout/$', account.logout, name='logout'),
     url(r'^index/$', account.index, name='index'),
     url(r'^$', account.index, name='index'),
+    url(r"^media/(?P<path>.*)$",serve,{"document_root":settings.MEDIA_ROOT}),
 
 ]

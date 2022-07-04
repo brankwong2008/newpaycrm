@@ -62,6 +62,7 @@
                         <th>付款人</th>
                         <th>币种金额</th>
                         <th>收款银行</th>
+                        <th>水单</th>
                         <th>待关联金额</th>
                     </tr>
                     </thead>
@@ -72,6 +73,7 @@
                         <td>{{ inwardpay_obj.payer.title|default:'-' }}</td>
                         <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.amount }}</td>
                         <td>{{ inwardpay_obj.bank.title }}</td>
+                        <td><a href=""><i class="fa fa-file-photo-o"></i></a></td>
                         <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
                     </tr>
                     </tbody>
