@@ -34,3 +34,11 @@ def compress_image(outfile):
         file_size = os.path.getsize(outfile) // 1024
 
     return outfile
+
+# 处理图片压缩的线程任务
+def compress_image_task(file_path):
+    # print(1111,form.instance.ttcopy.name)
+    # print('inwardpay ttcopy.path', form.instance.ttcopy.path)
+    # print(3333,form.instance.ttcopy.url)
+    result = compress_image(outfile=file_path)
+    print(result)
