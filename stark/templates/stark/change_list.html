@@ -28,7 +28,7 @@
             {#            <h3>添加/修改数据</h3>#}
 
 
-            <form action="" method="post">
+	    <form action="" method="post" enctype='multipart/form-data'>
                 {% csrf_token %}
 
                 {% for field in form %}
