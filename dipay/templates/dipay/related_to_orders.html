@@ -29,11 +29,83 @@
             font-size: 20px;
         }
 
-        td.dist-amount {
+        td.dist-amount, td.torelate-amount-display {
             font-weight: bolder;
             color: blue;
         }
 
+        /* ***********弹窗图片的样式 *************/
+
+        /* 弹窗背景 */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(125, 117, 117); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+        }
+
+        /* 图片 */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 100%;
+            max-width: 900px;
+        }
+
+
+        /* 添加动画 */
+        .modal-content, #caption {
+            -webkit-animation-name: zoom;
+            -webkit-animation-duration: 0.6s;
+            animation-name: zoom;
+            animation-duration: 0.6s;
+        }
+
+         /* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */
+        @-webkit-keyframes zoom {
+            from {
+                -webkit-transform: scale(0)
+            }
+            to {
+                -webkit-transform: scale(1)
+            }
+        }
+
+        @keyframes zoom {
+            from {
+                transform: scale(0)
+            }
+            to {
+                transform: scale(1)
+            }
+        }
+
+        /* 关闭按钮 */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #ffffff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .close:hover, .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+        /* ***********end  弹窗图片的样式 *************/
 
     </style>
 
@@ -73,11 +145,30 @@
                         <td>{{ inwardpay_obj.payer.title|default:'-' }}</td>
                         <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.amount }}</td>
                         <td>{{ inwardpay_obj.bank.title }}</td>
-                        <td><a href=""><i class="fa fa-file-photo-o"></i></a></td>
-                        <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
+                        {% if inwardpay_obj.ttcopy %}
+                          <td><img src="{{ inwardpay_obj.ttcopy.url }}" onclick="return popupImg(this)" width="30px" height="30px"></td>
+                        {% else %}
+                             <td><i class="fa fa-minus-square"></i></td>
+                        {% endif %}
+
+                        <td class="torelate-amount-display">{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
                     </tr>
                     </tbody>
                 </table>
+            </div>
+
+
+            <!-- 图片弹窗 -->
+            <div id="ImgModal" class="modal">
+
+                <!-- 关闭按钮 -->
+                <span class="close" onclick="document.getElementById('ImgModal').style.display='none'">&times;</span>
+
+                <!-- 弹窗内容 -->
+                <img class="modal-content" id="img01" >
+
+                <!-- 文本描述 -->
+                <div id="caption"></div>
             </div>
 
             <!-- 已关联记录 -->
@@ -107,8 +198,8 @@
                                 <td>{{ row.order.currency.icon }}{{ row.order.amount }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.rcvd_amount }}</td>
                                 <td class="dist-amount">{{ row.order.currency.icon }} {{ row.amount }} </td>
-                                <td >
-                                    <a href="{% url 'stark:dipay_pay2orders_edit'  row.pk  %}"><i class="fa fa-edit"></i></a>
+                                <td>
+                                    <a href="{% url 'stark:dipay_pay2orders_edit'  row.pk %}"><i class="fa fa-edit"></i></a>
 
                                 </td>
 
@@ -176,5 +267,6 @@
 
     <script src="{% static "rbac/permission_distribute.js" %}"></script>
     <script src="{% static "js/edit-follow-order.js" %}"></script>
+
 
 {% endblock %}

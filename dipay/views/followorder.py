@@ -237,6 +237,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return HttpResponse('订单号不存在'
                                 '')
         payment_list = Pay2Orders.objects.filter(order=order_obj)
+        # 催款的邮件链接
         mail = {}
         mail['email'] = order_obj.customer.email
         mail['subject'] = order_obj.order_number + ' order shipping status and balance '

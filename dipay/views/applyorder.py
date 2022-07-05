@@ -225,10 +225,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         current_num_obj.num = sequence
         current_num_obj.save()
 
-        # 反馈给用户的信息，加上快速发邮件的功能，节约大家的时间
+        # 新功能： 自动发申请订单的邮件，节约大家的时间
         send_time = datetime.now().strftime("%Y-%m-%d")
         subject = '申请合同号 %s %s %s' % (form.instance.customer.shortname, form.instance.goods, send_time)
         content = '经理: %0A%0C%0A%0C请审核。' + form.instance.remark
+        # 替换特殊符号 & ， 因为&在mailto字符串里面有功能含义
+        subject =  subject.replace('&',' and ')
+        content =  content.replace('&',' and ')
         mailto = f'<a href="mailto:brank@diligen.cn?subject={subject}&body={content}">点击快速发申请邮件</a>'
         msg = mark_safe('订单号申请提交成功，%s' % mailto)
 
