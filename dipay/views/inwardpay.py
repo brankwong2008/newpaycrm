@@ -151,7 +151,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     def save_form(self,form,request,is_update=False,*args, **kwargs):
         if is_update:
             form.save()
-            # 压缩图片 
+            # 压缩图片
             t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,))
             t.start()
         else:
