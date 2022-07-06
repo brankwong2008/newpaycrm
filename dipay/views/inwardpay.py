@@ -368,6 +368,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             )
             row['dist_amount'] = mark_safe(amount_tag)
             row['dist_value'] = dist_amount
+            row['pk'] = order_obj.pk
 
             save_url = self.reverse_url('relate2order', inwardpay_id=inwardpay_obj.pk)
             save_btn = mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"

@@ -2,9 +2,8 @@
 {% load menu_list %}
 {% load static %}
 {% block css %}
-
-
     <style>
+
         tr.active {
             border-left: 3px solid orange;
         }
@@ -37,7 +36,7 @@
         /* ***********弹窗图片的样式 *************/
 
         /* 弹窗背景 */
-        .modal {
+        .newmodal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
@@ -47,12 +46,12 @@
             width: 100%; /* Full width */
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(125, 117, 117); /* Fallback color */
+            background-color: rgb(0, 0, 0); /* Fallback color */
             background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
         }
 
         /* 图片 */
-        .modal-content {
+        .newmodal-content {
             margin: auto;
             display: block;
             width: 100%;
@@ -61,14 +60,14 @@
 
 
         /* 添加动画 */
-        .modal-content, #caption {
+        .newmodal-content, #caption {
             -webkit-animation-name: zoom;
             -webkit-animation-duration: 0.6s;
             animation-name: zoom;
             animation-duration: 0.6s;
         }
 
-         /* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */
+        /* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */
         @-webkit-keyframes zoom {
             from {
                 -webkit-transform: scale(0)
@@ -87,21 +86,28 @@
             }
         }
 
+
         /* 关闭按钮 */
         .close {
             position: absolute;
             top: 15px;
             right: 35px;
-            color: #ffffff;
+            color: #f1f1f1;
             font-size: 40px;
             font-weight: bold;
             transition: 0.3s;
+            opacity: 2.2;
         }
 
         .close:hover, .close:focus {
             color: #bbb;
             text-decoration: none;
             cursor: pointer;
+        }
+
+        img.ttcopy-small-img:hover {
+            cursor: pointer;
+
         }
 
 
@@ -146,12 +152,14 @@
                         <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.amount }}</td>
                         <td>{{ inwardpay_obj.bank.title }}</td>
                         {% if inwardpay_obj.ttcopy %}
-                          <td><img src="{{ inwardpay_obj.ttcopy.url }}" onclick="return popupImg(this)" width="30px" height="30px"></td>
+                            <td><img class='ttcopy-small-img' src="{{ inwardpay_obj.ttcopy.url }}"
+                                     onclick="return popupImg(this)" width="30px" height="30px"></td>
                         {% else %}
-                             <td><i class="fa fa-minus-square"></i></td>
+                            <td><i class="fa fa-minus-square"></i></td>
                         {% endif %}
 
-                        <td class="torelate-amount-display">{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
+                        <td class="torelate-amount-display">
+                            {{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.torelate_amount }}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -159,13 +167,13 @@
 
 
             <!-- 图片弹窗 -->
-            <div id="ImgModal" class="modal">
+            <div id="ImgModal" class="newmodal">
 
                 <!-- 关闭按钮 -->
                 <span class="close" onclick="document.getElementById('ImgModal').style.display='none'">&times;</span>
 
                 <!-- 弹窗内容 -->
-                <img class="modal-content" id="img01" >
+                <img class="newmodal-content" id="img01">
 
                 <!-- 文本描述 -->
                 <div id="caption"></div>
@@ -239,7 +247,7 @@
                                 <td>{{ row.order_number }}</td>
                                 <td>{{ row.customer.shortname }}</td>
                                 <td>{{ row.currency.icon }}{{ row.amount }}</td>
-                                <td>{{ row.currency.icon }}{{ row.rcvd_amount }}</td>
+                                <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}" onclick="return showPayDetails(this)">{{ row.currency.icon }}{{ row.rcvd_amount }}</a></td>
                                 <td>{{ row.currency.icon }}{{ row.collect_amount }}</td>
                                 <td class="dist-amount"> {{ row.dist_amount }} </td>
                                 <td>
@@ -261,6 +269,28 @@
 
 
     </div>
+
+
+
+<!-- Modal 模态对话框  显示收款明细 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">收款明细</h4>
+      </div>
+      <div class="modal-body">
+          <div class="payment-details"></div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 
