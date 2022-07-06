@@ -234,8 +234,11 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     def show_pay_details(self, request, order_id, *args, **kwarg):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()
         if not order_obj:
-            return HttpResponse('订单号不存在'
-                                '')
+            return HttpResponse('订单号不存在')
+
+        if not hasattr(order_obj,'followorder'):
+            return HttpResponse('跟单记录不存在，请先创建该订单跟单记录')
+
         payment_list = Pay2Orders.objects.filter(order=order_obj)
         # 催款的邮件链接
         mail = {}
