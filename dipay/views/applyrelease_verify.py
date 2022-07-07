@@ -17,6 +17,8 @@ from django.db import transaction
 
 class ApplyReleaseVerifyHandler(PermissionHanlder, StarkHandler):
 
+    order_by_list = ['decision','-apply_date']
+
     def get_urls(self):
         patterns = [
             url("^list/$", self.wrapper(self.show_list), name= self.get_list_url_name),

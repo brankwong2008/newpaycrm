@@ -14,6 +14,7 @@ from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, 
 from django.db import transaction
 import threading
 from rbac.utils.common import compress_image_task
+from datetime import datetime
 
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
@@ -122,6 +123,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         fast_add_list = ['payer', ]
         if request.method == "GET":
             form = self.get_model_form("add")()
+            form.instance.create_date = datetime.now()
+            print('inwardpay datetime now',datetime.now())
             # 控制应显示快速添加按钮的字段名
             return render(request, "dipay/inwardpay_add.html", locals())
 

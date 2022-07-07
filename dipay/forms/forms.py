@@ -98,6 +98,7 @@ class AddInwardPayModelForm(StarkForm):
         widgets = {
             'create_date': forms.DateInput(attrs={'type': 'date'}),
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+            'ttcopy': forms.FileInput(attrs={'required':True}),
         }
 
     def __init__(self, *args, **kwargs):
