@@ -109,7 +109,7 @@
                                 <td>{{ row.payment.create_date|date:"Y-m-d" }}</td>
                                 <td>{{ row.payment.currency.icon }}{{ row.amount }}</td>
                                 <td>
-                                    <a href="{% url 'stark:dipay_inwardpay_show_detail' pk=row.payment.pk %}"
+                                    <a href="{% url 'stark:dipay_inwardpay_relate2order' inwardpay_id=row.payment.pk %}"
                                        target="_blank">{{ row.payment }}</a>
                                 </td>
                             </tr>

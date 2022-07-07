@@ -23,7 +23,11 @@ def compress_image(outfile):
     # 按0.9的比例逐步压缩，以达到200k以下的目的
     while file_size > 200:
         im = Image.open(outfile)
+        print('image x, y', x, y)
         x, y = im.size
+        if x <= 550:
+            break
+
         # Image.ANTIALIAS 这个参数可以提高图片质量
         outfile_obj = im.resize((int(x * 0.9), int(y * 0.9)), Image.ANTIALIAS)
         try:

@@ -144,7 +144,7 @@ class Payer(models.Model):
 
 
 class Inwardpay(models.Model):
-    create_date = models.DateField(verbose_name='汇入日期',default=datetime.now())
+    create_date = models.DateField(verbose_name='汇入日期')
     payer = models.ForeignKey(to=Payer, on_delete=models.CASCADE,verbose_name='付款人',null=True)
     keyin_user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='录入人',default=3)
     bank =models.ForeignKey(to=Bank, on_delete=models.CASCADE,verbose_name='收款行')
@@ -152,7 +152,7 @@ class Inwardpay(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,verbose_name='币种')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='水单金额',default=0)
     got_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='实收金额',default=0)
-    ttcopy = models.ImageField(upload_to="ttcopy", verbose_name='电汇水单', null=True, blank=True)
+    ttcopy = models.ImageField(upload_to="ttcopy", verbose_name='电汇水单', null=True)
     torelate_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='待关联金额',default=0)
 
     status_choices = [(0,'待关联'),
