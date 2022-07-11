@@ -34,6 +34,7 @@ def compress_image(outfile):
         try:
             outfile_obj.save(outfile, quality=85)
         except Exception as e:
+            print('errors',e)
             break
 
         file_size = os.path.getsize(outfile) // 1024

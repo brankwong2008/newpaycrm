@@ -13,6 +13,7 @@ from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
 from django.conf.urls import url
 from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo
+from decimal import Decimal
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -272,14 +273,12 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     if item == 'amount':
                         applyorder_obj = followorder_obj.order
                         try:
-                            val = float(val)
-                        except Exception as e:
-                            data_dict['status'] = False
-                        else:
-                            applyorder_obj.amount = val
+                            applyorder_obj.amount = Decimal(val)
                             # 同时更新应收款
                             applyorder_obj.collect_amount = applyorder_obj.amount - applyorder_obj.rcvd_amount
                             applyorder_obj.save()
+                        except Exception as e:
+                            data_dict['status'] = False
                     else:
                         setattr(followorder_obj, item, val)
                         # 如果follow_order完结，更新applyorder的status
