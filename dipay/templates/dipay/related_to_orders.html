@@ -138,7 +138,8 @@
                         <th>付款日期</th>
                         <th>客户</th>
                         <th>付款人</th>
-                        <th>币种金额</th>
+                        <th>水单金额</th>
+                        <th>实收金额</th>
                         <th>收款银行</th>
                         <th>水单</th>
                         <th>待关联金额</th>
@@ -147,9 +148,11 @@
                     <tbody>
                     <tr>
                         <td>{{ inwardpay_obj.create_date|date:"Y-m-d" }}</td>
-                        <td>{{ inwardpay_obj.customer.shortname }}</td>
-                        <td>{{ inwardpay_obj.payer.title|default:'-' }}</td>
+                        <td>{{ inwardpay_obj.customer.shortname|default:'-'|truncatechars:15 }}</td>
+                        <td>{{ inwardpay_obj.payer.title|default:'-'|truncatechars:15 }}</td>
                         <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.amount }}</td>
+                        <td>{{ inwardpay_obj.currency.icon }}{{ inwardpay_obj.got_amount }}</td>
+
                         <td>{{ inwardpay_obj.bank.title }}</td>
                         {% if inwardpay_obj.ttcopy %}
                             <td><img class='ttcopy-small-img' src="{{ inwardpay_obj.ttcopy.url }}"
@@ -247,7 +250,9 @@
                                 <td>{{ row.order_number }}</td>
                                 <td>{{ row.customer.shortname }}</td>
                                 <td>{{ row.currency.icon }}{{ row.amount }}</td>
-                                <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}" onclick="return showPayDetails(this)">{{ row.currency.icon }}{{ row.rcvd_amount }}</a></td>
+                                <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}"
+                                       onclick="return showPayDetails(this)">
+                                    {{ row.currency.icon }}{{ row.rcvd_amount }}</a></td>
                                 <td>{{ row.currency.icon }}{{ row.collect_amount }}</td>
                                 <td class="dist-amount"> {{ row.dist_amount }} </td>
                                 <td>
@@ -272,24 +277,25 @@
 
 
 
-<!-- Modal 模态对话框  显示收款明细 -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">收款明细</h4>
-      </div>
-      <div class="modal-body">
-          <div class="payment-details"></div>
+    <!-- Modal 模态对话框  显示收款明细 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">收款明细</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="payment-details"></div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-      </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 
 

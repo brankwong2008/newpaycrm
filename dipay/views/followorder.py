@@ -73,17 +73,27 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             if sub_sequence_num == 0:
                 sub_sequence_num = 1
             sub_sequence = mark_safe(
-                "<input name='sub_sequence' type='text' value='%s'>" % (sub_sequence_num))
+                "<input name='sub_sequence' type='text' value='%s' readonly>" % (sub_sequence_num))
             goods = mark_safe(
                 '<input name="goods" type="text" value="%s"> ' % (follow_order_obj.order.goods))
             amount = mark_safe(
-                '<input  name="amount"  type="text" value="%s" > ' % (follow_order_obj.order.amount))
+                '<input class="split-amount" name="amount"  type="text" value="%s" onblur="rectAmount(this)" total_amount="%s" > ' % (
+                    follow_order_obj.order.amount,follow_order_obj.order.amount))
 
-            data_list.append([order_number, customer, sub_sequence, goods, amount])
+            rcvd_amount = mark_safe(
+                '<input class="split-rcvd-amount" name="rcvd_amount"  type="text" value="%s" onblur="rectRcvdAmount(this)" total_rcvd_amount="%s"> ' % (
+                    follow_order_obj.order.rcvd_amount, follow_order_obj.order.rcvd_amount))
+
+            data_list.append([order_number, customer, sub_sequence, goods, amount, rcvd_amount])
+            amount = mark_safe(
+                '<input class="split-amount" name="amount"  type="text" value="0" onblur="rectAmount(this)" total_amount="%s" >'% follow_order_obj.order.amount )
+            rcvd_amount = mark_safe(
+                '<input class="split-rcvd-amount" name="rcvd_amount"  type="text" value="0"  onblur="rectRcvdAmount(this)" total_rcvd_amount="%s"> '% follow_order_obj.order.rcvd_amount )
+
             sub_sequence = mark_safe(
-                "<input name='sub_sequence' type='text' value='%s'>" % (sub_sequence_num + 1))
+                "<input name='sub_sequence' type='text' value='%s' readonly>" % (sub_sequence_num + 1))
 
-            data_list.append([order_number, customer, sub_sequence, goods, amount])
+            data_list.append([order_number, customer, sub_sequence, goods, amount, rcvd_amount])
 
             return render(request, 'dipay/split_order.html', locals())
 
@@ -99,37 +109,81 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             for n, item in enumerate(request.POST.getlist(field)):
                 data_list[n][field] = item
 
+        # 获取拆分已收款金额
+        dist_amount = request.POST.getlist('rcvd_amount')[-1]
+        dist_amount = Decimal(dist_amount)
+
         order_obj = ApplyOrder.objects.filter(pk=pk).first()
+        pay2order_queryset = Pay2Orders.objects.filter(order=order_obj).order_by('amount')
         followorder_obj = order_obj.followorder
         count = 0
         splited_order_list = []
         for i in range(length):
             # 更新已有订单
-
             for key, val in data_list[i].items():
                 setattr(order_obj, key, val)
             order_obj.order_number = "%s%s-%s" % (
-            order_obj.get_order_type_display(), order_obj.sequence, order_obj.sub_sequence)
+                order_obj.get_order_type_display(), order_obj.sequence, order_obj.sub_sequence)
             splited_order_list.append(order_obj.order_number)
             if i != 0:
                 try:
                     # 新增拆分的订单, 把id置为None即可
                     order_obj.pk = None
+                    order_obj.rcvd_amount = dist_amount
                     order_obj.save()
+                    neworder_pk = order_obj.pk
                     # 同时创建跟单记录, 清空ETD  ETA, Status =0
                     followorder_obj.pk = None
-                    followorder_obj.order_id = order_obj.pk
+                    followorder_obj.order_id = neworder_pk
                     followorder_obj.ETD = None
                     followorder_obj.ETA = None
                     followorder_obj.status = 0
                     followorder_obj.book_info = '订舱'
                     followorder_obj.salesman = order_obj.salesperson
                     followorder_obj.save()
+
+                    # 处理款项重新分配
+                    for each in pay2order_queryset:
+                        if dist_amount >= each.amount:
+                            # 更新老订单的应收已收
+                            each.order.rcvd_amount -= dist_amount
+                            each.order.collect_amount = each.order.amount - each.order.rcvd_amount
+                            each.order.save()
+                            each.order_id = neworder_pk
+                            dist_amount -= each.amount
+                            each.save()
+                            # 更新新订单的应收和已收
+                            each.order.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order_id = neworder_pk)])
+                            each.order.collect_amount = each.order.amount - each.order.rcvd_amount
+                            each.order.save()
+
+
+                        else:
+                            # 更新老订单的关联款项
+                            each.order.rcvd_amount -= dist_amount
+                            each.order.collect_amount = each.order.amount - each.order.rcvd_amount
+                            each.order.save()
+                            each.amount -= dist_amount
+                            each.save()
+                            # 创建新的关联记录
+                            new_pay2order = Pay2Orders(order_id=neworder_pk,amount=dist_amount,payment=each.payment)
+                            new_pay2order.save()
+                            # 更新新订单的已收和应收情况
+                            new_pay2order.order.rcvd_amount += dist_amount
+                            new_pay2order.order.collect_amount= new_pay2order.order.amount - new_pay2order.order.rcvd_amount
+                            new_pay2order.order.save()
+                            break
+
                 except Exception as e:
                     msg = '订单号可能重复，请检查。 错误内容：%s' % e
                     return render(request, 'dipay/msg_after_submit.html', locals())
             else:
-                order_obj.save()
+                try:
+                    order_obj.save()
+                except Exception as e:
+                    msg = '订单号可能重复，请检查。 错误内容：%s' % e
+                    return render(request, 'dipay/msg_after_submit.html', locals())
+
             count += 1
             list_url = self.reverse_list_url()
             order_list = [f"<a href='{list_url}?q={order_number[:5]}'> {order_number} </a>" for order_number in
@@ -151,7 +205,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             user = request.user
             verifier = UserInfo.objects.filter(roles__title__contains='财务').first()
             applyrelease_obj = ApplyRelease(apply_date=datetime.now(),
-                                            applier= user,
+                                            applier=user,
                                             order=order_obj,
                                             verifier=verifier,
                                             )
@@ -159,12 +213,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         apply_release_url = reverse('stark:dipay_applyrelease_list')
         return redirect(apply_release_url)
 
-
     apply_release.text = '申请放单'
 
     # 批量处理列表
     batch_process_list = [batch_to_produce, batch_split_order, apply_release]
-
 
     def edit_display(self, obj=None, is_header=False, *args, **kwargs):
         """
@@ -182,7 +234,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
-
     # 跟单列表显示的字段内容
     fields_display = [checkbox_display, order_number_display, customer_display, sales_display, status_display,
                       goods_display,
@@ -192,7 +243,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
                       amount_display, rcvd_amount_blance_display
                       ]
-
 
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):
@@ -204,7 +254,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         else:
             return []
 
-
     def get_queryset_data(self, request, *args, **kwargs):
         if request.user.username == 'brank':
             return self.model_class.objects.all()
@@ -212,10 +261,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return self.model_class.objects.all()
         return self.model_class.objects.all()
 
-
     def get_per_page(self):
         return 20
-
 
     def get_model_form(self, type=None):
         return EditFollowOrderModelForm
@@ -237,7 +284,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         if not order_obj:
             return HttpResponse('订单号不存在')
 
-        if not hasattr(order_obj,'followorder'):
+        if not hasattr(order_obj, 'followorder'):
             return HttpResponse('跟单记录不存在，请先创建该订单跟单记录')
 
         payment_list = Pay2Orders.objects.filter(order=order_obj)
@@ -290,7 +337,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 res = data_dict
             return JsonResponse(res)
 
-
     # 预留的接口，用户批量整理数据资料
     def neating(self, request, *args, **kwargs):
         count = 0
@@ -299,7 +345,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             obj.save()
             count += 1
         return HttpResponse('整理成功%s条数据' % count)
-
 
     # 预留的接口，用户批量整理数据资料
     def tests(self, request, *args, **kwargs):
