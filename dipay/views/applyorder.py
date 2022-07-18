@@ -183,9 +183,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         if is_update:
             order_type = form.instance.get_order_type_display()
             sub_sequence = form.instance.sub_sequence
-            order_number = "%s%s" % (order_type, form.instance.sequence)
+            sequence = str(form.instance.sequence)
+            sequence = sequence.zfill(4) if len(sequence) < 4 else sequence
+            order_number = "%s%s" % (order_type,sequence)
             if sub_sequence != 0:
                 order_number = "%s-%s" % (order_number, sub_sequence)
+
             form.instance.order_number = order_number
             form.instance.collect_amount = form.instance.amount - form.instance.rcvd_amount
             form.save()

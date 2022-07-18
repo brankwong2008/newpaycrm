@@ -105,3 +105,23 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
         payment_obj.torelate_amount = payment_obj.amount - related_amount
         payment_obj.save()
 
+    # 删除一条收款关联记录
+    def del_list(self, request, pk, *args, **kwargs):
+        del_obj = self.get_del_obj(request, pk, *args, **kwargs)
+        order_obj = del_obj.order
+
+        if not del_obj:
+            return HttpResponse("将要删除的记录不存在")
+        back_url = self.reverse_list_url(*args, **kwargs)
+
+        if request.method == "GET":
+            return render(request, self.del_list_template or "stark/del_list.html", locals())
+
+        if request.method == "POST":
+            del_obj.delete()
+            # 更新订单的应收和已收
+            order_obj.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order = order_obj)])
+            order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
+            order_obj.save()
+
+            return redirect(back_url)

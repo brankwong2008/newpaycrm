@@ -171,6 +171,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 name=self.get_url_name('relate2order')),
             url("^confirm/(?P<inwardpay_id>\d+)/$", self.wrapper(self.confirm_pay),
                 name=self.get_url_name('confirm_pay')),
+            url("^transfer/(?P<order_id>\d+)/$", self.wrapper(self.transfer),
+                name=self.get_url_name('transfer')),
         ]
         return extra_pattern
 
@@ -365,9 +367,14 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
             dist_amount = pay2order_obj.amount if pay2order_obj else 0
             display_dist_amount = '%s%s' % (order_obj.currency.icon, dist_amount) if dist_amount else '--'
+
+            # 判断是否固定定金
+            is_fix_amount = 'true' if order_obj.order_number.startswith('L') else 'false'
+            row['is_fix_amount'] = is_fix_amount
+
             # 分配金额加上span标签和class，便于js操作，链接showinputbox,点击直接编辑
             amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s</span>" % (
-                'amount', order_obj.pk, dist_amount, display_dist_amount
+                 'amount', order_obj.pk, dist_amount, display_dist_amount
             )
             row['dist_amount'] = mark_safe(amount_tag)
             row['dist_value'] = dist_amount
@@ -383,10 +390,19 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             else:
                 row['del_btn'] = ''
 
+            # 处理固定定金的转移按钮
+            row['transfer_btn'] = ''
+            if order_obj.order_number.startswith('L'):
+                print('transfer btn  order_number ',order_obj.order_number)
+                transfer_url = self.reverse_url('transfer', order_id=order_obj.pk)
+                row['transfer_btn'] = mark_safe("<a href='%s' order_id='%s' onclick='return transferFixAmount(this)' ><i class='fa fa-exchange'></i></a>" % (transfer_url,order_obj.pk))
+                # 固定定金条目不能删除
+                row['del_btn'] = ''
+
             torelate_order_list.append(row)
 
         # 先按订单号排序
-        torelate_order_list.sort(key=lambda x: x['order_number'][1:5], reverse=True)
+        torelate_order_list.sort(key=lambda x: x['order_number'], reverse=True)
         # 按关联金额大小排序
         torelate_order_list.sort(key=lambda x: x['dist_value'], reverse=True)
 
@@ -456,3 +472,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '分配收款失败'})
 
             return JsonResponse({'status': True, 'msg': '分配收款成功'})
+
+
+    def transfer(self, request, order_id, *args, **kwargs):
+        order_obj = ApplyOrder.objects.filter(pk=order_id).first()
+
+        return render(request, 'dipay/transfer_fix_amount.html',locals())

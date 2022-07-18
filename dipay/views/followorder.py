@@ -302,6 +302,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                           f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
                           f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
 
+        title = '固定定金' if order_obj.order_number.startswith('L') else '收款明细'
+        modal_title = '%s (%s)' % (title, order_obj.customer.shortname)
+
+
         return render(request, 'dipay/order_payment_record.html', locals())
 
     # 每行数据保存的方法，使用ajax
@@ -320,6 +324,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     if item == 'amount':
                         applyorder_obj = followorder_obj.order
                         try:
+                            for each in ['$','￥',',']:
+                                val = val.replace(each,'')
                             applyorder_obj.amount = Decimal(val)
                             # 同时更新应收款
                             applyorder_obj.collect_amount = applyorder_obj.amount - applyorder_obj.rcvd_amount

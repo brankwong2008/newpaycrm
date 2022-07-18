@@ -41,7 +41,7 @@ function rectRcvdAmount(inputbox) {
 
 }
 
-// 定义一个保留精度的加法运算，就是先把小数转换为整数，然后再转换为小数
+// 定义一个保留精度的减法运算，就是先把小数转换为整数，然后再转换为小数
 function minus(arg1, arg2) {
     // 把小数处理为整数，默认小数点后不多于两位
     var args = [arg1, arg2];

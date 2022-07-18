@@ -250,14 +250,15 @@
                                 <td>{{ row.order_number }}</td>
                                 <td>{{ row.customer.shortname }}</td>
                                 <td>{{ row.currency.icon }}{{ row.amount }}</td>
-                                <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}"
-                                       onclick="return showPayDetails(this)">
+                                <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}" is_fix_amount="{{ row.is_fix_amount }}"
+                                       customer_name="{{ row.customer.shortname }}" onclick="return showPayDetails(this)">
                                     {{ row.currency.icon }}{{ row.rcvd_amount }}</a></td>
                                 <td>{{ row.currency.icon }}{{ row.collect_amount }}</td>
                                 <td class="dist-amount"> {{ row.dist_amount }} </td>
                                 <td>
                                     {{ row.save_btn }}
                                     {{ row.del_btn }}
+                                    {{ row.transfer_btn }}
 
                                 </td>
 
@@ -297,6 +298,27 @@
         </div>
     </div>
 
+
+    <!-- Modal 模态对话框  固定定金转移 -->
+    <div class="modal fade" id="transferModal" tabindex="-1" role="dialog" aria-labelledby="transferModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="transferModalLabel">固定定金转出</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="transfer-details"></div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

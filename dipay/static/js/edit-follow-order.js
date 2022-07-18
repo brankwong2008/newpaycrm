@@ -131,12 +131,24 @@ $('span.save-sequence').parent().addClass('save-sequence')
 // 已收和应收的点击弹出收款明细的方法
 function showPayDetails(tag) {
     var href = tag.href;
+
+    var is_fix_amount= tag.getAttribute("is_fix_amount");
+    var customer_name = $(tag).attr('customer_name');
+    console.log('is_fix_amount',is_fix_amount);
+    var title = '收款明细' ;
+    if (is_fix_amount == 'true') {
+        console.log('fixe amount is true')
+        title = '固定定金';
+    }
+    title = title + ` (${customer_name})`;
+
     $.ajax({
         url:href,
         type: 'get',
         data: '',
         success: function(respond){
-            console.log(respond);
+            console.log(title);
+            $('#myModalLabel').text(title);
             $('#myModal .modal-body .payment-details').replaceWith(respond);
             $('#myModal').modal('show');
         }
@@ -154,4 +166,25 @@ function popupImg(atag) {
 
         return false;
 
+    }
+
+// 弹出固定定金转移modal
+function transferFixAmount(atag) {
+    var href = atag.href;
+    console.log('enter into transferfix amount, atag',atag)
+     $('#transferModal').modal('show');
+
+    // 获取返回数据
+    $.ajax({
+        url:href,
+        type: 'get',
+        data: '',
+        success: function(respond){
+            $('#transferModal .modal-body .transfer-details').replaceWith(respond);
+        }
+
+    });
+
+
+    return false;
     }
