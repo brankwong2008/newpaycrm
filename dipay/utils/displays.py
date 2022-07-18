@@ -132,7 +132,7 @@ def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwar
         return '已收和应收'
     else:
         return_url = handler.reverse_url('show_pay_details',order_id = obj.order.pk )
-        return mark_safe("<a onclick='return showPayDetails(this)' href='%s'><p>收:%s</p><p>欠:%s</p></a>" % (return_url, obj.order.rcvd_amount, obj.order.collect_amount))
+        return mark_safe("<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><p>收:%s</p><p>欠:%s</p></a>" % (return_url, obj.order.customer, obj.order.rcvd_amount, obj.order.collect_amount))
 
 
 
