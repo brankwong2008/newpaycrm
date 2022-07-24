@@ -94,7 +94,7 @@ class AddInwardPayModelForm(StarkForm):
     class Meta:
         model = Inwardpay
         fields = "__all__"
-        exclude = ['orders', 'status', 'torelate_amount', 'customer', 'keyin_user', 'confirm_status']
+        exclude = ['orders', 'status', 'torelate_amount', 'customer', 'keyin_user', 'confirm_status','reference']
         widgets = {
             'create_date': forms.DateInput(attrs={'type': 'date'}),
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),

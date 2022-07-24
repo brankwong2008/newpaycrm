@@ -14,6 +14,7 @@ from django.db import models
 from django.conf.urls import url
 from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo
 from decimal import Decimal
+from dipay.utils.order_updates import order_payment_update
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -153,9 +154,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             dist_amount -= each.amount
                             each.save()
                             # 更新新订单的应收和已收
-                            each.order.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order_id = neworder_pk)])
-                            each.order.collect_amount = each.order.amount - each.order.rcvd_amount
-                            each.order.save()
+                            order_payment_update(order_obj=each.order)
 
 
                         else:
@@ -169,9 +168,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             new_pay2order = Pay2Orders(order_id=neworder_pk,amount=dist_amount,payment=each.payment)
                             new_pay2order.save()
                             # 更新新订单的已收和应收情况
-                            new_pay2order.order.rcvd_amount += dist_amount
-                            new_pay2order.order.collect_amount= new_pay2order.order.amount - new_pay2order.order.rcvd_amount
-                            new_pay2order.order.save()
+                            order_payment_update(order_obj=new_pay2order.order)
+
                             break
 
                 except Exception as e:
@@ -197,19 +195,23 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 申请放单
     def apply_release(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
-        if len(pk_list) > 1:
-            return render(request, 'dipay/msg_after_submit.html', {'msg': '只能申请一单'})
-        for pk in pk_list:
-            followorder_obj = self.model_class.objects.filter(pk=pk).first()
-            order_obj = followorder_obj.order
-            user = request.user
-            verifier = UserInfo.objects.filter(roles__title__contains='财务').first()
-            applyrelease_obj = ApplyRelease(apply_date=datetime.now(),
-                                            applier=user,
-                                            order=order_obj,
-                                            verifier=verifier,
-                                            )
-            applyrelease_obj.save()
+        if len(pk_list) != 1:
+            return render(request, 'dipay/msg_after_submit.html', {'msg': '请选择一单仅且一单'})
+
+        pk = pk_list[0]
+        followorder_obj = self.model_class.objects.filter(pk=pk).first()
+        order_obj = followorder_obj.order
+        if ApplyRelease.objects.filter(order=order_obj).exists():
+            return render(request, 'dipay/msg_after_submit.html', {'msg': '已经申请过，不用重复提交'})
+
+        user = request.user
+        verifier = UserInfo.objects.filter(roles__title__contains='财务').first()
+        applyrelease_obj = ApplyRelease(apply_date=datetime.now(),
+                                        applier=user,
+                                        order=order_obj,
+                                        verifier=verifier,
+                                        )
+        applyrelease_obj.save()
         apply_release_url = reverse('stark:dipay_applyrelease_list')
         return redirect(apply_release_url)
 

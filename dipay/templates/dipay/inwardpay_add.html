@@ -32,8 +32,8 @@
 
                 {% for field in form %}
                     <label for="">{{ field.label }}</label>
-                    {% if field.name == 'payer' %}
-                         <a href="/stark/dipay/{{ field.name }}/create/" onclick="return showAPP(this)"
+                    {% if field.name in fast_add_list %}
+                         <a href="{{ field.url }}" onclick="return showAPP(this)"
                            style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
                         <div class="form-row">
                             {{ field }}   <span style="color:#ff0000">{{ field.errors.0 }}</span>
