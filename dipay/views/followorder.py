@@ -7,7 +7,9 @@ from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
-    term_display, amount_display, confirm_date_display, rcvd_amount_blance_display
+    term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
+    customer_goods_port_display
+
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
@@ -237,9 +239,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
     # 跟单列表显示的字段内容
-    fields_display = [checkbox_display, order_number_display, customer_display, sales_display, status_display,
-                      goods_display,
-                      port_display('discharge_port'), term_display, confirm_date_display,
+    fields_display = [checkbox_display, basic_info_display, customer_goods_port_display,
+                       status_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),

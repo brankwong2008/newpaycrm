@@ -99,7 +99,7 @@ def confirm_date_display(handler, obj=None, is_header=False, *args, **kwargs):
         return '下单日'
     else:
         if obj.order.confirm_date:
-            return obj.order.confirm_date.strftime('%m/%d')
+            return obj.order.confirm_date.strftime('%Y/%m/%d')
         else:
             return '-'
 
@@ -133,8 +133,6 @@ def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwar
     else:
         return_url = handler.reverse_url('show_pay_details',order_id = obj.order.pk )
         return mark_safe("<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><p>收:%s</p><p>欠:%s</p></a>" % (return_url, obj.order.customer, obj.order.rcvd_amount, obj.order.collect_amount))
-
-
 
 
 # 发票金额
@@ -253,3 +251,33 @@ def save_display(handler, obj=None, is_header=False, *args, **kwargs):
         save_url = handler.reverse_url('save')
         return mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
                          " <i class='fa fa-check-square-o'></i> </span>" % (obj.pk, save_url))
+
+
+# 基本信息展示（订单号，下单日期，sales）
+def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '基本信息'
+    else:
+        order_number = obj.order.order_number
+        salesperson = obj.order.salesperson.nickname if obj.order.salesperson else '-'
+        confirm_date = confirm_date_display(handler,obj,False)
+        basic_info = f'<span class="invoice-number-display">{order_number}</span> <br>' \
+                     f' <span>{confirm_date}</span><br>' \
+                     f'<span>{salesperson}</span>'
+        return mark_safe(basic_info)
+
+
+#  客户，货物，目的港和贸易条款的展示
+def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '客户/货物/目的港'
+    else:
+        customer = obj.order.customer.shortname if obj.order.customer else '-'
+        goods = obj.order.goods[:15]
+        discharge_port = port_display('discharge_port')(handler,obj,False)
+        term = obj.order.get_term_display()
+
+        basic_info = f'<span style="font-weight:bolder">{customer}</span> <br>' \
+                     f' <span>{goods}</span><br>' \
+                     f'{discharge_port} &nbsp&nbsp <span>{term}</span>'
+        return mark_safe(basic_info)

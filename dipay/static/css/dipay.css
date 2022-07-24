@@ -108,6 +108,7 @@ textarea[id^="amount"] {
 
 /*发票号*/
 .invoice-number-display {
+    font-size: medium;
     font-weight: bolder;
 }
 
@@ -175,9 +176,37 @@ color: dodgerblue;
 /* 放单申请审批状态： 可以放单 */
 .agree-release{
     color:green;
+}
+
+/* 控制表格列宽  基本信息 */
+.followorder-table-head-2 {
+    width: 9%;
 
 }
 
+/* 控制表格列宽  客户货物 */
+.followorder-table-head-3 {
+    width: 15%;
+
+}
+
+/* 控制表格列宽  装箱信息 */
+.followorder-table-head-7 {
+    width: 20%;
+
+}
+
+/* 控制表格列宽  订舱信息 */
+.followorder-table-head-8 {
+    width: 15%;
+
+}
+
+/* 控制表格列宽  生产信息 */
+.followorder-table-head-9 {
+    width: 10%;
+
+}
 
 
 tr.active {
