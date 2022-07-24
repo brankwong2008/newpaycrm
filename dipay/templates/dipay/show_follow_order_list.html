@@ -74,11 +74,11 @@
 
                 <div>{{ msg }}</div>
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-striped">
 
                     <thead>
                     {% for item in header_list %}
-                        <th>{{ item }} </th>
+                        <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
 
                     {% endfor %}
 
