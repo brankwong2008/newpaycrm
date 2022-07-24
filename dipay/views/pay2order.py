@@ -6,8 +6,12 @@ from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
 from dipay.models import Pay2Orders, CurrentNumber
+from dipay.utils.order_updates import order_payment_update
 
 class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
+
+    search_list = ['order__customer__title__icontains','order__order_number__icontains']
+    search_placeholder = '搜索 客户 订单号'
 
     def get_del_display(self, obj=None, is_header=False,*args,**kwargs):
         """
@@ -120,8 +124,6 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
         if request.method == "POST":
             del_obj.delete()
             # 更新订单的应收和已收
-            order_obj.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order = order_obj)])
-            order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
-            order_obj.save()
+            order_payment_update(order_obj=order_obj)
 
             return redirect(back_url)

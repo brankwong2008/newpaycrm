@@ -20,6 +20,8 @@ from datetime import datetime
 class InwardPayHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
 
+    popup_list = ['payer','bank']
+
     search_list = ['create_date','amount','customer__title__icontains',]
     search_placeholder = '搜索 日期 金额 客户名 '
 
@@ -120,17 +122,26 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
-        fast_add_list = ['payer', ]
+        fast_add_list = ['payer','bank', ]
+
         if request.method == "GET":
             form = self.get_model_form("add")()
+            for field in form:
+                print(field.name)
+                if field.name in fast_add_list:
+                    field_obj = self.model_class._meta.get_field(field.name)
+                    related_model_name = field_obj.related_model._meta.model_name
+                    related_url = '/%s/%s/%s/create/' % (self.namespace,self.app_label,related_model_name)
+                    print(related_url)
+                    setattr(field,'url',related_url)
             form.instance.create_date = datetime.now()
-            print('inwardpay datetime now',datetime.now())
+            # print('inwardpay datetime now',datetime.now())
             # 控制应显示快速添加按钮的字段名
             return render(request, "dipay/inwardpay_add.html", locals())
 
         if request.method == "POST":
             # 如果要上传文件，必须加上request.FILES, 再试试
-            print(12345, request.POST, request.FILES.get('ttcopy'))
+            print('request files ttcopy', request.POST, request.FILES.get('ttcopy'))
             form = self.get_model_form("add")(request.POST,request.FILES)
             if form.is_valid():
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
@@ -432,6 +443,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
 
             if pay2order_obj:
+                # 如果是更新已经关联记录，看看关联金额的差异，只处理差异部分即可
                 diff_amount = dist_amount- Decimal(pay2order_obj.amount)
                 if diff_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
@@ -443,6 +455,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 order_obj.collect_amount =  order_obj.collect_amount -diff_amount
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
+                # 如果是新增关联记录
                 if dist_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
                 if dist_amount > order_obj.collect_amount:
@@ -478,3 +491,5 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()
 
         return render(request, 'dipay/transfer_fix_amount.html',locals())
+
+

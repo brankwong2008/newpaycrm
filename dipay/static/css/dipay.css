@@ -71,9 +71,17 @@ textarea[id^="amount"] {
     font-size: 20px;
 }
 
+/*备货*/
+.status-display.status-0 {
+    color: lightpink;
+    /*font-weight: bolder;*/
+
+}
+
 /*排产*/
 .status-display.status-1 {
     color: red;
+    font-weight: bolder;
 
 }
 
@@ -91,6 +99,11 @@ textarea[id^="amount"] {
 /*货好*/
 .status-display.status-5 {
     color: mediumpurple;
+}
+
+/*完成*/
+.status-display.status-4 {
+    color: grey;
 }
 
 /*发票号*/
