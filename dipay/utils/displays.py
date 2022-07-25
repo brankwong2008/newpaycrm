@@ -132,7 +132,7 @@ def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwar
         return '已收和应收'
     else:
         return_url = handler.reverse_url('show_pay_details',order_id = obj.order.pk )
-        return mark_safe("<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><p>收:%s</p><p>欠:%s</p></a>" % (return_url, obj.order.customer, obj.order.rcvd_amount, obj.order.collect_amount))
+        return mark_safe("<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><span>收: <span class='amount-value'>%s</span> </span><br><span>欠:<span class='amount-value'>%s</span></span></a>" % (return_url, obj.order.customer, obj.order.rcvd_amount, obj.order.collect_amount))
 
 
 # 发票金额
@@ -281,3 +281,19 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
                      f' <span>{goods}</span><br>' \
                      f'{discharge_port} &nbsp&nbsp <span>{term}</span>'
         return mark_safe(basic_info)
+
+
+def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '账务'
+    else:
+        amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
+            'amount', obj.pk, obj.order.amount, obj.order.currency.icon, obj.order.amount
+        )
+
+        rcvd_collect_amount = rcvd_amount_blance_display(handler,obj,False)
+
+        content = f'发票：{amount_tag} <br>' \
+                  f'{rcvd_collect_amount}'
+
+        return mark_safe(content)
