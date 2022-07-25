@@ -113,7 +113,14 @@ textarea[id^="amount"] {
 }
 
 .invoice-amount-display {
+    font-size: small;
+    font-weight: bolder;
 
+}
+
+/* 欠款和收款金额*/
+.amount-value {
+    margin-left: 20px;
 }
 
 /*标签导航active*/

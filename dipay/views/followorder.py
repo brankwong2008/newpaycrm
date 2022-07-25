@@ -8,7 +8,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
-    customer_goods_port_display
+    customer_goods_port_display,amount_rvcd_collect_display
 
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
@@ -244,7 +244,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info'), info_display('book_info'), info_display('produce_info'),
-                      amount_display, rcvd_amount_blance_display
+                      amount_rvcd_collect_display,
                       ]
 
     # 自定义按钮的权限控制
@@ -284,6 +284,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     def show_pay_details(self, request, order_id, *args, **kwarg):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()
+        print(1232434,'order obj', order_obj)
         if not order_obj:
             return HttpResponse('订单号不存在')
 
@@ -291,22 +292,28 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return HttpResponse('跟单记录不存在，请先创建该订单跟单记录')
 
         payment_list = Pay2Orders.objects.filter(order=order_obj)
-        # 催款的邮件链接
-        mail = {}
-        mail['email'] = order_obj.customer.email
-        mail['subject'] = order_obj.order_number + ' order shipping status and balance '
-        ETD = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
-        ETA = order_obj.followorder.ETA if order_obj.followorder.ETA else 'to be updated'
-        mail['content'] = 'Dear ' + '%0A%0C%0A%0C' + \
-                          f"The order of {order_obj.order_number} shipping status as below:" + '%0A%0C%0A%0C' + \
-                          f"Date of departure: {ETD} " + '%0A%0C' + \
-                          f"Date of arrival: {ETA}" + '%0A%0C%0A%0C' + \
-                          f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' + \
-                          f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
-                          f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
+        print('payment list', payment_list)
 
         title = '固定定金' if order_obj.order_number.startswith('L') else '收款明细'
-        modal_title = '%s (%s)' % (title, order_obj.customer.shortname)
+        # 催款的邮件链接
+        if order_obj.customer:
+            modal_title = '%s (%s)' % (title, order_obj.customer.shortname)
+            if hasattr(order_obj.customer,'email'):
+                mail = {}
+                mail['email'] = order_obj.customer.email
+                mail['subject'] = order_obj.order_number + ' order shipping status and balance '
+                ETD = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
+                ETA = order_obj.followorder.ETA if order_obj.followorder.ETA else 'to be updated'
+                mail['content'] = 'Dear ' + '%0A%0C%0A%0C' + \
+                                  f"The order of {order_obj.order_number} shipping status as below:" + '%0A%0C%0A%0C' + \
+                                  f"Date of departure: {ETD} " + '%0A%0C' + \
+                                  f"Date of arrival: {ETA}" + '%0A%0C%0A%0C' + \
+                                  f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' + \
+                                  f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
+                                  f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
+        else:
+            modal_title = '%s (%s)' % (title, '--')
+
 
 
         return render(request, 'dipay/order_payment_record.html', locals())
@@ -331,8 +338,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                                 val = val.replace(each,'')
                             applyorder_obj.amount = Decimal(val)
                             # 同时更新应收款
-                            applyorder_obj.collect_amount = applyorder_obj.amount - applyorder_obj.rcvd_amount
                             applyorder_obj.save()
+                            order_payment_update(order_obj=applyorder_obj)
                         except Exception as e:
                             data_dict['status'] = False
                     else:

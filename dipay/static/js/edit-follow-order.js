@@ -138,6 +138,7 @@ function showPayDetails(tag) {
 
     var is_fix_amount = tag.getAttribute("is_fix_amount");
     var customer_name = $(tag).attr('customer_name');
+    customer_name = customer_name?customer_name:'--';
     console.log('is_fix_amount', is_fix_amount);
     var title = '收款明细';
     if (is_fix_amount == 'true') {
