@@ -36,10 +36,10 @@ table {
 
 }
 
-.save-sequence {
-    cursor: pointer;
-    color: dodgerblue;
-}
+/*.save-sequence {*/
+/*    cursor: pointer;*/
+/*    color: dodgerblue;*/
+/*}*/
 
 textarea[id^="book_info"], textarea[id^="load_info"], textarea[id^="produce_info"] {
     width: 250px;
@@ -186,31 +186,38 @@ color: dodgerblue;
 }
 
 /* 控制表格列宽  基本信息 */
-.followorder-table-head-2 {
+.followorder-table-head-2, .weekly-plan-col-1 {
     width: 9%;
 
 }
 
 /* 控制表格列宽  客户货物 */
-.followorder-table-head-3 {
+.followorder-table-head-3, .weekly-plan-col-2 {
     width: 15%;
 
 }
 
+
+/* 控制表格列宽  状态 */
+ .weekly-plan-col-3 {
+    width: 3%;
+
+}
+
 /* 控制表格列宽  装箱信息 */
-.followorder-table-head-7 {
+.followorder-table-head-7,.weekly-plan-col-7  {
     width: 20%;
 
 }
 
 /* 控制表格列宽  订舱信息 */
-.followorder-table-head-8 {
+.followorder-table-head-8,.weekly-plan-col-8 {
     width: 15%;
 
 }
 
 /* 控制表格列宽  生产信息 */
-.followorder-table-head-9 {
+.followorder-table-head-9,.weekly-plan-col-9 {
     width: 10%;
 
 }
@@ -248,6 +255,4 @@ table {
     display: inline-block;
 }
 
-th.save-sequence, td.save-sequence {
-    display: none;
-}
+

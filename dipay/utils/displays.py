@@ -158,9 +158,8 @@ def port_display(field, title=None, hidden_xs=''):
             return mark_safe("<span class='%s'>%s</span>" % (hidden_xs, name))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
-            port_name = getattr(obj, field)
-            if not port_name or port_name == '-':
-                port_name = "---"
+            port_name = getattr(obj, field) or '--'
+            port_name = port_name[:15]
 
             return mark_safe("<span class='text-display %s'  onclick='showInputBox(this)' "
                              "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, port_name))
