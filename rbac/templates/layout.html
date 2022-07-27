@@ -18,7 +18,7 @@
     <script src="{% static "plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js" %}"></script>
     <link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">
 
-     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
 
 
 
@@ -30,45 +30,51 @@
 <body>
 
 
- {#   顶部导航栏  #}
+{#   顶部导航栏  #}
 <nav class="navbar navbar-inverse" role="navigation">
-	<div class="container-fluid">
-	<div class="navbar-header">
-		<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target="#example-navbar-collapse">
-			<span class="sr-only">切换导航</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</button>
-		<a class="navbar-brand" href="/index/">CRM</a>
-	</div>
-	<div class="collapse navbar-collapse" id="example-navbar-collapse">
-		<ul class="nav navbar-nav navbar-ul">
-			 {% if request.current_url_name == 'stark:dipay_inwardpay_list' %}
-                     <li><a href="{% url 'stark:dipay_inwardpay_list' %}" class="active">收款</a></li>
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#example-navbar-collapse">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/index/">CRM</a>
+        </div>
+        <div class="collapse navbar-collapse" id="example-navbar-collapse">
+            <ul class="nav navbar-nav navbar-ul">
+                {% if request.current_url_name == 'stark:dipay_inwardpay_list' %}
+                    <li><a href="{% url 'stark:dipay_inwardpay_list' %}" class="active">收款</a></li>
                 {% else %}
-                     <li><a href="{% url 'stark:dipay_inwardpay_list' %}">收款</a></li>
+                    <li><a href="{% url 'stark:dipay_inwardpay_list' %}">收款</a></li>
                 {% endif %}
 
-         {% if request.current_url_name == 'stark:dipay_applyorder_list' %}
-                     <li><a href="{% url 'stark:dipay_applyorder_list' %}" class="active">订单</a></li>
+                {% if request.current_url_name == 'stark:dipay_applyorder_list' %}
+                    <li><a href="{% url 'stark:dipay_applyorder_list' %}" class="active">订单</a></li>
                 {% else %}
-                     <li><a href="{% url 'stark:dipay_applyorder_list' %}">订单</a></li>
+                    <li><a href="{% url 'stark:dipay_applyorder_list' %}">订单</a></li>
                 {% endif %}
 
-            {% if request.current_url_name == 'stark:dipay_followorder_list' %}
-                     <li><a href="{% url 'stark:dipay_followorder_list' %}" class="active">跟单</a></li>
+                {% if request.current_url_name == 'stark:dipay_followorder_list' %}
+                    <li><a href="{% url 'stark:dipay_followorder_list' %}" class="active">跟单</a></li>
                 {% else %}
-                      <li><a href="{% url 'stark:dipay_followorder_list' %}">跟单</a></li>
+                    <li><a href="{% url 'stark:dipay_followorder_list' %}">跟单</a></li>
                 {% endif %}
 
-             {% if request.current_url_name == 'stark:dipay_followorder_list_plan' %}
-                     <li><a href="{% url 'stark:dipay_followorder_list_plan' %}" class="active">排产</a></li>
+                {% if request.current_url_name == 'stark:dipay_followorder_list_plan' %}
+                    <li><a href="{% url 'stark:dipay_followorder_list_plan' %}" class="active">排产</a></li>
                 {% else %}
-                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
+                    <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
                 {% endif %}
-		</ul>
+
+                {% if request.user.username == 'brank' %}
+                    <li><a href="{% url 'stark:dipay_applyorder_list_verify' %}">订单审核</a></li>
+
+                {% endif %}
+
+            </ul>
 
 
             <ul class="nav navbar-nav navbar-right">
@@ -99,8 +105,8 @@
 
 
             </ul>
-	</div>
-	</div>
+        </div>
+    </div>
 </nav>
 
 
