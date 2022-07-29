@@ -190,6 +190,9 @@ def save_display(handler, obj=None, is_header=False, *args, **kwargs):
                          " <i class='fa fa-check-square-o'></i> </span>" % (obj.pk, save_url))
 
 
+
+
+
 class PermissionHanlder:
 
     def del_display(self, obj=None, is_header=False, *args, **kwargs):

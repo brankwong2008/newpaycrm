@@ -222,6 +222,32 @@ color: dodgerblue;
 
 }
 
+/* 集装箱号的span格式 */
+.container_tag {
+    margin-left: 20px;
+}
+
+/* 集装箱号copy to clipboard的btn格式 */
+button[id^='clipboard-btn-'] {
+    display: none;
+}
+
+/* 船公司的span格式 */
+span.shipline-tag{
+    margin-right: 25px;
+}
+
+/* 集装箱号的span格式 */
+span.container_tag{
+    margin-left: -1px;
+}
+
+
+
+.fa-ship,.fa-building {
+    color: lightgrey;
+}
+
 
 tr.active {
     border-left: 3px solid #fdc00f;

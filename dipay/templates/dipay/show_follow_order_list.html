@@ -4,6 +4,8 @@
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
 
+
+
 {% endblock %}
 
 
@@ -151,6 +153,10 @@
 </div>
 
 
+     <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
+    <script>
+        new ClipboardJS('.clipboard_btn')
+    </script>
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
 

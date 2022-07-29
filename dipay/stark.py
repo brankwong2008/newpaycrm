@@ -50,6 +50,9 @@ site.register(models.Pay2Orders, Pay2OrdersHandler)
 # 付款人
 site.register(models.Payer,PayerHandler)
 
+# 船公司
+site.register(models.ShipLines)
+
 # 最新编码
 site.register(models.CurrentNumber)
 

@@ -29,7 +29,7 @@ class Customer(models.Model):
             return '-'
         return self.shortname
 
-
+# 货币
 class Currency(models.Model):
     title = models.CharField(max_length=10, verbose_name='币种名')
     icon = models.CharField(max_length=3, verbose_name='币种符号')
@@ -37,6 +37,7 @@ class Currency(models.Model):
     def __str__(self):
         return self.title
 
+# 最新编号表
 class CurrentNumber(models.Model):
     num = models.IntegerField(verbose_name='序号')
     reference = models.IntegerField(verbose_name='收款编号')
@@ -44,6 +45,15 @@ class CurrentNumber(models.Model):
 
     def __str__(self):
         return '最新订单号：%s 最新收款编号：%s' %(self.num,self.reference)
+
+# 船公司
+class ShipLines(models.Model):
+    title = models.CharField(max_length=30, verbose_name="船公司全名")
+    shortname = models.CharField(max_length=30, verbose_name="船公司简称")
+    link =  models.CharField(max_length=128, verbose_name="网址")
+
+    def __str__(self):
+        return "%s %s" % (self.shortname , self.link)
 
 
 class ApplyOrder(models.Model):
@@ -123,6 +133,9 @@ class FollowOrder(models.Model):
                     ]
     status =  models.SmallIntegerField(choices=follow_choices, verbose_name='状态',default=0)
     produce_sequence = models.SmallIntegerField(verbose_name='排产顺序', default=999)
+    shipline = models.ForeignKey(to=ShipLines, on_delete=models.CASCADE,
+                                 verbose_name='船公司', null=True )
+    container = models.CharField(max_length=20, verbose_name='生产情况', default='--')
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
@@ -218,8 +231,5 @@ class ApplyRelease(models.Model):
 4月10日	Studworks 	Studworks 	Hero广发	美元	15000	待关联
 
 """
-
-
-
 
 
