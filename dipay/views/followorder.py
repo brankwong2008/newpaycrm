@@ -8,8 +8,9 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
-    customer_goods_port_display,amount_rvcd_collect_display
+    customer_goods_port_display,amount_rvcd_collect_display,book_info_display
 
+from django.db.models import ForeignKey
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
@@ -243,7 +244,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                        status_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
-                      info_display('load_info'), info_display('book_info'), info_display('produce_info'),
+                      info_display('load_info'), book_info_display('book_info'), info_display('produce_info'),
                       amount_rvcd_collect_display,
                       ]
 
@@ -316,12 +317,12 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 ETD = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
                 ETA = order_obj.followorder.ETA if order_obj.followorder.ETA else 'to be updated'
                 mail['content'] = 'Dear ' + '%0A%0C%0A%0C' + \
-                                  f"The order of {order_obj.order_number} shipping status as below:" + '%0A%0C%0A%0C' + \
-                                  f"Date of departure: {ETD} " + '%0A%0C' + \
-                                  f"Date of arrival: {ETA}" + '%0A%0C%0A%0C' + \
+                                  f"The order {order_obj.order_number} status:" + '%0A%0C%0A%0C' + \
+                                  f"ETD: {ETD} " + '%0A%0C' + \
+                                  f"ETA: {ETA}" + '%0A%0C%0A%0C' + \
                                   f"Invoice Value   : {order_obj.currency.icon}{order_obj.amount}" + '%0A%0C' + \
-                                  f"Payment Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
-                                  f"Balance Amount   : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
+                                  f"Deposit Recieved: {order_obj.currency.icon}{order_obj.rcvd_amount}" + '%0A%0C' + \
+                                  f"Balance Amount : {order_obj.currency.icon}{order_obj.collect_amount}" + '%0A%0C%0A%0C'
         else:
             modal_title = '%s (%s)' % (title, '--')
 
@@ -331,9 +332,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
+        print('request.POST',request.POST)
         if request.is_ajax():
             data_dict = request.POST.dict()
-            pk = data_dict.get('pk')
+            pk = data_dict.pop('pk')
             data_dict.pop('csrfmiddlewaretoken')
 
             followorder_obj = self.model_class.objects.filter(pk=pk).first()
@@ -353,7 +355,24 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                             order_payment_update(order_obj=applyorder_obj)
                         except Exception as e:
                             data_dict['status'] = False
+                    # elif item =='shipline':
+                    #     followorder_obj.shipline_id = val
+                    #     # print('followorder_obj dir:', followorder_obj, dir(followorder_obj._meta.model))
+                    #     temp_model = followorder_obj._meta.model
+                    #     field_obj = temp_model._meta.get_field(item)
+                    #     print(field_obj,type(field_obj))
+                    #     if isinstance(field_obj, ForeignKey):
+                    #         print('this is foreign Key')
+                    #         item = item + '_id'
+                    #
+
                     else:
+                        temp_model = followorder_obj._meta.model
+                        field_obj = temp_model._meta.get_field(item)
+                        print(field_obj, type(field_obj))
+                        if isinstance(field_obj, ForeignKey):
+                            print('this is foreign Key')
+                            item = item + '_id'
                         setattr(followorder_obj, item, val)
                         # 如果follow_order完结，更新applyorder的status
                         if followorder_obj.status == '4' or followorder_obj.status == 4:

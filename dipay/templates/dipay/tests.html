@@ -43,8 +43,18 @@
     <tr>
         <td >hello</td>
         <td >hello7</td>
-        <td>hello8</td>
-        <td class="hidden-xs">hello9</td>
+        <td>  <!-- Target -->
+<span id="bar">Mussum ipsum cacilds...</span>
+
+<!-- Trigger -->
+<button class="clip-btn" data-clipboard-action="copy" data-clipboard-target="#bar">
+    Cut to clipboard
+</button>  </td>
+        <td class="hidden-xs">
+           <span>#</span> <span id="foo-314" >cmanfaf f.... fanfancalj </span><button id='clipboard-btn-314' class="clip-btn" type="button" data-clipboard-demo="" data-clipboard-target="#foo-314">
+</button>
+
+        </td>
         <td class="hidden-xs">hello10</td>
     </tr>
 
@@ -58,4 +68,11 @@
 </div>
 </div>
 </body>
+
+<script src="{% static 'js/clipboard/dist/clipboard.min.js' %}"></script>
+
+<script>
+    new ClipboardJS('.clip-btn');
+</script>
+
 </html>

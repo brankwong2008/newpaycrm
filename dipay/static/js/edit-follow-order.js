@@ -80,7 +80,7 @@ function showInputBox(sp) {
         // 构建option标签，加入数据
         var $options = ''
         for (var i in new_choice) {
-            console.log(content, new_choice[i][1])
+            // console.log(content, new_choice[i][1])
             if (new_choice[i][1] == content) {
                 $options += `<option value="${new_choice[i][0]}" selected>${new_choice[i][1]}</option>`
             } else {
@@ -191,5 +191,17 @@ function transferFixAmount(atag) {
     });
 
 
+    return false;
+}
+
+
+// 跟踪货物
+function trackShipment(atag) {
+    // alert('跟踪货物')
+    var pk = $(atag).attr('pk');
+    // console.log($('#clipboard-btn-'+pk));
+    $('#clipboard-btn-'+pk).trigger('click');
+    var win = window.open(atag.href, 'trackship', 'left=600,top=300,width=850,height=850');
+    win.focus();
     return false;
 }
