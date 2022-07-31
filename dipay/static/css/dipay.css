@@ -234,7 +234,7 @@ button[id^='clipboard-btn-'] {
 
 /* 船公司的span格式 */
 span.shipline-tag{
-    margin-right: 25px;
+    margin-right: 20px;
 }
 
 /* 集装箱号的span格式 */
