@@ -36,12 +36,12 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     """ [(0, '备货'), (1, '发货'), (2, '单据'),   (3, '等款'), (4, '完成'),"""
 
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
-                   'order__customer__title__icontains']
-    search_placeholder = '搜索 订单号/客户/货物'
+                   'order__customer__title__icontains','book_info__icontains']
+    search_placeholder = '搜 订单号/客户/货物/订舱'
 
     # 模糊搜索
     # search_list = ['customer__title__contains', 'goods__contains','order_number__contains']
-    # search_placeholder = '搜索 客户/货品/订单号'
+    # search_placeholder = '搜 客户/货品/订单号'
 
     # 添加按钮
     has_add_btn = False

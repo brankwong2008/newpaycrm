@@ -335,7 +335,7 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
     if is_header:
         return '客户/货物/目的港'
     else:
-        customer = obj.order.customer.shortname if obj.order.customer else '-'
+        customer = obj.order.customer.shortname[:15] if obj.order.customer else '-'
         goods = obj.order.goods[:15]
         discharge_port = port_display('discharge_port')(handler, obj, False)
         term = obj.order.get_term_display()

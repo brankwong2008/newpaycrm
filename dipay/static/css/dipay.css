@@ -193,7 +193,7 @@ color: dodgerblue;
 
 /* 控制表格列宽  客户货物 */
 .followorder-table-head-3, .weekly-plan-col-2 {
-    width: 15%;
+    width: 11%;
 
 }
 
@@ -212,7 +212,7 @@ color: dodgerblue;
 
 /* 控制表格列宽  订舱信息 */
 .followorder-table-head-8,.weekly-plan-col-8 {
-    width: 15%;
+    width: 19%;
 
 }
 
