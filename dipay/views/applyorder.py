@@ -5,14 +5,15 @@ from django.conf import settings
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
-from dipay.forms.forms import AddApplyOrderModelForm, EditApplyOrderModelForm,ConfirmApplyOrderModelForm,ManualAddApplyOrderModelForm
-from dipay.models import CurrentNumber, Customer, FollowOrder,ApplyOrder, Currency, Inwardpay, Bank, Pay2Orders, UserInfo
+from dipay.forms.forms import AddApplyOrderModelForm, EditApplyOrderModelForm, ConfirmApplyOrderModelForm, \
+    ManualAddApplyOrderModelForm
+from dipay.models import CurrentNumber, Customer, FollowOrder, ApplyOrder, Currency, Inwardpay, Bank, Pay2Orders, \
+    UserInfo, Payer
 from openpyxl import load_workbook
 from django.conf.urls import url
 from django.db import transaction
 import re
-
-
+from decimal import Decimal
 
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
@@ -50,7 +51,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return '已收款'
         else:
             payments_url_name = "%s:%s" % (self.namespace, 'dipay_pay2orders_list')
-            payments_url = reverse(payments_url_name, kwargs={'order_id': obj.id})
+            payments_url = reverse(payments_url_name)+'?order_id=%s' % obj.pk
             return mark_safe("<a href=%s target='_blank'> %s </a>" % (payments_url, obj.rcvd_amount))
 
     def amount_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -123,16 +124,16 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return "下单"
         else:
             if obj.status == 1:
-                confirm_url = self.reverse_url('to_workshop',pk=obj.id)
+                confirm_url = self.reverse_url('to_workshop', pk=obj.id)
                 return mark_safe("<a href='%s'>下单</a>" % confirm_url)
             else:
                 return '-'
 
     fields_display = [get_date_display('create_date'),
                       'salesperson', order_number_display,
-                      'customer', 'goods', amount_display,
+                      'customer', 'goods',
                       status_display, to_workshop_display,
-                      rcvd_amount_display]
+                      amount_display, rcvd_amount_display]
 
     def get_model_form(self, handle_type=None):
         if handle_type == 'add':
@@ -142,8 +143,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         else:
             return ManualAddApplyOrderModelForm
 
+    # 根据用户筛选数据源
     def get_queryset_data(self, request, *args, **kwargs):
-        if request.user.username == 'brank':
+        if request.user.username in ['brank','tony'] :
             return self.model_class.objects.all()
         if request.user:
             return self.model_class.objects.filter(salesperson=request.user, status__lte=3)
@@ -181,9 +183,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         if is_update:
             order_type = form.instance.get_order_type_display()
             sub_sequence = form.instance.sub_sequence
-            order_number = "%s%s" % (order_type, form.instance.sequence)
+            sequence = str(form.instance.sequence)
+            sequence = sequence.zfill(4) if len(sequence) < 4 else sequence
+            order_number = "%s%s" % (order_type,sequence)
             if sub_sequence != 0:
                 order_number = "%s-%s" % (order_number, sub_sequence)
+
             form.instance.order_number = order_number
             form.instance.collect_amount = form.instance.amount - form.instance.rcvd_amount
             form.save()
@@ -195,7 +200,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         # 新增订单的情况下
 
         # 获取当前最新订单序号，并把新申请订单号置为：最新单号+1
-        current_num_obj =  CurrentNumber.objects.get(pk=1)
+        current_num_obj = CurrentNumber.objects.get(pk=1)
         sequence = current_num_obj.num + 1
         # 检查订单序号是否已经存在，如果存在的话，sequence号顺序后移
         while True:
@@ -223,10 +228,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         current_num_obj.num = sequence
         current_num_obj.save()
 
-        # 反馈给用户的信息，加上快速发邮件的功能，节约大家的时间
+        # 新功能： 自动发申请订单的邮件，节约大家的时间
         send_time = datetime.now().strftime("%Y-%m-%d")
         subject = '申请合同号 %s %s %s' % (form.instance.customer.shortname, form.instance.goods, send_time)
         content = '经理: %0A%0C%0A%0C请审核。' + form.instance.remark
+        # 替换特殊符号 & ， 因为&在mailto字符串里面有功能含义
+        subject =  subject.replace('&',' and ')
+        content =  content.replace('&',' and ')
         mailto = f'<a href="mailto:brank@diligen.cn?subject={subject}&body={content}">点击快速发申请邮件</a>'
         msg = mark_safe('订单号申请提交成功，%s' % mailto)
 
@@ -276,38 +284,42 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             if upload_order_file:
                 count, count1, count2, errors = self.parse_order_file(ws)
                 excel_file.close()
-                msg = '成功读取 %s 条记录，更新%s条记录，新增%s条记录☺' % (count,count1, count2)
-                return render(request,'dipay/msg_after_submit.html',{"msg":msg, 'errors':errors})
+                msg = '成功读取 %s 条记录，更新%s条记录，新增%s条记录☺' % (count, count1, count2)
+                return render(request, 'dipay/msg_after_submit.html', {"msg": msg, 'errors': errors})
 
             # 付款文件的导入
             if upload_pay_file:
-                count, errors_list = self.parse_pay_file(ws)
+                count, count1, errors = self.parse_pay_file(ws)
                 excel_file.close()
 
-                return HttpResponse('成功上传 %s 条收款数据,错误行号 ☺' % (count,))
+                msg = '成功上传 %s 条分配数据, 收款%s条' % (count, count1)
+
+                return render(request, 'dipay/msg_after_submit.html', {"msg": msg, 'errors': errors})
 
     # 跟单文件导入的细节处理
     def parse_order_file(self, ws):
-        count = 0     # 读入记录数
-        count1 = 0    # 更新记录数
-        count2 = 0    # 新增记录数
+        count = 0  # 读入记录数
+        count1 = 0  # 更新记录数
+        count2 = 0  # 新增记录数
         field_list = [(0, 'order_number'), (1, 'salesperson'), (3, 'status'), (4, 'customer'),
                       (6, 'goods'), (7, 'term'), (8, 'ports'), (9, 'confirm_date'), (10, 'ETD'),
                       (11, 'ETA'), (12, 'load_info'), (13, 'book_info'), (14, 'payterm'), (15, 'amount'),
-                      (16, 'deposit'), (17, 'balance_USD'), (18, 'balance_RMB'), (19, 'payment1'),(20,'payment2')]
+                      (16, 'deposit'), (17, 'balance_USD'), (18, 'balance_RMB'), (19, 'payment1'), (20, 'payment2')]
 
         # 准备基础信息源，避免多次撞库
-        salespersons = { obj.nickname[0]:obj for obj in UserInfo.objects.all()}
+        salespersons = {obj.nickname[0]: obj for obj in UserInfo.objects.all()}
         status_dict = {item[1]: item[0] for item in FollowOrder.follow_choices}
-        customers = {obj.title : obj for obj in Customer.objects.all()}
+        customers = {obj.title: obj for obj in Customer.objects.all()}
         errors = []
 
         # 读入并清理数据
-        for i in range(4, ws.max_row+1):
+        for i in range(4, ws.max_row + 1):
             count += 1
             row = ws[i]
             row_dict = {}
-            if not row[0].value or not re.match(Regex.order_number, row[0].value):
+            if not row[0].value:
+                continue
+            if not re.match(Regex.order_number, row[0].value):
                 continue
 
             pass_flag = False
@@ -315,12 +327,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             # 读取一条数据
             for n, field in field_list:
                 row_dict[field] = row[n].value
-                if n==1:
+                if n == 1:
                     row_dict[field] = salespersons.get(row[n].value)
                 # 读取状态
-                elif n==3:
+                elif n == 3:
                     row_dict[field] = status_dict.get(row[n].value)
-                elif n==4:
+                elif n == 4:
                     exists_customer = False
                     if row[n].value:
                         for title, obj in customers.items():
@@ -330,17 +342,17 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                                 break
                     if not exists_customer:
                         row_dict[field] = None
-                elif n==8:
+                elif n == 8:
                     if row[n].value:
                         port_list = row[n].value.split('-')
-                        if len(port_list)==1:
+                        if len(port_list) == 1:
                             row_dict['load_port'], row_dict['discharge_port'] = None, row[n].value
                         else:
-                            row_dict['load_port'], row_dict['discharge_port']= port_list[0], port_list[1]
-                elif n==9:
+                            row_dict['load_port'], row_dict['discharge_port'] = port_list[0], port_list[1]
+                elif n == 9:
                     # 控制导入时间
                     confirm_date = row[n].value
-                    if not confirm_date or confirm_date < datetime(2020,1,1):
+                    if not confirm_date or confirm_date < datetime(2020, 1, 1):
                         pass_flag = True
                         break
                     else:
@@ -353,7 +365,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         if amount_match:
                             row_dict[field] = amount_match.group()
 
-            print(row_dict)
+            print('行号：%s, content: %s' % (i, row_dict))
 
             # 创建一条记录
             if not pass_flag:
@@ -363,10 +375,10 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 order_obj = ApplyOrder.objects.filter(order_number=order_number).first()
 
                 if order_obj:
-                    for field in ['amount', 'confirm_date', 'customer', 'goods','salesperson']:
+                    for field in ['amount', 'confirm_date', 'customer', 'goods', 'salesperson']:
                         if d.get(field):
                             setattr(order_obj, field, d[field])
-                        if field=='customer' and not d.get(field):
+                        if field == 'customer' and not d.get(field):
                             e = '客户名没有添加到系统'
                             errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
 
@@ -382,7 +394,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
                     # 如果订单不存在，则创建跟单记录
                     else:
-                        followorder_obj = FollowOrder(order=order_obj, salesman = order_obj.salesperson)
+                        followorder_obj = FollowOrder(order=order_obj, salesman=order_obj.salesperson)
                         for field in ['load_port', 'discharge_port', 'ETA', 'ETD', 'load_info', 'book_info', 'status']:
                             if d.get(field):
                                 setattr(followorder_obj, field, d[field])
@@ -395,13 +407,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         count1 += 1
                     except Exception as e:
                         print(e)
-                        errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number,e))
+                        errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
                     continue
 
                 # order_obj不存在时，新建
-                if not re.match(Regex.order_number,order_number):
+                if not re.match(Regex.order_number, order_number):
                     print(e)
-                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number,e))
+                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
                     continue
 
                 order_type, sequence, sub_sequence = self.parse_order_number(order_number)
@@ -409,25 +421,25 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 if d.get('deposit'):
                     deposit = deposit + '%s' % d.get('deposit')
                 balance = ' 尾款：'
-                for item in ['payment1','payment2']:
+                for item in ['payment1', 'payment2']:
                     if d.get(item):
                         balance = balance + '%s ' % d.get(item)
 
                 order_obj = ApplyOrder(order_number=order_number, order_type=order_type,
                                        sequence=sequence, sub_sequence=sub_sequence,
-                                       status=2, remark= deposit+balance)
-                for field in ['confirm_date','customer', 'salesperson', 'goods','amount']:
+                                       status=2, remark=deposit + balance)
+                for field in ['confirm_date', 'customer', 'salesperson', 'goods', 'amount']:
                     if d.get(field):
                         setattr(order_obj, field, d[field])
                 try:
                     order_obj.save()
                 except Exception as e:
                     print(e)
-                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number,e))
+                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
                     continue
 
                 followorder_obj = FollowOrder(order=order_obj)
-                followorder_obj.sales_remark = deposit+balance
+                followorder_obj.sales_remark = deposit + balance
                 for field in ['load_port', 'discharge_port', 'ETA', 'ETD', 'load_info', 'book_info', 'status']:
                     if d.get(field):
                         setattr(followorder_obj, field, d[field])
@@ -438,11 +450,10 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         order_obj.save()
                     followorder_obj.save()
                     count2 += 1
-                except Exception as e :
+                except Exception as e:
                     print(e)
-                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number,e))
+                    errors.append('错误行号：%s，订单号：%s, 错误原因：%s' % (i, order_number, e))
                     continue
-
 
         return count, count1, count2, errors
 
@@ -454,75 +465,133 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         pay_list的数据格式
           {  date:2022/5/6  got_amount:23000.00 currency_id 1  related_order: [{'order_number':J3155, amount:$2500]     }
         """
-        # 准备基本信息
-        field_list = [(0, 'create_date'), (1, 'order_number'), (2, 'payer'), (5, 'got_amount'), (6, 'origin_pay')]
-        bank_list = ['稠州','东亚','广发','花旗','连连']
+        # 准备基本信息   reference: 收款编号   record_num: 分配记录号
+        field_list = [(0, 'create_date'), (2, 'order_number'), (3, 'payer'),
+                      (6, 'got_amount'), (7, 'origin_pay'),(9,'dist_amount'), (10,'amount'),(11, 'reference'), (12, 'dist_ref')]
+        bank_list = ['稠州', '东亚', '广发', '花旗', '连连']
         banks = {}
         for item in bank_list:
             bank_obj = Bank.objects.filter(title__icontains=item).first()
             if bank_obj:
-                banks[item]= bank_obj.pk
+                banks[item] = bank_obj.pk
         currencies = {}
-        for item in ['美元','加元','人民币']:
+        for item in ['美元', '加元', '人民币']:
             currency_obj = Currency.objects.filter(title__contains=item).first()
             if currency_obj:
-                currencies[item]=currency_obj.pk
+                currencies[item] = currency_obj.pk
         payment_list = []
-        count = 0   # 分配记录数
-        count1 = 0  # 收款记录数
-        errors = []   # 错误列表
-        lastpay_obj = None
+        count_dist = 0  # 分配记录数
+        count_pay = 0  # 收款记录数
+        errors = []  # 错误列表
 
-        # 第一步清理并读入数据和处理数据
-        for i in range(2,ws.max_row+1):
-            row=ws[i]
-            row_pay_dict = self.read_pay_record(row,field_list,bank_list)
+
+        # 读入收款数据和处理数据
+        for i in range(2, ws.max_row + 1):
+            row = ws[i]
+            # 第一步：读入并清理收款数据
+            row_pay_dict = self.read_pay_record(row, field_list, bank_list)
+            d = row_pay_dict
+            # print('行号：%s, 内容：%s' % (i, row_pay_dict))
             if not row_pay_dict:
                 break
-            if row_pay_dict.get('error'):
+            error = d.get('error')
+            if error:
+                if error.startswith('300'):
+                    errors.append('行号：%s，错误：%s' % (i, error))
+                # errors.append('行号：%s，错误：%s' % (i, error))
                 continue
             print(row_pay_dict)
 
+
             # 第二步 创建收款记录
+            # 检查订单记录是否已经存在, 如果不存在忽略本条记录，提示错误
+            order_obj = ApplyOrder.objects.filter(order_number=d.get('order_number')).first()
+            if not order_obj:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '订单号未录入系统'))
+                continue
 
-            # 1. 先判断是否有必要创建新的记录，origin_pay有值，且与上一个付款记录的收款值不同
-            new_payment = False
-            if not row_pay_dict.get('origin_pay'):
-                pay_obj = PayObj(float(row_pay_dict.get('got_amount')))
-                # 创建关联，分配款项
-                print(row_pay_dict.get('order_number'),'分配金额:',float(row_pay_dict.get('got_amount')))
-                pay_obj.torelate_amount = 0
-                lastpay_obj = pay_obj
-            else:
-                orgin_pay = float(row_pay_dict.get('origin_pay'))
-                if not lastpay_obj:
-                    new_payment = True
-                elif orgin_pay != lastpay_obj.got_amount:
-                    new_payment = True
-                # 2. 如果收款值相同但是上一个收款已经分配完了，也是一笔新的收款
-                elif lastpay_obj.torelate_amount - float(row_pay_dict.get('got_amount')) < 0  :
-                    new_payment = True
+            # 检查客户名是否为空
+            if not order_obj.customer:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '请补充订单的客户名'))
+                continue
 
-                if new_payment:
-                    pay_obj = PayObj(orgin_pay)
-                    # 创建关联，分配款项
-                    pay_obj.torelate_amount -= float(row_pay_dict.get('got_amount'))
-                    print(row_pay_dict.get('order_number'), '分配金额:', float(row_pay_dict.get('got_amount')))
-                    lastpay_obj = pay_obj
-                else:
-                    # 直接分配金额
-                    lastpay_obj.torelate_amount -= float(row_pay_dict.get('got_amount'))
+            # 检查reference号的缺失
+            if not isinstance(d.get('reference'), int):
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '收款编号缺少'))
+                continue
 
+            #  检查收款记录是否存在
+            pay_obj = Inwardpay.objects.filter(reference=d.get('reference')).first()
+            # 不存在就新增一条收款记录 amount这一列填客户打款金额，另外加一列dist_amount
+            got_amount = d.get('origin_pay') or d.get('got_amount')
+            amount = d.get('amount') or got_amount
+            if not pay_obj:
+                pay_obj = Inwardpay(create_date=d.get('create_date'),
+                                    bank_id=banks.get(d.get('bank')),
+                                    currency_id=currencies.get(d.get('currency')),
+                                    customer=order_obj.customer,
+                                    amount=amount,
+                                    got_amount=got_amount,
+                                    torelate_amount=amount,
+                                    remark=d.get('remark'),
+                                    reference=d.get('reference'),
+                                    confirm_status=3,
+                                    status=1
+                                    )
 
+                payer_obj = Payer.objects.filter(title__icontains=d.get('payer')).first()
+                if payer_obj:
+                    pay_obj.payer = payer_obj
+                print(pay_obj)
+                pay_obj.save()
+                count_pay += 1
+
+            order_obj.rcvd_amount = sum(
+                [item[0] for item in Pay2Orders.objects.filter(order=order_obj).values_list('amount')])
+            order_obj.save()
+
+            # 分配款项
+            ## 查看分配记录是否存在，如果存在略过
+            dist_obj = Pay2Orders.objects.filter(dist_ref=d.get('dist_ref')).first()
+            if dist_obj:
+                continue
+
+            ## 检查是否超过订单的尾款金额
+            dist_amount = d.get('dist_amount') or d.get('got_amount')
+            dist_amount = Decimal(str(dist_amount))
+            if order_obj.amount - order_obj.rcvd_amount - dist_amount < 0:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '超过订单应收款'))
+                continue
+
+            ## 检查是否超过收款可分配金额
+            if pay_obj.torelate_amount -dist_amount< 0:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '超过收款可分配金额'))
+                continue
 
             # 第三步 创建收款分配记录
+            new_dist_obj = Pay2Orders(relate_date = d.get('create_date'),
+                                      payment = pay_obj,
+                                      order = order_obj,
+                                      amount = dist_amount,
+                                      dist_ref = d.get('dist_ref'),
+                                      )
 
-            count += 1
+            new_dist_obj.save()
+            # 扣减可关联金额
+            pay_obj.torelate_amount = pay_obj.torelate_amount - dist_amount
+            pay_obj.save()
+            count_dist += 1
 
+            # 刷新订单的总收款金额和应收款金额 values_list出来的是列表里面套tuple的结构
+            order_obj.rcvd_amount =  order_obj.rcvd_amount + dist_amount
+            order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
+            if order_obj.collect_amount < 0:
+                errors.append('行号：%s，发票：%s 错误：%s' % (i, d.get('order_number'), '应收款不能为负数，请检查'))
+                continue
+            order_obj.save()
 
-
-
-        return count, errors
+        # count分配记录数，count1收款记录数
+        return count_dist, count_pay, errors
 
         # 上传之订单号预处理
 
@@ -536,26 +605,37 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
         return order_type, sequence, sub_sequence
 
-    def read_pay_record(self,row,field_list,bank_list):
+    def read_pay_record(self, row, field_list, bank_list):
         row_pay_dict = {}
+        remark = '备注：'
         for n, field in field_list:
             # 避免读入空行
             if not row[0].value or not row[1].value:
+                row_pay_dict['error'] = '400 空行'
                 break
             # 默认的处理
-            row_pay_dict[field]=row[n].value
-            # 发票号, 原内容格式： 收汇 Jxxxx-2  印尼James
-            if n == 1:
-                order_number = re.search(Regex.pay_order_number, row[n].value)
-                if order_number:
-                    row_pay_dict[field] = order_number.group(1)  # group() 全部匹配到的内容，group(1) 提取的内容
-                else:
-                    row_pay_dict['error'] = '不是收汇或发票号未找到'
+            row_pay_dict[field] = row[n].value
+            # 发票号, 原内容格式： 收汇 Jxxxx-2  印尼James  300错误需要提醒用户，400错误直接略过
+            if field == "order_number":
+                if not re.search('收汇', row[n].value):
+                    row_pay_dict['error'] = '400 不是收汇'
                     break
+
+                order_number = re.findall(Regex.order_number, row[n].value)
+                if not order_number:
+                    row_pay_dict['error'] = '400 发票号未找到'
+                    break
+                elif len(order_number) > 1:
+                    row_pay_dict['error'] = '300 发现一个以上的发票号，请手动添加收款数据'
+                    break
+                else:
+                    row_pay_dict[field] = order_number[0]
+                    remark += row[n].value
+
             # 银行和货币
-            elif n == 2:
+            elif field == "payer":
                 row_pay_dict['bank'] = '广发'
-                row_pay_dict['currency']= '美元'
+                row_pay_dict['currency'] = '美元'
                 for each in bank_list:
                     if each in row[n].value:
                         row_pay_dict['bank'] = each
@@ -569,17 +649,28 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 payer = re.findall(Regex.payer, row[n].value)
                 if payer:
                     row_pay_dict[field] = ' '.join(payer[:2])
+                remark += row[n].value
+            # 提取分配金额
+            elif field == "got_amount":
+                try:
+                    row_pay_dict[field] = Decimal(str(row[n].value))
+
+                    remark = '%s %s' % (remark, row[n].value)
+                except:
+                    row_pay_dict['error'] = 'F列收款金额为空或者错误'
+                    break
 
             # 需分配金额  原内容格式： "从 USD15866"
-            elif n == 6:
+            elif field == "origin_pay":
                 payment = 0
                 # 这个地方加判断，因为origin_pay可能是空或者数值
-                if isinstance(row[n].value,str) and re.match(Regex.pay_from_payment_match,row[n].value):
-                    payment_search = re.search(Regex.pay_from_payment, row[n].value)
-                    payment = payment_search.group(1) if payment_search else 0
+                if isinstance(row[n].value, str) and re.search(Regex.pay_from_payment, row[n].value.strip()):
+                    payment = re.search(Regex.pay_from_payment, row[n].value.strip()).group(1)
+                    remark = '%s 从%s' % (remark, payment)
                 row_pay_dict[field] = payment
-            else:
-                row_pay_dict['remark'] = '%s %s %s' % (row[1].value, row[2].value, row[6].value)
+
+        row_pay_dict['remark'] = remark
+
         return row_pay_dict
 
     # 下载上传用的模板文件
@@ -605,7 +696,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return HttpResponse('订单号不存在')
 
         if request.method == "GET":
-            form = ConfirmApplyOrderModelForm(instance=order_obj,initial={'confirm_date':datetime.now()})
+            form = ConfirmApplyOrderModelForm(instance=order_obj, initial={'confirm_date': datetime.now()})
             return render(request, 'dipay/confirm_order.html', locals())
         else:
             form = ConfirmApplyOrderModelForm(request.POST, instance=order_obj)
@@ -614,10 +705,11 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 form.instance.status = 2
                 # 下单的动作2，把下单日期改为当日
                 if not form.instance.confirm_date:
-                    form.instance.confirm_date =  datetime.now()
+                    form.instance.confirm_date = datetime.now()
                 # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
-                if not order_obj.followorder:
-                    FollowOrder.objects.create(order=order_obj, salesman = order_obj.salesperson)
+                exists_follow_order = FollowOrder.objects.filter(order=order_obj).exists()
+                if not exists_follow_order:
+                    FollowOrder.objects.create(order=order_obj, salesman=order_obj.salesperson)
 
                 form.save()
                 msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单'
@@ -639,19 +731,19 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
             if form.is_valid():
                 order_number = form.instance.order_number
-                raw_data = [ item.strip() for item in order_number.split('-')]
-                if len(raw_data)==1:
+                raw_data = [item.strip() for item in order_number.split('-')]
+                if len(raw_data) == 1:
                     order_type = raw_data[0][0]
                     sequence = raw_data[0][1:5]
                     sub_sequence = 0
                     order_number = "%s%s" % (order_type, sequence)
                 else:
-                    order_number,sub_sequence = raw_data
+                    order_number, sub_sequence = raw_data
                     order_type = order_number[0]
                     sequence = order_number[1:5]
-                    order_number = "%s%s-%s" % (order_type,sequence,sub_sequence)
+                    order_number = "%s%s-%s" % (order_type, sequence, sub_sequence)
                 # 获取订单类型列表，并转换为字典
-                type_choices = { item[1]:item[0] for item in self.model_class.type_choices }
+                type_choices = {item[1]: item[0] for item in self.model_class.type_choices}
 
                 form.instance.order_type = type_choices.get(order_type)
                 form.instance.order_number = order_number
@@ -663,37 +755,26 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                         apply_obj = form.save()
                         apply_obj.validate_unique()
                         # 同时创建跟单记录
-                        follow_order_obj = FollowOrder(order=apply_obj,status=1,salesman=apply_obj.salesperson)
+                        follow_order_obj = FollowOrder(order=apply_obj, status=1, salesman=apply_obj.salesperson)
                         follow_order_obj.save()
 
                     msg = '手动创建%s成功，同时生成了跟单记录，请查看跟单表' % apply_obj
                 except Exception as e:
                     print(e)
                     msg = '创建失败，可能已经存在同样的单号'
-                return render(request,'dipay/msg_after_submit.html',locals())
+                return render(request, 'dipay/msg_after_submit.html', locals())
             else:
                 return render(request, "dipay/manual_add_new_order.html", locals())
-
-
 
 
 # 匹配模式的类
 class Regex:
     # 提取订单号：
-    order_number = r"(^[J,M,X]\d+-?\d$)"
+    order_number = r"([JMX]\d+-?\d)"
     # 提取金额
     amount = r'\d+[.]?\d*'
     # 提取付款公司名
-    payer = r'[a-zA-Z]{1,}'
-    # 从收款表中提取订单号，需要考虑带有收汇两个字
-    pay_order_number = r"收汇\s*([J,M,X]\d+-?\d)"
-    # 从收款表的最后一行提取金额，
-    pay_from_payment_match = r".*从.*"
-    pay_from_payment = r"(\d+\.?\d*)"
+    payer = r'[a-zA-Z]+'
 
-class PayObj:
-    got_amount = 0
-    torelate_amount = 0
-    def __init__(self,got_amount):
-        self.got_amount = got_amount
-        self.torelate_amount = got_amount
+    # 从收款表的最后一行提取金额，
+    pay_from_payment = r"从\D*(\d+\.?\d*)"

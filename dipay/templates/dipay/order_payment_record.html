@@ -1,0 +1,48 @@
+{% load static %}
+{#<link rel="stylesheet" href="{% static '/plugins/bootstrap/css/bootstrap.css' %}">#}
+{#<script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>#}
+{#<script src="{% static '/plugins/bootstrap/js/bootstrap.js' %}"></script>#}
+{#    图标文件系统#}
+{#<link rel="stylesheet" href="{% static '/plugins/font-awesome/css/font-awesome.css' %}">#}
+{#下拉搜索功能#}
+{#<script src="{% static "plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js" %}"></script>#}
+{#<link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">#}
+
+
+<div class="payment-details">
+
+    <div>
+        <a href="mailto:{{ mail.email }}?subject={{ mail.subject }}&content-type=text/html&&body={{ mail.content }}"
+           class="btn btn-primary pull-right">催款</a>
+
+        <h4>订单 {{ order_obj.order_number }}</h4>
+
+        <p>发票金额：{{ order_obj.currency.icon }} {{ order_obj.amount }}</p>
+
+        <p>已收款：{{ order_obj.currency.icon }} {{ order_obj.rcvd_amount }}</p>
+        <p>应收款：{{ order_obj.currency.icon }} {{ order_obj.collect_amount }}</p>
+        <h5> 明细 </h5>
+        <div>
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+
+                <th>金额</th>
+                <th>来源</th>
+                </thead>
+                <tbody>
+                {% for row in payment_list %}
+                    <tr>
+                        <td>{{ row.amount }}</td>
+                        <td><a href="{% url 'stark:dipay_inwardpay_relate2order' inwardpay_id=row.payment.pk %}" target="_blank">{{ row.payment }}</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+    </div>
+</div>
+

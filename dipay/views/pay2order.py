@@ -2,20 +2,16 @@
 from django.shortcuts import HttpResponse,redirect,render,reverse
 from django.conf.urls import url
 from django.utils.safestring import mark_safe
-from django.forms.models import modelformset_factory
 from django import forms
 from stark.service.starksite import StarkHandler
-from stark.utils.display import get_date_display,get_choice_text
-from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm
-from dipay.models import ApplyOrder, Customer, Payer, Pay2Orders
+from stark.utils.display import get_date_display,get_choice_text, PermissionHanlder
+from dipay.models import Pay2Orders, CurrentNumber
+from dipay.utils.order_updates import order_payment_update
 
-class  Pay2OrdersHandler(StarkHandler):
-    def get_fields_display(self, request, *args, **kwargs):
-        val = []
-        val.extend(self.fields_display)
-        if self.fields_display:
-            val.extend([self.get_del_display, ])
-        return val
+class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
+
+    search_list = ['order__customer__title__icontains','order__order_number__icontains']
+    search_placeholder = '搜索 客户 订单号'
 
     def get_del_display(self, obj=None, is_header=False,*args,**kwargs):
         """
@@ -60,16 +56,18 @@ class  Pay2OrdersHandler(StarkHandler):
 
         return mark_safe(" <a href='%s?%s' target='_blank'> %s </a>" % (payment_origin_url,param, obj.payment ))
 
-    fields_display = ['order',get_relate_amount_display, get_date_display('relate_date'),get_payment_display,]
-
-    has_add_btn = False
+    fields_display = ['order',get_relate_amount_display, get_payment_display, get_date_display('relate_date'),]
 
     def get_urls(self):
         patterns = [
             #url("^order_related_paylist/(?P<order_id>\d+)/$", self.wrapper(self.order_related_paylist), name=self.get_url_name('order_related_paylist')),
-            url("^list/(?P<order_id>\d+)/$", self.wrapper(self.show_list), name=self.get_list_url_name),
+            # url("^list/(?P<order_id>\d+)/$", self.wrapper(self.show_list), name=self.get_list_url_name),
+            url("^list/$", self.wrapper(self.show_list), name=self.get_list_url_name),
             url("^edit/(?P<pk>\d+)/$", self.wrapper(self.edit_list), name=self.get_edit_url_name),
-            url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name), ]
+            url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name),
+            url("^add/$", self.wrapper(self.add_list), name=self.get_add_url_name),
+
+        ]
 
         # extend方法没有返回值，直接改变自身
         patterns.extend(self.get_extra_urls())
@@ -78,6 +76,54 @@ class  Pay2OrdersHandler(StarkHandler):
 
 
     def get_queryset_data(self, request, *args, **kwargs):
-        order_id = kwargs.get('order_id')
+        order_id = request.GET.get('order_id')
         print(self.model_class)
-        return self.model_class.objects.filter(order_id=order_id)
+        if order_id:
+            return self.model_class.objects.filter(order_id=order_id)
+        else:
+            return self.model_class.objects.all()
+
+
+    def save_form(self,form,request,is_update=False,*args, **kwargs):
+        if is_update:
+            form.save()
+        else:
+            current_number_obj = CurrentNumber.objects.get(pk=1)
+            # 给每一个新增的分配记录自动的加上分配编号，同时更新currentnumber_obj
+            new_dist_ref = current_number_obj.dist_ref + 1
+            while Pay2Orders.objects.filter(dist_ref=new_dist_ref).exists():
+                new_dist_ref += 1
+            form.instance.dist_ref = new_dist_ref
+            form.save()
+            current_number_obj.dist_ref = new_dist_ref
+            current_number_obj.save()
+
+        # 同时更新订单和收款记录
+        order_obj = form.instance.order
+        order_obj.rcvd_amount = sum([item.amount for item in Pay2Orders.objects.filter(order=order_obj)])
+        order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
+        order_obj.save()
+
+        payment_obj = form.instance.payment
+        related_amount = sum([item.amount for item in Pay2Orders.objects.filter(payment=payment_obj)])
+        payment_obj.torelate_amount = payment_obj.amount - related_amount
+        payment_obj.save()
+
+    # 删除一条收款关联记录
+    def del_list(self, request, pk, *args, **kwargs):
+        del_obj = self.get_del_obj(request, pk, *args, **kwargs)
+        order_obj = del_obj.order
+
+        if not del_obj:
+            return HttpResponse("将要删除的记录不存在")
+        back_url = self.reverse_list_url(*args, **kwargs)
+
+        if request.method == "GET":
+            return render(request, self.del_list_template or "stark/del_list.html", locals())
+
+        if request.method == "POST":
+            del_obj.delete()
+            # 更新订单的应收和已收
+            order_payment_update(order_obj=order_obj)
+
+            return redirect(back_url)

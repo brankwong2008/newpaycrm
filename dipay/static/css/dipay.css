@@ -36,10 +36,10 @@ table {
 
 }
 
-.save-sequence {
-    cursor: pointer;
-    color: dodgerblue;
-}
+/*.save-sequence {*/
+/*    cursor: pointer;*/
+/*    color: dodgerblue;*/
+/*}*/
 
 textarea[id^="book_info"], textarea[id^="load_info"], textarea[id^="produce_info"] {
     width: 250px;
@@ -71,9 +71,17 @@ textarea[id^="amount"] {
     font-size: 20px;
 }
 
+/*备货*/
+.status-display.status-0 {
+    color: lightpink;
+    /*font-weight: bolder;*/
+
+}
+
 /*排产*/
 .status-display.status-1 {
     color: red;
+    font-weight: bolder;
 
 }
 
@@ -93,13 +101,26 @@ textarea[id^="amount"] {
     color: mediumpurple;
 }
 
+/*完成*/
+.status-display.status-4 {
+    color: grey;
+}
+
 /*发票号*/
 .invoice-number-display {
+    font-size: medium;
     font-weight: bolder;
 }
 
 .invoice-amount-display {
+    font-size: small;
+    font-weight: bolder;
 
+}
+
+/* 欠款和收款金额*/
+.amount-value {
+    margin-left: 20px;
 }
 
 /*标签导航active*/
@@ -138,6 +159,95 @@ a.add-record-btn {
     line-height: 20px;
 }
 
+/* 收款表的待关联状态 待收齐 */
+.torelate-status-0 {
+
+}
+
+/* 收款表的待关联状态 收齐 */
+.torelate-status-1 {
+    color: dimgrey;
+
+}
+
+/* 放单申请审批状态： 等待审批 */
+.wait-confirm-release{
+color: dodgerblue;
+}
+
+/* 放单申请审批状态： 不同意放单 */
+.not-agree-release{
+    color: orange;
+}
+
+/* 放单申请审批状态： 可以放单 */
+.agree-release{
+    color:green;
+}
+
+/* 控制表格列宽  基本信息 */
+.followorder-table-head-2, .weekly-plan-col-1 {
+    width: 9%;
+
+}
+
+/* 控制表格列宽  客户货物 */
+.followorder-table-head-3, .weekly-plan-col-2 {
+    width: 11%;
+
+}
+
+
+/* 控制表格列宽  状态 */
+ .weekly-plan-col-3 {
+    width: 3%;
+
+}
+
+/* 控制表格列宽  装箱信息 */
+.followorder-table-head-7,.weekly-plan-col-7  {
+    width: 20%;
+
+}
+
+/* 控制表格列宽  订舱信息 */
+.followorder-table-head-8,.weekly-plan-col-8 {
+    width: 19%;
+
+}
+
+/* 控制表格列宽  生产信息 */
+.followorder-table-head-9,.weekly-plan-col-9 {
+    width: 10%;
+
+}
+
+/* 集装箱号的span格式 */
+.container_tag {
+    margin-left: 20px;
+}
+
+/* 集装箱号copy to clipboard的btn格式 */
+button[id^='clipboard-btn-'] {
+    display: none;
+}
+
+/* 船公司的span格式 */
+span.shipline-tag{
+    margin-right: 20px;
+}
+
+/* 集装箱号的span格式 */
+span.container_tag{
+    margin-left: -1px;
+}
+
+
+
+.fa-ship,.fa-building {
+    color: lightgrey;
+}
+
 
 tr.active {
     border-left: 3px solid #fdc00f;
@@ -170,4 +280,5 @@ table {
 .search-group .others {
     display: inline-block;
 }
+
 

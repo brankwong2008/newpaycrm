@@ -1,6 +1,6 @@
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, redirect
 from django.contrib.auth.models import AnonymousUser
 import re
 from django.utils.module_loading import import_string
@@ -28,8 +28,7 @@ class RbacMiddleWare(MiddlewareMixin):
                 return
 
         if not request.user.username:
-            link = mark_safe("<a href='/login/'>请先登录</a>")
-            return HttpResponse(link)
+            return redirect('/login/')
 
         # 确保自动权限也支持导航栏，所以这句话要提前
         request.navi_list = [{"title": "首页", "url": '/index/'}, ]

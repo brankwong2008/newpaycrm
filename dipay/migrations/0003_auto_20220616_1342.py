@@ -11,11 +11,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RenameField(
-            model_name='followorder',
-            old_name='salesperson',
-            new_name='salesman',
-        ),
+
         migrations.AlterField(
             model_name='inwardpay',
             name='create_date',

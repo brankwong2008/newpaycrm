@@ -4,6 +4,8 @@
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
 
+
+
 {% endblock %}
 
 
@@ -53,7 +55,7 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
-                    <div class="pull-right">
+                    <div class="pull-right hidden-xs">
 
                         <select name="handle_type" class="handle-select">
                             <option value="">请选择处理方式</option>
@@ -74,11 +76,11 @@
 
                 <div>{{ msg }}</div>
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-striped">
 
                     <thead>
                     {% for item in header_list %}
-                        <th>{{ item }} </th>
+                        <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
 
                     {% endfor %}
 
@@ -125,41 +127,36 @@
     {#  Launch demo modal#}
     {#</button>#}
 
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-                </div>
-                <div class="modal-body">
-                    <p>
-                        <label for="">备货</label> <input type="radio" name="order_status" value="0">
-                    </p>
-                    <p>
-                        <label for="">排产</label> <input type="radio" name="order_status" value="1">
-                    </p>
-                    <p>
-                        <label for="">单据</label> <input type="radio" name="order_status" value="2">
-                    </p>
-                    <p>
-                        <label for="">等款</label> <input type="radio" name="order_status" value="3">
-                    </p>
-                    <p>
-                        <label for="">完成</label> <input type="radio" name="order_status" value="4">
-                    </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary">确认修改</button>
-                </div>
-            </div>
-        </div>
+
+    <!-- 模态对话框的btn， 显示收款明细
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> -->
+
+<!-- Modal 模态对话框  显示收款明细 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">收款明细</h4>
+      </div>
+      <div class="modal-body">
+          <div class="payment-details"></div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+      </div>
     </div>
+  </div>
+</div>
 
 
+     <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
+    <script>
+        new ClipboardJS('.clipboard_btn')
+    </script>
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
 

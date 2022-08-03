@@ -7,7 +7,7 @@ from stark.service.starksite import StarkHandler
 from django.utils.module_loading import import_string
 from stark.utils.display import manytomany_display,get_choice_text,reset_pwd_display
 from stark.forms.forms import StarkModelForm,ResetPwdForm
-from stark.utils.common import gen_md5
+from rbac.utils.common import gen_md5
 
 MyUserInfo = import_string(settings.RBAC_USER_MODLE_CLASS)
 

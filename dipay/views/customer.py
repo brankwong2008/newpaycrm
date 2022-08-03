@@ -16,6 +16,8 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
     search_placeholder = '搜索 客户名'
 
     def get_queryset_data(self,request,*args,**kwargs):
+        if request.user.username == 'brank':
+            return self.model_class.objects.all()
         if request.user.department == 8:
             return self.model_class.objects.all()
         elif request.user.department == 1:

@@ -30,14 +30,17 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
             return '已收款'
         else:
             payments_url_name = "%s:%s" % (self.namespace, 'dipay_pay2orders_list')
-            payments_url = reverse(payments_url_name, kwargs={'order_id': obj.id})
+            payments_url = reverse(payments_url_name)+'?order_id=%s' % obj.pk
             return mark_safe("<a href=%s target='_blank'> %s </a>" % (payments_url, obj.rcvd_amount))
 
     def batch_verify(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
         for pk in pk_list:
             order_obj = ApplyOrder.objects.filter(pk=pk).first()
-            order_obj.order_number = "%s%s" % (order_obj.get_order_type_display(), order_obj.sequence)
+            sequence = str(order_obj.sequence)
+            if len(sequence) < 4:
+                sequence = sequence.zfill(4)
+            order_obj.order_number = "%s%s" % (order_obj.get_order_type_display(), sequence)
             order_obj.status = 1
             order_obj.save()
 
@@ -109,7 +112,9 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
         # print(123213, form.instance.sub_sequence, type(form.instance.sub_sequence))
         order_type = form.instance.get_order_type_display()
         sub_sequence = form.instance.sub_sequence
-        order_number = "%s%s" % (order_type, form.instance.sequence)
+        sequence = str(form.instance.sequence)
+        sequence = sequence.zfill(4) if len(sequence) < 4 else sequence
+        order_number = "%s%s" % (order_type, sequence)
         if sub_sequence != 0:
             order_number = "%s-%s" % (order_number, sub_sequence)
         form.instance.order_number = order_number

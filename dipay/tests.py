@@ -1,38 +1,26 @@
-from django.test import TestCase
+# 测试压缩图片的方法
 
-# Create your tests here.
+from PIL import Image
+import os
+from django.conf import settings
 
-s="""0, order_number 
-1, salesperson 
-3, status 
-4, customer 
-6, goods
-7, term 
-8, ports 
-9, confirmed_date
-10, ETD 
-11,ETA 
-12, load_info
-13, book_info 
-14, payterm
-15, amount 
-16, deposit 
-17, balance_USD
-18, balance_RMB
-19,  payment1
-20,  payment2  """
+def compress_image(outfile):
+    # 获取磁盘文件的大小， 大小一般是bit，除以1024等于kb
+    file_size = os.path.getsize(outfile)//1024
+    if file_size <= 200:
+        return outfile
 
-row_list = []
-row = ''
-for a in s:
-    if a != '\n':
-        row += a
-    else:
-        num, field = row.split(',')
-        row_list.append((int(num.strip()),field.strip()))
-        row = ''
+    while file_size > 200:
+        im = Image.open(outfile)
+        x,y = im.size
+        outfile_obj = im.resize((int(x*0.9),int(y*0.9)), Image.ANTIALIAS)
+        try:
+            outfile_obj.save(outfile, quality=85)
+        except Exception as e:
+            break
 
+        file_size = os.path.getsize(outfile)//1024
 
+    return outfile
 
-print(row_list)
-
+ret = compress_image('/Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/media/WechatIMG11334的副本.jpeg')

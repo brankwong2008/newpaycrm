@@ -5,7 +5,7 @@ from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.utils.displays import status_display,  info_display, save_display, follow_date_display,  \
     port_display,order_number_display, sales_display,goods_display, confirm_date_display,\
-    customer_display
+    customer_display, basic_info_display, customer_goods_port_display
 from dipay.models import CurrentNumber, Customer, FollowOrder
 from django.conf.urls import url
 from django.http import JsonResponse
@@ -81,12 +81,15 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
         '外销员':['sales_remark',],
         '外贸部经理':"__all__",
         '外贸跟单':"__all__",
+        '总经理':"__all__",
         '工厂跟单':['produce_info',],
     }
     def get_editable(self,field):
         user = self.request.user
         for role in user.roles.all():
             editable_list = self.role_edit_dict.get(role.title)
+            if not editable_list :
+                return False
             if editable_list == '__all__':
                 return True
             if field in editable_list:
@@ -95,9 +98,8 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
 
 
     # 跟单列表显示的字段内容   hidden_xs指定的列在手机版式下不显示
-    fields_display = [order_number_display, customer_display, sales_display, status_display,
-                      info_display('produce_sequence'), goods_display,
-                      port_display('discharge_port',hidden_xs='hidden-xs'), confirm_date_display,
+    fields_display = [basic_info_display, customer_goods_port_display, status_display,
+                      info_display('produce_sequence',hidden_xs='hidden-xs'),
                       follow_date_display('ETD', time_format='%m/%d',),
                       follow_date_display('ETA', time_format='%m/%d',hidden_xs='hidden-xs'),
                       info_display('load_info',hidden_xs='hidden-xs'), info_display('book_info',hidden_xs='hidden-xs'), info_display('produce_info',title='生产',hidden_xs='hidden-xs'),
@@ -148,6 +150,11 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
             else:
                 for item, val in data_dict.items():
                     setattr(followorder_obj, item, val)
+                # 如果follow_order完结，更新applyorder的status
+                print(9999999, followorder_obj.status,type(followorder_obj.status))
+                if followorder_obj.status == '4' or followorder_obj.status == 4:
+                    followorder_obj.order.status = 3
+                    followorder_obj.order.save()
                 followorder_obj.save()
                 data_dict['status'] = True
                 res = data_dict

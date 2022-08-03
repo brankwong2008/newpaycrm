@@ -20,7 +20,7 @@ class Permission(models.Model):
     title = models.CharField(max_length=30,verbose_name="权限名")
     name = models.CharField(max_length=128,verbose_name="权限别名",null=True,unique=True)
     urls =  models.CharField(max_length=128,verbose_name="权限URL")
-    icon = models.CharField(max_length=30, verbose_name="图标",null=True)
+    icon = models.CharField(max_length=30, verbose_name="图标",null=True,blank=True)
     menu = models.ForeignKey(to='Menu',on_delete=models.CASCADE, null=True,blank=True, verbose_name="所属一级菜单", help_text="null表示不是菜单")
     parent = models.ForeignKey(to='Permission',on_delete=models.CASCADE, null=True,blank=True, verbose_name="父级菜单")
 

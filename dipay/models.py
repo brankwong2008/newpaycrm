@@ -20,12 +20,16 @@ class UserInfo(MyUser):
 class Customer(models.Model):
     title = models.CharField(max_length=128, unique=True, verbose_name='客户名')
     shortname = models.CharField(max_length=20, verbose_name='客户简称',default='-')
+    remark = models.TextField(verbose_name='客户详情', default='--')
+    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='所属外销员',
                                     limit_choices_to={"department":1} , null=True)
     def __str__(self):
+        if self is None:
+            return '-'
         return self.shortname
 
-
+# 货币
 class Currency(models.Model):
     title = models.CharField(max_length=10, verbose_name='币种名')
     icon = models.CharField(max_length=3, verbose_name='币种符号')
@@ -33,11 +37,23 @@ class Currency(models.Model):
     def __str__(self):
         return self.title
 
+# 最新编号表
 class CurrentNumber(models.Model):
     num = models.IntegerField(verbose_name='序号')
+    reference = models.IntegerField(verbose_name='收款编号')
+    dist_ref = models.IntegerField(verbose_name='款项分配编号',default=6000)
 
     def __str__(self):
-        return str(self.num)
+        return '最新订单号：%s 最新收款编号：%s' %(self.num,self.reference)
+
+# 船公司
+class ShipLines(models.Model):
+    title = models.CharField(max_length=30, verbose_name="船公司全名")
+    shortname = models.CharField(max_length=30, verbose_name="船公司简称")
+    link =  models.CharField(max_length=128, verbose_name="网址")
+
+    def __str__(self):
+        return "%s %s" % (self.shortname , self.link)
 
 
 class ApplyOrder(models.Model):
@@ -47,10 +63,13 @@ class ApplyOrder(models.Model):
                                     verbose_name='外销员',
                                     limit_choices_to={"roles__title":"外销员"} ,
                                     null=True,
-                                    )
+                                 )
+    # D 代理订单， L 临时账户（每个客户只能有一个临时账户，预留L1000以下的编号给临时账户使用）
     type_choices = [  (0, 'J'),
                       (1, 'M'),
                       (2, 'X'),
+                      (3, 'D'),
+                      (4, 'L'),
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号',unique=True, null=True,blank=True)
@@ -72,10 +91,10 @@ class ApplyOrder(models.Model):
                     ]
     term = models.SmallIntegerField(choices=term_choices, verbose_name='贸易条款',default=0)
 
-
     status_choices = [(0, '申请中'),
                     (1, '已配单号'),
                     (2, '已下单'),
+                    (6, '款齐'),
                     (3, '完结'),
                     (4, '固定账户'),
                     (5, '无效'),
@@ -92,8 +111,8 @@ class FollowOrder(models.Model):
     discharge_port = models.CharField(max_length=32, verbose_name='目的港',default='-')
     ETD = models.DateField(verbose_name='ETD', null=True, blank=True)
     ETA = models.DateField(verbose_name='ETA', null=True, blank=True)
-    book_info = models.CharField(max_length=255, verbose_name='订舱信息',default='订舱:')
-    load_info = models.CharField(max_length=255, verbose_name='装箱信息',default='装箱:')
+    book_info = models.CharField(max_length=512, verbose_name='订舱信息',default='订舱:')
+    load_info = models.CharField(max_length=512, verbose_name='装箱信息',default='装箱:')
     produce_info = models.CharField(max_length=128, verbose_name='生产情况',default='生产:')
     sales_remark = models.CharField(max_length=128,verbose_name='业务备注', default='-')
     salesman = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,
@@ -114,6 +133,9 @@ class FollowOrder(models.Model):
                     ]
     status =  models.SmallIntegerField(choices=follow_choices, verbose_name='状态',default=0)
     produce_sequence = models.SmallIntegerField(verbose_name='排产顺序', default=999)
+    shipline = models.ForeignKey(to=ShipLines, on_delete=models.CASCADE,
+                                 verbose_name='船公司', null=True )
+    container = models.CharField(max_length=20, verbose_name='生产情况', default='--')
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
@@ -135,7 +157,7 @@ class Payer(models.Model):
 
 
 class Inwardpay(models.Model):
-    create_date = models.DateField(verbose_name='汇入日期',default=datetime.now())
+    create_date = models.DateField(verbose_name='汇入日期')
     payer = models.ForeignKey(to=Payer, on_delete=models.CASCADE,verbose_name='付款人',null=True)
     keyin_user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='录入人',default=3)
     bank =models.ForeignKey(to=Bank, on_delete=models.CASCADE,verbose_name='收款行')
@@ -143,6 +165,7 @@ class Inwardpay(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,verbose_name='币种')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='水单金额',default=0)
     got_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='实收金额',default=0)
+    ttcopy = models.ImageField(upload_to="ttcopy", verbose_name='电汇水单', null=True)
     torelate_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='待关联金额',default=0)
 
     status_choices = [(0,'待关联'),
@@ -155,9 +178,12 @@ class Inwardpay(models.Model):
     confirm_status = models.SmallIntegerField(choices=confirm_choices, verbose_name='确认',default=0)
     orders = models.ManyToManyField(to=ApplyOrder, through="Pay2Orders", verbose_name='关联记录',blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
+    reference = models.IntegerField(verbose_name='收款编号',help_text='避免出现重复记录',null=True,default=1000)
+
 
     def __str__(self):
-        return "%s %s%s" % (self.payer.title,self.currency.icon, str(self.amount))
+        create_date = self.create_date.strftime("%Y-%m-%d")
+        return "%s: %s %s%s" % (create_date, self.customer, self.currency.icon, str(self.amount))
 
 
 class Pay2Orders(models.Model):
@@ -165,23 +191,45 @@ class Pay2Orders(models.Model):
     payment = models.ForeignKey(to=Inwardpay, on_delete=models.CASCADE,verbose_name='收款')
     order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='关联金额')
+    dist_ref = models.IntegerField(verbose_name='分配编号',default=10000)
+
+    def __str__(self):
+        return '%s %s  %s' % (self.payment.create_date.strftime('%Y/%m/%d'),self.order.order_number,self.amount)
+
 
 class Book(models.Model):
     title = models.CharField(max_length=30,verbose_name="AuthorName")
     def __str__(self):
         return self.title
 
+class ExchangeRate(models.Model):
+    update_date = models.DateField(auto_now_add=True, verbose_name='日期')
+    currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,verbose_name='货币')
+    rate = models.DecimalField(max_digits=9, decimal_places=3, verbose_name='汇率')
 
+    def __str__(self):
+        return '%s %s: %s' % (self.update_date.strftime('%Y/%m/%d'), self.currency.title, self.rate)
+
+
+
+# 申请放单
+class ApplyRelease(models.Model):
+    apply_date =  models.DateField(auto_now_add=True, verbose_name='申请日期')
+    applier = models.ForeignKey(to=UserInfo, related_name='applier', on_delete=models.CASCADE, verbose_name='申请人')
+    verify_date =  models.DateField(verbose_name='审批日期', null=True, blank=True)
+    verifier = models.ForeignKey(to=UserInfo,related_name='verifier', on_delete=models.CASCADE, verbose_name='审批人')
+    remark =  models.TextField(verbose_name='备注', default='-')
+    decision = models.BooleanField(verbose_name='审批意见', null=True)
+    order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
+
+    def __str__(self):
+        return '%s 放单申请 %s' % (self.apply_date.strftime('%Y/%m/%d'),self.order.order_number)
 
 """
 
 日期	付款人	客户	收款行	货币	金额	状态 
 4月10日	Studworks 	Studworks 	Hero广发	美元	15000	待关联
 
-
 """
-
-
-
 
 

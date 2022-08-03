@@ -138,6 +138,7 @@ class SecondMenuModelForm(ModelForm):
             [item['icon'] for item in models.Permission.objects.filter(icon__isnull=False).values("icon")])
         avatar_set = menu_iconset | set(settings.AVATAR_CHOICES)
 
+        icon_choices.append((None,'------'))
         for item in avatar_set:
             node = (item, mark_safe(f"<i class='fa {item}'></i>"))
             icon_choices.append(node)
@@ -162,14 +163,14 @@ class PermissionModelForm(ModelForm):
 
 
 #
-class PermissionMultAddModelForm(forms.Form):
-    choices = models.Permission.objects.filter(menu__isnull=False, parent__isnull=True).values_list("id", "title")
-    # choices =[(0,'xx'),(1,'xxx')]
-    title = forms.CharField(max_length=30, label="权限名", widget=forms.widgets.TextInput())
-    urls = forms.CharField(max_length=30, label="URL", widget=forms.widgets.TextInput())
-    name = forms.CharField(max_length=30, label="URL别名", widget=forms.widgets.TextInput())
-    parent_id = forms.IntegerField(label="二级菜单", widget=forms.widgets.Select(choices=choices), required=False)
-
+# class PermissionMultAddModelForm(forms.Form):
+#     choices = models.Permission.objects.filter(menu__isnull=False, parent__isnull=True).values_list("id", "title")
+#     # choices =[(0,'xx'),(1,'xxx')]
+#     title = forms.CharField(max_length=30, label="权限名", widget=forms.widgets.TextInput())
+#     urls = forms.CharField(max_length=30, label="URL", widget=forms.widgets.TextInput())
+#     name = forms.CharField(max_length=30, label="URL别名", widget=forms.widgets.TextInput())
+#     parent_id = forms.IntegerField(label="二级菜单", widget=forms.widgets.Select(choices=choices), required=False)
+#
 
 # class PermissionMultAddModelForm(ModelForm):
 #    """ modelformset方法还用不好，以后再了解"""
@@ -184,15 +185,15 @@ class PermissionMultAddModelForm(forms.Form):
 #             )
 #         }
 
-
-class PermissionMultEditModelForm(forms.Form):
-    choices = models.Permission.objects.filter(menu__isnull=False).values_list("id", "title")
-    # choices = [(0, 'xx'), (1, 'xxx')]
-    id = forms.IntegerField(label="id", widget=forms.widgets.HiddenInput())
-    title = forms.CharField(max_length=30, label="权限名", widget=forms.widgets.TextInput())
-    urls = forms.CharField(max_length=128, label="URL", widget=forms.widgets.TextInput())
-    name = forms.CharField(max_length=128, label="URL别名", widget=forms.widgets.TextInput())
-    parent_id = forms.IntegerField(label="二级菜单", widget=forms.widgets.Select(choices=choices), required=False)
+#
+# class PermissionMultEditModelForm(forms.Form):
+#     choices = models.Permission.objects.filter(menu__isnull=False).values_list("id", "title")
+#     # choices = [(0, 'xx'), (1, 'xxx')]
+#     id = forms.IntegerField(label="id", widget=forms.widgets.HiddenInput())
+#     title = forms.CharField(max_length=30, label="权限名", widget=forms.widgets.TextInput())
+#     urls = forms.CharField(max_length=128, label="URL", widget=forms.widgets.TextInput())
+#     name = forms.CharField(max_length=128, label="URL别名", widget=forms.widgets.TextInput())
+#     parent_id = forms.IntegerField(label="二级菜单", widget=forms.widgets.Select(choices=choices), required=False)
 
 
 # class PermissionMultEditModelForm(ModelForm):
@@ -206,7 +207,7 @@ class PermissionMultEditModelForm(forms.Form):
 
 
 class AutoPermissionAddModelForm(forms.Form):
-    second_menu_choices = models.Permission.objects.filter(menu__isnull=False).values_list("id", "title")
+    second_menu_choices = list(models.Permission.objects.filter(menu__isnull=False).values_list("id", "title"))
     menu_choices = models.Menu.objects.values_list("id", "title")
     # second_menu_choices = [(1,"x1"),(2,"x2")]
     # menu_choices = [(1,"x1"),(2,"x2")]
@@ -224,11 +225,8 @@ class AutoPermissionAddModelForm(forms.Form):
 
 
 class AutoPermissionEditModelForm(forms.Form):
-    second_menu_choices = models.Permission.objects.filter(menu__isnull=False).values_list("id", "title")
-    menu_choices = models.Menu.objects.values_list("id", "title")
-    # second_menu_choices = [(1, "x1"), (2, "x2")]
-    # menu_choices = [(1, "x1"), (2, "x2")]
 
+    menu_choices = models.Menu.objects.values_list("id", "title")
     id = forms.IntegerField(label="id", widget=forms.widgets.HiddenInput())
     title = forms.CharField(max_length=30, label="权限名", widget=forms.widgets.TextInput())
     urls = forms.CharField(max_length=128, label="URL", widget=forms.widgets.TextInput())
@@ -238,5 +236,5 @@ class AutoPermissionEditModelForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AutoPermissionEditModelForm, self).__init__(*args, **kwargs)
-        self.fields["parent_id"].choices += self.second_menu_choices
+        self.fields["parent_id"].choices += list( models.Permission.objects.filter(menu__isnull=False).values_list("id", "title") )
         self.fields["menu_id"].choices += self.menu_choices

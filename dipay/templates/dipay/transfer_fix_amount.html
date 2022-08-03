@@ -1,0 +1,19 @@
+{% load static %}
+
+<div class="transfer-fix-amount-details">
+
+    <div>
+
+        <h4> 账户： {{ order_obj.customer.shortname }}</h4>
+
+        <p>固定定金余额：{{ order_obj.currency.icon }} {{ order_obj.rcvd_amount }}</p>
+
+        <p>转出到：<select name="to_order_id" id="">
+            <option value="01">xxx</option>
+        </select></p>
+        <p>转出金额：<input type="text" name="transfer_amount"></p>
+
+
+    </div>
+</div>
+
