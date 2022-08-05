@@ -96,9 +96,10 @@ textarea[id^="amount"] {
     color: blue;
 }
 
-/*货好*/
+/*装箱*/
 .status-display.status-5 {
     color: mediumpurple;
+    font-weight: bolder;
 }
 
 /*完成*/
