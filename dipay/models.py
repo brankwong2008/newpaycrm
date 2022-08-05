@@ -126,7 +126,7 @@ class FollowOrder(models.Model):
     pay_term = models.SmallIntegerField(choices=payterm_choices, verbose_name='付款方式',default=1)
     follow_choices =  [(0, '备货'),
                     (1, '发货'),
-                    (5, '货好'),
+                    (5, '装箱'),
                     (2, '单据'),
                     (3, '等款'),
                     (4, '完成'),
@@ -183,7 +183,7 @@ class Inwardpay(models.Model):
 
     def __str__(self):
         create_date = self.create_date.strftime("%Y-%m-%d")
-        return "%s: %s %s%s" % (create_date, self.customer, self.currency.icon, str(self.amount))
+        return "%s: %s %s%s (实到：%s)" % (create_date, self.customer, self.currency.icon, str(self.amount),str(self.got_amount))
 
 
 class Pay2Orders(models.Model):
