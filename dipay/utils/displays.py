@@ -169,8 +169,8 @@ def port_display(field, title=None, hidden_xs=''):
     return inner
 
 
-# 订舱，装箱，生产信息
-def info_display(field, title=None, hidden_xs=''):
+# 订舱，装箱，生产信息 (如果内容太长自动进行隐藏的办法）
+def info_display(field, title=None, hidden_xs='', max_width=100):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -195,14 +195,30 @@ def info_display(field, title=None, hidden_xs=''):
             if isinstance(field_val, models.DateTimeField):
                 pass
 
+            total = 0
+            for i in field_val:
+                total = total + 2 if ord(i) > 255 else total + 1
+
+            more_tag = "<span class='more_tag' onclick=showFullContent(this)><i class='fa fa-ellipsis-h'></i></span>"
+
             # 判断用户是否有此字段的编辑权限
             is_editable = handler_obj.get_editable(field)
             if is_editable:
-                return mark_safe("<span class='text-display %s' onclick='showInputBox(this)' "
-                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, field_val))
+                if total > max_width:
+                    return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
+                                     "id='%s-id-%s' > %s </span> %s" % (
+                                     field_val, hidden_xs, field, obj.pk, field_val[:max_width], more_tag))
+                else:
+                    return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
+                                     "id='%s-id-%s' > %s </span>" % (field_val, hidden_xs, field, obj.pk, field_val))
             else:
-                return mark_safe("<span class='text-display %s' "
-                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, field, obj.pk, field_val))
+                if total > max_width:
+                    return mark_safe("<span cont='%s' class='text-display %s' "
+                                     "id='%s-id-%s' > %s </span> %s" % (
+                                     field_val, hidden_xs, field, obj.pk, field_val[:max_width], more_tag))
+                else:
+                    return mark_safe("<span cont='%s' class='text-display %s' "
+                                     "id='%s-id-%s' > %s </span>" % (field_val, hidden_xs, field, obj.pk, field_val))
 
     return inner
 
@@ -269,7 +285,7 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
 
 
 # 订舱信息展示，加入船公司和集装箱信息
-def book_info_display(field, title=None, time_format="%Y-%m-%d"):
+def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -288,6 +304,22 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d"):
             if field_val is None:
                 return '--'
 
+            # 分析内容的长度，如果超过长度则截取并在后面加三个点
+            total = 0
+            count0 = 0  # 计算字符的数量
+            over_flag = False
+            for i in field_val:
+                total = total + 2 if ord(i) > 255 else total + 1
+                count0 += 1
+                if total > max_width:
+                    field_val_display = field_val[:count0]
+                    more_tag = "<span cont='%s' onclick=showFullContent(this)>...</span>" % (field_val)
+                    over_flag = True
+                    break
+            if not over_flag:
+                field_val_display = field_val
+                more_tag = ''
+
             # 船公司信息和编辑
             shipline = obj.shipline.shortname if obj.shipline else '--'
             shipline_link = obj.shipline.link if obj.shipline else '#'
@@ -298,8 +330,7 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d"):
             # print('shipline_choices',shipline_choices)
 
             container = obj.container or '--'
-            container_tag = " <span style='margin-left:15px'>#</span> <span class='text-display container_tag' onclick='showInputBox(this)' style='margin-left:-1px'" \
-                            "id='%s-id-%s' > %s </span> " % ('container', obj.pk, container)
+
             container_tag_btn = f""" <span><i class='fa fa-building'></i></span> <span class='text-display container_tag' onclick='showInputBox(this)' 
                                 id="container-id-{obj.pk}" >{container} </span>
                                 <button id='clipboard-btn-{obj.pk}' class="clipboard_btn" type="button" 
@@ -310,9 +341,9 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d"):
                            f" id='shipline-id-{obj.pk}' choice='{shipline_choices}' " \
                            f"onclick='showInputBox(this)' > {shipline} </span> {container_tag_btn}"
 
-            return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
-                             "id='%s-id-%s' > %s </span> <br>"
-                             "%s" % (field, obj.pk, field_val, shipping_tag))
+            return mark_safe("<span cont='%s' class='text-display' onclick='showInputBox(this)' "
+                             f"id='%s-id-%s' > %s </span> {more_tag} <br>"
+                             "%s" % (field_val, field, obj.pk, field_val_display, shipping_tag))
 
     return inner
 
