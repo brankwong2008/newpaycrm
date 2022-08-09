@@ -303,7 +303,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         if not hasattr(order_obj, 'followorder'):
             return HttpResponse('跟单记录不存在，请先创建该订单跟单记录')
 
-        payment_list = Pay2Orders.objects.filter(order=order_obj)
+        payment_list = Pay2Orders.objects.filter(order=order_obj).order_by('-payment__create_date')
         print('payment list', payment_list)
 
         title = '固定定金' if order_obj.order_number.startswith('L') else '收款明细'
