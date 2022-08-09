@@ -410,6 +410,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 # 固定定金条目不能删除
                 row['del_btn'] = ''
 
+            print('row data:',row)
+
             torelate_order_list.append(row)
 
         # 先按订单号排序

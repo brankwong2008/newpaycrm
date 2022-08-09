@@ -293,7 +293,7 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d"):
             shipline_link = obj.shipline.link if obj.shipline else '#'
             shipline_field_obj = handler_obj.model_class._meta.get_field('shipline')
             shipline_model = shipline_field_obj.related_model
-            shipline_choices = [(item.pk, item.shortname) for item in shipline_model.objects.all()]
+            shipline_choices = [(item.pk, item.shortname) for item in shipline_model.objects.all().order_by('shortname')]
             shipline_choices = json.dumps(shipline_choices)
             # print('shipline_choices',shipline_choices)
 
