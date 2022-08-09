@@ -16,7 +16,7 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/weekly_plan_list.html'
 
     # 标签导航显示， active有值的是默认激活的标签
-    tab_list = [('发货','排产中','active'),('货好','已齐活','')]
+    tab_list = [('发货','排产中','active'),('装箱','装箱','')]
     status_dict = {item[1]: item[0] for item in FollowOrder.follow_choices}
     def get_tabs(self,request,*args,**kwargs):
         tabs = []
