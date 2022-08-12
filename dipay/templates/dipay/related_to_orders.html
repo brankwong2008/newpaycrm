@@ -247,7 +247,7 @@
 
                         {% for row in torelate_order_list %}
                             <tr>
-                                <td>{{ row.order_number }}</td>
+                                <td><a href="{{ row.followorder_url }}" target="_blank">{{ row.order_number }}</a></td>
                                 <td>{{ row.customer.shortname }}</td>
                                 <td>{{ row.currency.icon }}{{ row.amount }}</td>
                                 <td><a href="{% url 'stark:dipay_followorder_show_pay_details' order_id=row.pk %}" is_fix_amount="{{ row.is_fix_amount }}"
