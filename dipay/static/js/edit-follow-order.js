@@ -205,3 +205,50 @@ function trackShipment(atag) {
     win.focus();
     return false;
 }
+
+// 弹出财务确认款项的modal框
+function  showInwardpayConfirm(atag) {
+    var href = atag.href;
+    var pk = $(atag).attr('pk');
+    $('button.confirm-pay').attr('pk',pk);
+    $('button.confirm-pay').attr('link',href);
+
+     $('#myModal').modal('show');
+
+    // 获取返回数据
+    $.ajax({
+        url: href,
+        type: 'get',
+        data: '',
+        success: function (respond) {
+            console.log(respond)
+            $('#myModal .modal-body .payment-details').replaceWith(respond);
+        }
+
+    });
+
+    return false;
+
+}
+
+// 确认款项的post请求发送
+function  confirmReceiptInwardpay(atag) {
+    var href = $(atag).attr('link');
+    var pk = $(atag).attr('pk');
+
+    // 获取返回数据
+    $.ajax({
+        url: href,
+        type: 'post',
+        data: {'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),},
+        success: function (respond) {
+            console.log(respond);
+             // $('#myModal').modal('hide');
+             location.reload();
+        }
+
+    });
+
+    return false;
+
+}

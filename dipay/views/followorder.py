@@ -23,12 +23,16 @@ from dipay.utils.order_updates import order_payment_update
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/show_follow_order_list.html'
 
+    # 排序字段
+    order_by_list = ['order__confirm_date', '-order__sequence', ]
+
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     # popup_list = ['customer',]
 
+
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
-        Option(field='status', is_multi=False),
+        Option(field='status', is_multi=False, default='1'),
         Option(field='salesman', filter_param={'roles__title': '外销员'}, verbose_name='业务'),
         # Option(field='depart'),
     ]
@@ -46,8 +50,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
 
-    # 排序字段
-    order_by_list = ['-order__sequence', ]
+
 
     # 批量排产
     def batch_to_produce(self, request, *args, **kwargs):
