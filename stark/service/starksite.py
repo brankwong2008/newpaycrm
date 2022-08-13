@@ -49,37 +49,45 @@ class Option:
             query_dict = self.query_dict.copy()
             query_dict._mutable = True
 
+
             # 这句话什么意思，为什么删除键值，因为全部按钮的url里面的筛选条件是空
-            res = query_dict.get(self.field,None)
-            default_flag = False
-            # 如果筛选是全部，则该键值为空
-            if not res:
-                yield '<a href="?%s" class="active">全部</a>' % (query_dict.urlencode())
-            else:
-                query_dict.pop(self.option.field)
-                yield '<a href="?%s">全部</a>' % (query_dict.urlencode())
+            # res = query_dict.get(self.field,None)
+            # # 如果筛选是全部，则该键值为空
+            # if not res:
+            #     yield '<a href="?%s" class="active">全部</a>' % (query_dict.urlencode())
+            # else:
+            #     query_dict.pop(self.option.field)
+            #     yield '<a href="?%s">全部</a>' % (query_dict.urlencode())
 
+            # 对于有默认筛选的情况，对全选的按钮要单独规定，status='all', 或者-1，还是all比较好理解
+            is_active = 'active' if query_dict.get(self.field)=='all' else ''
 
+            # 全部按钮的url中的筛选参数应该等于'all'
+            query_dict[self.field]='all'
+            yield '<a href="?%s" class="%s" >全部</a>' % (query_dict.urlencode(), is_active)
+
+            # 在关联数据源中顺序执行
             for item in self.data:
                 query_dict = self.query_dict.copy()
+                print('rendate item loop:',query_dict)
+
                 # val_list用户选择的筛选值列表
                 val_list = query_dict.getlist(self.field)
-                if default_flag:
-                    val_list.append(self.option.default)
                 query_dict._mutable = True
 
                 text = self.option.get_text(item)
                 val = self.option.get_value(item)
                 if not self.option.is_multi:
                     query_dict[self.field] = val
+                    print('val, vallist:', val, val_list, type(val), type(val_list))
                     if val in val_list:
+
                         is_active = "active"
                         query_dict.pop(self.field)
                     else:
                         is_active = ""
                 else:
                     if val not in val_list:
-                        print(55555,val,type(val),val_list)
                         val_list.append(val)
                         is_active = ""
                     else:
@@ -95,11 +103,15 @@ class Option:
             yield '</div>'
 
     def get_data(self,model_class,query_dict):
+        print('get date query dict', query_dict)
+        # 通过字段名拿到字段对象
         field_obj = model_class._meta.get_field(self.field)
+        # 通过字段对象拿到字段的显示名称 （放在筛选选项的开始位置）
         verbose_name = self.verbose_name if self.verbose_name else field_obj.verbose_name
 
-
+        # 判断字段是choices类型还是外键类型
         if isinstance(field_obj, ForeignKey) or isinstance(field_obj, ManyToManyField):
+            # 如果是外键则找到其关联的model
             temp_model = field_obj.related_model
             return self.RenderData(temp_model.objects.filter(**self.filter_param),self.field,verbose_name,query_dict,self)
         else:
@@ -301,9 +313,21 @@ class StarkHandler(object):
             option_group_dict = {}
             group_filter = {}
             for option_obj in self.option_group:
+                query_dict = self.request.GET.copy()
+                query_dict._mutable = True
+                # query_dict.update({'status':0})
+                # 为了实现默认筛选的功能进行的判断，注意默认筛选要使用字符串形式，否则容易匹配失败
+                if query_dict.get(option_obj.field) is None and option_obj.default is not None:
+                    query_dict.update({option_obj.field:option_obj.default})
+                    # 在筛选条件中加入默认筛选
+                    filter_condition.update({option_obj.field:option_obj.default})
+
+                print('query_dict content and type:',query_dict,type(query_dict),dir(query_dict))
+                # query_dict = self.query_dict.copy()
+                #             query_dict._mutable = True
                 # print(1010101, field_filter_exists, option_obj.field,option_obj.default)
                 # 这个字典的键值是可迭代对象，给出页面需要的html标签
-                option_group_dict[option_obj.field] = option_obj.get_data(self.model_class,request.GET)
+                option_group_dict[option_obj.field] = option_obj.get_data(self.model_class, query_dict)
 
         """
         基本原理：
@@ -312,8 +336,9 @@ class StarkHandler(object):
         根据这些组合条件筛选数据库，然后展示在前台  
         """
 
-        # 根据以上过滤条件过滤数据
-
+        # 根据以上过滤条件过滤数据, 如果筛选条件为'all'的要去掉这个条件
+        filter_condition = { k:v for k,v in filter_condition.items() if v != 'all' }
+        print(filter_condition)
         searched_queryset = searched_queryset.filter(**filter_condition)
 
         # 在由用户定义要进行筛选的字段 option_group = [option_obj, ]
