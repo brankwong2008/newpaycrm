@@ -197,29 +197,20 @@ def info_display(field, title=None, hidden_xs='', max_width=100):
             if isinstance(field_val, models.DateTimeField):
                 pass
 
-            total = 0
-            for i in field_val:
-                total = total + 2 if ord(i) > 255 else total + 1
+            # total = 0
+            # print('field_val',  field_val)
+            # for i in field_val:
+            #     total = total + 2 if ord(i) > 255 else total + 1
 
             more_tag = "<span class='more_tag' onclick=showFullContent(this)><i class='fa fa-ellipsis-h'></i></span>"
 
             # 判断用户是否有此字段的编辑权限
             is_editable = handler_obj.get_editable(field)
             if is_editable:
-                if total > max_width:
-                    return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
-                                     "id='%s-id-%s' > %s </span> %s" % (
-                                     field_val, hidden_xs, field, obj.pk, field_val[:max_width], more_tag))
-                else:
-                    return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
+                return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
                                      "id='%s-id-%s' > %s </span>" % (field_val, hidden_xs, field, obj.pk, field_val))
             else:
-                if total > max_width:
-                    return mark_safe("<span cont='%s' class='text-display %s' "
-                                     "id='%s-id-%s' > %s </span> %s" % (
-                                     field_val, hidden_xs, field, obj.pk, field_val[:max_width], more_tag))
-                else:
-                    return mark_safe("<span cont='%s' class='text-display %s' "
+                return mark_safe("<span cont='%s' class='text-display %s' "
                                      "id='%s-id-%s' > %s </span>" % (field_val, hidden_xs, field, obj.pk, field_val))
 
     return inner
