@@ -243,10 +243,14 @@ span.container_tag{
     margin-left: -1px;
 }
 
-
-
+/* 船和箱子的图标 */
 .fa-ship,.fa-building {
     color: lightgrey;
+}
+
+/* 更多按钮的三个点 */
+.more_tag {
+
 }
 
 
@@ -301,6 +305,7 @@ table {
 
         /* 图片 */
         .newmodal-content {
+            position: relative;
             margin: auto;
             display: block;
             width: 100%;
@@ -338,8 +343,9 @@ table {
 
         /* 关闭按钮 */
         .close {
-            position: absolute;
-            top: 15px;
+            position: fixed;
+            z-index: 999; /* Sit on top */
+            top: 75px;
             right: 35px;
             color: #f1f1f1;
             font-size: 40px;

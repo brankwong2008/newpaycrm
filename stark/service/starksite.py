@@ -69,8 +69,6 @@ class Option:
             # 在关联数据源中顺序执行
             for item in self.data:
                 query_dict = self.query_dict.copy()
-                print('rendate item loop:',query_dict)
-
                 # val_list用户选择的筛选值列表
                 val_list = query_dict.getlist(self.field)
                 query_dict._mutable = True
@@ -79,7 +77,7 @@ class Option:
                 val = self.option.get_value(item)
                 if not self.option.is_multi:
                     query_dict[self.field] = val
-                    print('val, vallist:', val, val_list, type(val), type(val_list))
+
                     if val in val_list:
 
                         is_active = "active"
@@ -93,7 +91,6 @@ class Option:
                     else:
                         val_list.remove(val)
                         is_active = "active"
-                    print(1233454, 'val_list',val_list)
 
                     # 给每个筛选按钮定制url，要考虑下次点击之后的效果
                     query_dict.setlist(self.field,val_list)
@@ -103,7 +100,7 @@ class Option:
             yield '</div>'
 
     def get_data(self,model_class,query_dict):
-        print('get date query dict', query_dict)
+
         # 通过字段名拿到字段对象
         field_obj = model_class._meta.get_field(self.field)
         # 通过字段对象拿到字段的显示名称 （放在筛选选项的开始位置）
@@ -254,7 +251,7 @@ class StarkHandler(object):
             batch_process_dict = None
 
         if request.method == "POST":
-            print(request.POST)
+            # print(request.POST)
             func_name = request.POST.get("handle_type")
             if func_name in batch_process_dict:
                 func = getattr(self,func_name)
@@ -265,14 +262,13 @@ class StarkHandler(object):
 
         ############## 1. 添加按钮############
         add_btn = self.add_btn_display(request, *args, **kwargs)
-        print('add btn',add_btn)
+        # print('add btn',add_btn)
 
         # 如果是空表或者数据结果为空，按空表方式显示
         if not searched_queryset:
             show_template = self.show_list_template or "stark/show_list.html"
             header_list.extend([self.model_name, "操作"])
             data_list = [[],] #  二维列表存储表体内容
-            print('show_template',show_template)
             return render(request, show_template, locals())
 
 
@@ -322,7 +318,7 @@ class StarkHandler(object):
                     # 在筛选条件中加入默认筛选
                     filter_condition.update({option_obj.field:option_obj.default})
 
-                print('query_dict content and type:',query_dict,type(query_dict),dir(query_dict))
+                # print('query_dict content and type:',query_dict,type(query_dict),dir(query_dict))
                 # query_dict = self.query_dict.copy()
                 #             query_dict._mutable = True
                 # print(1010101, field_filter_exists, option_obj.field,option_obj.default)

@@ -109,7 +109,9 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
             if obj.confirm_status <= 3:
                 confirm_url = self.reverse_url('confirm_receipt', pk=obj.pk)
                 return mark_safe(
-                    "<a href= '%s' class='account-confirm-status-%s' pk='%s' onclick='return showInwardpayConfirm(this)' > 请确认 </a>" % (confirm_url,obj.pk,obj.pk))
+                    "<a href= '%s' class='account-confirm-status-%s btn btn-success btn-sm' pk='%s' "
+                    "onclick='return showInwardpayConfirm(this)' > "
+                    "确认 </a>" % (confirm_url,obj.pk,obj.pk))
             else:
                 return '已收讫'
 
@@ -127,8 +129,8 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
                 return '--'
 
     # 列显示控制
-    fields_display = [get_date_display('create_date'), payer_display, customer_display, amount_display,got_amount_display,
-                      'bank',ttcopy_display, related_orders_display,receipt_confirm_display]
+    fields_display = [get_date_display('create_date'), 'bank', payer_display, customer_display, amount_display,got_amount_display,
+                      ttcopy_display, related_orders_display,receipt_confirm_display]
 
     def get_urls(self):
         patterns = [
