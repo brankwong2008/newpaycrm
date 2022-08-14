@@ -10,3 +10,5 @@ def str_width_control(s,width):
         count1 += 2 if is_chinese(c) else 1
         if count1 >= width:
             return s[:count0]+'..' if count0<len(s) else s
+    # 如果for执行完毕都没有触发到width长度，则直接返回s
+    return s

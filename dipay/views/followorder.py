@@ -24,7 +24,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/show_follow_order_list.html'
 
     # 排序字段
-    order_by_list = ['order__confirm_date', '-order__sequence', ]
+    order_by_list = ['-order__confirm_date', '-order__sequence', ]
 
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     # popup_list = ['customer',]
