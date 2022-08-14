@@ -31,8 +31,10 @@ def logout(request):
 
 
 def index(request):
-
     redirect_url = reverse('stark:dipay_inwardpay_list')
+    if request.user.username == 'wangminhua':
+        redirect_url = reverse('stark:dipay_inwardpay_list_account')
+
     return redirect(redirect_url)
 #
 # from django import forms

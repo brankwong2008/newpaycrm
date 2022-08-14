@@ -12,7 +12,7 @@ from dipay.views.followorder import FollowOrderHandler
 from dipay.views.weeklyplan import WeekelyPlanHandler
 from dipay.views.applyrelease import ApplyReleaseHandler
 from dipay.views.applyrelease_verify import ApplyReleaseVerifyHandler
-
+from dipay.views.inwardpay_account import InwardPayAccountHandler
 
 # 用户信息管理
 site.register(models.UserInfo,MyUserInfoHandler)
@@ -44,6 +44,9 @@ site.register(models.Inwardpay, InwardPayHandler)
 # 收款记录
 site.register(models.Inwardpay, InwardPayHandler)
 
+# 收款记录(财务版）
+site.register(models.Inwardpay, InwardPayAccountHandler, prev='account')
+
 # 收款订单关联记录
 site.register(models.Pay2Orders, Pay2OrdersHandler)
 
@@ -61,4 +64,3 @@ site.register(models.ApplyRelease, ApplyReleaseHandler)
 
 # 申请放单审核
 site.register(models.ApplyRelease, ApplyReleaseVerifyHandler,prev='verify')
-

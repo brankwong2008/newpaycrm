@@ -373,7 +373,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             order_obj.collect_amount = order_obj.amount - order_obj.rcvd_amount
             order_obj.save()
             row = {}
-            for each in ['order_number', 'customer', 'currency', 'amount', 'rcvd_amount','collect_amount']:
+            for each in [ 'order_number','customer', 'currency', 'amount', 'rcvd_amount','collect_amount']:
                 row[each] = getattr(order_obj, each)
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
             dist_amount = pay2order_obj.amount if pay2order_obj else 0
@@ -382,6 +382,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             # 判断是否固定定金
             is_fix_amount = 'true' if order_obj.order_number.startswith('L') else 'false'
             row['is_fix_amount'] = is_fix_amount
+
+            # 发票号直接关联跟单记录的url
+            row['followorder_url'] = reverse('stark:dipay_followorder_list')+'?q='+ order_obj.order_number
 
             # 分配金额加上span标签和class，便于js操作，链接showinputbox,点击直接编辑
             amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s</span>" % (
@@ -392,8 +395,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             row['pk'] = order_obj.pk
 
             save_url = self.reverse_url('relate2order', inwardpay_id=inwardpay_obj.pk)
-            save_btn = mark_safe("<span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
-                                 " <i class='fa fa-check-square-o'></i> </span>" % (order_obj.pk, save_url))
+            save_btn = mark_safe("<span><span class='save-sequence hidden-xs' pk='%s' url='%s' onclick='savePlan(this)'>"
+                                 " <i class='fa fa-check-square-o'></i> </span></span>" % (order_obj.pk, save_url))
             row['save_btn'] = save_btn
             if pay2order_obj:
                 del_url = reverse('stark:dipay_pay2orders_del', kwargs={'pk':pay2order_obj.pk})
@@ -409,6 +412,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 row['transfer_btn'] = mark_safe("<a href='%s' order_id='%s' onclick='return transferFixAmount(this)' ><i class='fa fa-exchange'></i></a>" % (transfer_url,order_obj.pk))
                 # 固定定金条目不能删除
                 row['del_btn'] = ''
+
+            print('row data:',row)
 
             torelate_order_list.append(row)
 

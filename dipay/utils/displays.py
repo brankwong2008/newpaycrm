@@ -1,6 +1,8 @@
 from django.utils.safestring import mark_safe
 from django.db import models
 import json
+from dipay.utils.tools import str_width_control
+
 
 
 def status_display(handler_obj, obj=None, is_header=False, *args, **kwargs):
@@ -325,7 +327,7 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
             shipline_link = obj.shipline.link if obj.shipline else '#'
             shipline_field_obj = handler_obj.model_class._meta.get_field('shipline')
             shipline_model = shipline_field_obj.related_model
-            shipline_choices = [(item.pk, item.shortname) for item in shipline_model.objects.all()]
+            shipline_choices = [(item.pk, item.shortname) for item in shipline_model.objects.all().order_by('shortname')]
             shipline_choices = json.dumps(shipline_choices)
             # print('shipline_choices',shipline_choices)
 
@@ -348,25 +350,12 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
     return inner
 
 
-"""
- status_choices = handler_obj.model_class.follow_choices
-        status_choices = json.dumps(status_choices)
-        # class中加入obj.status, 便于css来操作颜色
-
-        # 判断用户是否有此字段的编辑权限
-        is_editable = handler_obj.get_editable('status')
-        if is_editable:
-            return mark_safe(
-                "<span class='status-display status-%s' id='%s-id-%s' choice='%s' onclick='showInputBox(this)' > %s </span>"
-                % (obj.status, 'status', obj.pk, status_choices, obj.get_status_display()))"""
-
-
 #  客户，货物，目的港和贸易条款的展示
 def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
         return '客户/货物/目的港'
     else:
-        customer = obj.order.customer.shortname[:15] if obj.order.customer else '-'
+        customer = str_width_control(obj.order.customer.shortname,16) if obj.order.customer else '-'
         goods = obj.order.goods[:15]
         discharge_port = port_display('discharge_port')(handler, obj, False)
         term = obj.order.get_term_display()
