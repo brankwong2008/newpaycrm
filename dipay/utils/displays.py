@@ -1,7 +1,9 @@
 from django.utils.safestring import mark_safe
 from django.db import models
+from django.urls import reverse
 import json
 from dipay.utils.tools import str_width_control
+from dipay.models import Pay2Orders
 
 
 
@@ -30,7 +32,7 @@ def status_display(handler_obj, obj=None, is_header=False, *args, **kwargs):
                 "<span class='status-display status-%s' id='%s-id-%s' choice='%s'  > %s </span>"
                 % (obj.status, 'status', obj.pk, status_choices, obj.get_status_display()))
 
-
+#  订单号的显示
 def order_number_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示 发票金额
@@ -43,7 +45,20 @@ def order_number_display(handler, obj=None, is_header=False, *args, **kwargs):
     else:
         return mark_safe('<span class="invoice-number-display">%s</span>' % (obj.order.order_number))
 
+# 关联订单显示
+def related_orders_display(self, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '已关联订单'
+    else:
+        related_list = Pay2Orders.objects.filter(payment=obj)
+        if related_list:
+            order_list = ','.join([ pay2order_obj.order.order_number for pay2order_obj in related_list])
+            related2order_url = reverse("stark:dipay_inwardpay_relate2order", kwargs={'inwardpay_id':obj.pk})
+            return mark_safe(f"<a href='{related2order_url}' target='_blank'>{order_list}</a>")
+        else:
+            return '--'
 
+# 业务员的显示
 def sales_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示销售人员名称首字母
@@ -58,7 +73,7 @@ def sales_display(handler, obj=None, is_header=False, *args, **kwargs):
 
         return nickname[0] if nickname else "-"
 
-
+# 货物的显示
 def goods_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示销售人员名称首字母
@@ -71,7 +86,7 @@ def goods_display(handler, obj=None, is_header=False, *args, **kwargs):
     else:
         return obj.order.goods[:15]
 
-
+# 客户的显示
 def customer_display(handler, obj=None, is_header=False, *args, **kwargs):
     """
            显示客户简名
