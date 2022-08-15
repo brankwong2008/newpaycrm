@@ -342,7 +342,7 @@ table {
 
 
         /* 关闭按钮 */
-        .close {
+        .img-close {
             position: fixed;
             z-index: 999; /* Sit on top */
             top: 75px;
@@ -354,7 +354,8 @@ table {
             opacity: 2.2;
         }
 
-        .close:hover, .close:focus {
+
+        .img-close:hover, .img-close:focus {
             color: #bbb;
             text-decoration: none;
             cursor: pointer;
@@ -367,3 +368,17 @@ table {
 
 
         /* ***********end  弹窗图片的样式 *************/
+
+
+ /* 普通modal框的关闭按钮 */
+        .close {
+            position: relative;
+            z-index: 999; /* Sit on top */
+            top: -14px;
+            right: 6px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            opacity: 2.2;
+        }
