@@ -298,20 +298,20 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
                 return '--'
 
             # 分析内容的长度，如果超过长度则截取并在后面加三个点
-            total = 0
-            count0 = 0  # 计算字符的数量
-            over_flag = False
-            for i in field_val:
-                total = total + 2 if ord(i) > 255 else total + 1
-                count0 += 1
-                if total > max_width:
-                    field_val_display = field_val[:count0]
-                    more_tag = "<span cont='%s' onclick=showFullContent(this)>...</span>" % (field_val)
-                    over_flag = True
-                    break
-            if not over_flag:
-                field_val_display = field_val
-                more_tag = ''
+            # total = 0
+            # count0 = 0  # 计算字符的数量
+            # over_flag = False
+            # for i in field_val:
+            #     total = total + 2 if ord(i) > 255 else total + 1
+            #     count0 += 1
+            #     if total > max_width:
+            #         field_val_display = field_val[:count0]
+            #         more_tag = "<span cont='%s' onclick=showFullContent(this)>...</span>" % (field_val)
+            #         over_flag = True
+            #         break
+            # if not over_flag:
+            #     field_val_display = field_val
+            #     more_tag = ''
 
             # 船公司信息和编辑
             shipline = obj.shipline.shortname if obj.shipline else '--'
@@ -335,8 +335,8 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
                            f"onclick='showInputBox(this)' > {shipline} </span> {container_tag_btn}"
 
             return mark_safe("<span cont='%s' class='text-display' onclick='showInputBox(this)' "
-                             f"id='%s-id-%s' > %s </span> {more_tag} <br>"
-                             "%s" % (field_val, field, obj.pk, field_val_display, shipping_tag))
+                             f"id='%s-id-%s' > %s </span>  <br>"
+                             "%s" % (field_val, field, obj.pk, field_val, shipping_tag))
 
     return inner
 
