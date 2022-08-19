@@ -311,17 +311,17 @@ class StarkHandler(object):
             for option_obj in self.option_group:
                 query_dict = self.request.GET.copy()
                 query_dict._mutable = True
+
                 # query_dict.update({'status':0})
                 # 为了实现默认筛选的功能进行的判断，注意默认筛选要使用字符串形式，否则容易匹配失败
-                if query_dict.get(option_obj.field) is None and option_obj.default is not None:
+                # 只有在不q搜索时才进行默认筛选
+                # query_dict 是QueryDict对象，像字典但不是字典，有些字典的方法不可用货不一样，比如update
+                if option_obj.default is not None and query_dict.get('q') is None and query_dict.get(option_obj.field) is None :
                     query_dict.update({option_obj.field:option_obj.default})
                     # 在筛选条件中加入默认筛选
                     filter_condition.update({option_obj.field:option_obj.default})
 
-                # print('query_dict content and type:',query_dict,type(query_dict),dir(query_dict))
-                # query_dict = self.query_dict.copy()
-                #             query_dict._mutable = True
-                # print(1010101, field_filter_exists, option_obj.field,option_obj.default)
+
                 # 这个字典的键值是可迭代对象，给出页面需要的html标签
                 option_group_dict[option_obj.field] = option_obj.get_data(self.model_class, query_dict)
 

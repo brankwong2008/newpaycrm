@@ -1,21 +1,11 @@
-from django.shortcuts import HttpResponse, redirect, render, reverse
-from decimal import Decimal
-from django.http import JsonResponse
+from django.shortcuts import HttpResponse, redirect, render
 from django.conf.urls import url
-from django.db.models import Q
 from django.utils.safestring import mark_safe
-from django.forms.models import modelformset_factory, formset_factory
-from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
-from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
-    EditInwardPayModelForm
-from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
+from dipay.utils.displays import related_orders_display
+from dipay.forms.forms import AddInwardPayModelForm, EditInwardPayModelForm
 from django.db import transaction
-import threading
-from rbac.utils.common import compress_image_task
-from datetime import datetime
-
 
 class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
@@ -115,18 +105,6 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
             else:
                 return '已收讫'
 
-    # 关联订单显示
-    def related_orders_display(self, obj=None, is_header=False, *args, **kwargs):
-        if is_header:
-            return '关联订单'
-        else:
-            related_list = Pay2Orders.objects.filter(payment=obj)
-            if related_list:
-                order_list = ','.join([ pay2order_obj.order.order_number for pay2order_obj in related_list])
-                related2order_url = reverse("stark:dipay_inwardpay_relate2order", kwargs={'inwardpay_id':obj.pk})
-                return mark_safe(f"<a href='{related2order_url}' target='_blank'>{order_list}</a>")
-            else:
-                return '--'
 
     # 列显示控制
     fields_display = [get_date_display('create_date'), 'bank', payer_display, customer_display, amount_display,got_amount_display,

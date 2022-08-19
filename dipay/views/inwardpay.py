@@ -8,6 +8,7 @@ from django.forms.models import modelformset_factory, formset_factory
 from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
+from dipay.utils.displays import related_orders_display
 from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
     EditInwardPayModelForm
 from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
@@ -97,7 +98,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                :return:
                """
         if is_header:
-            return "业务确认状态"
+            return "确认状态"
         else:
             confirm_url = self.reverse_url('confirm_pay', inwardpay_id=obj.pk)
             confirm_display_choices = [(0, '请认领'),
@@ -115,8 +116,14 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             else:
                 return display_text
 
-    fields_display = [get_date_display('create_date'), payer_display, customer_display, got_amount_display,
-                      'bank', got_confirm_status_display, status_display, ]
+    fields_display = [get_date_display('create_date'),
+                      payer_display,
+                      customer_display,
+                      got_amount_display,
+                      'bank',
+                      got_confirm_status_display,
+                      status_display,
+                      related_orders_display ]
 
     detail_fields_display = fields_display + ['remark','keyin_user','ttcopy']
 
