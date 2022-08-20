@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.db.models import QuerySet
-from django.http import QueryDict
+from django.http import QueryDict, JsonResponse
 from django.db.models import Q,ForeignKey,ManyToManyField
 import functools
 from django.forms import ModelForm
@@ -516,12 +516,11 @@ class StarkHandler(object):
             # 我们看前端怎么处理这段代码
             # 下面’%s‘要加引号，因为这段要显示在前端的时候，不加引号视为变量
 
-            id_name = self.model_name
-            return HttpResponse(
-                '<script>opener.closePopup(window, "%s", "%s", "#id_%s");</script>' % (instance.pk, instance,id_name))
-
-        return  render(request,'dipay/create_record.html', locals())
-
+            id_name = '#id_' + self.model_name
+            # return HttpResponse(
+                # '<script>opener.closePopup(window, "%s", "%s", "#id_%s");</script>' % (instance.pk, instance,id_name))
+            return JsonResponse({'status':True, "data":{"pk":instance.pk, "title":str(instance),'id_name':id_name}})
+        return render(request,'dipay/create_record.html',locals())
 
     def get_query_param(self):
 
