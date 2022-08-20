@@ -25,30 +25,30 @@
 
         <div class="col-md-5">
 
-{#            <h3>添加/修改数据</h3>#}
+            {#            <h3>添加/修改数据</h3>#}
 
             <form action="" method="post" enctype="multipart/form-data">
-                     {% csrf_token %}
+                {% csrf_token %}
 
                 {% for field in form %}
                     <label for="">{{ field.label }}</label>
                     {% if field.name in fast_add_list %}
-                         <a href="{{ field.url }}" onclick="return showAPP(this)"
+                        <a href="{{ field.url }}" onclick="return showAPP(this)"
                            style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
                         <div class="form-row">
-                            {{ field }}   <span style="color:#ff0000">{{ field.errors.0 }}</span>
+                            {{ field }} <span style="color:#ff0000">{{ field.errors.0 }}</span>
                         </div>
                     {% else %}
 
-                    <p>{{ field }}  <span style="color:red">{{ field.errors.0 }}</span></p>
+                        <p>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></p>
                     {% endif %}
 
                 {% endfor %}
 
-            <div>
-                <button class="btn btn-success">提交</button>
+                <div>
+                    <button class="btn btn-success">提交</button>
 
-            </div>
+                </div>
 
             </form>
 
@@ -58,7 +58,29 @@
 
     </div>
 
-      <!-- js代码：处理外键字段快速新增一条记录 -->
+
+{#    <!-- Modal 模态对话框 快速添加 -->#}
+{#    <div class="modal fade" id="FastCreateModal" tabindex="-1" role="dialog" aria-labelledby="FastCreateModalLabel">#}
+{#        <div class="modal-dialog" role="document">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
+{#                            aria-hidden="true">&times;</span></button>#}
+{#                    <h4 class="modal-title" id="FastCreateModalLabel">新增</h4>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    <div class="modal-details"></div>#}
+{##}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-success" onclick="closePopup(this)">提交</button>#}
+{#                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <!-- js代码：处理外键字段快速新增一条记录 -->
     <script src="{% static 'js/popup_create.js' %}"></script>
 
 {% endblock %}

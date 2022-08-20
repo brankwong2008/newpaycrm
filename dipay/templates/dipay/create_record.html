@@ -1,22 +1,9 @@
 {% load static %}
-<link rel="stylesheet" href="{% static '/plugins/bootstrap/css/bootstrap.css' %}" >
-    <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static '/plugins/bootstrap/js/bootstrap.js' %}"></script>
-    {#    图标文件系统#}
-    <link rel="stylesheet" href="{% static '/plugins/font-awesome/css/font-awesome.css' %}">
-    {#下拉搜索功能#}
-    <script src="{% static "plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js" %}"></script>
-    <link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">
 
 
+<div class="modal-details">
 
-<div class="luffy-container">
-
-    <div class="col-md-5">
-
-        <h4>新增</h4>
-
-        <form action="" method="post">
+    <form class="" action="" method="post">
             {% csrf_token %}
             {% for field in form %}
                 <p>
@@ -26,11 +13,8 @@
                 </p>
 
             {% endfor %}
-            <div>
-                <button class="btn btn-success">提交</button>
+    <button type="submit" id="fast-add-submit" hidden>submit</button>
+    </form>
 
-            </div>
-        </form>
-    </div>
 </div>
 
