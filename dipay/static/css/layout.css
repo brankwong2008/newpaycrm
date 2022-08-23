@@ -21,9 +21,13 @@ i {
 /* 顶部导航的绝对定位 */
 div.body-content {
     margin-top: 61px ;
-
 }
 
 .mynavbar{
     background-color:rgba(16, 16, 16,0.80);
+}
+
+a span.nickname {
+    margin-left: 0px;
+    color: white;
 }
