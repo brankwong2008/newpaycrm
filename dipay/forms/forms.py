@@ -17,6 +17,18 @@ class TaskAddModelForm(forms.ModelForm):
         for name, field in self.fields.items():
             field.widget.attrs["class"] = "form-control"
 
+# 用于编辑任务的model form
+class TaskEditModelForm(forms.ModelForm):
+    class Meta:
+        model = DailyPlan
+        fields = "__all__"
+        exclude = ["link",  ]
+
+    def __init__(self, *args, **kwargs):
+        super(TaskEditModelForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control"
+
 
 class StarkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

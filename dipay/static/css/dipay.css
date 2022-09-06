@@ -382,3 +382,10 @@ table {
             transition: 0.3s;
             opacity: 2.2;
         }
+
+ /* 任务页面的css */
+
+span[id^="content"].red {
+    color: red;
+
+}

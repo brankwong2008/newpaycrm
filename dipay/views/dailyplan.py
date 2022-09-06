@@ -1,6 +1,6 @@
 
 from django.http import JsonResponse
-from django.shortcuts import reverse
+from django.shortcuts import reverse,render,redirect
 from django.conf.urls import url
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -9,7 +9,7 @@ from stark.utils.display import get_date_display, checkbox_display, PermissionHa
 from dipay.utils.displays import save_display
 from dipay.utils.tools import get_choice_value
 from dipay.models import DailyPlan
-from dipay.forms.forms import TaskAddModelForm
+from dipay.forms.forms import TaskAddModelForm,TaskEditModelForm
 
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
@@ -30,16 +30,25 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     # 添加完成按钮的显示方法
     def accomplish_display(self, obj=None, is_header=False, *args, **kwargs):
         if is_header:
-            return 'Do'
+            return 'Done'
         else:
             list_url = self.reverse_list_url()
             switch = 'off' if obj.status else 'on'
-            return mark_safe("<a href='%s'><i class='fa fa-toggle-%s' pk='%s' "
-                             "onclick='return accomplishTask(this)'></i></a>" %
-                             (list_url, switch, obj.pk))
+            return mark_safe("<a href='%s' pk='%s' onclick='return accomplishTask(this)'><i class='fa fa-toggle-%s' ></i></a>" %
+                             (list_url, obj.pk,switch ))
 
-        # 添加完成按钮的显示方法
+    # 重要性的显示方法
+    def urgence_display(self, obj=None, is_header=False, *args, **kwargs):
+        if is_header:
+            return '急'
+        else:
+            list_url = self.reverse_list_url()
+            color = 'red' if obj.urgence else 'grey'
+            return mark_safe("<a href='%s' class pk='%s' urgence='%s' onclick='return switchUrgence(this)' style='color:%s'>"
+                             "<i class='fa fa-exclamation'></i></a>" %
+                             (list_url,obj.pk, obj.urgence, color))
 
+    # 显示关联跟单记录的display
     def link_display(self, obj=None, is_header=False, *args, **kwargs):
         if is_header:
             return "关联"
@@ -50,8 +59,20 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             else:
                 return '--'
 
+    # 显示任务名称的display
+    def content_display(self, obj=None, is_header=None, *args, **kwargs):
+        if is_header:
+            return "任务"
+        else:
+            color = "red" if obj.urgence else ""
+            return mark_safe("<span class='text-display %s' onclick='showInputBox(this)' "
+                             "id='%s-id-%s'> %s </span>" % (color, "content", obj.pk, obj.content))
+
+
+
     # 任务列表
-    fields_display = [checkbox_display, info_display('content'), accomplish_display,info_display('remark'),info_display('sequence'), link_display,get_date_display("start_date"),follow_date_display("end_date")   ]
+
+    fields_display = [checkbox_display, content_display, accomplish_display,urgence_display, info_display('remark'),info_display('sequence'), link_display,get_date_display("start_date"),follow_date_display("end_date")   ]
 
 
     # 按状态筛选
@@ -107,15 +128,16 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     def get_queryset_data(self, request, is_search=None, *args, **kwargs):
         # 搜索所用的数据另行指定范围
+        queryset =  self.model_class.objects.filter(user=request.user)
         if is_search:
-            return  self.model_class.objects.all()
+            return  queryset
         # status 0 进行  1 完成
         if request.GET.get('status'):
-            return self.model_class.objects.all()
+            return queryset
 
         for item in self.tab_list:
             if item[2] == 'active':
-                return self.model_class.objects.filter(status=self.status_dict.get(item[0]))
+                return queryset.filter(status=self.status_dict.get(item[0]))
 
     search_list = ['content__icontains', 'start_date']
     search_placeholder = '搜索 日期 任务'
@@ -132,27 +154,37 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         return patterns
 
     def save_plan(self, request, *args, **kwargs):
+        print('save plan request POST:', request.POST)
         # ajax 方式直接修改produce_sequence的值
         if request.is_ajax():
             data_dict = request.POST.dict()
             pk = data_dict.get('pk')
             data_dict.pop('csrfmiddlewaretoken')
 
-            followorder_obj = DailyPlan.objects.filter(pk=pk).first()
-            if not followorder_obj:
+            save_obj = DailyPlan.objects.filter(pk=pk).first()
+            if not save_obj:
                 res = {'status': False, 'msg': 'obj not found'}
             else:
                 for item, val in data_dict.items():
-                    setattr(followorder_obj, item, val)
-                # 如果follow_order完结，更新applyorder的status
-                print(9999999, followorder_obj.status, type(followorder_obj.status))
-                if followorder_obj.status == '4' or followorder_obj.status == 4:
-                    followorder_obj.order.status = 3
-                    followorder_obj.order.save()
-                followorder_obj.save()
+                    if item=='urgence':
+                        val = False if val.strip() == 'False' else True
+                    setattr(save_obj, item, val)
+                save_obj.save()
                 data_dict['status'] = True
                 res = data_dict
             return JsonResponse(res)
 
     def get_model_form(self,type=None):
-        return TaskAddModelForm
+        if type=="add":
+            return TaskAddModelForm
+        else:
+            return TaskEditModelForm
+
+    # 新建任务的方法
+    def save_form(self,form,request,is_update=False,*args, **kwargs):
+        if not request.user:
+            return
+
+        if not is_update:
+            form.instance.user = request.user
+        form.save()

@@ -241,6 +241,8 @@ class DailyPlan(models.Model):
     sequence =  models.IntegerField(verbose_name='排序', default=0)
     link = models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE,verbose_name='关联', null=True, blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
+    urgence = models.BooleanField(verbose_name="紧急",default=False)
+    user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='创建人',default=3)
 
     def __str__(self):
         return "%s %s" % (self.start_date.strftime('%Y/%m/%d'), self.content)

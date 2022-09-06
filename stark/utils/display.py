@@ -148,7 +148,7 @@ def info_display(field, title=None, time_format="%Y-%m-%d"):
                 print('the instance is date')
 
             return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
-                             "id='%s-id-%s' > %s </span>" % (field, obj.pk, field_val))
+                             "id='%s-id-%s'> %s </span>" % (field, obj.pk, field_val))
             # return info_field
 
     return inner

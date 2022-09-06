@@ -7,8 +7,8 @@ function savePlan(btn) {
     var $textarea_list = $(`[id$='-id-${pk}']`);
     // 构建需传输的数据对象
     var data_obj = new Object();
+    // 遍历所有的控件，获取name和val
     $textarea_list.each(function (i) {
-
         var content = $(this).val();
         if (content) {
             var name = $(this).attr('id').split('-')[0];
