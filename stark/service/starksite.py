@@ -79,7 +79,6 @@ class Option:
                     query_dict[self.field] = val
 
                     if val in val_list:
-
                         is_active = "active"
                         query_dict.pop(self.field)
                     else:
@@ -135,6 +134,8 @@ class StarkHandler(object):
     del_list_template = None   # 删除页面模板
     show_list_template = None  # 显示页面模板
     fields_display = []    # 显示的列字段
+    filter_hidden = None   # 控制快速筛选的显示
+    batch_process_hidden = None
     tabs = None     # 标签导航
     has_add_btn = True
     detail_fields_display = '__all__'
@@ -239,6 +240,8 @@ class StarkHandler(object):
         fields_display = self.get_fields_display(request,*args,**kwargs)
         header_list = []
         data_list = []
+        filter_hidden = self.filter_hidden
+        batch_process_hidden = self.batch_process_hidden
         tabs = self.get_tabs(request,*args,**kwargs)
 
         ############## 1. 批量删除或者初始化 ###############
@@ -251,7 +254,7 @@ class StarkHandler(object):
             batch_process_dict = None
 
         if request.method == "POST":
-            # print(request.POST)
+            print(request.POST)
             func_name = request.POST.get("handle_type")
             if func_name in batch_process_dict:
                 func = getattr(self,func_name)

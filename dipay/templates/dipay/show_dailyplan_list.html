@@ -48,7 +48,7 @@
 
                     <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
                     <button type="submit"><i class="fa fa-search"></i></button>
-                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-times" style="margin: 3px 2px 3px"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left" style="margin: 3px 2px 3px"></i></button>
 
 
                 </form>
@@ -59,7 +59,7 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
-                    <div class="pull-right  {{ batch_process_hidden }}">
+                    <div class="pull-right {{ batch_process_hidden }}">
 
                     <select name="handle_type" class="handle-select">
                         <option value="">请选择处理方式</option>
@@ -74,7 +74,7 @@
                 {% endif %}
 
                 <!-- 添加按钮 -->
-                <div class="pull-left">
+                <div class="pull-right">
                      {% if add_btn %}
                     {{ add_btn|safe }}
                 {% endif %}
@@ -92,7 +92,7 @@
                         </ul>
                     {% endif %}
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-striped">
 
                     <thead>
                     {% for item in header_list %}
@@ -131,5 +131,8 @@
 
 
     </div>
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/edit-dailyplan.js" %}"></script>
 
 {% endblock %}

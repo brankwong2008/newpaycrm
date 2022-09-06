@@ -212,11 +212,6 @@ def info_display(field, title=None, hidden_xs='', max_width=100):
             if isinstance(field_val, models.DateTimeField):
                 pass
 
-            # total = 0
-            # print('field_val',  field_val)
-            # for i in field_val:
-            #     total = total + 2 if ord(i) > 255 else total + 1
-
             more_tag = "<span class='more_tag' onclick=showFullContent(this)><i class='fa fa-ellipsis-h'></i></span>"
 
             # 判断用户是否有此字段的编辑权限
