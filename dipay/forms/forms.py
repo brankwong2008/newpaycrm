@@ -1,7 +1,21 @@
 from django.forms import ModelForm
 from django import forms
-from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder,Pay2Orders
+from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, DailyPlan
 from datetime import datetime
+
+
+
+# 用于添加任务的model form
+class TaskAddModelForm(forms.ModelForm):
+    class Meta:
+        model = DailyPlan
+        fields = ["content",'remark' ]
+
+    def __init__(self, *args, **kwargs):
+        super(TaskAddModelForm, self).__init__(*args, **kwargs)
+
+        for name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control"
 
 
 class StarkForm(forms.ModelForm):

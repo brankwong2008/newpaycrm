@@ -1,5 +1,6 @@
 
 from django.http import JsonResponse
+from django.shortcuts import reverse
 from django.conf.urls import url
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -8,13 +9,11 @@ from stark.utils.display import get_date_display, checkbox_display, PermissionHa
 from dipay.utils.displays import save_display
 from dipay.utils.tools import get_choice_value
 from dipay.models import DailyPlan
-from django.shortcuts import  redirect
-
+from dipay.forms.forms import TaskAddModelForm
 
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = 'dipay/show_dailyplan_list.html'
-
     order_by_list = ['sequence',]
 
     # 添加按钮
@@ -38,6 +37,22 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return mark_safe("<a href='%s'><i class='fa fa-toggle-%s' pk='%s' "
                              "onclick='return accomplishTask(this)'></i></a>" %
                              (list_url, switch, obj.pk))
+
+        # 添加完成按钮的显示方法
+
+    def link_display(self, obj=None, is_header=False, *args, **kwargs):
+        if is_header:
+            return "关联"
+        else:
+            if obj.link:
+                followorder_url = reverse("stark:dipay_followorder_list")+"?q=%s" % obj.link.order.order_number
+                return mark_safe("<a href='%s' target='_blank'>%s</a>" % (followorder_url, obj.link))
+            else:
+                return '--'
+
+    # 任务列表
+    fields_display = [checkbox_display, info_display('content'), accomplish_display,info_display('remark'),info_display('sequence'), link_display,get_date_display("start_date"),follow_date_display("end_date")   ]
+
 
     # 按状态筛选
     option_group = [Option(field='status'),]
@@ -102,14 +117,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             if item[2] == 'active':
                 return self.model_class.objects.filter(status=self.status_dict.get(item[0]))
 
-
-
-
     search_list = ['content__icontains', 'start_date']
     search_placeholder = '搜索 日期 任务'
-
-    # 任务列表
-    fields_display = [checkbox_display, info_display('content'), accomplish_display,info_display('remark'),info_display('sequence'), 'link',get_date_display("start_date"),follow_date_display("end_date")   ]
 
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):
@@ -144,3 +153,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 data_dict['status'] = True
                 res = data_dict
             return JsonResponse(res)
+
+    def get_model_form(self,type=None):
+        return TaskAddModelForm
