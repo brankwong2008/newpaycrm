@@ -49,7 +49,7 @@ class RbacMiddleWare(MiddlewareMixin):
         permission_dict = request.session.get(settings.PERMISSION_KEY)
 
         # 获取进行中的任务的count
-        request.task_count = models.DailyPlan.objects.filter(status=0).count()
+        request.task_count = models.DailyPlan.objects.filter(status=0,user=request.user).count()
 
         # 判断用户的访问路径是否在权限里面
         if permission_dict:
