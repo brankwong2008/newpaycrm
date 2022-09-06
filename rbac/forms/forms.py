@@ -6,6 +6,8 @@ import re
 from django.conf import settings
 
 
+
+
 # 用于角色信息编辑和添加的model form
 class RoleModelForm(ModelForm):
     class Meta:
@@ -238,3 +240,5 @@ class AutoPermissionEditModelForm(forms.Form):
         super(AutoPermissionEditModelForm, self).__init__(*args, **kwargs)
         self.fields["parent_id"].choices += list( models.Permission.objects.filter(menu__isnull=False).values_list("id", "title") )
         self.fields["menu_id"].choices += self.menu_choices
+
+
