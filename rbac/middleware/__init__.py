@@ -4,7 +4,7 @@ from django.shortcuts import HttpResponse, redirect
 from django.contrib.auth.models import AnonymousUser
 import re
 from django.utils.module_loading import import_string
-from django.utils.safestring import mark_safe
+from dipay import models
 
 # 按字符串导入模块
 rbac_user_model_class = import_string(settings.RBAC_USER_MODLE_CLASS)
@@ -48,7 +48,8 @@ class RbacMiddleWare(MiddlewareMixin):
 
         permission_dict = request.session.get(settings.PERMISSION_KEY)
 
-        print('currnt url  rquest. navi list:', current_url, request.navi_list)
+        # 获取进行中的任务的count
+        request.task_count = models.DailyPlan.objects.filter(status=0).count()
 
         # 判断用户的访问路径是否在权限里面
         if permission_dict:
@@ -69,5 +70,7 @@ class RbacMiddleWare(MiddlewareMixin):
                     # 找到需要高亮的菜单id
                     request.hilight_menu_id = item['pid'] or item['id']
                     return
+
+
 
        #  return HttpResponse("无访问权限")

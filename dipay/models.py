@@ -139,7 +139,11 @@ class FollowOrder(models.Model):
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
-        return '%s %s' % (self.order.order_number,self.order.customer.shortname)
+        if self.order.customer:
+            name = self.order.customer.shortname
+        else:
+            name = self.order.customer
+        return '%s %s' % (self.order.order_number,name)
 
 
 class Bank(models.Model):
@@ -225,11 +229,22 @@ class ApplyRelease(models.Model):
     def __str__(self):
         return '%s 放单申请 %s' % (self.apply_date.strftime('%Y/%m/%d'),self.order.order_number)
 
+
+# 日计划
+class DailyPlan(models.Model):
+    start_date =  models.DateField(auto_now_add=True, verbose_name='创建日期')
+    remind_date =  models.DateField(verbose_name='提醒日期',null=True,blank=True)
+    end_date =  models.DateField(verbose_name='结束日期',null=True,blank=True)
+    content = models.CharField(max_length=512, verbose_name='任务')
+    status_choices = [(0, '进行'), (1, '完成'), ]
+    status = models.SmallIntegerField(choices=status_choices, verbose_name='状态', default=0)
+    sequence =  models.IntegerField(verbose_name='排序', default=0)
+    link = models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE,verbose_name='关联', null=True, blank=True)
+    remark = models.TextField(verbose_name='备注', default='-')
+
+    def __str__(self):
+        return "%s %s" % (self.start_date.strftime('%Y/%m/%d'), self.content)
+
 """
-
-日期	付款人	客户	收款行	货币	金额	状态 
-4月10日	Studworks 	Studworks 	Hero广发	美元	15000	待关联
-
+创建日期   提醒日期  结束日期  内容  状态  排序  关联   
 """
-
-

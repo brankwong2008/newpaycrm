@@ -12,3 +12,10 @@ def str_width_control(s,width):
             return s[:count0]+'..' if count0<len(s) else s
     # 如果for执行完毕都没有触发到width长度，则直接返回s
     return s
+
+
+def get_choice_value(orm_choices,text):
+    for item in orm_choices:
+        if item[1]==text:
+            return item[0]
+    return None

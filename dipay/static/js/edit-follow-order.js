@@ -21,8 +21,6 @@ function savePlan(btn) {
             }
 
             data_obj[name] = content;
-
-
         }
     });
     // pk 是followorder_obj.pk

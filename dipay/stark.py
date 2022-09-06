@@ -13,6 +13,8 @@ from dipay.views.weeklyplan import WeekelyPlanHandler
 from dipay.views.applyrelease import ApplyReleaseHandler
 from dipay.views.applyrelease_verify import ApplyReleaseVerifyHandler
 from dipay.views.inwardpay_account import InwardPayAccountHandler
+from dipay.views.dailyplan import DailyPlanHandler
+
 
 # 用户信息管理
 site.register(models.UserInfo,MyUserInfoHandler)
@@ -64,3 +66,7 @@ site.register(models.ApplyRelease, ApplyReleaseHandler)
 
 # 申请放单审核
 site.register(models.ApplyRelease, ApplyReleaseVerifyHandler,prev='verify')
+
+
+# 每日任务
+site.register(models.DailyPlan, DailyPlanHandler)
