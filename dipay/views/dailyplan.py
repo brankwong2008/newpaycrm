@@ -23,7 +23,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     def add_btn_display(self,request,*args,**kwargs):
         if self.has_add_btn:
             add_url = self.reverse_add_url(*args,**kwargs)
-            return "<a href='%s' class='btn btn-primary add-record'> <i class='fa fa-plus'></i> </a>" % (add_url)
+            return "<a href='%s' class='btn btn-primary add-record'> + </a>" % (add_url)
         else:
             return None
 
@@ -70,8 +70,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
 
 
-    # 任务列表
-
+    # 任务字段列表
     fields_display = [checkbox_display, content_display, accomplish_display,urgence_display, info_display('remark'),info_display('sequence'), link_display,get_date_display("start_date"),follow_date_display("end_date")   ]
 
 

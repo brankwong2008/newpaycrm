@@ -2,6 +2,9 @@
 分页组件
 """
 
+PRE_PAGE = "<i class='fa fa-chevron-left'></i>"
+NEXT_PAGE = "<i class='fa fa-chevron-right'></i>"
+
 
 class Pagination(object):
     def __init__(self, current_page, all_count, base_url, query_params, per_page=20, pager_page_count=11):
@@ -83,10 +86,10 @@ class Pagination(object):
         page_list = []
 
         if self.current_page <= 1:
-            prev = '<li><a href="#">上一页</a></li>'
+            prev = f'<li><a href="#">{PRE_PAGE}</a></li>'
         else:
             self.query_params['page'] = self.current_page - 1
-            prev = '<li><a href="%s?%s">上一页</a></li>' % (self.base_url, self.query_params.urlencode())
+            prev = '<li><a href="%s?%s">%s</a></li>' % (self.base_url, self.query_params.urlencode(),PRE_PAGE)
         page_list.append(prev)
         for i in range(pager_start, pager_end + 1):
             self.query_params['page'] = i
@@ -98,10 +101,10 @@ class Pagination(object):
             page_list.append(tpl)
 
         if self.current_page >= self.pager_count:
-            nex = '<li><a href="#">下一页</a></li>'
+            nex = f'<li><a href="#">{NEXT_PAGE}</a></li>'
         else:
             self.query_params['page'] = self.current_page + 1
-            nex = '<li><a href="%s?%s">下一页</a></li>' % (self.base_url, self.query_params.urlencode(),)
+            nex = '<li><a href="%s?%s">%s</a></li>' % (self.base_url, self.query_params.urlencode(),NEXT_PAGE)
         page_list.append(nex)
         page_str = "".join(page_list)
         return page_str
