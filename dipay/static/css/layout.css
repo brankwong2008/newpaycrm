@@ -1,7 +1,14 @@
 
 /* 图标大小 */
 i {
-    margin-right: 7px;
+    margin-right: 3px;
+}
+
+/* 任务数字背景的badge的颜色设置 */
+span.badge {
+    color: darkorange;
+    font-weight: bolder;
+    background-color: #333;
 
 }
 

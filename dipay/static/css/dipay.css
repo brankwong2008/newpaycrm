@@ -127,7 +127,7 @@ textarea[id^="amount"] {
 /*标签导航active*/
 .nav-tabs li a {
     font-weight: bolder;
-    font-size: larger;
+    font-size: small;
 }
 
 
@@ -135,7 +135,7 @@ textarea[id^="amount"] {
 .nav-tabs li.active a {
     color: darkorange;
     font-weight: bolder;
-    font-size: larger;
+    font-size: small;
 }
 
 /*批量操作的select标签样式*/
