@@ -20,10 +20,10 @@
 
             <!-- 组合筛选功能区 -->
             {% if option_group_dict %}
-                <div class="panel panel-default {{filter_hidden}}">
-                    <div class="panel-heading">
-                        <i class="fa fa-filter"></i> 快速筛选
-                    </div>
+                <div class="panel panel-default options-section {{filter_hidden}}">
+{#                    <div class="panel-heading">#}
+{#                        <i class="fa fa-filter"></i> 快速筛选#}
+{#                    </div>#}
                     <div class="panel-body">
                         {% for field, row in option_group_dict.items %}
 
@@ -48,7 +48,7 @@
 
                     <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
                     <button type="submit"><i class="fa fa-search"></i></button>
-                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-times" style="margin: 3px 2px 3px"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left" style="margin: 3px 2px 3px"></i></button>
 
 
                 </form>
@@ -74,7 +74,7 @@
                 {% endif %}
 
                 <!-- 添加按钮 -->
-                <div class="pull-left">
+                <div class="pull-right">
                      {% if add_btn %}
                     {{ add_btn|safe }}
                 {% endif %}

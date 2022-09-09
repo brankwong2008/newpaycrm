@@ -19,7 +19,7 @@ class UserInfo(MyUser):
 
 class Customer(models.Model):
     title = models.CharField(max_length=128, unique=True, verbose_name='客户名')
-    shortname = models.CharField(max_length=20, verbose_name='客户简称',default='-')
+    shortname = models.CharField(max_length=20, verbose_name='客户简称')
     remark = models.TextField(verbose_name='客户详情', default='--')
     email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='所属外销员',
@@ -139,11 +139,7 @@ class FollowOrder(models.Model):
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
-        if self.order.customer:
-            name = self.order.customer.shortname
-        else:
-            name = self.order.customer
-        return '%s %s' % (self.order.order_number,name)
+        return self.order.order_number
 
 
 class Bank(models.Model):
@@ -238,7 +234,7 @@ class DailyPlan(models.Model):
     content = models.CharField(max_length=512, verbose_name='任务')
     status_choices = [(0, '进行'), (1, '完成'), ]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='状态', default=0)
-    sequence =  models.IntegerField(verbose_name='排序', default=0)
+    sequence =  models.IntegerField(verbose_name='排序', default=6)
     link = models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE,verbose_name='关联', null=True, blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
     urgence = models.BooleanField(verbose_name="紧急",default=False)

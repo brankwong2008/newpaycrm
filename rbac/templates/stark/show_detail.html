@@ -30,7 +30,7 @@
             background-color: paleturquoise;
         }
 
-        .search-group .others{
+        .search-group .others {
             display: inline-block;
         }
 
@@ -47,28 +47,33 @@
         <div class="col-md-12">
 
 
-                <!-- 添加按钮 -->
-                {% if add_btn %}
-                    {{ add_btn|safe }}
-                {% endif %}
+            <!-- 添加按钮 -->
+            {% if add_btn %}
+                {{ add_btn|safe }}
+            {% endif %}
 
 
-                <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped">
 
-                    <tbody>
-                    {% for row in data_list %}
-                        <tr>
-                                <td>{{ row.label }} </td>
-                                <td>{{ row.data }} </td>
-                        </tr>
+                <tbody>
+                {% for row in data_list %}
+                    <tr>
+                        <td>{{ row.label }} </td>
+                        <td>{{ row.data }} </td>
+                    </tr>
 
-                    {% endfor %}
-                    </tbody>
+                {% endfor %}
+                </tbody>
 
-                </table>
+            </table>
 
-            {{ detail_extra_btn|safe }}
-            <a href="" class="btn-info"></a>
+              <!-- 额外的自定义按钮 -->
+            {% if detail_extra_btn %}
+                {{ detail_extra_btn|safe }}
+                <a href="" class="btn-info"></a>
+
+            {% endif %}
+
 
         </div>
 

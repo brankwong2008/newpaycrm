@@ -10,11 +10,11 @@
         // }
 
         // 第二种写法
-         $(this).css("background",'#79a4cf')
-         $(this).next().toggleClass('hide');
-         // 将其他菜单收拢
-          $(this).parent().siblings().children('.sub-titles').addClass('hide');
-          $(this).parent().siblings().children('.title').css('background','')
+        $(this).css("background", '#79a4cf')
+        $(this).next().toggleClass('hide');
+        // 将其他菜单收拢
+        $(this).parent().siblings().children('.sub-titles').addClass('hide');
+        $(this).parent().siblings().children('.title').css('background', '')
 
 
     });
@@ -22,6 +22,13 @@
 
 // 清除搜索框的内容的js
 function clearSearch() {
-        $("input[name='q']").val('');
+    $("input[name='q']").val('');
 
-    }
+}
+
+
+// 显示和收起筛选区域
+function toggleOptionSection() {
+    $('div.options-section').toggleClass('hidden');
+
+}

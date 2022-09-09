@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.utils.safestring import mark_safe
 from django.forms.models import modelformset_factory, formset_factory
 from django import forms
-from stark.service.starksite import StarkHandler
+from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.utils.displays import related_orders_display
 from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
@@ -20,11 +20,25 @@ from datetime import datetime
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
+    filter_hidden = "hidden"
+
+    # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
+    option_group = [
+        Option(field='bank'),
+        Option(field='confirm_status'),
+
+    ]
 
     popup_list = ['payer','bank']
 
     search_list = ['create_date','amount','customer__title__icontains',]
     search_placeholder = '搜索 日期 金额 客户名 '
+
+    def add_btn_display(self, request, *args, **kwargs):
+
+        add_url = self.reverse_add_url(*args, **kwargs)
+        return "<div class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </div>"
+
 
     def get_model_form(self, type=None):
         if type == 'add':
@@ -101,15 +115,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             return "确认状态"
         else:
             confirm_url = self.reverse_url('confirm_pay', inwardpay_id=obj.pk)
-            confirm_display_choices = [(0, '请认领'),
-                                       (1, '已认领-待确认'),
-                                       (2, '待业务-财务确认'),
-                                       (4, '待跟单-业务确认'),
-                                       (3, '待财务确认'),
-                                       (5, '待跟单确认'),
-                                       (6, '待业务确认'),
-                                       (7, '全部确认'),
-                                       ]
+            confirm_display_choices = Inwardpay.confirm_choices
             display_text = [item[1] for item in confirm_display_choices if item[0] == obj.confirm_status][0]
             if obj.confirm_status == 0:
                 return mark_safe("<a href='%s' target='_blank'> %s </a>" % (confirm_url, display_text))
@@ -178,9 +184,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         else:
             form.save()
 
-    def get_detail_extra_btn(self, request, pk, *args, **kwargs):
-        detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
-        return "<a href='%s' class='btn btn-warning'> 确认 </a>" % detail_confirm_url
+    # def get_detail_extra_btn(self, request, pk, *args, **kwargs):
+    #     detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
+    #     return "<a href='%s' class='btn btn-warning'> 确认 </a>" % detail_confirm_url
 
     def get_extra_urls(self):
         """ 收款关联订单的url  """
