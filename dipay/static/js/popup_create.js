@@ -35,6 +35,7 @@ function closePopup(buttontag) {
             return false;
         }
     });
+    // 触发h5的自动数据校验机制
     if (empty_flag) {
          $("#FastCreateModal .modal-body .modal-details form button[type=submit]").click();
          return false

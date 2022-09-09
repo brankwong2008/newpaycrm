@@ -172,9 +172,11 @@ a.add-record-btn {
 }
 
 /* 放单申请审批状态： 等待审批 */
-.wait-confirm-release{
+.wait-confirm, .wait-confirm-release{
 color: dodgerblue;
 }
+
+
 
 /* 放单申请审批状态： 不同意放单 */
 .not-agree-release{
@@ -183,7 +185,7 @@ color: dodgerblue;
 
 /* 放单申请审批状态： 可以放单 */
 .agree-release{
-    color:green;
+    color: darkseagreen;
 }
 
 /* 控制表格列宽  基本信息 */

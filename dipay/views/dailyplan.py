@@ -14,7 +14,7 @@ from dipay.forms.forms import TaskAddModelForm,TaskEditModelForm
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = 'dipay/show_dailyplan_list.html'
-    order_by_list = ['sequence',]
+    order_by_list = ['sequence','-id']
 
     # 添加按钮
     has_add_btn = True

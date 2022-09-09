@@ -136,6 +136,7 @@ class StarkHandler(object):
     fields_display = []    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
     batch_process_hidden = None
+
     tabs = None     # 标签导航
     has_add_btn = True
     detail_fields_display = '__all__'
@@ -242,6 +243,7 @@ class StarkHandler(object):
         data_list = []
         filter_hidden = self.filter_hidden
         batch_process_hidden = self.batch_process_hidden
+
         tabs = self.get_tabs(request,*args,**kwargs)
 
         ############## 1. 批量删除或者初始化 ###############
