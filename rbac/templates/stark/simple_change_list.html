@@ -1,0 +1,39 @@
+{% load static %}
+
+
+      <div class="mymodal-details">
+
+        <div>
+
+            <!-- 修改数据 -->
+            <form action="" method="post" enctype='multipart/form-data'>
+                {% csrf_token %}
+                {% for field in form %}
+                    <label for="">{{ field.label }}</label>
+                    {% if field.name in popup_list %}
+                        <a href="/{{ namespace }}/{{ app_label }}/{{ field.name }}/create/"
+                           onclick="return showAPP(this)"
+                           style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                        <div class="form-row">
+
+                            {{ field }}
+
+                            <span style="color:#ff0000">{{ field.errors.0 }}</span>
+                        </div>
+                    {% else %}
+                        <p>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></p>
+                    {% endif %}
+
+                {% endfor %}
+
+                <div>
+                    <button class="btn btn-success {{ model_name }}">提交</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+

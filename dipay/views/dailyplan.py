@@ -71,7 +71,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
 
     # 任务字段列表
-    fields_display = [checkbox_display, content_display, accomplish_display,urgence_display, info_display('remark'),info_display('sequence'), link_display,get_date_display("start_date"),follow_date_display("end_date")   ]
+    fields_display = [content_display,info_display('remark'), accomplish_display,urgence_display, info_display('sequence'), link_display,get_date_display("start_date"),  ]
 
 
     # 按状态筛选
@@ -152,6 +152,25 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             url("^save/$", self.wrapper(self.save_plan), name=self.get_url_name('save')), ]
         return patterns
 
+    # 新增一条记录
+    def add_list(self, request, *args, **kwargs):
+        if request.method == "GET":
+            form = self.get_model_form("add")()
+            model_name = self.model_name
+            # 当返回数据给模态框时，get_type = simple，只返回核心内容
+            get_type = request.GET.get('get_type')
+            if get_type == 'simple':
+                self.add_list_template = "dipay/dailyplan_simple_change_list.html"
+            return render(request, self.add_list_template or "stark/change_list.html", locals())
+
+        if request.method == "POST":
+            form = self.get_model_form("add")(request.POST, request.FILES)
+            if form.is_valid():
+                result = self.save_form(form, request, False, *args, **kwargs)
+                return result or redirect(self.reverse_list_url(*args, **kwargs))
+            else:
+                return render(request, self.add_list_template or "stark/change_list.html", locals())
+
     def save_plan(self, request, *args, **kwargs):
         print('save plan request POST:', request.POST)
         # ajax 方式直接修改produce_sequence的值
@@ -181,9 +200,16 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     # 新建任务的方法
     def save_form(self,form,request,is_update=False,*args, **kwargs):
+        print('dialayplan save form POST', request.POST, request.GET)
         if not request.user:
             return
 
         if not is_update:
+            get_type = request.GET.get("get_type")
+            if get_type == 'simple':
+                form.instance.link_id = request.POST.get('link_id')
+                form.instance.user = request.user
+                form.save()
+                return JsonResponse({"status":True, "msg":'任务快速添加成功'})
             form.instance.user = request.user
         form.save()

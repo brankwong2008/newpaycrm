@@ -1,4 +1,3 @@
-
 // 改成modal框的弹出方式，把整个体验做一致了
 function showAPP(tag) {
     var href = tag.href;
@@ -27,7 +26,7 @@ function showAPP(tag) {
 function closePopup(buttontag) {
     console.log("closePopup() workds");
 
-     // 如果required的字没有填，则直接调用form的button方法
+    // 如果required的字没有填，则直接调用form的button方法
     var empty_flag = false;
     $("#FastCreateModal .modal-body .modal-details form [name][required]").each(function (i) {
         if (!$(this).val()) {
@@ -37,8 +36,8 @@ function closePopup(buttontag) {
     });
     // 触发h5的自动数据校验机制
     if (empty_flag) {
-         $("#FastCreateModal .modal-body .modal-details form button[type=submit]").click();
-         return false
+        $("#FastCreateModal .modal-body .modal-details form button[type=submit]").click();
+        return false
     }
 
     var formdata = new FormData();
@@ -55,13 +54,13 @@ function closePopup(buttontag) {
         type: 'post',
         data: formdata,
         success: function (respond) {
-            if (respond.status){
+            if (respond.status) {
                 var newID = respond.data.pk;
                 var newRepr = respond.data.title;
                 var id = respond.data.id_name;
                 console.log(respond);
                 // 将新增加的数据添加到select的选项里面，并设为已选
-                $(id).children().attr('selected',false);
+                $(id).children().attr('selected', false);
                 $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
                 // 必须要刷新picker，否则不显示也搜不到
                 $(id).selectpicker('refresh');
@@ -86,3 +85,4 @@ function closePopup(buttontag) {
     // $(id).selectpicker('refresh');
     // $(id).selectpicker('render');
 }
+

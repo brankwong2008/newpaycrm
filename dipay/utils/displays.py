@@ -381,3 +381,20 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
                   f'{rcvd_collect_amount}'
 
         return mark_safe(content)
+
+
+
+# 每行的more_tag显示
+def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """  显示 保存当条跟单记录 """
+    if is_header:
+        return "Handle"
+    else:
+        add_dailyplan_url = reverse('stark:dipay_dailyplan_add')
+        return mark_safe(""" <ul> <li class='dropdown'>
+                        <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true'
+                           aria-expanded='false'> <span class='fa fa-navicon'></span></a>
+                        <ul class='dropdown-menu'>
+                            <li><a pk='%s' href='%s?get_type=simple' onclick='return addDailyPlan(this)'>添加任务</a></li>
+                        </ul>
+                    </li></ul>""" % (obj.pk, add_dailyplan_url) )

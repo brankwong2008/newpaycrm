@@ -152,7 +152,7 @@ function showPayDetails(tag) {
         success: function (respond) {
             console.log(title);
             $('#myModalLabel').text(title);
-            $('#myModal .modal-body .payment-details').replaceWith(respond);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
             $('#myModal').modal('show');
         }
 
@@ -221,7 +221,7 @@ function  showInwardpayConfirm(atag) {
         data: '',
         success: function (respond) {
             console.log(respond)
-            $('#myModal .modal-body .payment-details').replaceWith(respond);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
         }
 
     });
@@ -249,5 +249,71 @@ function  confirmReceiptInwardpay(atag) {
     });
 
     return false;
+
+}
+
+
+// 在订单跟踪列表新增关联任务
+function addDailyPlan(atag) {
+    var href = atag.href;
+    var pk = $(atag).attr('pk');
+    var title = '新建任务';
+
+    $.ajax({
+        url: href,
+        type: 'get',
+        data: '',
+        success: function (respond) {
+            console.log(title);
+            $('#myModalLabel').text(title);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
+            // 给form的action加上url
+            $('#myModal .modal-body .mymodal-details form').attr('action', href);
+            var $input = `<input type="hidden" name="link_id" id="id_link_id" value='${pk}'>`
+            $('#myModal .modal-body .mymodal-details form').append($input);
+            $('#myModal').modal('show');
+        }
+    });
+    return false;
+}
+
+
+// 给提交任务信息手动绑定一个点击事件
+ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
+     var href = $('#myModal .modal-body  form').attr('action');
+     var data_obj = new Object();
+    // 手动获取form中的input name和val， 存入data_obj
+     $('#myModal .modal-body form [name]').each(function(i){
+         data_obj[$(this).attr('name')] = $(this).val()
+     })
+
+     console.log(href, data_obj);
+
+    $.ajax({
+        url: href,
+        type: 'post',
+        data: data_obj,
+        success: function (respond) {
+            $('#myModal').modal('hide');
+            ShowMsg(respond.msg)
+        }
+    });
+
+ });
+
+
+// 自定义消息提示框的淡入淡出
+function ShowTip(tip, type) {
+    var $tip = $('#tip');
+    if ($tip.length == 0) {
+        $tip = $(`<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px'></span>`);
+        $('body').append($tip);
+    }
+    $tip.stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
+}
+
+function ShowMsg(msg) {
+
+    ShowTip(msg, 'info')
 
 }
