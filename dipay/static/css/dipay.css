@@ -1,4 +1,6 @@
 
+
+
 tr.active {
     border-left: 3px solid #fdc00f;
 }
@@ -390,4 +392,13 @@ table {
 span[id^="content"].red {
     color: red;
 
+}
+
+#tip {
+    position:fixed;
+    top:100px;
+    left:50%;
+    z-index:99;
+    height:35px;
+    background-color: #337ab7;
 }

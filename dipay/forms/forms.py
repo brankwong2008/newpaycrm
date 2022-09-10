@@ -9,7 +9,7 @@ from datetime import datetime
 class TaskAddModelForm(forms.ModelForm):
     class Meta:
         model = DailyPlan
-        fields = ["content",'remark' ]
+        fields = ["content", ]
 
     def __init__(self, *args, **kwargs):
         super(TaskAddModelForm, self).__init__(*args, **kwargs)
