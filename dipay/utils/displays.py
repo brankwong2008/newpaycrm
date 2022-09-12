@@ -262,6 +262,7 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs="")
     return inner
 
 
+
 # 保存跟单列表每行数据
 def save_display(handler, obj=None, is_header=False, *args, **kwargs):
     """  显示 保存当条跟单记录 """

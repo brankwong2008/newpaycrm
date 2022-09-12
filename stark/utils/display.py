@@ -179,6 +179,38 @@ def follow_date_display(field, title=None, time_format="%Y-%m-%d"):
 
     return inner
 
+
+
+# 页面直接修改日期字段的显示
+def change_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs=""):
+    def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
+        """
+        功能：ETD ETA日期字段的显示
+        """
+        if is_header:
+            if title:
+                name = title
+            else:
+                name = handler_obj.model_class._meta.get_field(field).verbose_name
+
+            return mark_safe("<span class='%s'> %s </span>" % (hidden_xs, name))
+        else:
+            # getattr方法可用字符串方式从对象中调取方法或者属性
+            datetime_obj = getattr(obj, field)
+            year = ''
+            if not datetime_obj:
+                create_date = "--"
+            else:
+                try:
+                    create_date = datetime_obj.strftime(time_format)
+                    year = datetime_obj.year
+                except:
+                    create_date = '日期格式错误'
+            return mark_safe("<span class='date-display %s' year='%s' onclick='showInputBox(this)' "
+                                 "id='%s-id-%s' > %s </span>" % (hidden_xs, year, field, obj.pk, create_date))
+    return inner
+
+
 # 保存跟单列表每行数据
 def save_display(handler, obj=None, is_header=False, *args, **kwargs):
     """  显示 保存当条跟单记录 """
