@@ -1,3 +1,19 @@
+// 自定义消息提示框的淡入淡出
+function ShowTip(tip, type) {
+    var $tip = $('#tip');
+    if ($tip.length == 0) {
+        $tip = $(`<span id='tip'  style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'></span>`);
+        $('body').append($tip);
+    }
+    $tip.stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
+}
+
+function ShowMsg(msg) {
+
+    ShowTip(msg, 'info')
+}
+
+
 // 功能：双击表格，替换成相应的input控件，点击保存更新到数据库
 
 function savePlan(btn) {
@@ -39,7 +55,13 @@ function savePlan(btn) {
         success: function (response) {
             console.log(response);
             if (response.status) {
-                location.reload();
+                if (response.msg) {
+                    ShowMsg(response.msg);
+                    setTimeout("location.reload()", 1500);
+                } else {
+                    location.reload();
+                }
+
             } else {
                 var name = response.field;
                 var $target = $(`[id='${name}-id-${pk}']`);
@@ -61,10 +83,11 @@ function showInputBox(sp) {
         var year = $(sp).attr('year');
         var create_date = ''
         if (content != '--') {
-            create_date = year + '/' + content.trim();
+            // 甄别日期是否简写模式（07/16 或者2022-07-16
+            create_date = year? year + '/' + content:content;
             create_date = create_date.replaceAll('/', '-');
         }
-        console.log('year:', year, content, create_date);
+        console.log('year:', year, typeof year, content, create_date);
         var $input = `<input type="date" id=${id} value="${create_date}">  
             <i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`;
         $(sp).replaceWith($input)
@@ -116,7 +139,7 @@ function fastInfoSave(btn) {
 
 //  隐藏每行的保存按钮
 $('span.hidden-xs').parent().addClass('hidden-xs');
-$('span.save-sequence').parent().css('display','none');
+$('span.save-sequence').parent().css('display', 'none');
 
 
 // 已收和应收的点击弹出收款明细的方法
@@ -136,7 +159,7 @@ function showPayDetails(tag) {
 
     var is_fix_amount = tag.getAttribute("is_fix_amount");
     var customer_name = $(tag).attr('customer_name');
-    customer_name = customer_name?customer_name:'--';
+    customer_name = customer_name ? customer_name : '--';
     console.log('is_fix_amount', is_fix_amount);
     var title = '收款明细';
     if (is_fix_amount == 'true') {
@@ -199,20 +222,20 @@ function trackShipment(atag) {
     // alert('跟踪货物')
     var pk = $(atag).attr('pk');
     // console.log($('#clipboard-btn-'+pk));
-    $('#clipboard-btn-'+pk).trigger('click');
+    $('#clipboard-btn-' + pk).trigger('click');
     var win = window.open(atag.href, 'trackship', 'left=600,top=300,width=850,height=850');
     win.focus();
     return false;
 }
 
 // 弹出财务确认款项的modal框
-function  showInwardpayConfirm(atag) {
+function showInwardpayConfirm(atag) {
     var href = atag.href;
     var pk = $(atag).attr('pk');
-    $('button.confirm-pay').attr('pk',pk);
-    $('button.confirm-pay').attr('link',href);
+    $('button.confirm-pay').attr('pk', pk);
+    $('button.confirm-pay').attr('link', href);
 
-     $('#myModal').modal('show');
+    $('#myModal').modal('show');
 
     // 获取返回数据
     $.ajax({
@@ -231,7 +254,7 @@ function  showInwardpayConfirm(atag) {
 }
 
 // 确认款项的post请求发送
-function  confirmReceiptInwardpay(atag) {
+function confirmReceiptInwardpay(atag) {
     var href = $(atag).attr('link');
     var pk = $(atag).attr('pk');
 
@@ -242,8 +265,8 @@ function  confirmReceiptInwardpay(atag) {
         data: {'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),},
         success: function (respond) {
             console.log(respond);
-             // $('#myModal').modal('hide');
-             location.reload();
+            // $('#myModal').modal('hide');
+            location.reload();
         }
 
     });
@@ -279,15 +302,15 @@ function addDailyPlan(atag) {
 
 
 // 给提交任务信息手动绑定一个点击事件
- $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
-     var href = $('#myModal .modal-body  form').attr('action');
-     var data_obj = new Object();
+$('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
+    var href = $('#myModal .modal-body  form').attr('action');
+    var data_obj = new Object();
     // 手动获取form中的input name和val， 存入data_obj
-     $('#myModal .modal-body form [name]').each(function(i){
-         data_obj[$(this).attr('name')] = $(this).val()
-     })
+    $('#myModal .modal-body form [name]').each(function (i) {
+        data_obj[$(this).attr('name')] = $(this).val()
+    })
 
-     console.log(href, data_obj);
+    console.log(href, data_obj);
 
     $.ajax({
         url: href,
@@ -299,21 +322,5 @@ function addDailyPlan(atag) {
         }
     });
 
- });
+});
 
-
-// 自定义消息提示框的淡入淡出
-function ShowTip(tip, type) {
-    var $tip = $('#tip');
-    if ($tip.length == 0) {
-        $tip = $(`<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px'></span>`);
-        $('body').append($tip);
-    }
-    $tip.stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
-}
-
-function ShowMsg(msg) {
-
-    ShowTip(msg, 'info')
-
-}

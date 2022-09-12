@@ -228,11 +228,11 @@ class ApplyRelease(models.Model):
 
 # 日计划
 class DailyPlan(models.Model):
-    start_date =  models.DateField(auto_now_add=True, verbose_name='创建日期')
-    remind_date =  models.DateField(verbose_name='提醒日期',null=True,blank=True)
+    start_date =  models.DateField(auto_now_add=True, verbose_name='创建日')
+    remind_date =  models.DateField(verbose_name='提醒日',null=True,blank=True)
     end_date =  models.DateField(verbose_name='结束日期',null=True,blank=True)
     content = models.CharField(max_length=512, verbose_name='任务')
-    status_choices = [(0, '进行'), (1, '完成'), ]
+    status_choices = [(0, '进行'), (1, '完成'), (2, '提醒'),]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='状态', default=0)
     sequence =  models.IntegerField(verbose_name='排序', default=6)
     link = models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE,verbose_name='关联', null=True, blank=True)

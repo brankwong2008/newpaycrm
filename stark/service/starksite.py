@@ -306,7 +306,6 @@ class StarkHandler(object):
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
         filter_condition = self.get_url_filter()
-        print('filtercondition:', filter_condition)
 
 
         ############## 1. 组合筛选的区域显示 ###############

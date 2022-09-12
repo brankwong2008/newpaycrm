@@ -5,11 +5,12 @@ from django.conf.urls import url
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
-from stark.utils.display import get_date_display, checkbox_display, PermissionHanlder,info_display,follow_date_display
+from stark.utils.display import get_date_display, checkbox_display, PermissionHanlder,info_display,change_date_display
 from dipay.utils.displays import save_display
 from dipay.utils.tools import get_choice_value
-from dipay.models import DailyPlan
+from dipay.models import DailyPlan, FollowOrder
 from dipay.forms.forms import TaskAddModelForm,TaskEditModelForm
+import datetime
 
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
@@ -71,7 +72,10 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
 
     # 任务字段列表
-    fields_display = [content_display,info_display('remark'), accomplish_display,urgence_display, info_display('sequence'), link_display,get_date_display("start_date"),  ]
+    fields_display = [content_display,info_display('remark'), accomplish_display,
+                      urgence_display, info_display('sequence'),
+                      link_display,get_date_display("start_date",time_format='%m-%d'),
+                      change_date_display('remind_date',time_format='%m-%d'), ]
 
 
     # 按状态筛选
@@ -95,7 +99,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     filter_hidden = "hidden"
     batch_process_hidden = 'hidden'
 
-    tab_list = [('进行', '进行', 'active'), ('完成', '完成', ""), ]
+    tab_list = [('进行', '进行', 'active'),  ('提醒', '提醒', ""),('完成', '完成', ""), ]
     status_dict = {item[1]: item[0] for item in DailyPlan.status_choices}
 
     # 定义筛选标签页头
@@ -128,6 +132,12 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     def get_queryset_data(self, request, is_search=None, *args, **kwargs):
         # 搜索所用的数据另行指定范围
         queryset =  self.model_class.objects.filter(user=request.user)
+        # 检查reminder的状态, 如果提醒日期到了，status变更为进行
+        for item in queryset.filter(status=self.status_dict.get('提醒')):
+            if item.remind_date <= datetime.date.today():
+                item.status = self.status_dict.get('进行')
+                item.save()
+
         if is_search:
             return  queryset
         # status 0 进行  1 完成
@@ -136,6 +146,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
         for item in self.tab_list:
             if item[2] == 'active':
+
                 return queryset.filter(status=self.status_dict.get(item[0]))
 
     search_list = ['content__icontains', 'start_date']
@@ -177,6 +188,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         if request.is_ajax():
             data_dict = request.POST.dict()
             pk = data_dict.get('pk')
+            res = {}
             data_dict.pop('csrfmiddlewaretoken')
 
             save_obj = DailyPlan.objects.filter(pk=pk).first()
@@ -186,10 +198,21 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 for item, val in data_dict.items():
                     if item=='urgence':
                         val = False if val.strip() == 'False' else True
+                    if item=='remind_date':
+                        print('reminder date:', val)
+                        remind_date = datetime.datetime.strptime(val,'%Y-%m-%d')
+                        if remind_date <= datetime.datetime.today():
+                            data_dict['status'] = False
+                            data_dict['field'] = 'remind_date'
+                            data_dict['error'] = '提醒日期要大于当前日期'
+                            return JsonResponse(data_dict)
+
+                        save_obj.status = 2
+                        res['msg'] = '提醒设置成功'
                     setattr(save_obj, item, val)
                 save_obj.save()
                 data_dict['status'] = True
-                res = data_dict
+                res.update(data_dict)
             return JsonResponse(res)
 
     def get_model_form(self,type=None):
@@ -209,6 +232,9 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             if get_type == 'simple':
                 form.instance.link_id = request.POST.get('link_id')
                 form.instance.user = request.user
+                followorder_obj = FollowOrder.objects.get(pk=form.instance.link_id)
+                order_info = '%s %s ' % (followorder_obj.order.customer.shortname, followorder_obj.order.order_number )
+                form.instance.remark = order_info
                 form.save()
                 return JsonResponse({"status":True, "msg":'任务快速添加成功'})
             form.instance.user = request.user
