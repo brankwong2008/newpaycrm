@@ -24,7 +24,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     def add_btn_display(self,request,*args,**kwargs):
         if self.has_add_btn:
             add_url = self.reverse_add_url(*args,**kwargs)
-            return "<a href='%s' class='btn btn-primary add-record'> + </a>" % (add_url)
+            return "<a href='%s?get_type=simple' class='btn btn-primary add-record' onclick='return simpleAddDailyPlan(this)'> + </a>" % (add_url)
         else:
             return None
 
@@ -34,7 +34,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return 'Done'
         else:
             list_url = self.reverse_list_url()
-            switch = 'off' if obj.status else 'on'
+            switch = 'off' if obj.status==1 else 'on'
             return mark_safe("<a href='%s' pk='%s' onclick='return accomplishTask(this)'><i class='fa fa-toggle-%s' ></i></a>" %
                              (list_url, obj.pk,switch ))
 
@@ -199,7 +199,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                     if item=='urgence':
                         val = False if val.strip() == 'False' else True
                     if item=='remind_date':
-                        print('reminder date:', val)
                         remind_date = datetime.datetime.strptime(val,'%Y-%m-%d')
                         if remind_date <= datetime.datetime.today():
                             data_dict['status'] = False
@@ -208,6 +207,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                             return JsonResponse(data_dict)
 
                         save_obj.status = 2
+                        save_obj.urgence = True
                         res['msg'] = '提醒设置成功'
                     setattr(save_obj, item, val)
                 save_obj.save()
@@ -226,16 +226,17 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         print('dialayplan save form POST', request.POST, request.GET)
         if not request.user:
             return
-
+        # 新增一条任务
         if not is_update:
-            get_type = request.GET.get("get_type")
-            if get_type == 'simple':
-                form.instance.link_id = request.POST.get('link_id')
-                form.instance.user = request.user
-                followorder_obj = FollowOrder.objects.get(pk=form.instance.link_id)
-                order_info = '%s %s ' % (followorder_obj.order.customer.shortname, followorder_obj.order.order_number )
-                form.instance.remark = order_info
-                form.save()
-                return JsonResponse({"status":True, "msg":'任务快速添加成功'})
+            link_id = request.POST.get('link_id')
+            if link_id:
+                form.instance.link_id = link_id
+                followorder_obj = FollowOrder.objects.get(pk=link_id)
+                form.instance.remark = '%s %s ' % (
+                followorder_obj.order.customer.shortname, followorder_obj.order.order_number)
             form.instance.user = request.user
+            form.save()
+            return JsonResponse({"status":True, "msg":'任务快速添加成功'})
+
+        # 更新一条任务
         form.save()
