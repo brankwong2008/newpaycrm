@@ -62,7 +62,7 @@ class EditApplyOrderModelForm(StarkForm):
         fields = '__all__'
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
-            'create_date': forms.DateInput(attrs={'type': 'date'}),
+            # 'create_date': forms.DateInput(attrs={'type': 'date'}),
             'order_number': forms.TextInput(attrs={'readonly': True}),
             'rcvd_amount': forms.TextInput(attrs={'readonly': True}),
             'collect_amount': forms.TextInput(attrs={'readonly': True}),
@@ -81,11 +81,10 @@ class ConfirmApplyOrderModelForm(StarkForm):
 
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
-            'create_date': forms.DateInput(attrs={'type': 'date'}),
+            # 'create_date': forms.DateInput(attrs={'type': 'date'}),
             'confirm_date': forms.DateInput(attrs={'type': 'date'}),
             'order_number': forms.TextInput(attrs={'readonly': True}),
             'customer': forms.Select(attrs={'readonly': True}),
-
         }
 
 
