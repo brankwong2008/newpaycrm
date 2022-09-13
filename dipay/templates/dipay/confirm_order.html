@@ -25,12 +25,9 @@
         <div class="col-md-7">
 
 
-            <div class="panel panel-success">
-                <div class="panel-heading"><i class="fa fa-send"></i> 下单
 
-                </div>
-                <div class="panel-body">
-                       <form action="" method="post">
+
+            <form action="" method="post">
                 {% csrf_token %}
 
                 {% for field in form %}
@@ -48,8 +45,7 @@
 
 
             </form>
-                </div>
-            </div>
+
 
 
 

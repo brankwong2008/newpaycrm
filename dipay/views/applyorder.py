@@ -712,7 +712,11 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     FollowOrder.objects.create(order=order_obj, salesman=order_obj.salesperson)
 
                 form.save()
-                msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单'
+                order_number = order_obj.order_number
+                link = reverse("stark:dipay_followorder_list")+"?q=%s" % order_number
+                follow_order_link = "<a href='%s' target='_blank'>%s</a>" % (link, order_number)
+                msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单，已自动生成跟单记录:'+ follow_order_link
+                msg = mark_safe(msg)
                 return render(request, 'dipay/msg_after_submit.html', locals())
             else:
                 return render(request, 'dipay/confirm_order.html', locals())
