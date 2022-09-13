@@ -2,20 +2,19 @@
 function ShowTip(tip, type) {
     var $tip = $('#tip');
     if ($tip.length == 0) {
-        $tip = $(`<span id='tip'  style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'></span>`);
-        $('body').append($tip);
+        var $tip_span = `<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'>${tip}</span>`;
+        $('body').append($tip_span);
     }
-    $tip.stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
+     $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
 }
 
 function ShowMsg(msg) {
-
+    console.log('show msg....:', msg)
     ShowTip(msg, 'info')
 }
 
 
 // 功能：双击表格，替换成相应的input控件，点击保存更新到数据库
-
 function savePlan(btn) {
     // 找到控件和input信息
     var pk = $(btn).attr('pk');
@@ -44,7 +43,6 @@ function savePlan(btn) {
     // 加入csrf token
     data_obj['csrfmiddlewaretoken'] = $("[name='csrfmiddlewaretoken']").val();
 
-
     // 发送Ajax请求，
     // :text获取type为text的标签, blur失去聚焦事件
     $.ajax({
@@ -57,11 +55,10 @@ function savePlan(btn) {
             if (response.status) {
                 if (response.msg) {
                     ShowMsg(response.msg);
-                    setTimeout("location.reload()", 1500);
+                    setTimeout("location.reload()", 500);
                 } else {
                     location.reload();
                 }
-
             } else {
                 var name = response.field;
                 var $target = $(`[id='${name}-id-${pk}']`);
@@ -310,17 +307,41 @@ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
         data_obj[$(this).attr('name')] = $(this).val()
     })
 
-    console.log(href, data_obj);
-
     $.ajax({
         url: href,
         type: 'post',
         data: data_obj,
         success: function (respond) {
             $('#myModal').modal('hide');
-            ShowMsg(respond.msg)
+            ShowMsg(respond.msg);
+            setTimeout("location.reload()", 500);
         }
     });
 
 });
+
+
+
+// 在任务列表简单新增任务
+function simpleAddDailyPlan(atag) {
+    var href = atag.href;
+    var title = '新建任务';
+
+    $.ajax({
+        url: href,
+        type: 'get',
+        data: '',
+        success: function (respond) {
+            console.log(title);
+            $('#myModalLabel').text(title);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
+            // 给form的action加上url
+            $('#myModal .modal-body .mymodal-details form').attr('action', href);
+            var $input = `<input type="hidden" name="link_id" id="id_link_id" value=''>`
+            $('#myModal .modal-body .mymodal-details form').append($input);
+            $('#myModal').modal('show');
+        }
+    });
+    return false;
+}
 
