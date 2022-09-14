@@ -15,7 +15,12 @@ import datetime
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = 'dipay/show_dailyplan_list.html'
-    order_by_list = ['sequence','-id']
+
+    def get_order_by_list(self, request):
+        if request.GET.get('status')=='1':
+            return ['-id',]
+        return ['sequence','-id']
+
 
     # 添加按钮
     has_add_btn = True
@@ -171,6 +176,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             # 当返回数据给模态框时，get_type = simple，只返回核心内容
             get_type = request.GET.get('get_type')
             if get_type == 'simple':
+                print('get type: siple :', get_type)
                 self.add_list_template = "dipay/dailyplan_simple_change_list.html"
             return render(request, self.add_list_template or "stark/change_list.html", locals())
 
@@ -223,7 +229,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     # 新建任务的方法
     def save_form(self,form,request,is_update=False,*args, **kwargs):
-        print('dialayplan save form POST', request.POST, request.GET)
         if not request.user:
             return
         # 新增一条任务

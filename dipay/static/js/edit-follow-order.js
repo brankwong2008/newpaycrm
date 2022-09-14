@@ -1,3 +1,25 @@
+// $(function () {
+//     document.onkeydown = function (event) {
+//         var target, code, tag;
+//         if (!event) {
+//             event = window.event;
+//             target = event.srcElement;
+//             code = event.keyCode;
+//             if (code == 13) {
+//                 return target.tagName == 'TEXTAREA';
+//             }
+//         }
+//         else {
+//             target = event.target;
+//             code = event.keyCode
+//             if (code == 13) {
+//                 return target.tagName == 'INPUT' ? false : true
+//             }
+//         }
+//     }
+// })
+
+
 // 自定义消息提示框的淡入淡出
 function ShowTip(tip, type) {
     var $tip = $('#tip');
@@ -5,7 +27,7 @@ function ShowTip(tip, type) {
         var $tip_span = `<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'>${tip}</span>`;
         $('body').append($tip_span);
     }
-     $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
+    $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
 }
 
 function ShowMsg(msg) {
@@ -81,7 +103,7 @@ function showInputBox(sp) {
         var create_date = ''
         if (content != '--') {
             // 甄别日期是否简写模式（07/16 或者2022-07-16
-            create_date = year? year + '/' + content:content;
+            create_date = year ? year + '/' + content : content;
             create_date = create_date.replaceAll('/', '-');
         }
         console.log('year:', year, typeof year, content, create_date);
@@ -292,6 +314,7 @@ function addDailyPlan(atag) {
             var $input = `<input type="hidden" name="link_id" id="id_link_id" value='${pk}'>`
             $('#myModal .modal-body .mymodal-details form').append($input);
             $('#myModal').modal('show');
+            setTimeout("$('#myModal form input[type=text]').first().focus()", 500)
         }
     });
     return false;
@@ -321,7 +344,6 @@ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
 });
 
 
-
 // 在任务列表简单新增任务
 function simpleAddDailyPlan(atag) {
     var href = atag.href;
@@ -339,9 +361,25 @@ function simpleAddDailyPlan(atag) {
             $('#myModal .modal-body .mymodal-details form').attr('action', href);
             var $input = `<input type="hidden" name="link_id" id="id_link_id" value=''>`
             $('#myModal .modal-body .mymodal-details form').append($input);
+            $('#myModal .modal-body .mymodal-details form span.dailyplan').attr('id', 'task_button')
             $('#myModal').modal('show');
+            // 光标foucus到第一个input框
+            setTimeout("$('#myModal form input[type=text]').first().focus()", 500)
+
         }
     });
     return false;
 }
 
+
+//回车事件绑定 （需要事件委派，因为这个内容是后生成的）
+
+$('#myModal .modal-body').on('keypress','input', function (event) {
+    console.log('event kecode:', event.keyCode)
+    // 这里的event是window.event, 浏览器窗口事件
+    if (event.keyCode == 13) {
+        //回车执行查询
+        $('span.dailyplan').click();
+        return false;
+    }
+})
