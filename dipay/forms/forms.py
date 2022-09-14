@@ -10,12 +10,16 @@ class TaskAddModelForm(forms.ModelForm):
     class Meta:
         model = DailyPlan
         fields = ["content", ]
+        widgets = {
+            'content': forms.TextInput(attrs={'id': 'task_input','class':"form-control"}),
+        }
 
     def __init__(self, *args, **kwargs):
         super(TaskAddModelForm, self).__init__(*args, **kwargs)
 
-        for name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
+        # for name, field in self.fields.items():
+        #     field.widget.attrs["class"] = "form-control"
+        #     # field.widget.attrs["autofocus"] = "autofocus"
 
 # 用于编辑任务的model form
 class TaskEditModelForm(forms.ModelForm):

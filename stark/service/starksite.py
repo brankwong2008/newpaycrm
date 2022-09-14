@@ -200,7 +200,7 @@ class StarkHandler(object):
 
     batch_process_list = []
 
-    def get_order_by_list(self):
+    def get_order_by_list(self,request):
         if self.order_by_list:
             return self.order_by_list
         else:
@@ -347,7 +347,7 @@ class StarkHandler(object):
         # 前端进行显示，并把value值包含到标签中
 
         ############## 1. 排序 ###############
-        order_by_list = self.get_order_by_list()
+        order_by_list = self.get_order_by_list(request)
         ordered_queryset = searched_queryset.order_by(*order_by_list)
 
 
