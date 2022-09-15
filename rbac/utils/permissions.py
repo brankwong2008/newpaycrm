@@ -9,6 +9,8 @@ def init_permissions(request,user):
     :return: None
     """
 
+    print('enter init-permission...')
+
     # 一次性跨表查询从数据库获取所有需要的字段，并去重
     permissions_queryset = user.roles.filter(permissions__isnull=False).values("permissions__urls",
                                                                                "permissions__menu_id",
@@ -66,7 +68,5 @@ def init_permissions(request,user):
 
     # 把权限字典存入session
     request.session[settings.PERMISSION_KEY] = permission_dict
-
-    print(menu_dict,permission_dict)
 
     return

@@ -372,14 +372,14 @@ function simpleAddDailyPlan(atag) {
 }
 
 
-//回车事件绑定 （需要事件委派，因为这个内容是后生成的）
-
+//回车事件清除默认动作 （需要事件委派，因为input这个内容是后生成的）
 $('#myModal .modal-body').on('keypress','input', function (event) {
     console.log('event kecode:', event.keyCode)
-    // 这里的event是window.event, 浏览器窗口事件
+    // 判断keycode 是不是回车，回车的code是13
     if (event.keyCode == 13) {
-        //回车执行查询
+        //回车执行自定义的动作
         $('span.dailyplan').click();
+       //  return false, 避免回车的默认事件
         return false;
     }
 })
