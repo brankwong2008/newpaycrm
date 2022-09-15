@@ -697,6 +697,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
         if request.method == "GET":
             form = ConfirmApplyOrderModelForm(instance=order_obj, initial={'confirm_date': datetime.now()})
+            return_url = self.reverse_list_url()
             return render(request, 'dipay/confirm_order.html', locals())
         else:
             form = ConfirmApplyOrderModelForm(request.POST, instance=order_obj)

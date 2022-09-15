@@ -39,7 +39,6 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         add_url = self.reverse_add_url(*args, **kwargs)
         return "<div class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </div>"
 
-
     def get_model_form(self, type=None):
         if type == 'add':
             return AddInwardPayModelForm

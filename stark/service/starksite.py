@@ -285,24 +285,31 @@ class StarkHandler(object):
 
         user_query = self.request.GET.get("q","")
 
-        conn = Q()
-        conn.connector = "OR"
         if user_query:
+            user_query = user_query.strip()
+            queryset_data = self.get_queryset_data(request, is_search=True)
+            conn = Q()
+            conn.connector = "OR"
             for item in search_list:
                 # 使用ORM的Q函数来构造OR条件的查询
-                conn.children.append((item, user_query.strip()))
-            # 搜索专门指定数据集，比显示的略宽一些
+                conn.children.append((item, user_query))
             try:
-                searched_queryset = self.get_queryset_data(request,is_search=True).filter(conn)
+                # 测试filter的条件是否会出错
+                searched_queryset = queryset_data.filter(conn)
+
             except Exception as e:
-                for item in search_list:
+                # 如果出错，则逐一查询，将查询到的有效queryset的查询条件放入conn_good
+                conn_good = Q()
+                for child in conn.children:
                     try:
-                        conn.children = [(item, user_query.strip()),]
-                        searched_queryset = self.get_queryset_data(request,is_search=True).filter(conn)
+                        q1 = Q(child)
+                        queryset_data.filter(q1)
+                        conn_good.add(q1,"OR")
                     except:
                         continue
-                    else:
-                        break
+                # 按合法的查询条件再次查询，这要重复消耗查询资源，暂时没有找到更好的办法。
+                searched_queryset = queryset_data.filter(conn_good)
+
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
         filter_condition = self.get_url_filter()

@@ -13,7 +13,7 @@ rbac_user_model_class = import_string(settings.RBAC_USER_MODLE_CLASS)
 class RbacMiddleWare(MiddlewareMixin):
     def process_request(self, request):
         current_url = request.path
-        print('current_url:', current_url)
+        print('enter process request, current url:', current_url)
         login_session = request.session.get(settings.LOGIN_KEY, None)
         if not login_session:
             request.user = AnonymousUser()
@@ -49,6 +49,7 @@ class RbacMiddleWare(MiddlewareMixin):
         permission_dict = request.session.get(settings.PERMISSION_KEY)
 
         # 获取进行中的任务的count
+        print('process request get task count ... ')
         request.task_count = models.DailyPlan.objects.filter(status=0,user=request.user).count()
 
         # 判断用户的访问路径是否在权限里面
