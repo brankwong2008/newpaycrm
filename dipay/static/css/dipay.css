@@ -1,6 +1,11 @@
 
 
 
+.table tbody tr td{
+    vertical-align: middle;
+
+}
+
 tr.active {
     border-left: 3px solid #fdc00f;
 }
@@ -175,7 +180,7 @@ a.add-record-btn {
 
 /* 放单申请审批状态： 等待审批 */
 .wait-confirm, .wait-confirm-release{
-color: dodgerblue;
+color: #3d7fba;
 }
 
 
@@ -186,9 +191,9 @@ color: dodgerblue;
 }
 
 /* 放单申请审批状态： 可以放单 */
-.agree-release{
-    color: darkseagreen;
-}
+/*.agree-release{*/
+/*    color: darkseagreen;*/
+/*}*/
 
 /* 控制表格列宽  基本信息 */
 .followorder-table-head-2, .weekly-plan-col-1 {
@@ -403,3 +408,8 @@ span[id^="content"].red {
 /*    line-height: 8px;*/
 /*}*/
 
+
+ /*  放单审核按钮的css */
+/*a.release-verify-btn {*/
+/*    color: orangered;*/
+/*}*/

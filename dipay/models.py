@@ -211,7 +211,6 @@ class ExchangeRate(models.Model):
         return '%s %s: %s' % (self.update_date.strftime('%Y/%m/%d'), self.currency.title, self.rate)
 
 
-
 # 申请放单
 class ApplyRelease(models.Model):
     apply_date =  models.DateField(auto_now_add=True, verbose_name='申请日期')

@@ -87,7 +87,7 @@ class ApplyReleaseVerifyHandler(PermissionHanlder, StarkHandler):
             return '审批状态'
         else:
             if obj.decision is None:
-                return mark_safe("<span class='wait-confirm'>等待审批</span>")
+                return mark_safe("<span class='wait-confirm'>等待放单审批</span>")
             elif obj.decision is False:
                 return  mark_safe("<span class='not-agree-release'>不同意放单</span>")
             else:
@@ -109,13 +109,18 @@ class ApplyReleaseVerifyHandler(PermissionHanlder, StarkHandler):
         else:
             if obj.decision is None:
                 verify_url = self.reverse_url('verify_release', order_id=obj.order.pk)
-                return mark_safe("<a href='%s'>审核</a>" % verify_url)
+                return mark_safe("<a href='%s' class='btn btn-info btn-sm release-verify-btn'>审核</a>" % verify_url)
             else:
-                return '已审'
+                return mark_safe("<span class='btn btn-default btn-sm'>已审</span>")
 
 
-    fields_display = [get_date_display('apply_date'), order_number_display, customer_display, 'applier',
-                      'verifier',apply_content_display, verify_status_display, operate_display]
+    fields_display = [get_date_display('apply_date'),
+                      order_number_display,
+                      customer_display,
+                      'applier',
+                      # 'verifier',
+                      verify_status_display,
+                      operate_display]
 
     detail_fields_display = fields_display
 
