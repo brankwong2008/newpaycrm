@@ -196,3 +196,6 @@ AUTO_DISCOVER_EXCLUDE = [
             '/index/',
         ]
 ##################  end of RBAC 设置 ###############
+
+
+SESSION_COOKIE_AGE = 259200   # 用户的cookie存储最长时间3天，3天后必须重新登录

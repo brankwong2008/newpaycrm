@@ -129,7 +129,9 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
         if pk:
             return self.model_class.objects.filter(pk=pk)
         else:
-            return self.model_class.objects.all()
+            # return self.model_class.objects.all()
+            # 跨表查询就是如此简单，强大的SQL
+            return  self.model_class.objects.exclude(orders__order_type=2)
 
 
     def confirm_receipt(self, request, pk,  *args, **kwargs):
