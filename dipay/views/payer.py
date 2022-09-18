@@ -7,6 +7,8 @@ class PayerHandler(PermissionHanlder,StarkHandler):
     search_list = ['title__icontains','customer__title__icontains']
     search_placeholder = '搜索 付款人 客户'
 
+    verify_similarity_list = ['title', ]
+
     fields_display = ['id','title','customer']
 
     def get_queryset_data(self,request,*args,**kwargs):

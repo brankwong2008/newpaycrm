@@ -10,6 +10,8 @@ from stark.service.pagination import Pagination
 from types import FunctionType,MethodType
 from django.shortcuts import HttpResponse,render,redirect,reverse
 from dipay.forms.forms import StarkForm
+import difflib
+import json
 
 class Option:
     def __init__(self,field,filter_param=None,is_multi = False,default=None,verbose_name=None):
@@ -129,6 +131,7 @@ class Option:
             return str(field_obj.pk)
 
 class StarkHandler(object):
+    verify_similarity_list = [] # 添加时检查相似度
     edit_list_template = None  # 编辑页面模板
     add_list_template = None   # 添加页面模板
     del_list_template = None   # 删除页面模板
@@ -520,13 +523,26 @@ class StarkHandler(object):
         form = self.get_model_form()(request.POST or None)
         # 如果有数据，说明是post请求，如果没有数据说明是get请求
         if form.is_valid():
+            # 对指定的字段进行字段的字符串相似度检查，以免重复添加，大于70%要提醒
+            verify_similarity_list = self.verify_similarity_list
+            for field in verify_similarity_list:
+                val = form.cleaned_data.get(field)
+                # 与数据库中已有字段进行相似度比较
+                for item in  self.model_class.objects.all().values_list(field):
+                    try:
+                        field_val = item[0].lower()
+                        val = val.lower()
+                        sim = difflib.SequenceMatcher(None,val, field_val)
+                        print('sim', sim.ratio(), val, item[0])
+
+                        # 如果新增数据包含于数据库数据或者相似度大于0.7，则告知前端记录可能重复
+                        if val in field_val or sim.ratio() > 0.7:
+                            return JsonResponse({'status': False, "error": '可能重复的记录:%s' % item[0]})
+                    except:
+                        continue
+
             # 如果数据校验合格，存在数据库，返回instance
             instance = form.save()
-            ## Change the value of the "#id_author". This is the element id in the form
-            # 把下面这段js代码返回给前端，关键是author_id，这个值必须来自于数据库
-            # 我们看前端怎么处理这段代码
-            # 下面’%s‘要加引号，因为这段要显示在前端的时候，不加引号视为变量
-
             id_name = '#id_' + self.model_name
             # return HttpResponse(
                 # '<script>opener.closePopup(window, "%s", "%s", "#id_%s");</script>' % (instance.pk, instance,id_name))

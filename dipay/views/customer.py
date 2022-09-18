@@ -7,6 +7,8 @@ from openpyxl import load_workbook
 
 class CustomerHandler(PermissionHanlder,StarkHandler):
 
+    verify_similarity_list = ['title','shortname']
+
     fields_display = ['id','title','owner']
 
     def get_per_page(self):
