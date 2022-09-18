@@ -7,9 +7,10 @@ function showAPP(tag) {
         type: 'get',
         data: '',
         success: function (respond) {
-            console.log('get request, got responds from server ...')
+            console.log('get get request, got responds from server ...')
             $('#FastCreateModal .modal-body .modal-details').replaceWith(respond);
             $('#FastCreateModal .modal-body .modal-details form').attr('action', href);
+            $('#FastCreateModal .modal-error').html('')
 
             // 显示模态框
             // $('#id_customer').selectpicker('render');
@@ -23,9 +24,10 @@ function showAPP(tag) {
 }
 
 
-function closePopup(buttontag) {
-    console.log("closePopup() workds");
+function closePopup(buttontag){
 
+
+ console.log("closePopup() workds");
     // 如果required的字没有填，则直接调用form的button方法
     var empty_flag = false;
     $("#FastCreateModal .modal-body .modal-details form [name][required]").each(function (i) {
@@ -45,44 +47,54 @@ function closePopup(buttontag) {
     $.each(form_list, function (index, data) {
         formdata.append(data.name, data.value);
     })
+    var failure_flag = false;
 
-    // 手动搜集forms中的data，发post请求，并获得返回值，决定是否关闭模态框
+  // 手动搜集forms中的data，发post请求，并获得返回值，决定是否关闭模态框
+
     $.ajax({
         url: $('#FastCreateModal .modal-body .modal-details form').attr('action'),
         contentType: false,
         processData: false,
         type: 'post',
+        async: false,
         data: formdata,
         success: function (respond) {
+            // console.log(respond);
             if (respond.status) {
                 var newID = respond.data.pk;
                 var newRepr = respond.data.title;
                 var id = respond.data.id_name;
-                console.log(respond);
                 // 将新增加的数据添加到select的选项里面，并设为已选
                 $(id).children().attr('selected', false);
                 $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
                 // 必须要刷新picker，否则不显示也搜不到
                 $(id).selectpicker('refresh');
                 $(id).selectpicker('render');
-
-
+            } else {
+                $('#FastCreateModal .modal-error').html(respond.error)
+                failure_flag = true;
             }
-
-            // 确定后面的行动
-
-
         }
+
     });
 
+  //   ajax处理是异步的，所以这个时候，failure flag还是false
+  if (!failure_flag) {
+      // console.log('failure lag is ',failure_flag )
+        $('#FastCreateModal').modal('toggle');
+    }
 
-    $('#FastCreateModal').modal('toggle');
-
-    // $(id).children().attr('selected',false);
-    // $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
-    // win.close();
-    //  // 必须要刷新picker，否则不显示也搜不到
-    // $(id).selectpicker('refresh');
-    // $(id).selectpicker('render');
 }
+
+
+
+
+
+// $(id).children().attr('selected',false);
+// $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
+// win.close();
+//  // 必须要刷新picker，否则不显示也搜不到
+// $(id).selectpicker('refresh');
+// $(id).selectpicker('render');
+
 
