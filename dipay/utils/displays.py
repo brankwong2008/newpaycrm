@@ -399,3 +399,19 @@ def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
                             <li><a pk='%s' href='%s?get_type=simple' onclick='return addDailyPlan(this)'>添加任务</a></li>
                         </ul>
                     </li></ul>""" % (obj.pk, add_dailyplan_url) )
+
+
+
+# 显示水单小图片
+def ttcopy_display(handler,obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return '水单'
+    else:
+        if obj.ttcopy:
+            img_tag = f"<img class='ttcopy-small-img' src={obj.ttcopy.url} " \
+                      f"onclick='return popupImg(this)' width='30px' height='30px'>"
+        else:
+            img_tag = '<i class="fa fa-minus-square"></i>'
+
+
+    return mark_safe(img_tag)

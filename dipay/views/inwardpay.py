@@ -8,7 +8,7 @@ from django.forms.models import modelformset_factory, formset_factory
 from django import forms
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
-from dipay.utils.displays import related_orders_display
+from dipay.utils.displays import related_orders_display, ttcopy_display
 from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
     EditInwardPayModelForm
 from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
@@ -124,11 +124,13 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     fields_display = [get_date_display('create_date'),
                       payer_display,
                       customer_display,
-                      got_amount_display,
                       'bank',
-                      got_confirm_status_display,
+                      got_amount_display,
                       status_display,
-                      related_orders_display ]
+                      related_orders_display,
+                      ttcopy_display,
+                      got_confirm_status_display,
+                      ]
 
     detail_fields_display = fields_display + ['remark','keyin_user','ttcopy']
 
@@ -295,7 +297,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
         torelate_amount = inwardpay_obj.torelate_amount
         # torelate_queryset = ApplyOrder.objects.filter(status__lt=3, customer=customer_obj)
-        torelate_queryset = ApplyOrder.objects.filter(customer=customer_obj)
+        torelate_queryset = ApplyOrder.objects.filter(customer=customer_obj, status__gte=2)
         torelate_order_list = []
 
         # 检查其中的应收金额，确保一致性, 整理可关联订单数据
