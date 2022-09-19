@@ -3,7 +3,7 @@ from django.conf.urls import url
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
-from dipay.utils.displays import related_orders_display
+from dipay.utils.displays import related_orders_display, ttcopy_display
 from dipay.forms.forms import AddInwardPayModelForm, EditInwardPayModelForm
 from django.db import transaction
 
@@ -61,19 +61,6 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
             if obj.customer:
                 return obj.customer.shortname
             return '-'
-
-    def ttcopy_display(self,obj=None, is_header=False, *args, **kwargs):
-        if is_header:
-            return '水单'
-        else:
-            if obj.ttcopy:
-                img_tag = f"<img class='ttcopy-small-img' src={obj.ttcopy.url} " \
-                          f"onclick='return popupImg(this)' width='30px' height='30px'>"
-            else:
-                img_tag = '<i class="fa fa-minus-square"></i>'
-
-
-            return mark_safe(img_tag)
 
     def got_confirm_status_display(self, obj=None, is_header=False, *args, **kwargs):
         if is_header:
