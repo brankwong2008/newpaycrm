@@ -129,7 +129,7 @@ class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
             return self.model_class.objects.filter(status__in=[1,5]).exclude(order__order_type=2)
 
     def get_per_page(self):
-        return 20
+        return 30
 
     def get_extra_urls(self):
         patterns = [

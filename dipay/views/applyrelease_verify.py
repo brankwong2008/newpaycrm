@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from datetime import datetime
+from decimal import Decimal
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q

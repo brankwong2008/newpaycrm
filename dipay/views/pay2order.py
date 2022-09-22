@@ -58,6 +58,7 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
 
     fields_display = ['order',get_relate_amount_display, get_payment_display, get_date_display('relate_date'),]
 
+
     def get_urls(self):
         patterns = [
             #url("^order_related_paylist/(?P<order_id>\d+)/$", self.wrapper(self.order_related_paylist), name=self.get_url_name('order_related_paylist')),
