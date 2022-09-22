@@ -282,7 +282,8 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
         order_number = obj.order.order_number
         salesperson = obj.order.salesperson.nickname if obj.order.salesperson else '-'
         confirm_date = confirm_date_display(handler, obj, False)
-        basic_info = f'<span class="invoice-number-display">{order_number}</span> <br>' \
+        order_link = reverse("stark:dipay_applyorder_list")+"?q=%s"% order_number
+        basic_info = f'<span class="invoice-number-display"><a class="order-link" href="{order_link}" target="_blank">{order_number}</a></span> <br>' \
                      f' <span>{confirm_date}</span><br>' \
                      f'<span>{salesperson}</span>'
         return mark_safe(basic_info)
@@ -361,8 +362,12 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
         goods = obj.order.goods[:15]
         discharge_port = port_display('discharge_port')(handler, obj, False)
         term = obj.order.get_term_display()
+        if obj.order.customer:
+            customer_details_url = reverse("stark:dipay_customer_list_detail", kwargs={"pk":obj.order.customer.pk})
+        else:
+            customer_details_url = "#"
 
-        basic_info = f'<span style="font-weight:bolder">{customer}</span> <br>' \
+        basic_info = f'<span style="font-weight:bolder"><a class="customer-link" href="{customer_details_url}" target="_blank">{customer}</a></span> <br>' \
                      f' <span>{goods}</span><br>' \
                      f'{discharge_port} &nbsp&nbsp <span>{term}</span>'
         return mark_safe(basic_info)

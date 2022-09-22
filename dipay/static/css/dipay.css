@@ -1,7 +1,5 @@
 
-
-
-.table tbody tr td{
+.table tbody tr td {
     vertical-align: middle;
 
 }
@@ -161,7 +159,7 @@ button.handle-btn {
 a.add-record-btn {
 
     vertical-align: middle;
-     height: 28px;
+    height: 28px;
     margin: 0 20px;
     padding: 2px 3px;
     line-height: 20px;
@@ -179,14 +177,13 @@ a.add-record-btn {
 }
 
 /* 放单申请审批状态： 等待审批 */
-.wait-confirm, .wait-confirm-release{
-color: #3d7fba;
+.wait-confirm, .wait-confirm-release {
+    color: #3d7fba;
 }
 
 
-
 /* 放单申请审批状态： 不同意放单 */
-.not-agree-release{
+.not-agree-release {
     color: orange;
 }
 
@@ -209,25 +206,25 @@ color: #3d7fba;
 
 
 /* 控制表格列宽  状态 */
- .weekly-plan-col-3 {
+.weekly-plan-col-3 {
     width: 3%;
 
 }
 
 /* 控制表格列宽  装箱信息 */
-.followorder-table-head-7,.weekly-plan-col-7  {
+.followorder-table-head-7, .weekly-plan-col-7 {
     width: 20%;
 
 }
 
 /* 控制表格列宽  订舱信息 */
-.followorder-table-head-8,.weekly-plan-col-8 {
+.followorder-table-head-8, .weekly-plan-col-8 {
     width: 19%;
 
 }
 
 /* 控制表格列宽  生产信息 */
-.followorder-table-head-9,.weekly-plan-col-9 {
+.followorder-table-head-9, .weekly-plan-col-9 {
     width: 10%;
 
 }
@@ -243,17 +240,17 @@ button[id^='clipboard-btn-'] {
 }
 
 /* 船公司的span格式 */
-span.shipline-tag{
+span.shipline-tag {
     margin-right: 20px;
 }
 
 /* 集装箱号的span格式 */
-span.container_tag{
+span.container_tag {
     margin-left: -1px;
 }
 
 /* 船和箱子的图标 */
-.fa-ship,.fa-building {
+.fa-ship, .fa-building {
     color: lightgrey;
 }
 
@@ -295,126 +292,147 @@ table {
     display: inline-block;
 }
 
-  /* ***********弹窗图片的样式 *************/
-        /* 弹窗背景 */
-        .newmodal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 9; /* Sit on top */
-            padding-top: 100px; /* Location of the box */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
-        }
+/* ***********弹窗图片的样式 *************/
+/* 弹窗背景 */
+.newmodal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+}
 
-        /* 图片 */
-        .newmodal-content {
-            position: relative;
-            margin: auto;
-            display: block;
-            width: 100%;
-            max-width: 900px;
-        }
-
-
-        /* 添加动画 */
-        .newmodal-content, #caption {
-            -webkit-animation-name: zoom;
-            -webkit-animation-duration: 0.6s;
-            animation-name: zoom;
-            animation-duration: 0.6s;
-        }
-
-        /* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */
-        @-webkit-keyframes zoom {
-            from {
-                -webkit-transform: scale(0)
-            }
-            to {
-                -webkit-transform: scale(1)
-            }
-        }
-
-        @keyframes zoom {
-            from {
-                transform: scale(0)
-            }
-            to {
-                transform: scale(1)
-            }
-        }
+/* 图片 */
+.newmodal-content {
+    position: relative;
+    margin: auto;
+    display: block;
+    width: 100%;
+    max-width: 900px;
+}
 
 
-        /* 关闭按钮 */
-        .img-close {
-            position: fixed;
-            z-index: 999; /* Sit on top */
-            top: 75px;
-            right: 35px;
-            color: #f1f1f1;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            opacity: 2.2;
-        }
+/* 添加动画 */
+.newmodal-content, #caption {
+    -webkit-animation-name: zoom;
+    -webkit-animation-duration: 0.6s;
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+/* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */
+@-webkit-keyframes zoom {
+    from {
+        -webkit-transform: scale(0)
+    }
+    to {
+        -webkit-transform: scale(1)
+    }
+}
+
+@keyframes zoom {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
 
 
-        .img-close:hover, .img-close:focus {
-            color: #bbb;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        img.ttcopy-small-img:hover {
-            cursor: pointer;
-
-        }
-
-
-        /* ***********end  弹窗图片的样式 *************/
-
-
- /* 普通modal框的关闭按钮 */
-        .close {
-            position: relative;
-            z-index: 999; /* Sit on top */
-            top: -14px;
-            right: 6px;
-            color: lightgrey;
-            font-size: 40px;
-            font-weight: bold;
-            transition: 0.3s;
-            opacity: 3.2;
-        }
-
-        #myModal .modal-header  {
-            height: 46px;
-
-        }
+/* 关闭按钮 */
+.img-close {
+    position: fixed;
+    z-index: 999; /* Sit on top */
+    top: 75px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    opacity: 2.2;
+}
 
 
- /* 任务页面的css */
+.img-close:hover, .img-close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-span[id^="content"].red {
-    color: red;
+img.ttcopy-small-img:hover {
+    cursor: pointer;
 
 }
 
-/*#tip {*/
-/*    position:fixed;*/
-/*    top:100px;*/
-/*    left:50%;*/
-/*    z-index:99;*/
-/*    height:35px;*/
-/*    line-height: 8px;*/
-/*}*/
+
+/* ***********end  弹窗图片的样式 *************/
 
 
- /*  放单审核按钮的css */
-/*a.release-verify-btn {*/
-/*    color: orangered;*/
-/*}*/
+/* 普通modal框的关闭按钮 */
+.close {
+    position: relative;
+    z-index: 999; /* Sit on top */
+    top: -14px;
+    right: 6px;
+    color: lightgrey;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+    opacity: 3.2;
+}
+
+#myModal .modal-header {
+    height: 46px;
+
+}
+
+
+/* 任务页面的css */
+span[id^="content"].red {
+    color: red;
+}
+
+#task_input {
+    width: 320px;
+}
+
+#id_remind_date, #task_input {
+    height: 36px;
+}
+
+span.dailyplan {
+    margin-top: 30px
+
+}
+
+
+
+/* end of  任务页面的css */
+
+
+/* 一般添加按钮的 css */
+a.add-record {
+    font-weight: 100;
+    font-size: 28px;
+    padding: 0px 10px 4px;
+    line-height: 28px;
+    align-content: center;
+    margin-bottom: 15px;
+    margin-top: -12px;
+
+}
+
+
+/* 跟单列表的customer,order_number链接的 css */
+a.customer-link, a.order-link {
+    text-decoration: none;
+    color: black;
+}
+
