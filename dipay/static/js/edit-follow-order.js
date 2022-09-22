@@ -352,7 +352,7 @@ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
 // 在任务列表简单新增任务
 function simpleAddDailyPlan(atag) {
     var href = atag.href;
-    var title = '新建任务';
+    var title = '新任务';
 
     $.ajax({
         url: href,
