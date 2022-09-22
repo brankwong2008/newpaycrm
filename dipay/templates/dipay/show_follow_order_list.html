@@ -6,10 +6,23 @@
 
     <style>
 
-    li.dropdown{
-    list-style-type: none;
+        li.dropdown {
+            list-style-type: none;
+        }
 
-}
+        #task_input {
+            width: 320px;
+        }
+
+        #id_remind_date, #task_input {
+            height: 36px;
+        }
+
+        span.dailyplan {
+            margin-top: 30px
+
+        }
+
 
     </style>
 
@@ -25,9 +38,9 @@
             <!-- 组合筛选功能区 -->
             {% if option_group_dict %}
                 <div class="panel panel-default">
-{#                    <div class="panel-heading">#}
-{#                        <i class="fa fa-filter"></i> 快速筛选#}
-{#                    </div>#}
+                    {#                    <div class="panel-heading">#}
+                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
+                    {#                    </div>#}
                     <div class="panel-body">
                         {% for field, row in option_group_dict.items %}
 
@@ -71,7 +84,8 @@
                                 <option value="{{ func }}">{{ text }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" class="btn btn-primary btn-sm handle-btn"><i class="fa fa-send"></i></button>
+                        <button type="submit" class="btn btn-primary btn-sm handle-btn"><i class="fa fa-send"></i>
+                        </button>
 
                     </div>
 
@@ -141,27 +155,29 @@
   Launch demo modal
 </button> -->
 
-<!-- Modal 模态对话框  显示收款明细 -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">收款明细</h4>
-      </div>
-      <div class="modal-body">
-          <div class="mymodal-details"> </div>
+    <!-- Modal 模态对话框  显示收款明细 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="myModalLabel">title</h5>
+                    <div class="modal-error" style="color: red"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="mymodal-details"></div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-      </div>
+                </div>
+                {#      <div class="modal-footer">#}
+                {#        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
+                {#      </div>#}
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 
-     <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
+    <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
     <script>
         new ClipboardJS('.clipboard_btn')
     </script>

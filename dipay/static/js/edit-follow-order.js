@@ -192,7 +192,7 @@ function showPayDetails(tag) {
         type: 'get',
         data: '',
         success: function (respond) {
-            console.log('show pay details respond: ',respond)
+            console.log('show pay details respond: ', respond)
             console.log(title);
             $('#myModalLabel').text(title);
             $('#myModal .modal-body .mymodal-details').replaceWith(respond);
@@ -300,14 +300,13 @@ function confirmReceiptInwardpay(atag) {
 function addDailyPlan(atag) {
     var href = atag.href;
     var pk = $(atag).attr('pk');
-    var title = '新建任务';
+    var title = '新建关联任务';
 
     $.ajax({
         url: href,
         type: 'get',
         data: '',
         success: function (respond) {
-            console.log(title);
             $('#myModalLabel').text(title);
             $('#myModal .modal-body .mymodal-details').replaceWith(respond);
             // 给form的action加上url
@@ -336,9 +335,14 @@ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
         type: 'post',
         data: data_obj,
         success: function (respond) {
-            $('#myModal').modal('hide');
-            ShowMsg(respond.msg);
-            setTimeout("location.reload()", 500);
+            console.log(respond)
+            if (respond.status) {
+                $('#myModal').modal('hide');
+                ShowMsg(respond.msg);
+                setTimeout("location.reload()", 500);
+            } else {
+                 $('#myModal .modal-header .modal-error').html(respond.msg)
+            }
         }
     });
 
@@ -374,13 +378,13 @@ function simpleAddDailyPlan(atag) {
 
 
 //回车事件清除默认动作 （需要事件委派，因为input这个内容是后生成的）
-$('#myModal .modal-body').on('keypress','input', function (event) {
+$('#myModal .modal-body').on('keypress', 'input', function (event) {
     console.log('event kecode:', event.keyCode)
     // 判断keycode 是不是回车，回车的code是13
     if (event.keyCode == 13) {
         //回车执行自定义的动作
         $('span.dailyplan').click();
-       //  return false, 避免回车的默认事件
+        //  return false, 避免回车的默认事件
         return false;
     }
 })

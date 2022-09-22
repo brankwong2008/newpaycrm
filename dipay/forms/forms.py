@@ -9,9 +9,10 @@ from datetime import datetime
 class TaskAddModelForm(forms.ModelForm):
     class Meta:
         model = DailyPlan
-        fields = ["content", ]
+        fields = ["content", "remind_date",]
         widgets = {
-            'content': forms.TextInput(attrs={'id': 'task_input','class':"form-control"}),
+            'content': forms.TextInput(attrs={'id': 'task_input'}),
+            'remind_date': forms.DateInput(attrs={ "required":False,"type":"date",}),
         }
 
     def __init__(self, *args, **kwargs):

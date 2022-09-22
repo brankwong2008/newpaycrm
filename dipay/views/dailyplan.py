@@ -235,11 +235,20 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         # 新增一条任务
         if not is_update:
             link_id = request.POST.get('link_id')
+            remind_date = request.POST.get('remind_date')
             if link_id:
                 form.instance.link_id = link_id
                 followorder_obj = FollowOrder.objects.get(pk=link_id)
                 form.instance.remark = '%s %s ' % (
                 followorder_obj.order.customer.shortname, followorder_obj.order.order_number)
+                # 如果设置了提醒日期，判断日期是否大于当前日期
+                if remind_date:
+                    remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
+                    if remind_date > datetime.datetime.today():
+                        form.instance.status = 2
+                    else:
+                        return JsonResponse({"status": False, "msg": '提醒日期要大于当前日期'})
+
             form.instance.user = request.user
             form.save()
             return JsonResponse({"status":True, "msg":'任务快速添加成功'})
