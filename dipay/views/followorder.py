@@ -51,7 +51,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
 
 
-
     # 批量排产
     def batch_to_produce(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')

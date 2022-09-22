@@ -296,7 +296,6 @@ table {
 }
 
   /* ***********弹窗图片的样式 *************/
-
         /* 弹窗背景 */
         .newmodal {
             display: none; /* Hidden by default */
@@ -385,12 +384,18 @@ table {
             z-index: 999; /* Sit on top */
             top: -14px;
             right: 6px;
-            color: #f1f1f1;
+            color: lightgrey;
             font-size: 40px;
             font-weight: bold;
             transition: 0.3s;
-            opacity: 2.2;
+            opacity: 3.2;
         }
+
+        #myModal .modal-header  {
+            height: 46px;
+
+        }
+
 
  /* 任务页面的css */
 
