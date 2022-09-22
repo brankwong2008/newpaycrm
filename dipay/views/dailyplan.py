@@ -17,6 +17,10 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     show_list_template = 'dipay/show_dailyplan_list.html'
     def get_per_page(self):
         return 15
+
+    # 添加按钮
+    has_add_btn = True
+
     # 搜索时必须把date类型放在第一位，因为后台逻辑是出错，则按第一个正确的来搜索
     search_list = ['start_date', 'content__icontains', 'remark__icontains', ]
     search_placeholder = '搜索 任务 备注 日期'
@@ -25,9 +29,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         if request.GET.get('status')=='1':
             return ['-id',]
         return ['sequence','-id']
-
-    # 添加按钮
-    has_add_btn = True
 
     # 添加按钮的显示方法
     def add_btn_display(self,request,*args,**kwargs):

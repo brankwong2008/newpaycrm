@@ -174,12 +174,13 @@ class StarkHandler(object):
     def get_detail_extra_btn(self,request,pk,*args,**kwargs):
         return self.detail_extra_btn
 
+    def get_add_btn(self,request,*args,**kwargs):
+        add_url = self.reverse_add_url(*args, **kwargs)
+        return "<a href='%s' class='btn btn-primary add-record'> + </a>" % (add_url)
+
     def add_btn_display(self,request,*args,**kwargs):
-        if self.has_add_btn:
-            add_url = self.reverse_add_url(*args,**kwargs)
-            return "<a href='%s' class='btn btn-primary add-record'> 添加 </a>" % (add_url)
-        else:
-            return None
+        return self.get_add_btn(request,*args,**kwargs) if self.has_add_btn else None
+
 
     def get_model_form(self,type=None):
         class DynamicModelForm(StarkForm):
@@ -482,6 +483,7 @@ class StarkHandler(object):
         back_url = self.reverse_list_url(*args,**kwargs)
 
         if request.method == "GET":
+
             return render(request, self.del_list_template or "stark/del_list.html", locals())
 
         if request.method == "POST":
@@ -493,6 +495,8 @@ class StarkHandler(object):
         # print('pk',pk)
         obj = self.model_class.objects.filter(pk=pk).first()
         data_list = []
+
+        edit_detail_url = self.reverse_edit_url(pk=pk)
 
         if self.detail_fields_display == '__all__':
             for field in self.model_class._meta.fields:
@@ -634,7 +638,7 @@ class StarkHandler(object):
     def get_urls(self):
         patterns = [
             url("^list/$", self.wrapper(self.show_list), name= self.get_list_url_name),
-            url("^list_detail/(?P<pk>\d+)/$", self.wrapper(self.show_detail), name= self.get_url_name('show_detail')),
+            url("^list_detail/(?P<pk>\d+)/$", self.wrapper(self.show_detail), name= self.get_url_name('list_detail')),
             url("^add/$", self.wrapper(self.add_list), name=self.get_add_url_name),
             url("^edit/(?P<pk>\d+)/$", self.wrapper(self.edit_list), name=self.get_edit_url_name),
             url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name),

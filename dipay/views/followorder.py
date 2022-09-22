@@ -21,6 +21,9 @@ from dipay.utils.order_updates import order_payment_update
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
+    # 添加按钮
+    has_add_btn = False
+
     show_list_template = 'dipay/show_follow_order_list.html'
 
     # 排序字段
@@ -28,7 +31,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     # popup_list = ['customer',]
-
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
@@ -42,13 +44,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
                    'order__customer__title__icontains','book_info__icontains','load_info__icontains']
     search_placeholder = '搜 订单号/客户/货物/订舱'
-
-    # 模糊搜索
-    # search_list = ['customer__title__contains', 'goods__contains','order_number__contains']
-    # search_placeholder = '搜 客户/货品/订单号'
-
-    # 添加按钮
-    has_add_btn = False
 
 
     # 批量排产

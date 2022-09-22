@@ -300,7 +300,7 @@ function confirmReceiptInwardpay(atag) {
 function addDailyPlan(atag) {
     var href = atag.href;
     var pk = $(atag).attr('pk');
-    var title = '新建关联任务';
+    var title = '关联任务';
 
     $.ajax({
         url: href,

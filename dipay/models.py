@@ -29,6 +29,12 @@ class Customer(models.Model):
             return '-'
         return self.shortname
 
+
+class Payer(models.Model):
+    title = models.CharField(max_length=128, verbose_name='付款人')
+    customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE,verbose_name='客户')
+
+
 # 货币
 class Currency(models.Model):
     title = models.CharField(max_length=10, verbose_name='币种名')
@@ -148,9 +154,6 @@ class Bank(models.Model):
     def __str__(self):
         return self.title
 
-class Payer(models.Model):
-    title = models.CharField(max_length=128, verbose_name='付款人')
-    customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE,verbose_name='客户')
 
     def __str__(self):
         return self.title
