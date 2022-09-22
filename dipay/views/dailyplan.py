@@ -178,8 +178,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             model_name = self.model_name
             # 当返回数据给模态框时，get_type = simple，只返回核心内容
             get_type = request.GET.get('get_type')
+            print('get type', get_type)
             if get_type == 'simple':
-                print('get type: siple :', get_type)
                 self.add_list_template = "dipay/dailyplan_simple_change_list.html"
             return render(request, self.add_list_template or "stark/change_list.html", locals())
 
@@ -234,18 +234,19 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     def save_form(self,form,request,is_update=False,*args, **kwargs):
         if not request.user:
             return
+
+        remind_date = request.POST.get('remind_date')
+        # 判断是否有输入提醒日期
+        if remind_date:
+            remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
+            if remind_date > datetime.datetime.today():
+                form.instance.status = 2
+            else:
+                return JsonResponse({"status": False, "msg": '提醒日期要大于当前日期'})
+
         # 新增一条任务
         if not is_update:
             link_id = request.POST.get('link_id')
-            remind_date = request.POST.get('remind_date')
-            # 判断是否有输入提醒日期
-            if remind_date:
-                remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
-                if remind_date > datetime.datetime.today():
-                    form.instance.status = 2
-                else:
-                    return JsonResponse({"status": False, "msg": '提醒日期要大于当前日期'})
-
             # 有link_id说明是新增关联记录
             if link_id:
                 form.instance.link_id = link_id
