@@ -239,12 +239,14 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         if not is_update:
             link_id = request.POST.get('link_id')
             remind_date = request.POST.get('remind_date')
+            # 判断是否有输入提醒日期
             if remind_date:
                 remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
                 if remind_date > datetime.datetime.today():
                     form.instance.status = 2
                 else:
                     return JsonResponse({"status": False, "msg": '提醒日期要大于当前日期'})
+
             # 有link_id说明是新增关联记录
             if link_id:
                 form.instance.link_id = link_id
