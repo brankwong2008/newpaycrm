@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.db.models import QuerySet
 from django.http import QueryDict, JsonResponse
-from django.db.models import Q,ForeignKey,ManyToManyField
+from django.db.models import Q,ForeignKey,ManyToManyField, TextField
 import functools
 from django.forms import ModelForm
 from django import forms
@@ -9,9 +9,9 @@ from django.utils.safestring import mark_safe
 from stark.service.pagination import Pagination
 from types import FunctionType,MethodType
 from django.shortcuts import HttpResponse,render,redirect,reverse
-from dipay.forms.forms import StarkForm
 import difflib
 import json
+from dipay.forms.forms import StarkForm
 
 class Option:
     def __init__(self,field,filter_param=None,is_multi = False,default=None,verbose_name=None):
@@ -183,6 +183,7 @@ class StarkHandler(object):
 
 
     def get_model_form(self,type=None):
+        # 通用modelForm
         class DynamicModelForm(StarkForm):
             class Meta:
                 model = self.model_class
@@ -500,9 +501,11 @@ class StarkHandler(object):
 
         if self.detail_fields_display == '__all__':
             for field in self.model_class._meta.fields:
-                print('verbose name:', field.verbose_name)
+                data = getattr(obj, field.name)
+                if isinstance(field, TextField):
+                    data = mark_safe(f"<span style='white-space: pre-wrap'>{data}</span>")
                 data_list.append({'label':field.verbose_name,
-                                  'data':getattr(obj,field.name)})
+                                  'data':data})
         else:
             for field in self.detail_fields_display:
                 if isinstance(field,MethodType):

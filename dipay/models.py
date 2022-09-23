@@ -34,6 +34,8 @@ class Payer(models.Model):
     title = models.CharField(max_length=128, verbose_name='付款人')
     customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE,verbose_name='客户')
 
+    def __str__(self):
+        return self.title
 
 # 货币
 class Currency(models.Model):

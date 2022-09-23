@@ -4,6 +4,19 @@ from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, DailyPlan
 from datetime import datetime
 
 
+# 自定义的通用modelForm
+class StarkForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(StarkForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if isinstance(field, forms.ModelChoiceField):
+                # 给外键字段添加搜索功能，前端一定要加载bootstap-select.js
+                field.widget.attrs["class"] = "selectpicker bla bli form-control"
+                field.widget.attrs["style"] = "display: none;"
+                field.widget.attrs["data-live-search"] = 'true'
+            else:
+                field.widget.attrs["class"] = " form-control"
+
 
 # 用于添加任务的model form
 class TaskAddModelForm(forms.ModelForm):
@@ -35,17 +48,6 @@ class TaskEditModelForm(forms.ModelForm):
             field.widget.attrs["class"] = "form-control"
 
 
-class StarkForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(StarkForm, self).__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            if isinstance(field, forms.ModelChoiceField):
-                # 给外键字段添加搜索功能，前端一定要加载bootstap-select.js
-                field.widget.attrs["class"] = "selectpicker bla bli form-control"
-                field.widget.attrs["style"] = "display: none;"
-                field.widget.attrs["data-live-search"] = 'true'
-            else:
-                field.widget.attrs["class"] = " form-control"
 
 
 class AddApplyOrderModelForm(StarkForm):
