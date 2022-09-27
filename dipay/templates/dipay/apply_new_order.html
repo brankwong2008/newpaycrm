@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block css %}
+
     <style>
         tr.active {
             border-left: 3px solid #fdc00f;
@@ -14,6 +15,19 @@
         .panel-body {
             font-size: 12px;
         }
+
+    .item-row{
+        margin-top: 20px;
+
+    }
+    label{
+        font-weight: bold;
+    }
+    input[type=submit]{
+        margin-right: 30px;
+
+    }
+
     </style>
 
 {% endblock %}
@@ -24,30 +38,74 @@
 
         <div class="col-md-6">
 
-            <h4> 申请订单号 </h4>
-
             <form action="" method="post">
                 {% csrf_token %}
 
-                {% for field in form %}
-                    <label for="">{{ field.label }}</label>
-                    {% if field.name == 'customer' %}
-                        <a href="{% url 'stark:dipay_customer_create' %}" onclick="return showAPP(this)"
-                           style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                {#            订单类型#}
+                <div class="item-row">
+                    <label for="">{{ form.order_type.label }}</label>
+                    <p>{{ form.order_type }} <span style="color:red">{{ form.order_type.errors.0 }}</span></p>
+                </div>
+
+                {#            客户 #}
+                <div class="item-row">
+                    <label for="">{{ form.customer.label }}</label>
+                    <a href="{% url 'stark:dipay_customer_create' %}" onclick="return showAPP(this)"
+                       style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                    <div class="form-row">
+                        {{ form.customer }}
+                        <span style="color:#ff0000">{{ form.customer.errors.0 }}</span>
+                    </div>
+                </div>
+
+                {#            货物和贸易条款#}
+                <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
+                    <div style="width: 25%">
+                        <label for="">{{ form.term.label }}</label>
                         <div class="form-row">
-
-                            {{ field }}
-
-                            <span style="color:#ff0000">{{ field.errors.0 }}</span>
+                            {{ form.term }}
+                            <span style="color:#ff0000">{{ form.term.errors.0 }}</span>
                         </div>
-                    {% else %}
-                        <p>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></p>
-                    {% endif %}
 
-                {% endfor %}
+                    </div>
+                    <div style="width: 70%">
+                        <label for="">{{ form.goods.label }}</label>
+                        <div class="form-row">
+                            {{ form.goods }}
+                            <span style="color:#ff0000">{{ form.goods.errors.0 }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {#            币种和金额 #}
+
+              <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
+                    <div style="width: 25%">
+                        <label for="">{{ form.currency.label }}</label>
+                        <div class="form-row">
+                            {{ form.currency }}
+                            <span style="color:#ff0000">{{ form.currency.errors.0 }}</span>
+                        </div>
+                    </div>
+                    <div style="width: 70%">
+                        <label for="">{{ form.amount.label }}</label>
+                        <div class="form-row">
+                            {{ form.amount }}
+                            <span style="color:#ff0000">{{ form.amount.errors.0 }}</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            {#            详情 #}
+            <div class="item-row">
+                    <label for="">{{ form.remark.label }}</label>
+                    <p>{{ form.remark }} <span style="color:red">{{ form.remark.errors.0 }}</span></p>
+                </div>
 
 
-                <div style="margin-bottom:100px">
+
+                <div class='item-row' style="margin-bottom:100px">
                     <input type="submit" value="提交" class="btn btn-success">
                     <a href="{{ back_url }}" class="btn btn-warning">取消</a>
 
@@ -62,7 +120,7 @@
 
     </div>
 
-      <!-- js代码：处理外键字段快速新增一条记录 -->
+    <!-- js代码：处理外键字段快速新增一条记录 -->
     <script src="{% static 'js/popup_create.js' %}"></script>
 
 {% endblock %}

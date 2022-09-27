@@ -162,6 +162,8 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 choices.append((item['id'], item['title']))
             form.fields['customer'].choices = choices
 
+            print('add list form:', type(form),dir(form),form.fields)
+
             back_url = self.reverse_list_url()
             return render(request, "dipay/apply_new_order.html", locals())
 

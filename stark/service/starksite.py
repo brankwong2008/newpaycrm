@@ -488,7 +488,12 @@ class StarkHandler(object):
             return render(request, self.del_list_template or "stark/del_list.html", locals())
 
         if request.method == "POST":
-            del_obj.delete()
+            try:
+                del_obj.delete()
+            except Exception as e:
+                msg = '存在关联记录，不能删除，错误：%s ' % e
+                return render(request,'dipay/msg_after_submit.html',locals())
+                
             return redirect(back_url)
 
     # 显示一条记录详情

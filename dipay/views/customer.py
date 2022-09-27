@@ -31,30 +31,6 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
         ]
 
         # 删除一条记录
-
-    def del_list(self, request, pk, *args, **kwargs):
-        del_obj = self.get_del_obj(request, pk, *args, **kwargs)
-        if not del_obj:
-            return HttpResponse("将要删除的记录不存在")
-        back_url = self.reverse_list_url(*args, **kwargs)
-
-        if request.method == "GET":
-            from dipay import models
-            from django.db.models.deletion import Collector
-
-            obj = del_obj
-            collector = Collector(using='default')
-            collector.collect([obj, ])
-            dependencies = collector.dependencies.get(obj.__class__, set())
-            print(dependencies, type(dependencies))
-            for each in dependencies:
-                print('each in depencies:',each)
-
-            return render(request, self.del_list_template or "stark/del_list.html", locals())
-        if request.method == "POST":
-            del_obj.delete()
-            return redirect(back_url)
-
     def upload_customer(self,request, *args, **kwargs):
         print(request.POST, request.FILES)
         if request.POST:

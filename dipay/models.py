@@ -83,7 +83,7 @@ class ApplyOrder(models.Model):
     order_number = models.CharField(max_length=32, verbose_name='订单号',unique=True, null=True,blank=True)
     sequence = models.IntegerField(verbose_name='订单序号',null=True,blank=True)
     sub_sequence = models.IntegerField(verbose_name='分批号',default=0)
-    customer = models.ForeignKey(to=Customer, on_delete=models.CASCADE,verbose_name='客户',null=True,blank=True)
+    customer = models.ForeignKey(to=Customer, on_delete=models.RESTRICT,verbose_name='客户',null=True,blank=True)
     goods =  models.CharField(max_length=128, verbose_name='数量-货物')
     remark = models.TextField(verbose_name='详情',default='--')
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE,
