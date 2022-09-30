@@ -14,6 +14,31 @@
         .panel-body {
             font-size: 12px;
         }
+
+        .row-flex-div {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        .row-div, .row-flex-div{
+            margin-top:15px;
+        }
+
+        .col-date {
+            width: 25%;
+        }
+
+
+        .col-currency {
+            width: 16%;
+        }
+
+        .col-amount, .col-got-amount, .col-payer {
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+
+
     </style>
 
 {% endblock %}
@@ -23,27 +48,76 @@
 {% block content %}
     <div class="luffy-container">
 
-        <div class="col-md-5">
+        <div class="col-md-7">
 
             {#            <h3>添加/修改数据</h3>#}
 
             <form action="" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                {% for field in form %}
-                    <label for="">{{ field.label }}</label>
-                    {% if field.name in fast_add_list %}
-                        <a href="{{ field.url }}" onclick="return showAPP(this)"
+
+                <div class="row-flex-div">
+                    <div class="col-date">
+                        {#   日期  #}
+                        <label for="">{{ form.create_date.label }}</label>
+                        <p>{{ form.create_date }} <span style="color:red">{{ form.create_date.errors.0 }}</span></p>
+
+                    </div>
+                    <div class="col-payer">
+                        {#   收款行   #}
+                        <label for="">{{ form.bank.label }}</label>
+                        <a href="{{ form.bank.url }}" onclick="return showAPP(this)"
                            style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
                         <div class="form-row">
-                            {{ field }} <span style="color:#ff0000">{{ field.errors.0 }}</span>
+                            {{ form.bank }} <span style="color:#ff0000">{{ form.bank.errors.0 }}</span>
                         </div>
-                    {% else %}
+                    </div>
 
-                        <p>{{ field }} <span style="color:red">{{ field.errors.0 }}</span></p>
-                    {% endif %}
+                </div>
 
-                {% endfor %}
+
+                <div class="row-div">
+                    {#   付款人   #}
+                    <label for="">{{ form.payer.label }}</label>
+                    <a href="{{ form.payer.url }}" onclick="return showAPP(this)"
+                       style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                    <div class="form-row">
+                        {{ form.payer }} <span style="color:#ff0000">{{ form.payer.errors.0 }}</span>
+                    </div>
+
+
+                </div>
+
+
+                <div class="row-flex-div">
+                    <div class="col-currency">
+                        <label for="">{{ form.currency.label }}</label>
+                        <p>{{ form.currency }} <span style="color:red">{{ form.currency.errors.0 }}</span></p>
+                    </div>
+                    <div class="col-amount">
+                        <label for="">{{ form.amount.label }}</label>
+                        <p>{{ form.amount }} <span style="color:red">{{ form.amount.errors.0 }}</span></p>
+                    </div>
+                    <div class="col-got-amount">
+                        <label for="">{{ form.got_amount.label }}</label>
+                        <p>{{ form.got_amount }} <span style="color:red">{{ form.got_amount.errors.0 }}</span></p>
+
+                    </div>
+                </div>
+
+                <div class="row-div">
+                    {#   水单  #}
+                    <label for="">{{ form.ttcopy.label }}</label>
+                    <p id="ttcopy">{{ form.ttcopy }} <span style="color:red">{{ form.ttcopy.errors.0 }}</span></p>
+                </div>
+
+                <div class="row-div">
+                    {#   备忘  #}
+                    <label for="">{{ form.remark.label }}</label>
+                    <p>{{ form.remark }} <span style="color:red">{{ form.remark.errors.0 }}</span></p>
+
+                </div>
+
 
                 <div>
                     <button class="btn btn-success">提交</button>
@@ -51,34 +125,9 @@
                 </div>
 
             </form>
-
-
         </div>
-
-
     </div>
 
-
-{#    <!-- Modal 模态对话框 快速添加 -->#}
-{#    <div class="modal fade" id="FastCreateModal" tabindex="-1" role="dialog" aria-labelledby="FastCreateModalLabel">#}
-{#        <div class="modal-dialog" role="document">#}
-{#            <div class="modal-content">#}
-{#                <div class="modal-header">#}
-{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
-{#                            aria-hidden="true">&times;</span></button>#}
-{#                    <h4 class="modal-title" id="FastCreateModalLabel">新增</h4>#}
-{#                </div>#}
-{#                <div class="modal-body">#}
-{#                    <div class="modal-details"></div>#}
-{##}
-{#                </div>#}
-{#                <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-success" onclick="closePopup(this)">提交</button>#}
-{#                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
 
     <!-- js代码：处理外键字段快速新增一条记录 -->
     <script src="{% static 'js/popup_create.js' %}"></script>
