@@ -42,12 +42,18 @@ class ApplyReleaseVerifyHandler(PermissionHanlder, StarkHandler):
                 msg = '同意放单，审批成功'
                 applyrelease_obj.decision = True
                 applyrelease_obj.verify_date = datetime.now()
+                status = True
             else:
                 msg = '不同意放单，审批完成'
                 applyrelease_obj.decision = False
+                status = False
             applyrelease_obj.remark = remark
             applyrelease_obj.save()
-            return render(request,'dipay/msg_after_submit.html',locals())
+
+
+            url = self.reverse_list_url()
+            response = {'status':status, 'msg':msg, "url":url}
+            return JsonResponse(response)
 
     has_add_btn = False
 

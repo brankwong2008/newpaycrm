@@ -42,6 +42,7 @@
             color: dodgerblue;
             margin-left: 30px;
         }
+
         .not-agree {
             color: darkorange;
         }
@@ -109,7 +110,7 @@
                                 <td>{{ row.payment.create_date|date:"Y-m-d" }}</td>
                                 <td>{{ row.payment.currency.icon }}{{ row.amount }}</td>
                                 <td>
-                                    <a href="{% url 'stark:dipay_inwardpay_show_detail' pk=row.payment.pk %}"
+                                    <a href="{% url 'stark:dipay_inwardpay_list_detail' pk=row.payment.pk %}"
                                        target="_blank">{{ row.payment }}</a>
                                 </td>
                             </tr>
@@ -121,21 +122,21 @@
                 </div>
             </div>
 
-            <form action="" method="post" class="form-group">
+            <form id='verify_release_form' action="" method="post" class="form-group">
                 {% csrf_token %}
                 <label for="verify-remark">审批意见</label>
                 <textarea name="remark" id='verify-remark' cols="30" rows="1" class="form-control">-</textarea>
                 <div class="form-control is-agree-div">
                     <div class="pull-left not-agree"><label for="not-agree">拒绝放单</label>
-                    <input type="radio" id="not-agree" name="is_agree" value="False">
+                        <input type="radio" id="not-agree" name="is_agree" value="False">
                     </div>
 
-                    <div class="pull-left agree-release"> <label for="agree">同意放单</label>
-                    <input type="radio" name="is_agree" id='agree' value="True">
+                    <div class="pull-left agree-release"><label for="agree">同意放单</label>
+                        <input type="radio" name="is_agree" id='agree' value="True">
                     </div>
 
                 </div>
-                <button class="btn btn-warning">提交</button>
+                <button class="btn btn-warning" onclick="return sumbmitConfirmRelease()">提交</button>
 
 
             </form>
@@ -149,6 +150,41 @@
 
 
     <script src="{% static "rbac/permission_distribute.js" %}"></script>
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/order-release-confirm.js" %}"></script>
 
+    <script>
+
+        function sumbmitConfirmRelease() {
+
+            var href = location.href;
+            var data_obj = new Object();
+            // 手动获取form中的input name和val， 存入data_obj
+            $('#verify_release_form [name]').each(function (i) {
+                data_obj[$(this).attr('name')] = $(this).val()
+            });
+            $.ajax({
+                url: href,
+                type: 'post',
+                data: data_obj,
+                success: function (respond) {
+                    console.log(respond)
+                    if (respond.status) {
+                        ShowTip(respond.msg, 'success');
+                    } else {
+                        ShowTip(respond.msg, 'warning')
+                    }
+                    setTimeout(`location.href="${respond.url}"`, 1500);
+                    {#setTimeout("location.href=respond.url", 1000);#}
+                }
+            });
+
+
+            return false;
+
+        }
+
+
+    </script>
 
 {% endblock %}

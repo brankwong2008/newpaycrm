@@ -349,7 +349,7 @@ $('#myModal .modal-body').on('click', 'span.dailyplan', function (e) {
 });
 
 
-// 在任务列表简单新增任务
+// 在任务列表简单新增任务的模态框弹出
 function simpleAddDailyPlan(atag) {
     var href = atag.href;
     var title = '新任务';
