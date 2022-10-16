@@ -136,7 +136,7 @@ class StarkHandler(object):
     add_list_template = None   # 添加页面模板
     del_list_template = None   # 删除页面模板
     show_list_template = None  # 显示页面模板
-    fields_display = []    # 显示的列字段
+    fields_display = '__all__'    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
     batch_process_hidden = None
 
@@ -163,6 +163,10 @@ class StarkHandler(object):
 
     def get_fields_display(self,request,*args,**kwargs):
         val = []
+
+        if self.fields_display == "__all__":
+            self.fields_display = [item.name for item in self.model_class._meta.fields ]
+
         val.extend(self.fields_display)
         if self.fields_display:
             val.extend([self.edit_del_display,])
@@ -244,6 +248,7 @@ class StarkHandler(object):
     def show_list(self, request,*args,**kwargs):
 
         fields_display = self.get_fields_display(request,*args,**kwargs)
+
         header_list = []
         data_list = []
         filter_hidden = self.filter_hidden
@@ -396,7 +401,6 @@ class StarkHandler(object):
         if fields_display:
             # 处理表头
             for k in fields_display:
-
                 if isinstance(k,FunctionType):
                     verbose_name = k(self,obj=None,is_header=True,*args,**kwargs)
                 elif isinstance(k,MethodType):
@@ -561,6 +565,25 @@ class StarkHandler(object):
             return JsonResponse({'status':True, "data":{"pk":instance.pk, "title":str(instance),'id_name':id_name}})
         return render(request,'dipay/create_record.html',locals())
 
+    # 每行数据保存的方法，使用ajax
+    def save_record(self, request, *args, **kwargs):
+        if request.is_ajax():
+            data_dict = request.POST.dict()
+            pk = data_dict.pop('pk')
+            data_dict.pop('csrfmiddlewaretoken')
+
+            target_obj = self.model_class.objects.filter(pk=pk).first()
+            if not target_obj:
+                res = {'status': False, 'msg': 'obj not found'}
+            else:
+                for item, val in data_dict.items():
+                    setattr(target_obj, item, val)
+
+                target_obj.save()
+                data_dict['status'] = True
+                res = data_dict
+            return JsonResponse(res)
+
     def get_query_param(self):
 
         query_param = self.request.GET.get("_filter",None)
@@ -646,7 +669,7 @@ class StarkHandler(object):
     def get_urls(self):
         patterns = [
             url("^list/$", self.wrapper(self.show_list), name= self.get_list_url_name),
-            url("^list_detail/(?P<pk>\d+)/$", self.wrapper(self.show_detail), name= self.get_url_name('list_detail')),
+            url("^list_detail/(?P<pk>\d+)/$", self.wrapper(self.show_detail), name= self.get_url_name('show_detail')),
             url("^add/$", self.wrapper(self.add_list), name=self.get_add_url_name),
             url("^edit/(?P<pk>\d+)/$", self.wrapper(self.edit_list), name=self.get_edit_url_name),
             url("^del/(?P<pk>\d+)/$", self.wrapper(self.del_list), name=self.get_del_url_name),

@@ -1,0 +1,66 @@
+{% extends 'stark/show_list.html' %}
+{% load static %}
+
+{% block css %}
+
+     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+
+     /* 创建日的宽度 */
+    .header-1{
+         width: 8%;
+    }
+
+    /* 渠道和产品的宽度 */
+    .header-2, .header-3{
+         width: 4%;
+    }
+
+    /* 公司和联系的宽度 */
+    .header-4, .header-5{
+         width: 8%;
+    }
+
+    /* 电话和邮件的宽度 */
+    .header-6, .header-7{
+
+    }
+
+    /* 跟进记录 外销员 操作 */
+    .header-9, .header-10{
+         width: 5%;
+    }
+
+      /* 保存按钮 */
+    .header-12 {
+        display: none;
+    }
+
+    textarea[id^="remark"] {
+    width: 350px;
+    height: 80px;
+}
+
+     /* 详情更多按钮 */
+    i.more{
+        color: grey;
+        font-size: smaller;
+        font-weight: bolder;
+        margin-left: 10px;
+    }
+    i.more:hover{
+        cursor:pointer;
+    }
+
+
+
+    </style>
+
+{% endblock %}
+
+{% block js %}
+
+    <script src="{% static 'js/chances-operator.js' %}"></script>
+
+{% endblock %}

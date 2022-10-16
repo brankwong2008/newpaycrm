@@ -100,9 +100,7 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
     def get_urls(self):
         patterns = [
             url("^list/$", self.wrapper(self.show_list), name= self.get_list_url_name),
-            # url("^list_detail/(?P<pk>\d+)/$", self.wrapper(self.show_detail), name= self.get_url_name('show_detail')),
             url("^confirm_receipt/(?P<pk>\d+)/$", self.wrapper(self.confirm_receipt), name=self.get_url_name('confirm_receipt')),
-
         ]
 
         # extend方法没有返回值，直接改变自身

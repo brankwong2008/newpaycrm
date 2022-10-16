@@ -1,5 +1,5 @@
 from rbac.forms.forms import *
-from django.shortcuts import redirect,render
+from django.shortcuts import redirect,render,HttpResponse
 from rbac import models
 from rbac.utils.urls import memory_reverse
 
@@ -18,9 +18,11 @@ def menu_add(request):
         return render(request, "role/change_menu.html", locals())
     if request.method == "POST":
         form = MenuAddModelForm(data=request.POST)
-        form.save()
-
-        return redirect(memory_reverse(request,"rbac:permission_list"))
+        if form.is_valid():
+            form.save()
+            return redirect("rbac:menu_list")
+        else:
+            return HttpResponse('菜单添加失败')
 
 def menu_edit(request, pk):
     handle = "编辑一级菜单"
@@ -28,11 +30,11 @@ def menu_edit(request, pk):
 
     if request.method == "GET":
         if menu_obj:
-            form = MenuAddModelForm(instance=menu_obj)
+            form = MenuEditModelForm(instance=menu_obj)
         return render(request, "role/change.html", locals())
 
     if request.method == "POST":
-        form = MenuAddModelForm(instance= menu_obj, data=request.POST)
+        form = MenuEditModelForm(instance= menu_obj, data=request.POST)
         form.save()
 
         return redirect(memory_reverse(request,"rbac:permission_list"))

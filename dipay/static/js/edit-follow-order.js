@@ -1,24 +1,3 @@
-// $(function () {
-//     document.onkeydown = function (event) {
-//         var target, code, tag;
-//         if (!event) {
-//             event = window.event;
-//             target = event.srcElement;
-//             code = event.keyCode;
-//             if (code == 13) {
-//                 return target.tagName == 'TEXTAREA';
-//             }
-//         }
-//         else {
-//             target = event.target;
-//             code = event.keyCode
-//             if (code == 13) {
-//                 return target.tagName == 'INPUT' ? false : true
-//             }
-//         }
-//     }
-// })
-
 
 // 自定义消息提示框的淡入淡出
 function ShowTip(tip, type) {
@@ -160,16 +139,6 @@ function fastInfoSave(btn) {
 $('span.hidden-xs').parent().addClass('hidden-xs');
 $('span.save-sequence').parent().css('display', 'none');
 
-
-// 已收和应收的点击弹出收款明细的方法
-// function showPayDetails(tag) {
-//     var href = tag.href;
-//     var name = '登录'
-//     // var left = window.screen.availWidth -300
-//     var win = window.open(href, name, 'left=600,top=300,width=600,height=450');
-//     win.focus();
-//     return false
-// }
 
 
 // 已收和应收的点击弹出收款明细的方法

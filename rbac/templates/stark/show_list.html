@@ -96,7 +96,7 @@
 
                     <thead>
                     {% for item in header_list %}
-                        <th> {{ item }}</th>
+                        <th class="header-{{ forloop.counter }}"> {{ item }}</th>
                     {% endfor %}
 
 
@@ -146,3 +146,4 @@
     <script src="{% static "js/edit-follow-order.js" %}"></script>
 
 {% endblock %}
+

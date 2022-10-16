@@ -17,7 +17,6 @@
     <div class="container-fluid">
 
         <div class="col-md-3">
-
             <div class="panel panel-info">
                 <!-- 一级菜单列表 -->
                 <div class="panel-heading"><i class="fa fa-get-pocket"></i>一级菜单
@@ -30,7 +29,6 @@
                     </div>
 
                 </div>
-
                 <!-- Table -->
                 <table class="table">
                     <thead>
@@ -60,13 +58,11 @@
                     </tbody>
                 </table>
             </div>
-
-
         </div>
-        <div class="col-md-4">
-            <!-- 二级菜单列表 -->
-            <div class="panel panel-info">
 
+        <!-- 二级菜单列表 -->
+        <div class="col-md-4">
+            <div class="panel panel-info">
                 <div class="panel-heading"><i class="fa fa-building"></i>二级菜单
                     <!-- 二级菜单新建按钮 -->
                     {% if mid %}
@@ -98,8 +94,10 @@
                                     href="?mid={{ mid }}&sid={{ row.id }}">{{ row.title }}</a></td>
                             <td> {{ row.name }}</td>
                             <td>
-                                <a href="{% memory_url request "rbac:second_menu_edit" pk=row.id %}"><i class="fa fa-edit"></i></a>
-                                <a href="{% memory_url request "rbac:second_menu_del" pk=row.id %}"> <i class="fa fa-trash-o"></i></a>
+                                <a href="{% memory_url request "rbac:second_menu_edit" pk=row.id %}"><i
+                                        class="fa fa-edit"></i></a>
+                                <a href="{% memory_url request "rbac:second_menu_del" pk=row.id %}"> <i
+                                        class="fa fa-trash-o"></i></a>
                             </td>
                         </tr>
                         <tr class="{% if row.id|safe == sid %} active {% endif %}">
@@ -114,33 +112,30 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
+
+        <!-- 权限列表 -->
         <div class="col-md-5">
-
-
             <div class="panel panel-info">
-                <!-- 权限列表 -->
+
+                <!-- 权限按钮区域 -->
                 <div class="panel-heading">
                     <i class="fa fa-briefcase"></i>权限
+                    <!-- 权限批量处理按钮 -->
+                    <div class="btn-group pull-right" style="margin-top:-4px">
+                        <a class="btn btn-success btn-sm" href="{% memory_url request "rbac:auto_crawle_permission" %}">
+                            <i class="fa fa-plus-square"></i> 批量处理
+                        </a>
+                    </div>
+
                     <!-- 权限列表新建按钮 -->
                     {% if sid %}
                         <div class="btn-group pull-right" style="margin-top:-4px">
-                            <a class="btn btn-success btn-sm" href="{% memory_url request "rbac:auto_crawle_permission" %}">
-                                <i class="fa fa-plus-square"></i> 批量处理
-                            </a>
-
-                        </div>
-
-
-                        <div class="btn-group pull-right" style="margin-top:-4px">
-                            <a class="btn btn-primary btn-sm" href="{% memory_url request "rbac:permission_add" sid=sid %}">
+                            <a class="btn btn-primary btn-sm"
+                               href="{% memory_url request "rbac:permission_add" sid=sid %}">
                                 <i class="fa fa-plus-square"></i> 添加
                             </a>
-
                         </div>
-
-
                     {% endif %}
                 </div>
 
@@ -162,8 +157,10 @@
                             <th scope="row">{{ forloop.counter }}</th>
                             <td>{{ row.title }}</td>
                             <td>{{ row.urls }} {{ row.name }}</td>
-                            <td><a href="{% memory_url request "rbac:permission_edit" pk=row.id %}"><i class="fa fa-edit"></i></a>
-                                <a href="{% memory_url request "rbac:permission_del" pk=row.id %}"> <i class="fa fa-trash-o"></i></a>
+                            <td><a href="{% memory_url request "rbac:permission_edit" pk=row.id %}"><i
+                                    class="fa fa-edit"></i></a>
+                                <a href="{% memory_url request "rbac:permission_del" pk=row.id %}"> <i
+                                        class="fa fa-trash-o"></i></a>
                             </td>
                         </tr>
 

@@ -8,11 +8,10 @@ def str_width_control(s,width):
     for c in s:
         count0 += 1
         count1 += 2 if is_chinese(c) else 1
-        if count1 >= width:
-            return s[:count0]+'..' if count0<len(s) else s
+        if count1 > width:
+            return s[:count0], True
     # 如果for执行完毕都没有触发到width长度，则直接返回s
-    return s
-
+    return s, False
 
 def get_choice_value(orm_choices,text):
     for item in orm_choices:

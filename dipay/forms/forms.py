@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, DailyPlan
+from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, DailyPlan, FollowChance, Chance
 from datetime import datetime
 
 
@@ -196,3 +196,37 @@ class ResetPwdForm(StarkForm):
             raise forms.ValidationError("两次输入密码不一样")
         else:
             return password
+
+
+# 编辑跟进表
+class FollowChanceEditForm(forms.ModelForm):
+    opportunity = forms.CharField(required=False, label='商机',widget=forms.TextInput(attrs={"readonly":True}))
+
+    class Meta:
+        model = FollowChance
+        fields = ['opportunity','remark',]
+
+    def __init__(self, *args, **kwargs):
+        super(FollowChanceEditForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs["class"] = " form-control"
+
+
+# 添加跟进记录
+class FollowChanceAddForm(forms.ModelForm):
+    class Meta:
+        model = FollowChance
+        fields = ['remark',]
+
+    def __init__(self, *args, **kwargs):
+        super(FollowChanceAddForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs["class"] = " form-control"
+
+
+
+class ChanceModelForm(StarkForm):
+    class Meta:
+        model = Chance
+        fields = "__all__"
+        exclude = ['owner',]

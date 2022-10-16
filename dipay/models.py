@@ -250,3 +250,44 @@ class DailyPlan(models.Model):
 """
 创建日期   提醒日期  结束日期  内容  状态  排序  关联   
 """
+
+# 货代表
+class Forwarder(models.Model):
+    title = models.CharField(max_length=128, unique=True, verbose_name='货代名')
+    shortname = models.CharField(max_length=20, verbose_name='货代简称')
+    contact = models.CharField(max_length=20, verbose_name='货代联系人',default='-')
+    phone = models.CharField(max_length=11, verbose_name='电话', default='-')
+    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
+    bank_account = models.TextField(verbose_name='银行信息', default='--')
+    remark = models.TextField(verbose_name='货代详情', default='--')
+
+    def __str__(self):
+        return self.shortname if self is not None else '-'
+
+# 商机表
+class Chance(models.Model):
+    create_date = models.DateField(auto_now_add=True, verbose_name='创建日')
+    channel_choices = [(0, '阿里询盘'), (1, '阿里RFQ'), (2, '1688'),(3, '广交会'), (4, '其他'),]
+    channel = models.SmallIntegerField(choices=channel_choices,verbose_name='渠道',default=0)
+    category_choices = [(0, '轻钢'), (1, '烤漆'), (2, '配件'), (3, '其他') ]
+    category = models.SmallIntegerField(choices=category_choices, verbose_name='产品', default=0)
+    company = models.CharField(max_length=128, verbose_name='公司名')
+    contact = models.CharField(max_length=128, verbose_name='联系人')
+    phone = models.CharField(max_length=11, verbose_name='电话',null=True)
+    email = models.EmailField(max_length=128, verbose_name='邮件',null=True)
+    remark = models.TextField(verbose_name='详情', default='--')
+    owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='跟进外销员',
+                              limit_choices_to={"department": 1}, null=True)
+
+    def __str__(self):
+        return '%s 商机- %s' % (self.create_date.strftime("%Y-%m-%d"), self.company[:10])
+
+
+# 商机跟进表 (与商机是一对多的关系）
+class FollowChance(models.Model):
+    create_date = models.DateField(auto_now_add=True, verbose_name='创建日')
+    chance = models.ForeignKey(to=Chance, on_delete=models.CASCADE, verbose_name='商机')
+    remark = models.TextField(verbose_name='跟进记录', default='--')
+
+    def __str__(self):
+        return self.create_date.strftime('%Y/%m/%d') + '跟进'+ str(self.chance)

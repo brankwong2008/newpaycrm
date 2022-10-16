@@ -358,12 +358,12 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
     if is_header:
         return '客户/货物/目的港'
     else:
-        customer = str_width_control(obj.order.customer.shortname,16) if obj.order.customer else '-'
+        customer = str_width_control(obj.order.customer.shortname,16)[0] if obj.order.customer else '-'
         goods = obj.order.goods[:15]
         discharge_port = port_display('discharge_port')(handler, obj, False)
         term = obj.order.get_term_display()
         if obj.order.customer:
-            customer_details_url = reverse("stark:dipay_customer_list_detail", kwargs={"pk":obj.order.customer.pk})
+            customer_details_url = reverse("stark:dipay_customer_show_detail", kwargs={"pk":obj.order.customer.pk})
         else:
             customer_details_url = "#"
 

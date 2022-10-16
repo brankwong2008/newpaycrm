@@ -91,20 +91,11 @@ class MenuAddModelForm(ModelForm):
     choices = settings.AVATAR_CHOICES
 
     class Meta:
-        # model = models.Menu
-        # fields = ["title", "icon"]
-        # widgets = {
-        #     "title": forms.TextInput(attrs={"class": "form-control"}),
-        #     "icon": forms.RadioSelect(choices= settings.AVATAR_CHOICES)
-        # }
-
         model = models.Menu
-        fields = ["sequence","title", "icon",]
+        fields = ["title", "icon",]
         widgets = {
             "title": forms.TextInput(attrs={"class": "form-control"}),
-            # "icon": forms.RadioSelect(choices=self.choice)
         }
-
     def __init__(self, *args, **kwargs):
         choices = []
         super(MenuAddModelForm, self).__init__(*args, **kwargs)
@@ -117,6 +108,29 @@ class MenuAddModelForm(ModelForm):
             choices.append(node)
 
         self.fields['icon'].widget = forms.RadioSelect(choices=choices)
+
+
+# 用于用户信息编辑的model form
+class MenuEditModelForm(ModelForm):
+    choices = settings.AVATAR_CHOICES
+
+    class Meta:
+        model = models.Menu
+        fields = ["sequence","title", "icon",]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+        }
+    def __init__(self, *args, **kwargs):
+        choices = []
+        super(MenuEditModelForm, self).__init__(*args, **kwargs)
+        menu_set = set([item['icon'] for item in models.Menu.objects.values("icon")])
+        avatar_set = menu_set | set(settings.AVATAR_CHOICES)
+
+        for item in avatar_set:
+            node = (item, mark_safe(f"<i class='fa {item}'></i>"))
+            choices.append(node)
+        self.fields['icon'].widget = forms.RadioSelect(choices=choices)
+
 
 
 # 用于用户信息编辑的model form

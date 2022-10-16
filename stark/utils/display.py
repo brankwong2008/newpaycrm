@@ -126,7 +126,7 @@ def port_display(field, title=None):
                              "id='%s-id-%s' > %s </span>" % (field, obj.pk, port_name))
     return inner
 
-def info_display(field, title=None, time_format="%Y-%m-%d"):
+def info_display(field, title=None, time_format="%Y-%m-%d",max_length=None):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -144,6 +144,9 @@ def info_display(field, title=None, time_format="%Y-%m-%d"):
             field_val = getattr(obj, field)
             if field_val is None:
                 return "-"
+            if max_length and len(field_val)>max_length :
+                field_val = field_val[:max_length] + " ..."
+
             if isinstance(field_val, models.DateTimeField):
                 print('the instance is date')
 
@@ -258,6 +261,8 @@ class PermissionHanlder:
     # 如果删除编辑按钮在权限里面，加入字段列表
     def get_fields_display(self, request, *args, **kwargs):
         val = []
+        if self.fields_display == "__all__":
+            self.fields_display = [item.name for item in self.model_class._meta.fields]
         val.extend(self.fields_display)
 
         extra_fields = self.get_extra_fields_display(request, *args, **kwargs)
