@@ -1,0 +1,149 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+
+    .follow-date {
+        font-weight: bolder;
+    }
+    .chance-title {
+        float: right;
+        color: grey;
+    }
+    .panel-body{
+        font-size: larger;
+    }
+
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-12">
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default options-section {{ filter_hidden }}">
+                    {#                    <div class="panel-heading">#}
+                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
+                    {#                    </div>#}
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-left">
+
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"
+                                                                            style="margin: 3px 2px 3px"></i></button>
+
+
+                </form>
+            {% endif %}
+
+
+            <form action="" method="post">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+                    <div class="pull-right  {{ batch_process_hidden }}">
+
+                        <select name="handle_type" class="handle-select">
+                            <option value="">请选择处理方式</option>
+                            {% for func,text in batch_process_dict.items %}
+                                <option value="{{ func }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary handle-btn">
+                            <i class="fa fa-send"></i></button>
+                    </div>
+
+                {% endif %}
+
+                <!-- 添加按钮 -->
+                <div class="pull-right">
+                    {% if add_btn %}
+                        {{ add_btn|safe }}
+                    {% endif %}
+
+                </div>
+
+
+                <div class="clearfix">{{ msg }}</div>
+
+                {% if tabs %}
+                    <ul class="nav nav-tabs">
+                        {% for tab in tabs %}
+                            <li role="presentation" class="{{ tab.active }}"><a href="{{ tab.url }}">{{ tab.label }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <div>
+
+                    {% for row in data_list %}
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <span class="follow-date">{{ row.1|date:"Y-m-d" }}</span>
+                                <span class="chance-title"><i class="fa fa-phone"></i>{{ row.2 }}</span>
+                            </div>
+                            <div class="panel-body">
+                                {{ row.3 }}
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
+
+                </div>
+
+
+            </form>
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+{% endblock %}
+

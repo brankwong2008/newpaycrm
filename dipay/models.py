@@ -280,7 +280,7 @@ class Chance(models.Model):
                               limit_choices_to={"department": 1}, null=True)
 
     def __str__(self):
-        return '%s 商机- %s' % (self.create_date.strftime("%Y-%m-%d"), self.company[:10])
+        return '商机 %s - %s' % ( self.company[:10],self.create_date.strftime("%Y/%m/%d"))
 
 
 # 商机跟进表 (与商机是一对多的关系）

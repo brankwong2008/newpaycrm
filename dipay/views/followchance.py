@@ -10,7 +10,9 @@ from django.conf import settings
 
 class FollowChanceHandler(PermissionHanlder,StarkHandler):
 
+    order_by_list = ['-id',]
     fields_display = "__all__"
+    show_list_template = "dipay/show_followchance_list.html"
 
     # 重新定义路由
     def get_urls(self):
