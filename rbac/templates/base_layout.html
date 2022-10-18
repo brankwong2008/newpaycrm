@@ -68,6 +68,12 @@
                     <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
                 {% endif %}
 
+             {% if request.current_url_name == 'stark:dipay_chance_list' %}
+                    <li><a href="{% url 'stark:dipay_chance_list' %}" class="active">商机</a></li>
+                {% else %}
+                    <li><a href="{% url 'stark:dipay_chance_list' %}">商机</a></li>
+                {% endif %}
+
                 {% if request.user.username == 'brank' %}
                     <li><a href="{% url 'stark:dipay_applyorder_list_verify' %}">订单审核</a></li>
 
