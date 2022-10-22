@@ -248,10 +248,10 @@ class PermissionHanlder:
         :return:
         """
         if is_header:
-            return "操作"
+            return mark_safe("<span class='hidden-xs'>操作</span>")
         else:
             del_url = self.reverse_del_url(*args, **kwargs)
-            return mark_safe("<a href='%s'><i class='fa fa-trash'></i></a>" % del_url)
+            return mark_safe("<a href='%s' class='hidden-xs'><i class='fa fa-trash'></i></a>" % del_url)
 
     # 编辑按钮的权限控制
     def edit_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -262,11 +262,11 @@ class PermissionHanlder:
         :return:
         """
         if is_header:
-            return "操作"
+            return mark_safe("<span class='hidden-xs'>操作</span>")
         else:
             edit_url = self.reverse_edit_url(pk=obj.id)
 
-        return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
+        return mark_safe("<a href='%s' class='hidden-xs'><i class='fa fa-edit'></i></a>" % edit_url)
 
     # 如果删除编辑按钮在权限里面，加入字段列表
     def get_fields_display(self, request, *args, **kwargs):

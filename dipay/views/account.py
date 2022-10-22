@@ -12,9 +12,11 @@ def login(request):
 
     if request.method == "POST":
         username = request.POST.get("username")
+        print('username', username)
         pwd = gen_md5(request.POST.get("pwd"))
-        user_obj = MyUserInfo.objects.filter(username=username,password=pwd).first()
-        print(username,pwd,user_obj)
+        # user_obj = MyUserInfo.objects.filter(username=username,password=pwd).first()
+        user_obj = MyUserInfo.objects.extra(where=['binary username=%s','binary password=%s'], params=[username,pwd]).first()
+
         if user_obj:
             request.session[settings.LOGIN_KEY] = {"username":user_obj.username, "id":user_obj.id}
             request.user = user_obj
@@ -36,20 +38,3 @@ def index(request):
         redirect_url = reverse('stark:dipay_inwardpay_list_account')
 
     return redirect(redirect_url)
-#
-# from django import forms
-# class BookAddForm(forms.ModelForm):
-#     class Meta:
-#         model = models.Book
-#         fields = ['title',]
-#
-# def book_create(request):
-#
-#     form =  BookAddForm(request.POST or None)
-#     print(request.POST)
-#     if form.is_valid():
-#         book_obj = form.save()
-#         return HttpResponse("<script> opener.closePopup(window,'%s','%s','#id_book') </script>"
-#                             % (book_obj.pk, book_obj))
-#
-#     return render(request,'dipay/create_record.html',locals())

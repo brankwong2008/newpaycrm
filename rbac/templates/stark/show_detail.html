@@ -59,7 +59,7 @@
                 {% for row in data_list %}
                     <tr>
                         <td>{{ row.label }} </td>
-                        <td>{{ row.data }} </td>
+                        <td>{{ row.data|default:'-' }} </td>
                     </tr>
 
                 {% endfor %}

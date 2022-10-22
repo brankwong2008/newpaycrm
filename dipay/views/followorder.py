@@ -24,6 +24,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
 
+    detail_fields_display = ['order','load_port','discharge_port','ETD','ETA','book_info','load_info',
+                             'produce_info','sales_remark',]
+
+
     show_list_template = 'dipay/show_follow_order_list.html'
 
     # 排序字段
@@ -238,6 +242,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
+    def details_display(self, obj=None, is_header=False, *args, **kwargs):
+        """
+        在列表页显示编辑按钮
+        :param obj:
+        :param is_header:
+        :return:
+        """
+        if is_header:
+            return mark_safe("<span class='hidden-lg'>详情</span>")
+        else:
+            detail_url = self.reverse_url('show_detail', pk=obj.pk)
+            return mark_safe("<a href='%s' class='hidden-lg'><i class='fa fa-caret-down'></i></a>" % detail_url)
+
     # 跟单列表显示的字段内容
     fields_display = [checkbox_display_func(hidden_xs='hidden-xs'),
                       basic_info_display,
@@ -250,6 +267,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       info_display('produce_info',hidden_xs='hidden-xs'),
                       amount_rvcd_collect_display,
                       more_tag_display,
+                      details_display,
                       ]
 
     # 自定义按钮的权限控制
