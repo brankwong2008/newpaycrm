@@ -186,7 +186,7 @@ def port_display(field, title=None, hidden_xs=''):
     return inner
 
 
-# 订舱，装箱，生产信息 (如果内容太长自动进行隐藏的办法）
+# 订舱，装箱，生产信息 (如果内容太长自动进行隐藏的办法）  hidden-xs的单元格将在手机屏幕不显示
 def info_display(field, title=None, hidden_xs='', max_width=100):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
@@ -290,7 +290,7 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
 
 
 # 订舱信息展示，加入船公司和集装箱信息
-def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
+def book_info_display(field, title=None, time_format="%Y-%m-%d", hidden_xs='', max_width=52):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -301,29 +301,15 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
         """
         if is_header:
             if title:
-                return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+                header = title
+            else:
+                header = handler_obj.model_class._meta.get_field(field).verbose_name
+            return mark_safe("<span class='%s'>%s</span>" % (hidden_xs, header))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             field_val = getattr(obj, field)
             if field_val is None:
-                return '--'
-
-            # 分析内容的长度，如果超过长度则截取并在后面加三个点
-            # total = 0
-            # count0 = 0  # 计算字符的数量
-            # over_flag = False
-            # for i in field_val:
-            #     total = total + 2 if ord(i) > 255 else total + 1
-            #     count0 += 1
-            #     if total > max_width:
-            #         field_val_display = field_val[:count0]
-            #         more_tag = "<span cont='%s' onclick=showFullContent(this)>...</span>" % (field_val)
-            #         over_flag = True
-            #         break
-            # if not over_flag:
-            #     field_val_display = field_val
-            #     more_tag = ''
+                return mark_safe("<span class='%s'>--</span>" % (hidden_xs))
 
             # 船公司信息和编辑
             shipline = obj.shipline.shortname if obj.shipline else '--'
@@ -332,7 +318,6 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
             shipline_model = shipline_field_obj.related_model
             shipline_choices = [(item.pk, item.shortname) for item in shipline_model.objects.all().order_by('shortname')]
             shipline_choices = json.dumps(shipline_choices)
-            # print('shipline_choices',shipline_choices)
 
             container = obj.container or '--'
 
@@ -346,10 +331,9 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", max_width=52):
                            f" id='shipline-id-{obj.pk}' choice='{shipline_choices}' " \
                            f"onclick='showInputBox(this)' > {shipline} </span> {container_tag_btn}"
 
-            return mark_safe("<span cont='%s' class='text-display' onclick='showInputBox(this)' "
+            return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
                              f"id='%s-id-%s' > %s </span>  <br>"
-                             "%s" % (field_val, field, obj.pk, field_val, shipping_tag))
-
+                             "%s" % (field_val, hidden_xs, field, obj.pk, field_val, shipping_tag))
     return inner
 
 
@@ -375,7 +359,7 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
 
 def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
-        return '账务'
+        return mark_safe("<span class='hidden-xs'>账务</span>")
     else:
         amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
             'amount', obj.pk, obj.order.amount, obj.order.currency.icon, obj.order.amount
@@ -386,7 +370,7 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
         content = f'发票：{amount_tag} <br>' \
                   f'{rcvd_collect_amount}'
 
-        return mark_safe(content)
+        return mark_safe("<div class='hidden-xs'>%s</div>" % content)
 
 
 
@@ -394,10 +378,10 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
 def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
     """  显示 保存当条跟单记录 """
     if is_header:
-        return "Handle"
+        return mark_safe("<span class='hidden-xs'>Handle</span>")
     else:
         add_dailyplan_url = reverse('stark:dipay_dailyplan_add')
-        return mark_safe(""" <ul> <li class='dropdown'>
+        return mark_safe(""" <ul class='hidden-xs'> <li class='dropdown'>
                         <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true'
                            aria-expanded='false'> <span class='fa fa-navicon'></span></a>
                         <ul class='dropdown-menu'>
@@ -406,17 +390,16 @@ def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
                     </li></ul>""" % (obj.pk, add_dailyplan_url) )
 
 
-
 # 显示水单小图片
 def ttcopy_display(handler,obj=None, is_header=False, *args, **kwargs):
     if is_header:
-        return '水单'
+        return mark_safe("<span class='hidden-xs'>水单</span>")
     else:
         if obj.ttcopy:
-            img_tag = f"<img class='ttcopy-small-img' src={obj.ttcopy.url} " \
+            img_tag = f"<img class='ttcopy-small-img hidden-xs' src={obj.ttcopy.url} " \
                       f"onclick='return popupImg(this)' width='30px' height='30px'>"
         else:
-            img_tag = '<i class="fa fa-minus-square"></i>'
+            img_tag = '<i class="fa fa-minus-square hidden-xs"></i>'
 
 
     return mark_safe(img_tag)

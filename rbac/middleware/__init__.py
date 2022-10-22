@@ -5,6 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 import re
 from django.utils.module_loading import import_string
 from dipay import models
+from rbac.models import Menu
 
 # 按字符串导入模块
 rbac_user_model_class = import_string(settings.RBAC_USER_MODLE_CLASS)
@@ -49,7 +50,6 @@ class RbacMiddleWare(MiddlewareMixin):
         permission_dict = request.session.get(settings.PERMISSION_KEY)
 
         # 获取进行中的任务的count
-        print('process request get task count ... ')
         request.task_count = models.DailyPlan.objects.filter(status=0,user=request.user).count()
 
         # 判断用户的访问路径是否在权限里面
@@ -68,8 +68,16 @@ class RbacMiddleWare(MiddlewareMixin):
                     if item['mid']:
                         request.navi_list.extend([{"title": item['title'], "url": ""}, ])
 
-                    # 找到需要高亮的菜单id
+                    # 找到需要高亮的访问的菜单id
                     request.hilight_menu_id = item['pid'] or item['id']
+
+                    # Nav_Bar中需要高亮的一级菜单id
+                    for each in permission_dict.values():
+                        if each["id"] == request.hilight_menu_id:
+                            top_menu_obj = Menu.objects.filter(id=each["mid"]).first()
+                            if top_menu_obj:
+                                request.top_menu_title = top_menu_obj.title
+
                     return
 
 

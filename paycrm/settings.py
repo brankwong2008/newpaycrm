@@ -164,7 +164,7 @@ AVATAR_CHOICES = ['fa-beer','fa-archive','fa-coffee','fa-diamond','fa-envelope-o
                   'fa-flag','fa-mortar-board','fa-tags','fa-tree','fa-star','fa-share-alt',
                   'fa-university','fa-bar-chart','fa-th-large','fa-gg','fa-train','fa-tty',
                   'fa-user-plus','fa-tv','fa-umbrella','fa-thumb-tack','fa-pie-chart','fa-shopping-bag',
-                  'fa-lemon-o','fa-download','fa-cube']
+                  'fa-lemon-o','fa-download','fa-cube','fa-cog']
 
 ##################  RBAC 设置 ###############
 RBAC_USER_MODLE_CLASS = 'dipay.models.UserInfo'

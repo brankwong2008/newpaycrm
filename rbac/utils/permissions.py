@@ -28,6 +28,7 @@ def init_permissions(request,user):
     permission_dict = dict()
     menu_dict = {}
     for item in permissions_queryset:
+        # 构造权限字典
         permission_dict[item['permissions__name']] = {
             "url": item['permissions__urls'],
             "id": item['permissions__id'],
@@ -38,7 +39,7 @@ def init_permissions(request,user):
             "p_title": item["permissions__parent__title"],
             "p_url": item["permissions__parent__urls"],
         }
-        #  menu_id不为null的是二级菜单
+        #  构造动态菜单字典 menu_id不为null的是二级菜单
         if item["permissions__menu_id"]:
             node = {"title": item["permissions__title"],
                     "id": item['permissions__id'],

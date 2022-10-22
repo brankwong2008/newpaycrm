@@ -86,9 +86,19 @@ def get_choice_text(field, title=None):
 def checkbox_display(hander_obj,obj=None,is_header=None,*args,**kwargs):
     """在列里面显示checkbox"""
     if is_header:
-        return "选择"
+        return mark_safe("<span>选择</span>")
     else:
         return mark_safe('<input type="checkbox" name="pk" value="%s">' % obj.pk )
+
+def checkbox_display_func(hidden_xs = ""):
+    """在列里面显示checkbox, 需要传参数的checkbox display"""
+    def inner(hander_obj,obj=None,is_header=None,*args,**kwargs):
+        if is_header:
+            return mark_safe("<span class='%s'>选择</span>" % hidden_xs)
+        else:
+            return mark_safe('<input class="%s" type="checkbox" name="pk" value="%s">' % (hidden_xs, obj.pk) )
+    return inner
+
 
 def record_display(title=None):
     def inner(handler_obj, obj=None, is_header=None):

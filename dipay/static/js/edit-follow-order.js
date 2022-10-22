@@ -136,9 +136,10 @@ function fastInfoSave(btn) {
 
 
 //  隐藏每行的保存按钮
-$('span.hidden-xs').parent().addClass('hidden-xs');
+// $('span.hidden-xs').parent().addClass('hidden-xs');
+// $('a.hidden-xs').parent().addClass('hidden-xs');
+$('.hidden-xs').parent("td,th").addClass('hidden-xs');
 $('span.save-sequence').parent().css('display', 'none');
-
 
 
 // 已收和应收的点击弹出收款明细的方法

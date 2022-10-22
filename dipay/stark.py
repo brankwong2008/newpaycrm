@@ -16,6 +16,9 @@ from dipay.views.inwardpay_account import InwardPayAccountHandler
 from dipay.views.dailyplan import DailyPlanHandler
 from dipay.views.chance import ChanceHandler
 from dipay.views.followchance import FollowChanceHandler
+from dipay.views.charge import ChargeHandler
+from dipay.views.chargepay import ChargePayHandler
+
 
 
 
@@ -70,7 +73,6 @@ site.register(models.ApplyRelease, ApplyReleaseHandler)
 # 申请放单审核
 site.register(models.ApplyRelease, ApplyReleaseVerifyHandler,prev='verify')
 
-
 # 每日任务
 site.register(models.DailyPlan, DailyPlanHandler)
 
@@ -82,3 +84,9 @@ site.register(models.Chance, ChanceHandler)
 
 # 跟进表
 site.register(models.FollowChance,FollowChanceHandler )
+
+# 货代费用表
+site.register(models.Charge, ChargeHandler)
+
+# 货代费用付款单
+site.register(models.ChargePay, ChargePayHandler )

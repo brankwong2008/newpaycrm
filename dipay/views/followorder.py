@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
-from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display
+from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display,checkbox_display_func
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
@@ -239,12 +239,17 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 return mark_safe("<a href='%s'><i class='fa fa-edit'></i></a>" % edit_url)
 
     # 跟单列表显示的字段内容
-    fields_display = [checkbox_display, basic_info_display, customer_goods_port_display,
+    fields_display = [checkbox_display_func(hidden_xs='hidden-xs'),
+                      basic_info_display,
+                      customer_goods_port_display,
                        status_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
-                      info_display('load_info'), book_info_display('book_info'), info_display('produce_info'),
-                      amount_rvcd_collect_display, more_tag_display,
+                      info_display('load_info',hidden_xs='hidden-xs'),
+                      book_info_display('book_info',hidden_xs='hidden-xs'),
+                      info_display('produce_info',hidden_xs='hidden-xs'),
+                      amount_rvcd_collect_display,
+                      more_tag_display,
                       ]
 
     # 自定义按钮的权限控制

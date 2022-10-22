@@ -291,3 +291,44 @@ class FollowChance(models.Model):
 
     def __str__(self):
         return self.create_date.strftime('%Y/%m/%d') + '跟进'+ str(self.chance)
+
+
+
+
+# 货代费用单表
+class Charge(models.Model):
+    create_date = models.DateField(auto_now_add=True, verbose_name='日期')
+    followorder =  models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE, verbose_name='跟单号')
+    agent = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
+    seafreight = models.IntegerField(verbose_name='海运费',default=0)
+    insuance = models.DecimalField(verbose_name='保险费',default=0,max_digits=10,decimal_places=2)
+    port_charge = models.IntegerField(verbose_name='港杂费',default=0)
+    trailer_charge = models.IntegerField(verbose_name='拖车费',default=0)
+    other_charge =  models.DecimalField(verbose_name='其他费用',default=0,max_digits=10,decimal_places=2)
+    remark = models.TextField(verbose_name='费用说明', default='--')
+    status = models.BooleanField(verbose_name='结清状态', default=False)
+
+    def __str__(self):
+        return  self.followorder.order.order_number + self.agent.shortname + '费用'
+
+
+# 货代结算记录
+class ChargePay(models.Model):
+    create_date = models.DateField(auto_now_add=True, verbose_name='支付日期')
+    frombank = models.ForeignKey(to=Bank,on_delete=models.CASCADE, verbose_name='出账银行')
+    agent = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
+    currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币')
+    amount =  models.DecimalField( verbose_name='金额',max_digits=10,decimal_places=2)
+    tt_copy =  models.ImageField(upload_to="ttcopy", verbose_name='付款水单', null=True)
+    bills = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单',blank=True)
+    remark = models.TextField(verbose_name='备注', default='--')
+
+    def __str__(self):
+        return self.create_date.strftime('%Y/%m/%d') + self.currency.icon + str(self.amount)
+
+
+
+class PayToCharge(models.Model):
+    chargepay = models.ForeignKey(to=ChargePay,on_delete=models.CASCADE, verbose_name='付费单')
+    charge = models.ForeignKey(to=Charge,on_delete=models.CASCADE, verbose_name='费用单')
+    remark = models.TextField(verbose_name='备注', default='--')
