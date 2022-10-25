@@ -1,0 +1,32 @@
+{% load static %}
+
+<div class="mymodal-details">
+
+    <div>
+        {% if not charge_list %}
+            <span>还没有录入费用明细哦</span>
+            <span style="float:right"> {{ add_btn }}</span>
+        {% endif %}
+
+        {% for row in charge_list %}
+            <h4>{{ row.forwarder }}</h4>
+            {% for item in row.data %}
+                <p>
+                    <span>{{ item.label }}</span>
+                    <span style="margin-left:15px">{{ item.text }}</span>
+                    {% if item.is_paid %}
+                        <span style="color: mediumseagreen"><i class="fa fa-check"></i></span>
+                    {% endif %}
+
+                </p>
+            {% endfor %}
+            {% for item in row.total %}
+                <span>{{ item.label }}</span>
+                <span style="margin-left:15px;margin-right: 20px">{{ item.text }}</span>
+            {% endfor %}
+
+        {% endfor %}
+
+    </div>
+</div>
+

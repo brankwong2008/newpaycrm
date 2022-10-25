@@ -284,15 +284,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         if request.user.username == 'brank':
             return self.model_class.objects.all()
 
-        # request.user.roles.all() <QuerySet [('外贸部经理',)]>
-        # print('request.user.roles.all()', request.user.roles.all().values_list('title'))
-
-        # request.user.roles.all() < QuerySet[{'title': '外贸部经理'}] >
-        # print('request.user.roles.all()', request.user.roles.all().values('title'))
-
-        # request.user.roles.all() < QuerySet[{'title': '外贸部经理'}] >
-        # 直接用filter，省得自己写逻辑呀
-        # print('request.user.roles.all()', request.user.roles.all().filter(title='外销员'))
         if request.user.roles.all().filter(title='外销员').exists():
             return self.model_class.objects.filter(salesman = request.user)
 
@@ -400,6 +391,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                         if followorder_obj.status == '4' or followorder_obj.status == 4:
                             followorder_obj.order.status = 3
                             followorder_obj.order.save()
+
                 followorder_obj.save()
                 data_dict['status'] = True
                 res = data_dict

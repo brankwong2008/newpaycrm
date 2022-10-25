@@ -4,6 +4,7 @@ from django.urls import reverse
 import json
 from dipay.utils.tools import str_width_control
 from dipay.models import Pay2Orders
+import pytz
 
 
 
@@ -326,14 +327,20 @@ def book_info_display(field, title=None, time_format="%Y-%m-%d", hidden_xs='', m
                                 <button id='clipboard-btn-{obj.pk}' class="clipboard_btn" type="button" 
                                 data-clipboard-demo="" data-clipboard-target="#container-id-{obj.pk}"></button>
                                 """
+            charge_url = reverse("stark:dipay_charge_pop_detail",kwargs={"followorder_id":obj.pk})
+            charge_tag = f"<span url='{charge_url}' pk='{obj.pk}' followorder={obj.order} class='charge_tag' onclick='showCharges(this)'> " \
+                         f"<i class='fa fa-usd'></i></span>"
+
             shipping_tag = f"<a href={shipline_link} pk='{obj.pk}' onclick='return trackShipment(this)'>" \
                            f"<i class='fa fa-ship'></i></a><span class='status-display shipline-tag'" \
                            f" id='shipline-id-{obj.pk}' choice='{shipline_choices}' " \
-                           f"onclick='showInputBox(this)' > {shipline} </span> {container_tag_btn}"
+                           f"onclick='showInputBox(this)' > {shipline} </span> {container_tag_btn} {charge_tag}"
+
+
 
             return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "
                              f"id='%s-id-%s' > %s </span>  <br>"
-                             "%s" % (field_val, hidden_xs, field, obj.pk, field_val, shipping_tag))
+                             "%s " % (field_val, hidden_xs, field, obj.pk, field_val, shipping_tag))
     return inner
 
 
@@ -351,9 +358,15 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
         else:
             customer_details_url = "#"
 
+        print('update_date:', obj.update_date  )
+        update_date = obj.update_date.astimezone(pytz.timezone("asia/Shanghai")).strftime("%Y/%m/%d %H:%M")
+        # update_date = obj.update_date.strftime("%Y/%m/%d %H:%M")
+       
+        update_date_tag = f"<div class='update-date-tag'><i class='fa fa-clock-o'></i>{update_date}</div>"
+
         basic_info = f'<span style="font-weight:bolder"><a class="customer-link" href="{customer_details_url}" target="_blank">{customer}</a></span> <br>' \
                      f' <span>{goods}</span><br>' \
-                     f'{discharge_port} &nbsp&nbsp <span>{term}</span>'
+                     f'{discharge_port} &nbsp&nbsp <span>{term}</span>{update_date_tag} '
         return mark_safe(basic_info)
 
 

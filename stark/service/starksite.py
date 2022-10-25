@@ -437,7 +437,9 @@ class StarkHandler(object):
     def add_list(self, request,*args,**kwargs):
         if request.method =="GET":
             form = self.get_model_form("add")()
-
+            namespace = self.namespace
+            app_label = self.app_label
+            popup_list = self.popup_list
             return render(request,self.add_list_template or "stark/change_list.html",locals())
 
         if request.method == "POST":

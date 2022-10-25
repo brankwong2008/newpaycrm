@@ -248,9 +248,26 @@ span.container_tag {
     margin-left: -1px;
 }
 
+/* 费用的span格式 */
+span.charge_tag {
+    float: right;
+    margin-right: 20%;
+}
+span.charge_tag:hover{
+    cursor:pointer;
+}
+
 /* 船和箱子的图标 */
 .fa-ship, .fa-building {
     color: lightgrey;
+}
+
+/* 跟踪记录更新时间的显示 */
+.update-date-tag{
+    margin-top: 4px;
+    font-style: italic;
+    color: lightgrey;
+    font-size:x-small;
 }
 
 /* 更多按钮的三个点 */

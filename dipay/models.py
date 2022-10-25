@@ -144,6 +144,7 @@ class FollowOrder(models.Model):
     shipline = models.ForeignKey(to=ShipLines, on_delete=models.CASCADE,
                                  verbose_name='船公司', null=True )
     container = models.CharField(max_length=20, verbose_name='生产情况', default='--')
+    update_date = models.DateTimeField(auto_now=True, verbose_name='更新时间', null=True)
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
@@ -152,10 +153,6 @@ class FollowOrder(models.Model):
 
 class Bank(models.Model):
     title = models.CharField(max_length=10, verbose_name='银行名')
-
-    def __str__(self):
-        return self.title
-
 
     def __str__(self):
         return self.title
@@ -299,36 +296,40 @@ class FollowChance(models.Model):
 class Charge(models.Model):
     create_date = models.DateField(auto_now_add=True, verbose_name='日期')
     followorder =  models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE, verbose_name='跟单号')
-    agent = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
-    seafreight = models.IntegerField(verbose_name='海运费',default=0)
-    insuance = models.DecimalField(verbose_name='保险费',default=0,max_digits=10,decimal_places=2)
-    port_charge = models.IntegerField(verbose_name='港杂费',default=0)
-    trailer_charge = models.IntegerField(verbose_name='拖车费',default=0)
-    other_charge =  models.DecimalField(verbose_name='其他费用',default=0,max_digits=10,decimal_places=2)
+    forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
+    seafreight = models.IntegerField(verbose_name='海运费U$',default=0)
+    insurance = models.DecimalField(verbose_name='保险费U$',default=0,max_digits=10,decimal_places=2)
+    port_charge = models.IntegerField(verbose_name='港杂费￥',default=0)
+    trailer_charge = models.IntegerField(verbose_name='拖车费￥',default=0)
+    other_charge =  models.IntegerField(verbose_name='其他费用￥',default=0)
     remark = models.TextField(verbose_name='费用说明', default='--')
-    status = models.BooleanField(verbose_name='结清状态', default=False)
+    status_choices = [(0, '未结'), (1, '美元已结'), (2, '人民币已结'), (3, '结清')]
+    status = models.SmallIntegerField(choices=status_choices, verbose_name='结清状态', default=0)
 
     def __str__(self):
-        return  self.followorder.order.order_number + self.agent.shortname + '费用'
+        return  self.followorder.order.order_number + self.forwarder.shortname + '费用'
 
 
 # 货代结算记录
 class ChargePay(models.Model):
     create_date = models.DateField(auto_now_add=True, verbose_name='支付日期')
-    frombank = models.ForeignKey(to=Bank,on_delete=models.CASCADE, verbose_name='出账银行')
-    agent = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
-    currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币')
+    bank = models.ForeignKey(to=Bank,on_delete=models.CASCADE, verbose_name='出账银行',null=True)
+    forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
+    currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)
     amount =  models.DecimalField( verbose_name='金额',max_digits=10,decimal_places=2)
-    tt_copy =  models.ImageField(upload_to="ttcopy", verbose_name='付款水单', null=True)
-    bills = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单',blank=True)
+    ttcopy =  models.ImageField(upload_to="ttcopy", verbose_name='付款水单', null=True)
+    charge = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单',null=True,blank=True)
     remark = models.TextField(verbose_name='备注', default='--')
+    status_choices = [(0, '待付'), (1, '已出账')]
+    status = models.SmallIntegerField(choices=status_choices, verbose_name='支付状态', default=0)
 
     def __str__(self):
-        return self.create_date.strftime('%Y/%m/%d') + self.currency.icon + str(self.amount)
-
+        return self.create_date.strftime('%Y/%m/%d') + self.agent.short_name, self.currency.icon + str(self.amount)
 
 
 class PayToCharge(models.Model):
     chargepay = models.ForeignKey(to=ChargePay,on_delete=models.CASCADE, verbose_name='付费单')
     charge = models.ForeignKey(to=Charge,on_delete=models.CASCADE, verbose_name='费用单')
+    currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)
+    amount = models.DecimalField( verbose_name='金额',max_digits=10,decimal_places=2, default=0)
     remark = models.TextField(verbose_name='备注', default='--')

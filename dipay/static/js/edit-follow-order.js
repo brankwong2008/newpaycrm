@@ -162,7 +162,6 @@ function showPayDetails(tag) {
         type: 'get',
         data: '',
         success: function (respond) {
-            console.log('show pay details respond: ', respond)
             console.log(title);
             $('#myModalLabel').text(title);
             $('#myModal .modal-body .mymodal-details').replaceWith(respond);
