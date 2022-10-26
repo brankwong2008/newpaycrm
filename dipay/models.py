@@ -324,7 +324,7 @@ class ChargePay(models.Model):
     status = models.SmallIntegerField(choices=status_choices, verbose_name='支付状态', default=0)
 
     def __str__(self):
-        return self.create_date.strftime('%Y/%m/%d') + self.agent.short_name, self.currency.icon + str(self.amount)
+        return self.create_date.strftime('%Y/%m/%d') + self.forwarder.shortname, self.currency.icon + str(self.amount)
 
 
 class PayToCharge(models.Model):
@@ -333,3 +333,6 @@ class PayToCharge(models.Model):
     currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)
     amount = models.DecimalField( verbose_name='金额',max_digits=10,decimal_places=2, default=0)
     remark = models.TextField(verbose_name='备注', default='--')
+
+    def __str__(self):
+        return str(self.charge) + str(self.amount)

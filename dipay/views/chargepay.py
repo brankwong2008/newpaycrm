@@ -4,7 +4,7 @@ from stark.service.starksite import StarkHandler,Option
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display
 from django.http import JsonResponse
-from dipay.models import PayToCharge
+from dipay.models import PayToCharge,Charge
 from dipay.forms.forms import ChargePayModelForm
 
 class ChargePayHandler(StarkHandler):
@@ -39,9 +39,21 @@ class ChargePayHandler(StarkHandler):
     ]
 
     def save_form(self, form, request, is_update=False, *args, **kwargs):
-        # 更新付款表时，如果上传水单，则把付款状态改为已出账
+        from django.db.models import F
+        # 上传水单说明实际付款了，可以更新相关表的状态
         if form.instance.ttcopy:
+            # 更新付款表时，如果上传水单，则把付款状态改为已出账
             form.instance.status = 1
+            # 且同时要把相关联的付费单的状态改变美元已付，人民币已付，或者结清
+            print('form.instance:',form.instance.pk)
+            # charges_queryset = PayToCharge.objects.filter(chargepay_id=form.instance.pk)
+            print(form.instance.currency.title,"currency.title")
+            currency_code = 1 if form.instance.currency.title == '美元' else 2
+            for item in Charge.objects.filter(chargepay=form.instance):
+                # 如果currency与费用表中的状态值相等，说明已经更新过了
+                if item.status < 3 and item.status != currency_code:
+                    item.status += currency_code
+                    item.save()
         form.save()
 
 

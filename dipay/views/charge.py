@@ -51,7 +51,7 @@ class ChargeHandler(StarkHandler):
                                           amount=amount_list[ind])
             paytocharge_obj.save()
 
-        return JsonResponse({"status": True, "msg": '更新成功'})
+        return JsonResponse({"status": True, "msg": '付费单生成成功'})
 
     batch_pay.text = "生成付费单"
 
