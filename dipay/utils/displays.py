@@ -359,7 +359,10 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
             customer_details_url = "#"
 
         print('update_date:', obj.update_date  )
-        update_date = obj.update_date.astimezone(pytz.timezone("asia/Shanghai")).strftime("%Y/%m/%d %H:%M")
+        if not obj.update_date:
+            update_date = '---'
+        else:
+            update_date = obj.update_date.astimezone(pytz.timezone("asia/Shanghai")).strftime("%Y/%m/%d %H:%M")
         # update_date = obj.update_date.strftime("%Y/%m/%d %H:%M")
        
         update_date_tag = f"<div class='update-date-tag'><i class='fa fa-clock-o'></i>{update_date}</div>"

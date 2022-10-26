@@ -59,14 +59,42 @@ class ChargeHandler(StarkHandler):
 
     order_by_list = ["-followorder__order__order_number", ]
 
+    def check_pay_status(self, obj, currency_code):
+        """  检查某项费用是否已付，并标识状态  """
+        if obj.status == 0:
+            return False
+        if obj.status == 3:
+            return True
+        return obj.status % 2 == currency_code
+
+
     def total_USD(self, obj=None, is_header=None, *args, **kwargs):
         """  美元金额合计显示  """
         if is_header:
             return "美元合计"
         else:
+            is_paid = self.check_pay_status(obj,1)
             total_amount = obj.seafreight + obj.insurance
-            return mark_safe("<span pk='%s' name='USD_amount' "
-                             "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
+            if is_paid:
+                res = mark_safe("<span class='status-paid' name='USD_amount'>%s</span>" % (total_amount))
+            else:
+                res = mark_safe("<span class='status-unpaid' pk='%s' name='USD_amount' "
+                          "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
+            return res
+
+    def total_CNY(self, obj=None, is_header=None, *args, **kwargs):
+        """  美元金额合计显示  """
+        if is_header:
+            return "人民币合计"
+        else:
+            is_paid = self.check_pay_status(obj, 0)
+            total_amount = obj.port_charge + obj.trailer_charge + obj.other_charge
+            if is_paid:
+                res = mark_safe("<span class='status-paid' name='CNY_amount'>%s</span>" % (total_amount))
+            else:
+                res = mark_safe("<span class='status-unpaid' pk='%s' name='CNY_amount' "
+                          "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
+            return res
 
     def forwarder_display(self, obj=None, is_header=None, *args, **kwargs):
         """  显示货代  """
@@ -76,12 +104,7 @@ class ChargeHandler(StarkHandler):
             return mark_safe("<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" %
                              (obj.pk, obj.forwarder_id, obj.forwarder.shortname))
 
-    def total_CNY(self, obj=None, is_header=None, *args, **kwargs):
-        """  美元金额合计显示  """
-        if is_header:
-            return "人民币合计"
-        else:
-            return obj.port_charge + obj.trailer_charge + obj.other_charge
+
 
     fields_display = [
         checkbox_display,

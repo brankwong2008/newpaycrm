@@ -1,17 +1,13 @@
 
 
 from stark.service.starksite import StarkHandler,Option
-from django.utils.safestring import mark_safe
-from django.shortcuts import reverse
-from stark.utils.display import PermissionHanlder, get_date_display
+from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display
-from django.conf import settings
 from django.http import JsonResponse
-from dipay.utils.tools import str_width_control
 from dipay.models import PayToCharge
+from dipay.forms.forms import ChargePayModelForm
 
 class ChargePayHandler(StarkHandler):
-
 
     def amount_display(self, obj=None, is_header=None,*args,**kwargs):
         """  美元金额合计显示  """
@@ -39,6 +35,16 @@ class ChargePayHandler(StarkHandler):
         ttcopy_display,
         related_charges_display,
         "remark",
-
+        get_choice_text("status")
     ]
+
+    def save_form(self, form, request, is_update=False, *args, **kwargs):
+        # 更新付款表时，如果上传水单，则把付款状态改为已出账
+        if form.instance.ttcopy:
+            form.instance.status = 1
+        form.save()
+
+
+    def get_model_form(self,type=None):
+        return ChargePayModelForm
 

@@ -452,3 +452,11 @@ a.customer-link, a.order-link {
     color: black;
 }
 
+/* 港杂清单的total amount的css */
+.status-paid{
+
+}
+/* 港杂清单的total amount的css */
+.status-unpaid{
+    color: lightcoral;
+}
