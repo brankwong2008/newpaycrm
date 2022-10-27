@@ -440,9 +440,21 @@ a.add-record {
     padding: 0px 10px 4px;
     line-height: 28px;
     align-content: center;
-    margin-bottom: 15px;
+    margin-bottom: 6px;
     margin-top: -12px;
+    margin-right: 15px;
+}
 
+/* 新增收款记录的 添加按钮的 css */
+a.inwardpay-add-record{
+    font-weight: 100;
+    font-size: 28px;
+    padding: 0px 10px 4px;
+    line-height: 28px;
+    align-content: center;
+    margin-bottom: -11px;
+    margin-top: -12px;
+    margin-right: 15px;
 }
 
 

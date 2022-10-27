@@ -365,6 +365,7 @@ class StarkHandler(object):
 
         ############## 1. 排序 ###############
         order_by_list = self.get_order_by_list(request)
+        print(order_by_list, "order_by_list")
         ordered_queryset = searched_queryset.order_by(*order_by_list)
 
 

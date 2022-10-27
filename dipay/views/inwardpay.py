@@ -35,7 +35,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     def add_btn_display(self, request, *args, **kwargs):
 
         add_url = self.reverse_add_url(*args, **kwargs)
-        return "<div class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </div>"
+        add_btn = "<span><a href='%s' class='btn btn-primary inwardpay-add-record'> + </a></span>" % (add_url)
+        return add_btn+ "<span class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </span>"
 
     def get_model_form(self, type=None):
         if type == 'add':
@@ -65,7 +66,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         if is_header:
             return "实收金额"
         else:
-            return "%s %s" % (obj.currency.icon, obj.got_amount)
+            details_url = self.reverse_url("show_detail",pk=obj.pk)
+            return mark_safe('<a href="%s" target="_blank" style="color:black">%s %s</a>'  % (details_url,obj.currency.icon, obj.got_amount))
 
     def to_relate_amount_display(self, obj=None, is_header=False, *args, **kwargs):
         """

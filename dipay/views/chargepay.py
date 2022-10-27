@@ -39,7 +39,6 @@ class ChargePayHandler(StarkHandler):
     ]
 
     def save_form(self, form, request, is_update=False, *args, **kwargs):
-        from django.db.models import F
         # 上传水单说明实际付款了，可以更新相关表的状态
         if form.instance.ttcopy:
             # 更新付款表时，如果上传水单，则把付款状态改为已出账

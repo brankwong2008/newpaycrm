@@ -15,11 +15,17 @@ from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder
 class ChargeHandler(StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
 
+    order_by_list = ['-followorder__ETD',]
+
     # 快速筛选： 货代，付费状态
     option_group = [
         Option(field='forwarder', is_multi=False),
         Option(field='status'),
     ]
+
+    search_list = ['followorder__order__order_number__icontains',]
+
+    search_placeholder = '搜索 订单号'
 
     # 添加和修改ModelForm的外键字段快速添加记录
     popup_list = ['forwarder', ]
@@ -56,8 +62,6 @@ class ChargeHandler(StarkHandler):
     batch_pay.text = "生成付费单"
 
     batch_process_list = [batch_pay, ]
-
-    order_by_list = ["-followorder__order__order_number", ]
 
     def check_pay_status(self, obj, currency_code):
         """  检查某项费用是否已付，并标识状态  """
@@ -104,12 +108,30 @@ class ChargeHandler(StarkHandler):
             return mark_safe("<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" %
                              (obj.pk, obj.forwarder_id, obj.forwarder.shortname))
 
+    def ETD_display(self, obj=None, is_header=None, *args, **kwargs):
+        """  显示货代  """
+        if is_header:
+            return "提单日"
+        else:
+            if obj.followorder.ETD:
+                return obj.followorder.ETD.strftime("%Y-%m-%d")
+            else:
+                return "-"
+
+    def followorder_display(self, obj=None, is_header=None, *args, **kwargs):
+        """  显示货代  """
+        if is_header:
+            return "跟单号"
+        else:
+            order_number = obj.followorder.order.order_number
+            followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % order_number
+            return mark_safe(f"<a href='{followorder_url}' target='_blank'>{order_number}</a>")
 
 
     fields_display = [
         checkbox_display,
-        get_date_display("create_date"),
-        "followorder",
+        ETD_display,
+        followorder_display,
         forwarder_display,
         "seafreight",
         "insurance",
