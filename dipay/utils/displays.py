@@ -383,7 +383,7 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
 
         rcvd_collect_amount = rcvd_amount_blance_display(handler, obj, False)
 
-        content = f'发票：{amount_tag} <br>' \
+        content = f'票：{amount_tag} <br>' \
                   f'{rcvd_collect_amount}'
 
         return mark_safe("<div class='hidden-xs'>%s</div>" % content)
@@ -419,3 +419,20 @@ def ttcopy_display(handler,obj=None, is_header=False, *args, **kwargs):
 
 
     return mark_safe(img_tag)
+
+
+
+# 费用单display
+def fees_display(field,title=None):
+    def inner(handler, obj=None, is_header=None, *args, **kwargs):
+        if is_header:
+            if title:
+                return title
+            return handler.model_class._meta.get_field(field).verbose_name
+        else:
+            val = getattr(obj,field)
+            if val==0:
+                return "-"
+            else:
+                return val
+    return inner

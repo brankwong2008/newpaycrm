@@ -262,6 +262,11 @@ span.charge_tag:hover{
     color: lightgrey;
 }
 
+/* 船和箱子的图标 */
+.fa-usd {
+    color: grey;
+}
+
 /* 跟踪记录更新时间的显示 */
 .update-date-tag{
     margin-top: 4px;

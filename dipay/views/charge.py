@@ -6,9 +6,9 @@ from django.utils.safestring import mark_safe
 from django.shortcuts import reverse, render
 from stark.utils.display import PermissionHanlder, get_date_display, get_choice_text, checkbox_display
 from django.conf.urls import url
-from django.conf import settings
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
+from dipay.utils.displays import fees_display
 from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder
 
 
@@ -79,6 +79,8 @@ class ChargeHandler(StarkHandler):
         else:
             is_paid = self.check_pay_status(obj,1)
             total_amount = obj.seafreight + obj.insurance
+            if total_amount == 0:
+                return "-"
             if is_paid:
                 res = mark_safe("<span class='status-paid' name='USD_amount'>%s</span>" % (total_amount))
             else:
@@ -93,6 +95,9 @@ class ChargeHandler(StarkHandler):
         else:
             is_paid = self.check_pay_status(obj, 0)
             total_amount = obj.port_charge + obj.trailer_charge + obj.other_charge
+            if total_amount == 0:
+                return "-"
+
             if is_paid:
                 res = mark_safe("<span class='status-paid' name='CNY_amount'>%s</span>" % (total_amount))
             else:
@@ -128,16 +133,18 @@ class ChargeHandler(StarkHandler):
             return mark_safe(f"<a href='{followorder_url}' target='_blank'>{order_number}</a>")
 
 
+
+
     fields_display = [
         checkbox_display,
         ETD_display,
         followorder_display,
         forwarder_display,
-        "seafreight",
-        "insurance",
-        "port_charge",
-        "trailer_charge",
-        "other_charge",
+        fees_display("seafreight"),
+        fees_display("insurance"),
+        fees_display("port_charge"),
+        fees_display("trailer_charge"),
+        fees_display("other_charge"),
         "remark",
         total_USD,
         total_CNY,
