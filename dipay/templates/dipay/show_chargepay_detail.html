@@ -1,0 +1,133 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+    <style>
+        tr.active {
+            border-left: 3px solid #fdc00f;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        .panel-body {
+            font-size: 12px;
+        }
+
+        .search-group .row {
+            margin-left: 5px;
+        }
+
+        .search-group .row a {
+            display: inline-block;
+            padding: 5px;
+            margin: 5px;
+            border: 1px solid lightgrey;
+            font-size: 13px;
+        }
+
+        .search-group .row a.active {
+            background-color: paleturquoise;
+        }
+
+        .search-group .others {
+            display: inline-block;
+        }
+
+
+    </style>
+
+{% endblock %}
+
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-12">
+
+            <!-- 添加按钮 -->
+            {% if add_btn %}
+                {{ add_btn|safe }}
+            {% endif %}
+
+
+            <table class="table table-bordered table-striped">
+
+                <tbody>
+                    <tr>
+                        <td> ID </td>
+                        <td>{{ obj.pk}} </td>
+                    </tr>
+                    <tr>
+                        <td> 日期 </td>
+                        <td>{{ obj.create_date|date:"Y 年 m 月 d 日"}} </td>
+                    </tr>
+                    <tr>
+                        <td> 出账银行 </td>
+                        <td>{{ obj.bank.title|default:"--"}} </td>
+                    </tr>
+                    <!-- 货代-->
+                    <tr>
+                        <td> 货代 </td>
+                        <td>{{ obj.forwarder|default:"--"}} </td>
+                    </tr>
+                    <!-- 货币和金额 -->
+                    <tr>
+                        <td> 金额 </td>
+                        <td>{{ obj.currency}}{{ obj.amount|default:"--"}} </td>
+                    </tr>
+                  <!-- 水单 -->
+                    <tr>
+                        <td> 水单 </td>
+                        <td> <img class='ttcopy-small-img hidden-xs' src="{{obj.ttcopy.url}}" onclick='return popupImg(this)' width='50px' height='50px'></td>
+                    </tr>
+
+                 <!-- 备注 -->
+                    <tr>
+                        <td> 备注 </td>
+                        <td>{{ obj.remark }} </td>
+                    </tr>
+
+                 <!-- 状态 -->
+                    <tr>
+                        <td>  状态 </td>
+                        <td>{{ obj.get_status_display }} </td>
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+              <!-- 额外的自定义按钮 -->
+            {% if detail_extra_btn %}
+                {{ detail_extra_btn|safe }}
+                <a href="" class="btn-info"></a>
+
+            {% endif %}
+
+            <a href="{{edit_detail_url}}"><i class="fa fa-edit"></i></a>
+
+
+        </div>
+
+
+    </div>
+
+       <!-- 图片弹窗 -->
+    <div id="ImgModal" class="newmodal">
+        <!-- 关闭按钮 -->
+        <span class="img-close" onclick="document.getElementById('ImgModal').style.display='none'">&times;</span>
+        <!-- 弹窗内容 -->
+        <img class="newmodal-content" id="img01">
+        <!-- 文本描述 -->
+        <div id="caption"></div>
+    </div>
+
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+
+{% endblock %}
