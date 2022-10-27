@@ -136,6 +136,7 @@ class StarkHandler(object):
     add_list_template = None   # 添加页面模板
     del_list_template = None   # 删除页面模板
     show_list_template = None  # 显示页面模板
+    show_detail_template = None  # 显示页面模板
     fields_display = '__all__'    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
     batch_process_hidden = None
@@ -535,7 +536,7 @@ class StarkHandler(object):
             # 自定义button的预留接口
             detail_extra_btn = self.get_detail_extra_btn(request,pk,*args,**kwargs)
 
-        return render(request,'stark/show_detail.html',locals())
+        return render(request, self.show_detail_template or 'stark/show_detail.html',locals())
 
     # 外键字段中，popup窗口快速添加一条记录
     def create_list(self,request, *args, **kwargs):

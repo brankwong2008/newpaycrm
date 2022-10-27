@@ -1,6 +1,7 @@
 
 
 from stark.service.starksite import StarkHandler,Option
+from django.shortcuts import render
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display
 from django.http import JsonResponse
@@ -8,6 +9,8 @@ from dipay.models import PayToCharge,Charge
 from dipay.forms.forms import ChargePayModelForm
 
 class ChargePayHandler(StarkHandler):
+
+    show_detail_template = "dipay/show_chargepay_detail.html"
 
     def amount_display(self, obj=None, is_header=None,*args,**kwargs):
         """  美元金额合计显示  """
@@ -25,9 +28,15 @@ class ChargePayHandler(StarkHandler):
                                  +"("+item.currency.icon+str(item.amount or '.') +")  "
                                  for item in queryset])
 
+    def charge_id_display(self,obj=None, is_header=None,*args,**kwargs):
+        if is_header:
+            return "付费单号"
+        else:
+
+            return  "F%s" % str(obj.pk).zfill(5)
 
     fields_display = [
-        "id",
+        charge_id_display,
         get_date_display("create_date"),
         'bank',
         'forwarder',
@@ -58,4 +67,14 @@ class ChargePayHandler(StarkHandler):
 
     def get_model_form(self,type=None):
         return ChargePayModelForm
+
+    # 显示一条记录详情
+    def show_detail(self, request, pk, *args, **kwargs):
+        # print('pk',pk)
+        obj = self.model_class.objects.filter(pk=pk).first()
+        data_list = []
+
+        edit_detail_url = self.reverse_edit_url(pk=pk)
+
+        return render(request, self.show_detail_template, locals())
 

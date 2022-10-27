@@ -133,6 +133,20 @@ class ChargeHandler(StarkHandler):
             return mark_safe(f"<a href='{followorder_url}' target='_blank'>{order_number}</a>")
 
 
+    def related_chargepay_display(self, obj=None, is_header=None, *args, **kwargs):
+        """  显示货代  """
+        if is_header:
+            return "关联费用单"
+        else:
+            chargepay_queryset = ChargePay.objects.filter(charge=obj)
+            data_list = []
+
+            for item in chargepay_queryset:
+                chargepay_url = reverse("stark:dipay_chargepay_show_detail",kwargs={"pk":item.pk})
+                tag = f"<a href='{chargepay_url}' target='_blank'>F{str(item.pk).zfill(5)}</a>"
+                data_list.append(tag)
+
+            return mark_safe(" ,".join(data_list))
 
 
     fields_display = [
@@ -148,6 +162,7 @@ class ChargeHandler(StarkHandler):
         "remark",
         total_USD,
         total_CNY,
+        related_chargepay_display,
         get_choice_text("status"),
     ]
 

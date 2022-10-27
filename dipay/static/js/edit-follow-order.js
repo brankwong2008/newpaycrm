@@ -176,6 +176,7 @@ function showPayDetails(tag) {
 // 弹出银行水单图片，设置一个
 // 的div，然后需要的时候让他显示出来，把背景设置为半透明
 function popupImg(atag) {
+    console.log('opo mfnanfa')
     var img_url = atag.src;
     $('#img01').attr('src', img_url);
     $('#ImgModal').fadeIn();
