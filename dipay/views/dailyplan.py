@@ -83,8 +83,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     # 任务字段列表
     fields_display = [content_display,info_display('remark'), accomplish_display,
-                      urgence_display, info_display('sequence'),
-                      link_display,get_date_display("start_date",time_format='%m-%d'),
+                      urgence_display, info_display('sequence',hidden_xs='hidden-xs'),
+                      link_display,get_date_display("start_date",time_format='%m-%d',hidden_xs='hidden-xs'),
                       change_date_display('remind_date',time_format='%m-%d'), ]
 
 

@@ -19,7 +19,20 @@
     <link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
-
+    <style type="text/css">
+        @media (max-width : 768px) {
+            .col-md-2,.col-md-10{
+                padding-left: 0;
+            }
+            .col-md-12,.container-fluid{
+                padding-left: 5px;
+            }
+            .row{
+                margin-left: -3px;
+            }
+        }
+        
+    </style>
 
     {% block css %}
 

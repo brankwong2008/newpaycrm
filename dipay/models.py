@@ -229,8 +229,8 @@ class ApplyRelease(models.Model):
 
 # 日计划
 class DailyPlan(models.Model):
-    start_date =  models.DateField(auto_now_add=True, verbose_name='创建日')
-    remind_date =  models.DateField(verbose_name='提醒日(选填)',null=True,blank=True)
+    start_date =  models.DateField(auto_now_add=True, verbose_name='开始')
+    remind_date =  models.DateField(verbose_name='提醒',null=True,blank=True)
     end_date =  models.DateField(verbose_name='结束日期',null=True,blank=True)
     content = models.CharField(max_length=512, verbose_name='任务')
     status_choices = [(0, '进行'), (1, '完成'), (2, '提醒'),]

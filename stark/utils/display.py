@@ -26,7 +26,7 @@ def manytomany_display(field,title=None):
             return ','.join([ str(row) for row in queryset])
     return inner
 
-def get_date_display(field, title=None, time_format="%Y-%m-%d"):
+def get_date_display(field, title=None, time_format="%Y-%m-%d",hidden_xs=''):
     def inner(handler_obj, obj=None, is_header=None,*args,**kwargs):
         """
         功能：日期字段的文本格式
@@ -38,17 +38,18 @@ def get_date_display(field, title=None, time_format="%Y-%m-%d"):
         if is_header:
             if title:
                 return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+            verbose_name = handler_obj.model_class._meta.get_field(field).verbose_name
+            return mark_safe("<span class='%s'>%s<span>" % (hidden_xs, verbose_name))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             datetime = getattr(obj, field)
             if not datetime:
-                return ""
+                create_date = '-'
             try:
                 create_date = datetime.strftime(time_format)
             except:
                 create_date = '日期格式错误'
-            return create_date
+            return mark_safe("<span class='%s'>%s<span>" % (hidden_xs, create_date))
 
     return inner
 
@@ -136,7 +137,7 @@ def port_display(field, title=None):
                              "id='%s-id-%s' > %s </span>" % (field, obj.pk, port_name))
     return inner
 
-def info_display(field, title=None, time_format="%Y-%m-%d",max_length=None):
+def info_display(field, title=None, time_format="%Y-%m-%d",max_length=None,hidden_xs=""):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -148,7 +149,8 @@ def info_display(field, title=None, time_format="%Y-%m-%d",max_length=None):
         if is_header:
             if title:
                 return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+            verbose_name = handler_obj.model_class._meta.get_field(field).verbose_name
+            return mark_safe("<span class='%s'>%s<span>" %(hidden_xs, verbose_name))
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             field_val = getattr(obj, field)
@@ -160,9 +162,9 @@ def info_display(field, title=None, time_format="%Y-%m-%d",max_length=None):
             if isinstance(field_val, models.DateTimeField):
                 print('the instance is date')
 
-            return mark_safe("<span class='text-display' onclick='showInputBox(this)' "
-                             "id='%s-id-%s'> %s </span>" % (field, obj.pk, field_val))
-            # return info_field
+            return mark_safe("<span class='text-display %s' onclick='showInputBox(this)' "
+                             "id='%s-id-%s'> %s </span>" % (hidden_xs,field, obj.pk, field_val))
+
 
     return inner
 
@@ -294,8 +296,14 @@ class PermissionHanlder:
     # 添加按钮的权限控制
     def add_btn_display(self,request,*args, **kwargs):
         permission_dict = request.session.get(settings.PERMISSION_KEY)
+        print("permission addbutn display before ")
         get_add_url_name = '%s:%s' % (self.namespace, self.get_add_url_name)
         if get_add_url_name in permission_dict and self.has_add_btn:
+
+            print("permission addbutn display after ")
+            print("get add url name:",get_add_url_name)
+            print("permission_dict:",permission_dict)
+
             return self.get_add_btn(request,*args, **kwargs)
 
 
