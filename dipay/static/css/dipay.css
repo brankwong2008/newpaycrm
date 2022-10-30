@@ -253,8 +253,9 @@ span.charge_tag {
     float: right;
     margin-right: 20%;
 }
-span.charge_tag:hover{
-    cursor:pointer;
+
+span.charge_tag:hover {
+    cursor: pointer;
 }
 
 /* 船和箱子的图标 */
@@ -268,11 +269,11 @@ span.charge_tag:hover{
 }
 
 /* 跟踪记录更新时间的显示 */
-.update-date-tag{
+.update-date-tag {
     margin-top: 4px;
     font-style: italic;
     color: lightgrey;
-    font-size:x-small;
+    font-size: x-small;
 }
 
 /* 更多按钮的三个点 */
@@ -434,7 +435,6 @@ span.dailyplan {
 }
 
 
-
 /* end of  任务页面的css */
 
 
@@ -451,7 +451,7 @@ a.add-record {
 }
 
 /* 新增收款记录的 添加按钮的 css */
-a.inwardpay-add-record{
+a.inwardpay-add-record {
     font-weight: 100;
     font-size: 28px;
     padding: 0px 10px 4px;
@@ -470,16 +470,24 @@ a.customer-link, a.order-link {
 }
 
 /* 港杂清单的total amount的css */
-.status-paid{
+.status-paid {
 
 }
+
 /* 港杂清单的total amount的css */
-.status-unpaid{
+.status-unpaid {
     color: lightcoral;
 }
 
 /* 点选的港杂清单的total amount的合计显示 */
-#total-chozen-amount, #total-chozen-amount-currency{
+#total-chozen-amount, #total-chozen-amount-currency {
     font-size: 20px;
     color: #d9534f;
 }
+
+/* 货代费用单和付费单的状态栏显示 */
+.charge-status-0, .chargepay-status-0 {
+    color: #d9534f;
+
+}
+

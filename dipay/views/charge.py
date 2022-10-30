@@ -154,7 +154,7 @@ class ChargeHandler(StarkHandler):
             data_list = []
 
             for item in chargepay_queryset:
-                chargepay_url = reverse("stark:dipay_chargepay_show_detail",kwargs={"pk":item.pk})
+                chargepay_url = reverse("stark:dipay_chargepay_list")+f"?q={item.pk}"
                 tag = f"<a href='{chargepay_url}' target='_blank'>F{str(item.pk).zfill(5)}</a>"
                 data_list.append(tag)
 

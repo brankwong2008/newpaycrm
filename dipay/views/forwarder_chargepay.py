@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from dipay.models import PayToCharge,Charge
 from dipay.forms.forms import ChargePayModelForm
 
-class ForwarderChargePayHandler(StarkHandler):
+class ForwarderChargePayHandler(PermissionHanlder,StarkHandler):
 
     show_detail_template = "dipay/show_chargepay_detail.html"
 

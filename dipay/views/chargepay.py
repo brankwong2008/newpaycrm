@@ -12,6 +12,10 @@ class ChargePayHandler(StarkHandler):
 
     show_detail_template = "dipay/show_chargepay_detail.html"
 
+    search_list = ['id__icontains', "create_date"]
+
+    search_placeholder = '搜索 付费单号 日期'
+
     def amount_display(self, obj=None, is_header=None,*args,**kwargs):
         """  美元金额合计显示  """
         if is_header:

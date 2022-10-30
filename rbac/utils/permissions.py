@@ -62,11 +62,20 @@ def init_permissions(request,user):
     # menu_dict 的结构 { (menu_id,menu__sequence): { 'title':xx, 'icon':xx, 'mid':xx, 'children':[ {},{}  ]   }    }
     # 把动态二级菜单的字典存入session
 
+    print("initnig:   permission_dict")
+    for key, val in permission_dict.items():
+        print(key,val)
+
     # 对menu字典进行排序
     new_menu_dict = OrderedDict()
     for k in sorted(menu_dict.keys()):
-        new_menu_dict[k[0]] = menu_dict[k]
+        # 这里千万不能以k[0]:menu__sequence , 可能会因为sequence一样被覆盖掉
+        new_menu_dict[k[1]] = menu_dict[k]
     request.session[settings.MENU_LIST_KEY] = new_menu_dict
+
+    print("initnig:   newmenu_dict")
+    for key,val in new_menu_dict.items():
+        print(key,val)
 
     # 把权限字典存入session
     request.session[settings.PERMISSION_KEY] = permission_dict

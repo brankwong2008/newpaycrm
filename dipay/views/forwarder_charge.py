@@ -19,6 +19,12 @@ class ForwarderChargeHandler(PermissionHanlder,StarkHandler):
         Option(field='status'),
     ]
 
+    guideline = mark_safe("<h5>货代费用表的使用：</h5>"
+                          "<p>1. 点击右上角蓝色加号添加费用单</p>"
+                          "<p>2. 一个订单一条记录</p>"
+                          "<p>3. 合计的金额，红色表示没有付，黑色表示已付</p>"
+                          "<p>4. 除了保险费，其他费用不能带小数</p>")
+
     search_list = ['followorder__order__order_number__icontains', "remark__icontains"]
 
     search_placeholder = '搜索 订单号 费用说明'

@@ -73,15 +73,14 @@ def get_choice_text(field, title=None):
         :param is_header: 是否表头
         :return:
         """
-
+        model_name = handler_obj.model_class._meta.model_name
         if is_header:
-            if title:
-                return title
-            return handler_obj.model_class._meta.get_field(field).verbose_name
+            return title or handler_obj.model_class._meta.get_field(field).verbose_name
         else:
             # getattr方法可用字符串方式从对象中调取方法或者属性
             method_func = getattr(obj ,"get_%s_display" % field)
-            return method_func()
+            val = getattr(obj ,field)
+            return mark_safe(f"<span class={model_name}-{field}-{val}>{method_func()}</span>")
     return inner
 
 def checkbox_display(hander_obj,obj=None,is_header=None,*args,**kwargs):
