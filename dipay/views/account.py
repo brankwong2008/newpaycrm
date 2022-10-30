@@ -34,7 +34,13 @@ def logout(request):
 
 def index(request):
     redirect_url = reverse('stark:dipay_inwardpay_list')
-    if request.user.username == 'wangminhua':
+
+    roles_list = [ item.title for item in request.user.roles.all() ]
+    if '财务' in roles_list:
         redirect_url = reverse('stark:dipay_inwardpay_list_account')
+
+    print("request.user.roles.all", roles_list)
+    if "货代" in roles_list:
+        redirect_url = reverse('stark:dipay_charge_list_forwarder')
 
     return redirect(redirect_url)

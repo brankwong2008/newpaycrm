@@ -10,6 +10,7 @@ class UserInfo(MyUser):
                          (2, '跟单部'),
                          (4, '财务部'),
                          (8, '管理部'),
+                         (7, '外部'),
                     ]
     department = models.SmallIntegerField(choices=department_choices, verbose_name='部门', default=1)
 
@@ -257,6 +258,7 @@ class Forwarder(models.Model):
     email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     bank_account = models.TextField(verbose_name='银行信息', default='--')
     remark = models.TextField(verbose_name='货代详情', default='--')
+    user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='绑定用户',null=True)
 
     def __str__(self):
         return self.shortname if self is not None else '-'
@@ -294,7 +296,7 @@ class FollowChance(models.Model):
 
 # 货代费用单表
 class Charge(models.Model):
-    create_date = models.DateField(auto_now_add=True, verbose_name='日期')
+    BL_date = models.DateField(verbose_name='提单日期', default="2022-10-01")
     followorder =  models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE, verbose_name='跟单号')
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
     seafreight = models.IntegerField(verbose_name='海运费U$',default=0)
@@ -302,7 +304,7 @@ class Charge(models.Model):
     port_charge = models.IntegerField(verbose_name='港杂费￥',default=0)
     trailer_charge = models.IntegerField(verbose_name='拖车费￥',default=0)
     other_charge =  models.IntegerField(verbose_name='其他费用￥',default=0)
-    remark = models.TextField(verbose_name='费用说明', default='--')
+    remark = models.TextField(verbose_name='费用说明', default='提单号 港口 箱量')
     status_choices = [(0, '未结'), (1, '美元已结'), (2, '人民币已结'), (3, '结清')]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='结清状态', default=0)
 
@@ -312,7 +314,7 @@ class Charge(models.Model):
 
 # 货代结算记录
 class ChargePay(models.Model):
-    create_date = models.DateField(auto_now_add=True, verbose_name='支付日期')
+    create_date = models.DateField(verbose_name='支付日期',default=datetime.now())
     bank = models.ForeignKey(to=Bank,on_delete=models.CASCADE, verbose_name='出账银行',null=True)
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
     currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)

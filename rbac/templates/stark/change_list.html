@@ -14,6 +14,11 @@
         .panel-body {
             font-size: 12px;
         }
+
+    .luffy-container{
+        margin-bottom: 200px;
+    }
+
     </style>
 
 {% endblock %}
@@ -24,7 +29,6 @@
     <div class="luffy-container">
 
         <div class="col-md-5">
-
 
             <!-- 修改数据 -->
 
@@ -49,7 +53,7 @@
 
                 {% endfor %}
 
-                <div>
+                <div style="margin-bottom: 100px">
                     <button class="btn btn-success">提交</button>
 
                 </div>
@@ -63,28 +67,6 @@
     </div>
 
 
-{##}
-{#        <!-- Modal 模态对话框 快速添加 -->#}
-{#    <div class="modal fade" id="FastCreateModal" tabindex="-1" role="dialog" aria-labelledby="FastCreateModalLabel">#}
-{#        <div class="modal-dialog" role="document">#}
-{#            <div class="modal-content">#}
-{#                <div class="modal-header">#}
-{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
-{#                            aria-hidden="true">&times;</span></button>#}
-{#                    <h4 class="modal-title" id="FastCreateModalLabel">快速添加</h4>#}
-{#                </div>#}
-{#                <div class="modal-body">#}
-{#                    <div class="modal-details"></div>#}
-{##}
-{#                </div>#}
-{#                <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-default" data-dismiss="modal">提交</button>#}
-{#                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
-{##}
 
     <!-- js代码：处理外键字段快速新增一条记录 -->
     <script src="{% static 'js/popup_create.js' %}"></script>

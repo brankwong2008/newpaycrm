@@ -1,17 +1,17 @@
 
 // 自定义消息提示框的淡入淡出
-function ShowTip(tip, type) {
+function ShowTip(tip, type,time=2000) {
     var $tip = $('#tip');
     if ($tip.length == 0) {
         var $tip_span = `<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'>${tip}</span>`;
         $('body').append($tip_span);
     }
-    $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(2000).fadeOut(500);
+    $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(time).fadeOut(500);
 }
 
-function ShowMsg(msg) {
+function ShowMsg(msg,time=2000) {
     console.log('show msg....:', msg)
-    ShowTip(msg, 'info')
+    ShowTip(msg, 'info',time)
 }
 
 
@@ -139,6 +139,8 @@ function fastInfoSave(btn) {
 // $('span.hidden-xs').parent().addClass('hidden-xs');
 // $('a.hidden-xs').parent().addClass('hidden-xs');
 $('.hidden-xs').parent("td,th").addClass('hidden-xs');
+$('.hidden-md').parent("td,th").addClass('hidden-md');
+$('.hidden-lg').parent("td,th").addClass('hidden-lg');
 $('span.save-sequence').parent().css('display', 'none');
 
 

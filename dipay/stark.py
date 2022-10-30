@@ -18,6 +18,8 @@ from dipay.views.chance import ChanceHandler
 from dipay.views.followchance import FollowChanceHandler
 from dipay.views.charge import ChargeHandler
 from dipay.views.chargepay import ChargePayHandler
+from dipay.views.forwarder_charge import ForwarderChargeHandler
+from dipay.views.forwarder_chargepay import ForwarderChargePayHandler
 
 
 
@@ -90,3 +92,9 @@ site.register(models.Charge, ChargeHandler)
 
 # 货代费用付款单
 site.register(models.ChargePay, ChargePayHandler )
+
+# 货代费用表-货代版
+site.register(models.Charge, ForwarderChargeHandler,prev='forwarder')
+
+# 货代费用付款单-货代版
+site.register(models.ChargePay, ForwarderChargePayHandler,prev='forwarder' )

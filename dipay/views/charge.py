@@ -4,7 +4,7 @@ from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text
 from django.utils.safestring import mark_safe
 from django.shortcuts import reverse, render
-from stark.utils.display import PermissionHanlder, get_date_display, get_choice_text, checkbox_display
+from stark.utils.display import PermissionHanlder, get_date_display, get_choice_text, checkbox_display_func
 from django.conf.urls import url
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
@@ -42,22 +42,34 @@ class ChargeHandler(StarkHandler):
         if not USD_amount and not CNY_amount:
             return JsonResponse({"status": False, "msg": '至少选择一项费用金额'})
 
+
+
         # 创建付款单记录， 水单，银行等字段后续再填写
         amount_list = USD_amount or CNY_amount
         total_amount = sum([Decimal(each) for each in amount_list])
         currency = Currency.objects.get(title='美元') if USD_amount else Currency.objects.get(title='人民币')
-        chargepy_obj = ChargePay(forwarder_id=forwarder_id, currency=currency, amount=total_amount)
-        chargepy_obj.save()
 
-        # 创建付款单与费用单之间的关联记录
+        # 生成付费单(草稿)
+        chargepay_obj = ChargePay(forwarder_id=forwarder_id, currency=currency, amount=total_amount)
+
+        # 第一步需要查重，并告知前端哪笔是重复的
+        paytocharge_list = []
         for ind, val in enumerate(pk_list):
+            if PayToCharge.objects.filter(charge_id=val,currency=currency).exists():
+                order_number = self.model_class.objects.get(pk=val).followorder.order.order_number
+                msg = f"订单{order_number}的{currency.title}费用有可能重复支付"
+                return JsonResponse({"status": False, "msg": msg,})
             paytocharge_obj = PayToCharge(charge_id=val,
-                                          chargepay=chargepy_obj,
+                                          chargepay=chargepay_obj,
                                           currency=currency,
                                           amount=amount_list[ind])
-            paytocharge_obj.save()
+            paytocharge_list.append(paytocharge_obj)
 
-        return JsonResponse({"status": True, "msg": '付费单生成成功'})
+        chargepay_obj.save()
+        PayToCharge.objects.bulk_create(paytocharge_list)
+
+        chargepay_url = reverse("stark:dipay_chargepay_list")
+        return JsonResponse({"status": True, "msg": '付费单生成成功','url': chargepay_url})
 
     batch_pay.text = "生成付费单"
 
@@ -150,7 +162,7 @@ class ChargeHandler(StarkHandler):
 
 
     fields_display = [
-        checkbox_display,
+        checkbox_display_func(hidden_xs="hidden-md hidden-lg"),
         ETD_display,
         followorder_display,
         forwarder_display,

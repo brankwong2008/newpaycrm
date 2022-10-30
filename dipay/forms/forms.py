@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 from django import forms
-from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, DailyPlan, FollowChance, Chance, ChargePay
+from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, \
+    DailyPlan, FollowChance, Chance, ChargePay, Charge
 from datetime import datetime
 
 
@@ -237,3 +238,13 @@ class ChargePayModelForm(StarkForm):
         model = ChargePay
         fields = "__all__"
         exclude = ['status', ]
+
+
+class ForwarderChargeModelForm(StarkForm):
+    class Meta:
+        model = Charge
+        fields = "__all__"
+        exclude = ['status', 'forwarder' ]
+        widgets = {
+            "BL_date": forms.DateInput(attrs={'type': 'date'}),
+        }

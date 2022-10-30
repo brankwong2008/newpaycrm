@@ -477,3 +477,9 @@ a.customer-link, a.order-link {
 .status-unpaid{
     color: lightcoral;
 }
+
+/* 点选的港杂清单的total amount的合计显示 */
+#total-chozen-amount, #total-chozen-amount-currency{
+    font-size: 20px;
+    color: #d9534f;
+}

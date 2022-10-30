@@ -14,6 +14,7 @@ def init_permissions(request,user):
     # 一次性跨表查询从数据库获取所有需要的字段，并去重
     permissions_queryset = user.roles.filter(permissions__isnull=False).values("permissions__urls",
                                                                                "permissions__menu_id",
+                                                                               "permissions__menu__title",
                                                                                "permissions__menu__sequence",
                                                                                "permissions__name",
                                                                                "permissions__id",

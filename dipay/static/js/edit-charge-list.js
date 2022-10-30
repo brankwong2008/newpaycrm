@@ -2,6 +2,25 @@
 //定义全局变量 货代，货币
 let forwarder_list=[];
 let currency_list=[];
+let totalAmount =new Decimal(0);
+
+function showTotalValue(val,currency) {
+    totalAmount = totalAmount.add(new Decimal(val))
+    if (totalAmount == 0) {
+         $("#total-chozen-amount-label").css("display","none")
+    } else {
+         $("#total-chozen-amount-label").css("display","")
+    }
+    $("#total-chozen-amount").html(totalAmount.toString());
+    $("#total-chozen-amount-currency").html(currency);
+
+}
+
+//  点击单元格也能触发 function addToPayCharge，方便操作，这里重点是防止冒泡事件的发生
+$("[name$=amount]").parent('td').click(function (event) {
+    if (event.target==this){ $(this).children(":first").trigger("click");}
+    return false; //只能阻止空间的默认事件，但是不能阻止冒泡
+})
 
 
 // 点击把费用表中的金额和订单号增加到提交清单中
@@ -10,6 +29,7 @@ function addToPayCharge(spanTag) {
     let name = $span.attr("name");
     let val = $span.text();
     let pk = $span.attr("pk");
+    let currency =  $span.attr("name")=="USD_amount"?"$":"￥";
     let $input;
     let $checkbox = $(`input[type=checkbox][value=${pk}]`);
     console.log('background-color:', $span.parent().css("background-color"));
@@ -20,7 +40,9 @@ function addToPayCharge(spanTag) {
         currency_list.pop();
         $checkbox.prop("checked", !$checkbox.prop("checked"));
         $span.removeClass('chosen')
-    } else {
+        showTotalValue(-val,currency)
+    }
+    else {
         let $span_forwarder = $(`span[name=forwarder][pk=${pk}]`);
         let forwarder_id = $span_forwarder.attr("forwarder_id");
 
@@ -46,9 +68,12 @@ function addToPayCharge(spanTag) {
 
         forwarder_list.push(forwarder_id)
         currency_list.push(name)
+        // 加到合计金额中区，并显示
+        showTotalValue(val,currency)
         console.log('forwarder_id,currency name',forwarder_id,name)
-    }
 
+    }
+    return false;
 }
 
 
@@ -65,16 +90,16 @@ function createPaySlip() {
         success: function (respond) {
             console.log(respond)
             if (respond.status) {
-                $('#myModal').modal('hide');
                 ShowMsg(respond.msg);
+                // 跳转到别的页面
+                location.href = respond.url;
+                console.log('跳转到别的页面', respond.url)
 
             } else {
-
+                 ShowMsg(respond.msg,time=4000);
             }
         }
     });
-
-    return false;
 
 }
 

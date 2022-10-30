@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -25,8 +24,7 @@ SECRET_KEY = 'django-insecure-qy_9!ausa-$*pd90t2ina4g75snknd5ezc=tz)tnynd1gkzu^j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*',]
-
+ALLOWED_HOSTS = ['*', ]
 
 # Application definition
 
@@ -74,7 +72,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'paycrm.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -99,14 +96,13 @@ WSGI_APPLICATION = 'paycrm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # .mysql数据库 系统默认sqllite
-        'HOST': '0.0.0.0',   #主机
-        'PORT': 3306,                      #端口
-        'USER':'root',
-        'PASSWORD':'123',
-        'NAME': 'paycrm',     #数据库名
+        'HOST': '0.0.0.0',  # 主机
+        'PORT': 3306,  # 端口
+        'USER': 'root',
+        'PASSWORD': '123',
+        'NAME': 'paycrm',  # 数据库名
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -126,7 +122,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -140,31 +135,29 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT='/paycrmstatic/'
+STATIC_ROOT = '/paycrmstatic/'
 
 # STATICFILES_DIRS = []   # 静态文件存储路径
 
 #  客户上传下载文件存储路径
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
-MEDIA_URL='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-AVATAR_CHOICES = ['fa-beer','fa-archive','fa-coffee','fa-diamond','fa-envelope-o',
-                  'fa-flag','fa-mortar-board','fa-tags','fa-tree','fa-star','fa-share-alt',
-                  'fa-university','fa-bar-chart','fa-th-large','fa-gg','fa-train','fa-tty',
-                  'fa-user-plus','fa-tv','fa-umbrella','fa-thumb-tack','fa-pie-chart','fa-shopping-bag',
-                  'fa-lemon-o','fa-download','fa-cube','fa-cog']
+AVATAR_CHOICES = ['fa-beer', 'fa-archive', 'fa-coffee', 'fa-diamond', 'fa-envelope-o',
+                  'fa-flag', 'fa-mortar-board', 'fa-tags', 'fa-tree', 'fa-star', 'fa-share-alt',
+                  'fa-university', 'fa-bar-chart', 'fa-th-large', 'fa-gg', 'fa-train', 'fa-tty',
+                  'fa-user-plus', 'fa-tv', 'fa-umbrella', 'fa-thumb-tack', 'fa-pie-chart', 'fa-shopping-bag',
+                  'fa-lemon-o', 'fa-download', 'fa-cube', 'fa-cog', 'fa-truck']
 
 ##################  RBAC 设置 ###############
 RBAC_USER_MODLE_CLASS = 'dipay.models.UserInfo'
@@ -176,27 +169,28 @@ MENU_LIST_KEY = '89ljfaljfa8fa-fa'
 
 # 不需要登录，也不需要授权的权限
 WHITE_URL_LIST = [
-        '/login/',
-        '/admin/.*'
-    ]
+    '/login/',
+    '/admin/.*',
+]
 
 # 需要登录，不需要特殊授权的权限
 NO_PERMISSION_LIST = [
-            '/index/',
-            '/logout/',
-            '/stark/dipay/customer/create/',
-             '^/$',
-        ]
+    '/index/',
+    '/logout/',
+    '/stark/dipay/customer/create/',
+    '^/$',
+    '/media/.*',
+]
 
 # 自动发现项目权限中要排除的路径
 AUTO_DISCOVER_EXCLUDE = [
-            '/admin/.*',
-            '/admin\/.*',
-            '/login/',
-            '/logout/',
-            '/index/',
-        ]
+    '/admin/.*',
+    '/admin\/.*',
+    '/login/',
+    '/logout/',
+    '/index/',
+]
 ##################  end of RBAC 设置 ###############
 
 
-SESSION_COOKIE_AGE = 259200   # 用户的cookie存储最长时间3天，3天后必须重新登录
+SESSION_COOKIE_AGE = 259200  # 用户的cookie存储最长时间3天，3天后必须重新登录
