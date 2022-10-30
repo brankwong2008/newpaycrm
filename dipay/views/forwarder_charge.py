@@ -137,4 +137,5 @@ class ForwarderChargeHandler(PermissionHanlder,StarkHandler):
 
     # 限定每个货代只能看到只能的费用单记录
     def get_queryset_data(self,request,is_search=None,*args,**kwargs):
-        return self.model_class.objects.filter(forwarder=request.user.forwarder_set.all().first())
+        if request.user.forwarder:
+            return self.model_class.objects.filter(forwarder=request.user.forwarder)

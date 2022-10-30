@@ -3,6 +3,20 @@ from django.db import models
 from rbac.models import MyUser
 from datetime import datetime
 
+# 货代表
+class Forwarder(models.Model):
+    title = models.CharField(max_length=128, unique=True, verbose_name='货代名')
+    shortname = models.CharField(max_length=20, verbose_name='货代简称')
+    contact = models.CharField(max_length=20, verbose_name='货代联系人',default='-')
+    phone = models.CharField(max_length=11, verbose_name='电话', default='-')
+    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
+    bank_account = models.TextField(verbose_name='银行信息', default='--')
+    remark = models.TextField(verbose_name='货代详情', default='--')
+    # user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='绑定用户',null=True)
+
+    def __str__(self):
+        return self.shortname if self is not None else '-'
+
 
 class UserInfo(MyUser):
     nickname = models.CharField(max_length=30,verbose_name="姓名")
@@ -13,6 +27,7 @@ class UserInfo(MyUser):
                          (7, '外部'),
                     ]
     department = models.SmallIntegerField(choices=department_choices, verbose_name='部门', default=1)
+    forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='绑定货代', null=True)
 
     def __str__(self):
             return self.nickname
@@ -249,19 +264,6 @@ class DailyPlan(models.Model):
 创建日期   提醒日期  结束日期  内容  状态  排序  关联   
 """
 
-# 货代表
-class Forwarder(models.Model):
-    title = models.CharField(max_length=128, unique=True, verbose_name='货代名')
-    shortname = models.CharField(max_length=20, verbose_name='货代简称')
-    contact = models.CharField(max_length=20, verbose_name='货代联系人',default='-')
-    phone = models.CharField(max_length=11, verbose_name='电话', default='-')
-    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
-    bank_account = models.TextField(verbose_name='银行信息', default='--')
-    remark = models.TextField(verbose_name='货代详情', default='--')
-    user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='绑定用户',null=True)
-
-    def __str__(self):
-        return self.shortname if self is not None else '-'
 
 # 商机表
 class Chance(models.Model):

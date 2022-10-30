@@ -87,4 +87,5 @@ class ForwarderChargePayHandler(StarkHandler):
 
 
     def get_queryset_data(self,request,is_search=None,*args,**kwargs):
-        return self.model_class.objects.filter(forwarder=request.user.forwarder_set.all().first())
+        if request.user.forwarder:
+            return self.model_class.objects.filter(forwarder=request.user.forwarder)
