@@ -135,8 +135,7 @@ class ForwarderChargeHandler(PermissionHanlder,StarkHandler):
 
 
     def save_form(self,form,request,is_update=False,*args, **kwargs):
-        forwarder_obj = request.user.forwarder_set.all().first()
-        print('forwarder_obj',forwarder_obj)
+        forwarder_obj = request.user.forwarder
         form.instance.forwarder = forwarder_obj
         form.save()
 

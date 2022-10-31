@@ -85,4 +85,4 @@ class RbacMiddleWare(MiddlewareMixin):
 
 
 
-        return HttpResponse("无访问权限")
+        return HttpResponse("无访问权限，返回<a href='/index/'>首页</a>")
