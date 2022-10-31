@@ -231,7 +231,6 @@ class ChargeHandler(StarkHandler):
         if request.method == "GET":
             followorder_id = request.GET.get("followorder_id")
             form = self.get_model_form("add")()
-            print("followorder_id",followorder_id)
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
                 print("charge py: followorder_obj:", followorder_obj)
@@ -246,7 +245,6 @@ class ChargeHandler(StarkHandler):
 
             if form.is_valid():
                 result = self.save_form(form, request, False, *args, **kwargs)
-
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, self.add_list_template or "stark/change_list.html", locals())

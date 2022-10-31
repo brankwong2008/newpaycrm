@@ -38,3 +38,16 @@ a span.nickname {
     margin-left: 0px;
     color: white;
 }
+
+
+.myfooter{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #eee;
+    text-align: center;
+}
+
+.myfooter-links li{
+    color: grey;
+    list-style: none;
+}

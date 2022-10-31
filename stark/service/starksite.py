@@ -139,7 +139,7 @@ class StarkHandler(object):
     show_detail_template = None  # 显示页面模板
     fields_display = '__all__'    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
-    guideline = None   # 列表页的操作指南
+    guideline = ""   # 列表页的操作指南
     batch_process_hidden = None
 
     tabs = None     # 标签导航
