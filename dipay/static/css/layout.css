@@ -1,4 +1,19 @@
 
+*{
+    margin:0;
+    padding:0;
+}
+
+html{
+    height: 100%;
+}
+
+body{
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 60px;
+}
+
 /* 图标大小 */
 i {
     margin-right: 3px;
@@ -27,7 +42,7 @@ span.badge {
 
 /* 顶部导航的绝对定位 */
 div.body-content {
-    margin-top: 61px ;
+    padding-top: 60px ;
 }
 
 .mynavbar{
@@ -40,11 +55,20 @@ a span.nickname {
 }
 
 
+.base-content{
+    /*padding-bottom: 50px;*/
+}
+
+
 .myfooter{
-    padding-top: 20px;
-    padding-bottom: 20px;
+    margin-top: -60px;
+    height: 60px;
     background-color: #eee;
     text-align: center;
+    line-height: 60px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .myfooter-links li{
