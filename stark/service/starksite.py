@@ -14,7 +14,7 @@ import json
 from dipay.forms.forms import StarkForm
 
 class Option:
-    def __init__(self,field,filter_param=None,is_multi = False,default=None,verbose_name=None):
+    def __init__(self,field,filter_param=None,is_multi = False,default=None,verbose_name=None, control_list=None):
         """
         封装choice或者foreign key字段关联的数据源，在前端展示进行组合筛选
         :param field: 字段名
@@ -26,6 +26,7 @@ class Option:
         self.is_multi = is_multi
         self.is_choice = False
         self.default = default
+        self.control_list = control_list   # 只显示指定的筛选项目，避免筛选没有必要的项目
         self.verbose_name = verbose_name
 
     class RenderData:
@@ -69,14 +70,19 @@ class Option:
             yield '<a href="?%s" class="%s" >全部</a>' % (query_dict.urlencode(), is_active)
 
             # 在关联数据源中顺序执行
+            control_list = self.option.control_list
             for item in self.data:
                 query_dict = self.query_dict.copy()
                 # val_list用户选择的筛选值列表
                 val_list = query_dict.getlist(self.field)
                 query_dict._mutable = True
-
                 text = self.option.get_text(item)
                 val = self.option.get_value(item)
+
+                # 查看是否有contorl_list  (控制筛选的字段，不在列表里面的不显示)
+                if control_list and text not in control_list:
+                    continue
+
                 if not self.option.is_multi:
                     query_dict[self.field] = val
 

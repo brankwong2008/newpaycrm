@@ -340,3 +340,14 @@ class PayToCharge(models.Model):
 
     def __str__(self):
         return str(self.charge) + str(self.amount)
+
+
+# class Supplier(models.Model):
+#     name = models.CharField(max_length=128, verbose_name='供应商名称')
+#
+# class Product(models.Model):
+#     name = models.CharField(max_length=128, verbose_name='品名')
+#     supplier = models.ForeignKey(to=Supplier,on_delete=models.CASCADE, verbose_name='供应商')
+#     quote = models.ManyToManyField(to=Customer, through='Quote', verbose_name='关联账单',null=True,blank=True)
+#
+#

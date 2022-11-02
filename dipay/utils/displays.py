@@ -188,7 +188,7 @@ def port_display(field, title=None, hidden_xs=''):
 
 
 # 订舱，装箱，生产信息 (如果内容太长自动进行隐藏的办法）  hidden-xs的单元格将在手机屏幕不显示
-def info_display(field, title=None, hidden_xs='', max_width=100):
+def info_display(field, title=None, hidden_xs='', max_width=100, editable=True):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -215,7 +215,11 @@ def info_display(field, title=None, hidden_xs='', max_width=100):
 
             more_tag = "<span class='more_tag' onclick=showFullContent(this)><i class='fa fa-ellipsis-h'></i></span>"
 
-            # 判断用户是否有此字段的编辑权限
+            # 判断用户是否有此字段的编辑权限, 一般是可编辑的，如果指定editable为False，直接返回span
+            if editable is False:
+                return mark_safe("<span cont='%s' class='text-display %s' "
+                                 "id='%s-id-%s' > %s </span>" % (field_val, hidden_xs, field, obj.pk, field_val))
+
             is_editable = handler_obj.get_editable(field)
             if is_editable:
                 return mark_safe("<span cont='%s' class='text-display %s' onclick='showInputBox(this)' "

@@ -19,7 +19,7 @@ class ChargeHandler(StarkHandler):
 
     # 快速筛选： 货代，付费状态
     option_group = [
-        Option(field='forwarder', is_multi=False),
+        Option(field='forwarder', is_multi=False, control_list=['汇昌','迪斯泰','誉洲','永鑫海','惠和','深圳鑫顺源',]),
         Option(field='status'),
     ]
 

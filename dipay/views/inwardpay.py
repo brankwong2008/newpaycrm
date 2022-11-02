@@ -123,9 +123,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 return mark_safe("<span class='hidden-xs'>%s</span>" % display_text)
 
     fields_display = [get_date_display('create_date'),
-                      info_display('payer', hidden_xs="hidden-xs"),
+                      info_display('payer', hidden_xs="hidden-xs", editable=False),
                       customer_display,
-                      info_display('bank', hidden_xs="hidden-xs"),
+                      info_display('bank', hidden_xs="hidden-xs",editable=False),
                       got_amount_display,
                       to_relate_amount_display,
                       related_orders_display,
@@ -133,7 +133,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                       got_confirm_status_display,
                       ]
 
-    detail_fields_display = fields_display + ['remark', 'keyin_user', 'ttcopy']
+    detail_fields_display = fields_display + ['remark', 'keyin_user',]
 
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
