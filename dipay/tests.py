@@ -1,14 +1,28 @@
 
+from flask import Flask, request
+import subprocess
+import os
 
-from dipay import models
-from django.db.models.deletion import Collector
+app = Flask(__name__)
 
-obj = models.Customer.objects.get(pk=9)
+@app.route("/",methods=["GET"])
+def index():
+    return "hello welcome to index"
 
-collector = Collector(using='default')
-collector.collect([obj,])
-dependencies = collector.dependencies.get(obj.__classs__, set())
 
-print(dependencies, type(dependencies))
+@app.route("/hook",methods=["POST","GET"])
+def hook():
+    print('request:',request)
 
+    base_path = r'/opt/env1'
+    project_file_path = os.path.join(base_path,'paycrm')
+    # if not os.path.exists(project_file_path):
+    #     subprocess.check_call(f'mkdir {project_file_path}', shell=True, cwd=base_path)
+
+    return "success"
+
+
+
+if __name__ == "__main__":
+        app.run(host="0.0.0.0",port=9001,debug=True)
 

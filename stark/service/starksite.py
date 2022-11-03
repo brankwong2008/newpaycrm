@@ -626,6 +626,8 @@ class StarkHandler(object):
             url_name = "%s:%s" % (self.namespace,url_name)
 
         url = reverse(url_name, args=args, kwargs=kwargs)
+        print("reverse_url kwargs:", kwargs)
+
         if self.save_query_param():
             url = "%s?%s" % (url, self.save_query_param())
         return url

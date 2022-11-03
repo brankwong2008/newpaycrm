@@ -115,7 +115,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     # 定义筛选标签页头
     def get_tabs(self, request, *args, **kwargs):
         tabs = []
-
         status_dict = {item[1]: item[0] for item in DailyPlan.status_choices}
 
         for status in self.tab_list:
