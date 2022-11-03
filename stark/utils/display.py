@@ -246,12 +246,13 @@ class PermissionHanlder:
         在列表页显示删除按钮
         :param obj:
         :param is_header:
-        :return:
+        :return:pe
         """
         if is_header:
             return mark_safe("<span class='hidden-xs'>操作</span>")
         else:
-            del_url = self.reverse_del_url(*args, **kwargs)
+            print('PermissionHanlde, del_display',args, kwargs)
+            del_url = self.reverse_del_url(pk=obj.pk)
             return mark_safe("<a href='%s' class='hidden-xs'><i class='fa fa-trash'></i></a>" % del_url)
 
     # 编辑按钮的权限控制
