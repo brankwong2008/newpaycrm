@@ -39,8 +39,10 @@ def index(request):
     if '财务' in roles_list:
         redirect_url = reverse('stark:dipay_inwardpay_list_account')
 
-    print("request.user.roles.all", roles_list)
     if "货代" in roles_list:
         redirect_url = reverse('stark:dipay_charge_list_forwarder')
+
+    if "国际部行政" in roles_list:
+        redirect_url = reverse('stark:dipay_chance_list')
 
     return redirect(redirect_url)

@@ -69,7 +69,7 @@ class ChanceHandler(PermissionHanlder,StarkHandler):
                       'owner']
 
     def  get_queryset_data(self,request,is_search=None,*args,**kwargs):
-        if request.user.username == "brank":
+        if request.user.username in ["brank","zhangweiguo"] :
             return self.model_class.objects.all()
         else:
             return self.model_class.objects.filter(owner=request.user)
