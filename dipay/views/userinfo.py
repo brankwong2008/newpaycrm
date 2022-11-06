@@ -32,16 +32,24 @@ class MyUserInfoHandler(StarkHandler):
                 else:
                     return re_password
 
-        class UserEditModelForm(StarkModelForm):
+        class FowarderUserEditModelForm(StarkModelForm):
             class Meta:
                 model = MyUserInfo
                 exclude = ["password"]
+
+        class UserEditModelForm(StarkModelForm):
+            class Meta:
+                model = MyUserInfo
+                exclude = ["password",'forwarder']
 
         if type == "add":
             return UserAddModelForm
 
         if type == "edit":
             return UserEditModelForm
+
+        if type == "forwarder":
+            return FowarderUserEditModelForm
 
     def save_form(self,form,request,is_update=False,*args, **kwargs):
         form.instance.password = gen_md5(form.instance.password)
@@ -69,3 +77,38 @@ class MyUserInfoHandler(StarkHandler):
             else:
                 return render(request,"stark/change_list.html",locals())
 
+
+    # 编辑一条记录
+    def edit_list(self, request, pk, *args,**kwargs):
+        edit_obj = self.get_edit_obj(request, pk, *args, **kwargs)
+
+        if not edit_obj:
+            return HttpResponse("编辑的记录不存在")
+
+        if edit_obj.roles.filter(title='货代').exists():
+            print("这是货代的用户")
+            form_class = self.get_model_form("forwarder")
+        else:
+            form_class = self.get_model_form("edit")
+
+
+        if request.method == "GET":
+            form = form_class(instance=edit_obj)
+            back_url = self.reverse_list_url()
+            namespace = self.namespace
+            app_label = self.app_label
+            # 自定义列表，外键字段快速添加数据，在前端显示加号
+            popup_list = self.popup_list
+            return render(request,self.edit_list_template or "stark/change_list.html",locals())
+
+        if request.method == "POST":
+            form = form_class(instance=edit_obj,data=request.POST)
+            if request.FILES:
+                form = form_class(request.POST,request.FILES,instance=edit_obj)
+            if form.is_valid():
+                responds = self.save_form(form,request,True,*args,**kwargs)
+
+                return responds or redirect(self.reverse_list_url(*args,**kwargs))
+                # return responds
+            else:
+                return render(request, self.edit_list_template or "stark/change_list.html", locals())

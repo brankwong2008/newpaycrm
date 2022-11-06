@@ -20,6 +20,7 @@ from dipay.views.charge import ChargeHandler
 from dipay.views.chargepay import ChargePayHandler
 from dipay.views.forwarder_charge import ForwarderChargeHandler
 from dipay.views.forwarder_chargepay import ForwarderChargePayHandler
+from dipay.views.chance_stats import ChanceStatsHandler
 
 
 
@@ -83,6 +84,9 @@ site.register(models.Forwarder)
 
 # 商机表
 site.register(models.Chance, ChanceHandler)
+
+# 商机统计表
+site.register(models.Chance, ChanceStatsHandler, prev='stats')
 
 # 跟进表
 site.register(models.FollowChance,FollowChanceHandler )
