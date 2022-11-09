@@ -94,9 +94,9 @@ class ChargeHandler(StarkHandler):
             if total_amount == 0:
                 return "-"
             if is_paid:
-                res = mark_safe("<span class='status-paid' name='USD_amount'>%s</span>" % (total_amount))
+                res = mark_safe("<span class='money status-paid'>$</span><span class='status-paid' name='USD_amount'>%s</span>" % (total_amount))
             else:
-                res = mark_safe("<span class='status-unpaid' pk='%s' name='USD_amount' "
+                res = mark_safe("<span class='money status-unpaid'>$</span><span class='status-unpaid' pk='%s' name='USD_amount' "
                           "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
             return res
 
@@ -111,9 +111,9 @@ class ChargeHandler(StarkHandler):
                 return "-"
 
             if is_paid:
-                res = mark_safe("<span class='status-paid' name='CNY_amount'>%s</span>" % (total_amount))
+                res = mark_safe("<span class='money status-paid'>￥</span><span class='status-paid' name='CNY_amount'>%s</span>" % (total_amount))
             else:
-                res = mark_safe("<span class='status-unpaid' pk='%s' name='CNY_amount' "
+                res = mark_safe("<span class='money status-unpaid'>￥</span><span class='status-unpaid' pk='%s' name='CNY_amount' "
                           "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
             return res
 
@@ -148,7 +148,7 @@ class ChargeHandler(StarkHandler):
     def related_chargepay_display(self, obj=None, is_header=None, *args, **kwargs):
         """  显示货代  """
         if is_header:
-            return "关联费用单"
+            return "关联付款单"
         else:
             chargepay_queryset = ChargePay.objects.filter(charge=obj)
             data_list = []
@@ -166,11 +166,11 @@ class ChargeHandler(StarkHandler):
         ETD_display,
         followorder_display,
         forwarder_display,
-        fees_display("seafreight"),
-        fees_display("insurance"),
-        fees_display("port_charge"),
-        fees_display("trailer_charge"),
-        fees_display("other_charge"),
+        # fees_display("seafreight"),
+        # fees_display("insurance"),
+        # fees_display("port_charge"),
+        # fees_display("trailer_charge"),
+        # fees_display("other_charge"),
         "remark",
         total_USD,
         total_CNY,

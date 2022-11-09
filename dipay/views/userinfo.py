@@ -52,7 +52,8 @@ class MyUserInfoHandler(StarkHandler):
             return FowarderUserEditModelForm
 
     def save_form(self,form,request,is_update=False,*args, **kwargs):
-        form.instance.password = gen_md5(form.instance.password)
+        if not is_update:
+            form.instance.password = gen_md5(form.instance.password)
         form.save()
 
     def get_extra_urls(self):
@@ -76,7 +77,6 @@ class MyUserInfoHandler(StarkHandler):
                 return redirect(self.reverse_list_url())
             else:
                 return render(request,"stark/change_list.html",locals())
-
 
     # 编辑一条记录
     def edit_list(self, request, pk, *args,**kwargs):

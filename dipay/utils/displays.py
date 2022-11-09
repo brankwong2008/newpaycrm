@@ -213,6 +213,8 @@ def info_display(field, title=None, hidden_xs='', max_width=100, editable=True):
             if isinstance(field_val, models.DateTimeField):
                 pass
 
+            field_val, is_overflow = str_width_control(str(field_val), max_width)
+
             more_tag = "<span class='more_tag' onclick=showFullContent(this)><i class='fa fa-ellipsis-h'></i></span>"
 
             # 判断用户是否有此字段的编辑权限, 一般是可编辑的，如果指定editable为False，直接返回span

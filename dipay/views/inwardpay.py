@@ -123,7 +123,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 return mark_safe("<span class='hidden-xs'>%s</span>" % display_text)
 
     fields_display = [get_date_display('create_date'),
-                      info_display('payer', hidden_xs="hidden-xs", editable=False),
+                      info_display('payer', hidden_xs="hidden-xs",  editable=False),
                       customer_display,
                       info_display('bank', hidden_xs="hidden-xs",editable=False),
                       got_amount_display,

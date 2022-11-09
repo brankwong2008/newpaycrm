@@ -21,6 +21,7 @@ from dipay.views.chargepay import ChargePayHandler
 from dipay.views.forwarder_charge import ForwarderChargeHandler
 from dipay.views.forwarder_chargepay import ForwarderChargePayHandler
 from dipay.views.chance_stats import ChanceStatsHandler
+from dipay.views.forwarder import ForwarderHandler
 
 
 
@@ -80,7 +81,7 @@ site.register(models.ApplyRelease, ApplyReleaseVerifyHandler,prev='verify')
 site.register(models.DailyPlan, DailyPlanHandler)
 
 # 货代表
-site.register(models.Forwarder)
+site.register(models.Forwarder, ForwarderHandler)
 
 # 商机表
 site.register(models.Chance, ChanceHandler)

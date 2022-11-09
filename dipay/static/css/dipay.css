@@ -109,7 +109,8 @@ textarea[id^="amount"] {
 
 /*完成*/
 .status-display.status-4 {
-    color: grey;
+    /*color: #808080;*/
+    color: #f3a554;
 }
 
 /*发票号*/
@@ -486,8 +487,11 @@ a.customer-link, a.order-link {
 }
 
 /* 货代费用单和付费单的状态栏显示 */
-.charge-status-0, .chargepay-status-0 {
+.money.status-unpaid, .charge-status-0, .chargepay-status-0 {
     color: #d9534f;
-
 }
 
+/* 货币符号显示 */
+.money {
+    margin-right: 3px;
+}

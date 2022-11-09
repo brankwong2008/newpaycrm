@@ -274,7 +274,7 @@ class Chance(models.Model):
     category = models.SmallIntegerField(choices=category_choices, verbose_name='产品', default=0)
     company = models.CharField(max_length=128, verbose_name='公司名')
     contact = models.CharField(max_length=128, verbose_name='联系人')
-    phone = models.CharField(max_length=11, verbose_name='电话',null=True)
+    phone = models.CharField(max_length=28, verbose_name='电话',null=True)
     email = models.EmailField(max_length=128, verbose_name='邮件',null=True)
     remark = models.TextField(verbose_name='详情', default='--')
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='跟进外销员',

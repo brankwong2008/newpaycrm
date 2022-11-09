@@ -47,8 +47,6 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
         from django.db.models import Count
         ret = Chance.objects.annotate(month=TruncMonth("create_date")).values(
             "month","owner").annotate(c=Count("id")).values("month","owner__nickname", "c")
-        for each in ret:
-            print(each)
 
         return ret
 

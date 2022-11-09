@@ -1,12 +1,15 @@
 
-
+import os
+from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler,Option
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponse
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display
 from django.http import JsonResponse
 from dipay.models import PayToCharge,Charge
 from dipay.forms.forms import ChargePayModelForm
+from django.conf import settings
+from django.conf.urls import url
 
 class ChargePayHandler(StarkHandler):
 
@@ -28,9 +31,11 @@ class ChargePayHandler(StarkHandler):
             return "关联账单"
         else:
             queryset = PayToCharge.objects.filter(chargepay_id=obj.pk)
-            return  "   ".join([ str(item.charge.followorder)
+            download_url = self.reverse_url("download",pk=obj.pk)
+            bills_download_btn = f"<a href='{download_url}'>下载明细</a>"
+            return mark_safe( "   ".join([ str(item.charge.followorder)
                                  +"("+item.currency.icon+str(item.amount or '.') +")  "
-                                 for item in queryset])
+                                 for item in queryset]) + bills_download_btn)
 
     def charge_id_display(self,obj=None, is_header=None,*args,**kwargs):
         if is_header:
@@ -50,6 +55,11 @@ class ChargePayHandler(StarkHandler):
         "remark",
         get_choice_text("status")
     ]
+
+    def get_extra_urls(self):
+        return [
+            url("^download/(?P<pk>\d+)/$", self.wrapper(self.download), name=self.get_url_name('download')),
+        ]
 
     def save_form(self, form, request, is_update=False, *args, **kwargs):
         # 上传水单说明实际付款了，可以更新相关表的状态
@@ -82,3 +92,55 @@ class ChargePayHandler(StarkHandler):
 
         return render(request, self.show_detail_template, locals())
 
+        # 下载上传用的模板文件
+
+    def download(self, request, pk, *args, **kwargs):
+
+        chargepay_obj = self.model_class.objects.filter(pk=pk).first()
+        if not chargepay_obj:
+            return HttpResponse("付费单号不存在")
+
+
+        sample_file = os.path.join(settings.MEDIA_ROOT, "charge_list_sample.xlsx")
+
+        # 读入sample_file
+        from openpyxl import load_workbook
+        wb = load_workbook(sample_file,data_only=True)
+        ws = wb.active
+        ws["B1"].value = chargepay_obj.forwarder.shortname
+        ws["E1"].value = "F" + str(pk).zfill(5)
+
+        USD_total, CNY_total = 0,0
+        for item in PayToCharge.objects.filter(chargepay_id=pk):
+            USD_amount,CNY_amount  = 0,0
+            if item.currency ==1:
+                USD_amount = item.amount
+                USD_total += USD_amount
+            else:
+                CNY_amount = item.amount
+                CNY_total += CNY_amount
+            BL_date = item.charge.BL_date.strftime("%Y-%m-%d")
+            remark = item.charge.remark
+            order_number = str(item.charge.followorder)
+            row = [BL_date,remark,order_number,USD_amount or "-", CNY_amount or "-"]
+            ws.append(row)
+        ws.append(["合计","","", USD_total or "", CNY_total] or "")
+
+        file_name = "F%s.xlsx" % (str(pk).zfill(5))
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+        wb.save(file_path)
+
+        """货代名称
+提单日	费用说明	金凯订单号	美元费用	人民币费用"""
+
+
+        with open(file_path, 'rb') as f:
+            try:
+                response = HttpResponse(f)
+                response['Content-Type'] = 'application/octet-stream'
+                response['Content-Disposition'] = 'attachment;filename="%s"' % (file_name)
+
+                return response
+            except Exception as e:
+                print(e)
+                return HttpResponse("下载失败")
