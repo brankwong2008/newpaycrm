@@ -109,8 +109,7 @@ textarea[id^="amount"] {
 
 /*完成*/
 .status-display.status-4 {
-    /*color: #808080;*/
-    color: #f3a554;
+    color: darkgrey;
 }
 
 /*发票号*/

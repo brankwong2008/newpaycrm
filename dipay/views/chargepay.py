@@ -10,6 +10,7 @@ from dipay.models import PayToCharge,Charge
 from dipay.forms.forms import ChargePayModelForm
 from django.conf import settings
 from django.conf.urls import url
+from datetime import datetime
 
 class ChargePayHandler(StarkHandler):
 
@@ -66,10 +67,11 @@ class ChargePayHandler(StarkHandler):
         if form.instance.ttcopy:
             # 更新付款表时，如果上传水单，则把付款状态改为已出账
             form.instance.status = 1
+
+            # 更新支付日期为传水单的当日
+            form.instance.create_date = datetime.now()
+
             # 且同时要把相关联的付费单的状态改变美元已付，人民币已付，或者结清
-            print('form.instance:',form.instance.pk)
-            # charges_queryset = PayToCharge.objects.filter(chargepay_id=form.instance.pk)
-            print(form.instance.currency.title,"currency.title")
             currency_code = 1 if form.instance.currency.title == '美元' else 2
             for item in Charge.objects.filter(chargepay=form.instance):
                 # 如果currency与费用表中的状态值相等，说明已经更新过了
@@ -92,14 +94,11 @@ class ChargePayHandler(StarkHandler):
 
         return render(request, self.show_detail_template, locals())
 
-        # 下载上传用的模板文件
-
+    # 下载这笔付款所覆盖的费用单的明细，财务需要打出来做账
     def download(self, request, pk, *args, **kwargs):
-
         chargepay_obj = self.model_class.objects.filter(pk=pk).first()
         if not chargepay_obj:
             return HttpResponse("付费单号不存在")
-
 
         sample_file = os.path.join(settings.MEDIA_ROOT, "charge_list_sample.xlsx")
 
@@ -107,7 +106,7 @@ class ChargePayHandler(StarkHandler):
         from openpyxl import load_workbook
         wb = load_workbook(sample_file,data_only=True)
         ws = wb.active
-        ws["B1"].value = chargepay_obj.forwarder.shortname
+        ws["B1"].value = chargepay_obj.forwarder.title
         ws["E1"].value = "F" + str(pk).zfill(5)
 
         USD_total, CNY_total = 0,0
@@ -129,10 +128,6 @@ class ChargePayHandler(StarkHandler):
         file_name = "F%s.xlsx" % (str(pk).zfill(5))
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
         wb.save(file_path)
-
-        """货代名称
-提单日	费用说明	金凯订单号	美元费用	人民币费用"""
-
 
         with open(file_path, 'rb') as f:
             try:
