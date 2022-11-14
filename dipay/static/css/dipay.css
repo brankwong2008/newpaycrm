@@ -1,4 +1,14 @@
 
+/*无a标签显示*/
+a.normal-a{
+    text-decoration: none;
+    color: black;
+}
+
+a.normal-a:hover{
+    color: darkorange;
+}
+
 .table tbody tr td {
     vertical-align: middle;
 

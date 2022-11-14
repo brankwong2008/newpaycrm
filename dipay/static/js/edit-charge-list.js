@@ -84,22 +84,24 @@ function createPaySlip() {
     console.log('formdata:', formdata)
 
     $.ajax({
-        url: location.href,
+        url:"",
         type: 'post',
         data: formdata,
-        success: function (respond) {
-            console.log(respond)
-            if (respond.status) {
-                ShowMsg(respond.msg);
-                // 跳转到别的页面
-                location.href = respond.url;
-                console.log('跳转到别的页面', respond.url)
+        success: function (res) {
+            console.log('got a response', res)
+            if (res.status) {
+                ShowMsg(res.msg,);
+                // 延迟两秒，跳转到付费单页面
+                setTimeout(()=>{location.href = res.url;},1000)
 
             } else {
-                 ShowMsg(respond.msg,time=4000);
+                 ShowMsg(res.msg,time=2000);
             }
-        }
+        },
+        error:function(res){
+            console.log(res)}
     });
+    return false
 
 }
 

@@ -43,7 +43,6 @@ class ChargeHandler(StarkHandler):
             return JsonResponse({"status": False, "msg": '至少选择一项费用金额'})
 
 
-
         # 创建付款单记录， 水单，银行等字段后续再填写
         amount_list = USD_amount or CNY_amount
         total_amount = sum([Decimal(each) for each in amount_list])
@@ -122,8 +121,10 @@ class ChargeHandler(StarkHandler):
         if is_header:
             return "货代"
         else:
-            return mark_safe("<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" %
-                             (obj.pk, obj.forwarder_id, obj.forwarder.shortname))
+            span_tag = "<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" % \
+                       (obj.pk, obj.forwarder_id, obj.forwarder.shortname)
+            forwarder_url = reverse("stark:dipay_forwarder_show_detail", kwargs={"pk":obj.forwarder_id})
+            return mark_safe(f"<a href='{forwarder_url}' target='_blank' class='normal-a'>{span_tag}</a>")
 
     def ETD_display(self, obj=None, is_header=None, *args, **kwargs):
         """  显示货代  """
@@ -142,7 +143,7 @@ class ChargeHandler(StarkHandler):
         else:
             order_number = obj.followorder.order.order_number
             followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % order_number
-            return mark_safe(f"<a href='{followorder_url}' target='_blank'>{order_number}</a>")
+            return mark_safe(f"<a href='{followorder_url}' target='_blank' class='normal-a'>{order_number}</a>")
 
 
     def related_chargepay_display(self, obj=None, is_header=None, *args, **kwargs):

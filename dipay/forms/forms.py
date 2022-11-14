@@ -225,7 +225,6 @@ class FollowChanceAddForm(forms.ModelForm):
             field.widget.attrs["class"] = " form-control"
 
 
-
 class ChanceModelForm(StarkForm):
     class Meta:
         model = Chance
@@ -238,6 +237,9 @@ class ChargePayModelForm(StarkForm):
         model = ChargePay
         fields = "__all__"
         exclude = ['status', ]
+        widgets={
+            "create_date":forms.DateInput(attrs={'type': 'date'}),
+        }
 
 
 class ForwarderChargeModelForm(StarkForm):

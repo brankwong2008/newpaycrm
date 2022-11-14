@@ -68,8 +68,8 @@ class ChargePayHandler(StarkHandler):
             # 更新付款表时，如果上传水单，则把付款状态改为已出账
             form.instance.status = 1
 
-            # 更新支付日期为传水单的当日
-            form.instance.create_date = datetime.now()
+            # 更新支付日期为传水单的当日, 这个地方不应该自动，有可能第二天或者第三天传水单，还是应允许用户修改
+            # form.instance.create_date = datetime.now()
 
             # 且同时要把相关联的付费单的状态改变美元已付，人民币已付，或者结清
             currency_code = 1 if form.instance.currency.title == '美元' else 2
