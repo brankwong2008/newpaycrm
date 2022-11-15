@@ -236,7 +236,7 @@ function showInwardpayConfirm(atag) {
         data: '',
         success: function (respond) {
             console.log(respond)
-            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
+            $('#myModal .modal-body .payment-details').replaceWith(respond);
         }
 
     });

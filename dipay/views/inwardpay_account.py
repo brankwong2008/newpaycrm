@@ -120,14 +120,22 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
 
 
     def confirm_receipt(self, request, pk,  *args, **kwargs):
-        inwardpay_obj = self.model_class.objects.filter(pk=pk).first()
-        if not inwardpay_obj:
+        obj = self.model_class.objects.filter(pk=pk).first()
+
+        if not obj:
             return render(request, 'dipay/msg_after_submit.html', {'msg': '没有找到收款id'})
 
         if request.method == 'GET':
-            return render(request, 'dipay/inwardpayment_detail.html', {'inwardpay_obj': inwardpay_obj})
+            data_list = []
+            data_list.append({"label":"编号","data":obj.id})
+            data_list.append({"label":"付款人","data":str(obj.payer)})
+            data_list.append({"label":"客户","data":obj.customer})
+            data_list.append({"label":"水单金额","data":obj.currency.icon+str(obj.amount)})
+            data_list.append({"label":"到账金额","data":obj.currency.icon+str(obj.got_amount)})
+            data_list.append({"label": "备注", "data": str(obj.remark)})
+            return render(request, 'dipay/inwardpayment_detail.html', {'data_list': data_list})
 
         if request.method == 'POST':
-            inwardpay_obj.confirm_status = 7
-            inwardpay_obj.save()
+            obj.confirm_status = 7
+            obj.save()
             return redirect(self.reverse_list_url())

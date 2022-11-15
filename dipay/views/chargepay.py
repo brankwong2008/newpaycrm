@@ -51,10 +51,11 @@ class ChargePayHandler(StarkHandler):
         'bank',
         'forwarder',
         amount_display,
+        get_choice_text("status"),
         ttcopy_display,
         related_charges_display,
         "remark",
-        get_choice_text("status")
+
     ]
 
     def get_extra_urls(self):

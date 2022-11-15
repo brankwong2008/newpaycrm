@@ -1,0 +1,24 @@
+
+
+
+
+
+    <div class="payment-details">
+
+
+            <table class="table table-bordered table-striped">
+
+                <tbody>
+                {% for row in data_list %}
+                    <tr>
+                        <td>{{ row.label }} </td>
+                        <td>{{ row.data|default:'-' }} </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+
+    </div>
