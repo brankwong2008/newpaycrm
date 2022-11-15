@@ -128,10 +128,13 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
         if request.method == 'GET':
             data_list = []
             data_list.append({"label":"编号","data":obj.id})
+            data_list.append({"label":"汇入日期","data":obj.create_date.strftime("%Y-%m-%d")})
+            data_list.append({"label":"收款银行","data":str(obj.bank)})
             data_list.append({"label":"付款人","data":str(obj.payer)})
             data_list.append({"label":"客户","data":obj.customer})
             data_list.append({"label":"水单金额","data":obj.currency.icon+str(obj.amount)})
             data_list.append({"label":"到账金额","data":obj.currency.icon+str(obj.got_amount)})
+            data_list.append({"label":"中间行扣费","data":obj.currency.icon+str(obj.amount-obj.got_amount)})
             data_list.append({"label": "备注", "data": str(obj.remark)})
             return render(request, 'dipay/inwardpayment_detail.html', {'data_list': data_list})
 
