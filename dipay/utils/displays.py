@@ -188,7 +188,7 @@ def port_display(field, title=None, hidden_xs=''):
 
 
 # 订舱，装箱，生产信息 (如果内容太长自动进行隐藏的办法）  hidden-xs的单元格将在手机屏幕不显示
-def info_display(field, title=None, hidden_xs='', max_width=100, editable=True):
+def info_display(field, title=None, hidden_xs='', max_width=562, editable=True):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
@@ -297,7 +297,7 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
 
 
 # 订舱信息展示，加入船公司和集装箱信息
-def book_info_display(field, title=None, time_format="%Y-%m-%d", hidden_xs='', max_width=52):
+def book_info_display(field, title=None, time_format="%Y-%m-%d", hidden_xs='', max_width=562):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         """
         功能：显示装箱，订舱，生产等字段的方法，并结合前端js提供双击然后ajax修改信息的功能
