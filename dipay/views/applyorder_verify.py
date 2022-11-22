@@ -9,6 +9,9 @@ from datetime import datetime
 
 class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
     has_add_btn =  False
+
+    page_title = "订单审核"
+
     # 加入一个组合筛选框
     option_group = [
         Option(field='status'),

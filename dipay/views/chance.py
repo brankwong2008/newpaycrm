@@ -11,6 +11,7 @@ from dipay.utils.tools import str_width_control
 from dipay.forms.forms import ChanceModelForm
 
 class ChanceHandler(PermissionHanlder,StarkHandler):
+    page_title = "商机"
 
     show_list_template = "dipay/show_chance_list.html"
 

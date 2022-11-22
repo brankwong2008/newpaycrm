@@ -20,6 +20,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
     filter_hidden = "hidden"
 
+    page_title = "收款管理"
+
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
         Option(field='bank'),
@@ -138,6 +140,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
         fast_add_list = ['payer', 'bank', ]
+
+        page_title = self.page_title
 
         if request.method == "GET":
             form = self.get_model_form("add")()
@@ -281,6 +285,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     # 关联款项 第二版设计，不用formset，改为一个一个订单的关联，采用阿里的模式
     def relate2order(self, request, inwardpay_id, *args, **kwargs):
+        page_title = "收款关联订单"
+
         inwardpay_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
 
         # 第一步先判断用户是否已经确认过该款项，如果状态是"未确认"，直接跳转到确认页面

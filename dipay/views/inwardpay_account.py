@@ -10,6 +10,7 @@ from django.db import transaction
 class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
     show_list_template = 'dipay/show_inwardpay_account.html'
+    page_title = "收款管理(财务版)"
 
     search_list = ['create_date','amount','customer__title__icontains',]
     search_placeholder = '搜索 日期 金额 客户名 '

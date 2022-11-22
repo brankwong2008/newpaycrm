@@ -15,7 +15,9 @@ from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder
 class ChargeHandler(StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
 
-    order_by_list = ['-followorder__ETD',]
+    page_title = '货代费用'
+
+    order_by_list = ['-BL_date',]
 
     # 快速筛选： 货代，付费状态
     option_group = [
@@ -131,8 +133,8 @@ class ChargeHandler(StarkHandler):
         if is_header:
             return "提单日"
         else:
-            if obj.followorder.ETD:
-                return obj.followorder.ETD.strftime("%Y-%m-%d")
+            if obj.BL_date:
+                return obj.BL_date.strftime("%Y-%m-%d")
             else:
                 return "-"
 

@@ -14,6 +14,8 @@ MyUserInfo = import_string(settings.RBAC_USER_MODLE_CLASS)
 class MyUserInfoHandler(StarkHandler):
     fields_display = ["username","nickname",manytomany_display("roles"), reset_pwd_display, get_choice_text('department')]
 
+    page_title = "用户管理"
+
     def get_model_form(self,type=None):
         class UserAddModelForm(StarkModelForm):
             re_password = forms.CharField(max_length=30,label="确认密码",widget=forms.PasswordInput())

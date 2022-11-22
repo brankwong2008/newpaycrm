@@ -15,6 +15,8 @@ import datetime
 class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = 'dipay/show_dailyplan_list.html'
+    page_title = "日计划"
+
     def get_per_page(self):
         return 15
 

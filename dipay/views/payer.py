@@ -3,6 +3,7 @@ from stark.service.starksite import StarkHandler
 from stark.utils.display import PermissionHanlder
 
 class PayerHandler(PermissionHanlder,StarkHandler):
+    page_title = "付款人管理"
 
     search_list = ['title__icontains','customer__title__icontains']
     search_placeholder = '搜索 付款人 客户'

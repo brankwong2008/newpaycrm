@@ -14,6 +14,7 @@ from django.http import QueryDict
 
 class WeekelyPlanHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/weekly_plan_list.html'
+    page_title = "排产管理"
 
     # 标签导航显示， active有值的是默认激活的标签
     tab_list = [('装箱','装箱','active'), ('发货','排产中',""),]

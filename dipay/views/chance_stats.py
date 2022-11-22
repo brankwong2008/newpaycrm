@@ -18,6 +18,7 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = "dipay/show_chance_list.html"
 
+    page_title = "商机统计"
 
     # 月份的display
     def month_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -63,7 +64,7 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
         # 列表页面
 
     def show_list(self, request, *args, **kwargs):
-
+        page_title = self.page_title
         fields_display = self.get_fields_display(request, *args, **kwargs)
 
         header_list = []

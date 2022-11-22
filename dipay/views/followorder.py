@@ -27,6 +27,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     detail_fields_display = ['order','load_port','discharge_port','ETD','ETA','book_info','load_info',
                              'produce_info','sales_remark',]
 
+    page_title = "跟单"
+
 
     show_list_template = 'dipay/show_follow_order_list.html'
 

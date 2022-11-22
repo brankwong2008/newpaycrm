@@ -12,6 +12,8 @@ class ForwarderChargePayHandler(PermissionHanlder,StarkHandler):
 
     show_detail_template = "dipay/show_chargepay_detail.html"
 
+    page_title = "付费记录(货代版)"
+
     has_add_btn =  False
 
     order_by_list = ['-id','-create_date']

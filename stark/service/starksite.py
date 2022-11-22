@@ -145,6 +145,7 @@ class StarkHandler(object):
     show_detail_template = None  # 显示页面模板
     fields_display = '__all__'    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
+    page_title = ""
     guideline = ""   # 列表页的操作指南
     batch_process_hidden = None
 
@@ -254,9 +255,8 @@ class StarkHandler(object):
 
     # 列表页面
     def show_list(self, request,*args,**kwargs):
-
         fields_display = self.get_fields_display(request,*args,**kwargs)
-
+        page_title = self.page_title
         header_list = []
         data_list = []
         filter_hidden = self.filter_hidden
@@ -445,6 +445,8 @@ class StarkHandler(object):
 
     # 新增一条记录
     def add_list(self, request,*args,**kwargs):
+        page_title = self.page_title
+
         if request.method =="GET":
             form = self.get_model_form("add")()
             namespace = self.namespace
@@ -464,6 +466,8 @@ class StarkHandler(object):
 
     # 编辑一条记录
     def edit_list(self, request, pk, *args,**kwargs):
+        page_title = self.page_title
+
         form_class = self.get_model_form("edit")
         edit_obj = self.get_edit_obj(request,pk,*args,**kwargs)
 

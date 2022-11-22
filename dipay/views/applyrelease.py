@@ -17,6 +17,7 @@ from django.db import transaction
 class ApplyReleaseHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
 
+    page_title = "放单管理"
 
     order_by_list = ['-apply_date']
 

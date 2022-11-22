@@ -21,6 +21,8 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     def get_per_page(self):
         return 10
 
+    page_title = "订单管理"
+
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = ['customer', ]
 
@@ -154,6 +156,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     # 申请订单号
     def add_list(self, request, *args, **kwargs):
         """ 申请/添加订单号  """
+        page_title = "申请订单号"
         if request.method == "GET":
             form = self.get_model_form("add")()
             # 限定在客户选项里面，业务员只能看到自己的客户

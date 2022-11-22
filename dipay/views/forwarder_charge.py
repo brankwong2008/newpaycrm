@@ -12,6 +12,8 @@ from dipay.forms.forms import ForwarderChargeModelForm
 class ForwarderChargeHandler(PermissionHanlder,StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
 
+    page_title = '港杂费用(货代版)'
+
     order_by_list = ['-BL_date',]
 
     # 快速筛选： 付费状态
