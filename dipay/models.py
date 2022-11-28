@@ -314,9 +314,9 @@ class Charge(models.Model):
         return  self.followorder.order.order_number + self.forwarder.shortname + '费用'
 
 
-# 货代结算记录
+# 货代付费单
 class ChargePay(models.Model):
-    create_date = models.DateField(verbose_name='支付日期',default=datetime.now())
+    create_date = models.DateField(verbose_name='支付日期')
     bank = models.ForeignKey(to=Bank,on_delete=models.CASCADE, verbose_name='出账银行',null=True)
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
     currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)
@@ -330,7 +330,7 @@ class ChargePay(models.Model):
     def __str__(self):
         return self.create_date.strftime('%Y/%m/%d') + self.forwarder.shortname, self.currency.icon + str(self.amount)
 
-
+# 关联表：付费单-货运费用单
 class PayToCharge(models.Model):
     chargepay = models.ForeignKey(to=ChargePay,on_delete=models.CASCADE, verbose_name='付费单')
     charge = models.ForeignKey(to=Charge,on_delete=models.CASCADE, verbose_name='费用单')

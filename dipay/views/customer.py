@@ -10,6 +10,8 @@ class CustomerHandler(PermissionHanlder,StarkHandler):
 
     verify_similarity_list = ['title','shortname']
 
+    page_title = "客户"
+
     fields_display = ['id','title','owner']
 
     def get_per_page(self):

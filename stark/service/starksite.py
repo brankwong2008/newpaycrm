@@ -519,6 +519,8 @@ class StarkHandler(object):
     # 显示一条记录详情
     def show_detail(self, request, pk, *args,**kwargs):
         # print('pk',pk)
+        page_title = self.page_title+"详情"
+
         obj = self.model_class.objects.filter(pk=pk).first()
         data_list = []
 

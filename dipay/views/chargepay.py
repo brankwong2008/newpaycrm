@@ -36,7 +36,7 @@ class ChargePayHandler(StarkHandler):
             download_url = self.reverse_url("download",pk=obj.pk)
             bills_download_btn = f"<a href='{download_url}'>下载明细</a>"
             return mark_safe( "   ".join([ str(item.charge.followorder)
-                                 +"("+item.currency.icon+str(item.amount or '.') +")  "
+                                 +"( "+item.currency.icon+str(item.amount or '.') +")  "
                                  for item in queryset]) + bills_download_btn)
 
     def charge_id_display(self,obj=None, is_header=None,*args,**kwargs):

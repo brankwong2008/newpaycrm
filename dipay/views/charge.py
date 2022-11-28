@@ -1,7 +1,7 @@
 from decimal import Decimal
+from datetime import datetime
 from django.shortcuts import redirect
 from stark.service.starksite import StarkHandler, Option
-from stark.utils.display import get_date_display, get_choice_text
 from django.utils.safestring import mark_safe
 from django.shortcuts import reverse, render
 from stark.utils.display import PermissionHanlder, get_date_display, get_choice_text, checkbox_display_func
@@ -51,16 +51,20 @@ class ChargeHandler(StarkHandler):
         currency = Currency.objects.get(title='美元') if USD_amount else Currency.objects.get(title='人民币')
 
         # 生成付费单(草稿)
-        chargepay_obj = ChargePay(forwarder_id=forwarder_id, currency=currency, amount=total_amount)
+        chargepay_obj = ChargePay(create_date=datetime.now(),forwarder_id=forwarder_id, currency=currency, amount=total_amount)
 
-        # 第一步需要查重，并告知前端哪笔是重复的
+
         paytocharge_list = []
         for ind, val in enumerate(pk_list):
+            # 第一步需要查重，并告知前端哪笔是重复的
             if PayToCharge.objects.filter(charge_id=val,currency=currency).exists():
                 order_number = self.model_class.objects.get(pk=val).followorder.order.order_number
                 msg = f"订单{order_number}的{currency.title}费用有可能重复支付"
                 return JsonResponse({"status": False, "msg": msg,})
-            paytocharge_obj = PayToCharge(charge_id=val,
+
+            # 创建付费单-费用单关联记录
+            paytocharge_obj = PayToCharge(
+                                          charge_id=val,
                                           chargepay=chargepay_obj,
                                           currency=currency,
                                           amount=amount_list[ind])
