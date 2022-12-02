@@ -12,6 +12,7 @@ class Forwarder(models.Model):
     email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     bank_account = models.TextField(verbose_name='银行信息', default='--')
     remark = models.TextField(verbose_name='货代详情', default='--')
+    is_option = models.BooleanField(verbose_name='加入筛选',default=False)
     # user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='绑定用户',null=True)
 
     def __str__(self):

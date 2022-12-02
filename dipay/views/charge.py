@@ -9,7 +9,7 @@ from django.conf.urls import url
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
 from dipay.utils.displays import fees_display
-from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder
+from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
 
 
 class ChargeHandler(StarkHandler):
@@ -21,9 +21,17 @@ class ChargeHandler(StarkHandler):
 
     # 快速筛选： 货代，付费状态
     option_group = [
-        Option(field='forwarder', is_multi=False, control_list=['汇昌','迪斯泰','誉洲','永鑫海','惠和','深圳鑫顺源',]),
+        Option(field='forwarder',
+               is_multi=False,
+               # control_list=['汇昌','迪斯泰','誉洲','永鑫海','惠和','深圳鑫顺源',]  # 静态指定
+               ),
         Option(field='status'),
     ]
+
+    # 动态指定
+    def get_filter_control_list(self):
+        return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
+
 
     search_list = ['followorder__order__order_number__icontains',]
 

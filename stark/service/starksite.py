@@ -106,7 +106,12 @@ class Option:
 
             yield '</div>'
 
-    def get_data(self,model_class,query_dict):
+    def update_control_list(self, filter_control_dict):
+        control_list = filter_control_dict.get(self.field)
+        if control_list:
+            self.control_list = control_list
+
+    def get_data(self,model_class,query_dict,):
 
         # 通过字段名拿到字段对象
         field_obj = model_class._meta.get_field(self.field)
@@ -156,6 +161,7 @@ class StarkHandler(object):
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = []
     search_placeholder = ''
+    filter_control_dict = {}   # 给Option筛选字段指定动态的control_list( 如果可筛选值特别多，只筛选指定的值 )
 
     def __init__(self, site, model_class,prev):
         self.site = site
@@ -169,6 +175,9 @@ class StarkHandler(object):
     def get_editable(self,field):
         # 返回true 说明可编辑
         return True
+
+    def get_filter_control_list(self):
+        return self.filter_control_dict
 
     def get_fields_display(self,request,*args,**kwargs):
         val = []
@@ -351,7 +360,9 @@ class StarkHandler(object):
                     # 在筛选条件中加入默认筛选
                     filter_condition.update({option_obj.field:option_obj.default})
 
-
+                # 动态获取control_list
+                filter_control_dict = self.get_filter_control_list()
+                option_obj.update_control_list(filter_control_dict)
                 # 这个字典的键值是可迭代对象，给出页面需要的html标签
                 option_group_dict[option_obj.field] = option_obj.get_data(self.model_class, query_dict)
 
