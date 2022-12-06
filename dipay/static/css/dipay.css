@@ -432,10 +432,14 @@ span[id^="content"].red {
 }
 
 #task_input {
-    width: 320px;
+    width: 240px;
 }
 
-#id_remind_date, #task_input {
+#id_cc{
+    width:80px
+}
+
+#id_remind_date, #task_input, #id_cc {
     height: 36px;
 }
 

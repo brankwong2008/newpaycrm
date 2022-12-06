@@ -27,15 +27,19 @@ class TaskAddModelForm(forms.ModelForm):
         widgets = {
             'content': forms.TextInput(attrs={'id': 'task_input'}),
             'remind_date': forms.DateInput(attrs={ "required":False,"type":"date",}),
-            'cc': forms.SelectMultiple(attrs={ "required":False,"size":"1"}),
+            'cc': forms.Select(attrs={ "required":False,"size":"3","multiple":""}),
         }
 
     def __init__(self, *args, **kwargs):
         super(TaskAddModelForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs["class"] = "form-control"
 
-        # for name, field in self.fields.items():
-        #     field.widget.attrs["class"] = "form-control"
-        #     # field.widget.attrs["autofocus"] = "autofocus"
+    def update_choices(self,field,choices):
+        print("TaskAddModelForm, working add", )
+        self.fields[field].choices = choices
+
+
 
 # 用于编辑任务的model form
 class TaskEditModelForm(forms.ModelForm):

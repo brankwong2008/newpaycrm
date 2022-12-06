@@ -8,7 +8,7 @@ from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, checkbox_display, PermissionHanlder,info_display,change_date_display
 from dipay.utils.displays import save_display
 from dipay.utils.tools import get_choice_value
-from dipay.models import DailyPlan, FollowOrder
+from dipay.models import DailyPlan, FollowOrder, UserInfo
 from dipay.forms.forms import TaskAddModelForm,TaskEditModelForm
 import datetime
 
@@ -176,6 +176,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     def add_list(self, request, *args, **kwargs):
         if request.method == "GET":
             form = self.get_model_form("add")()
+            # 手动更新cc抄送字段的choice，只能自定一个更新的方法，choices源必须是列表等可迭代对象
+            form.update_choices('cc',UserInfo.objects.all().exclude(pk=request.user.pk).values_list("id","nickname"))
             model_name = self.model_name
             # 当返回数据给模态框时，get_type = simple，只返回核心内容
             get_type = request.GET.get('get_type')
@@ -186,7 +188,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return render(request, self.add_list_template or "stark/change_list.html", locals())
 
         if request.method == "POST":
-            form = self.get_model_form("add")(request.POST, request.FILES)
+            form = self.get_model_form(htype="add")(request.POST, request.FILES)
             if form.is_valid():
                 result = self.save_form(form, request, False, *args, **kwargs)
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
@@ -226,8 +228,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 res.update(data_dict)
             return JsonResponse(res)
 
-    def get_model_form(self,type=None):
-        if type=="add":
+    def get_model_form(self,htype=None):
+        if htype=="add":
             return TaskAddModelForm
         else:
             return TaskEditModelForm
@@ -248,8 +250,10 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
         # 新增一条任务
         if not is_update:
+            print("request.POST",request.POST)
             link_id = request.POST.get('link_id')
-            # 有link_id说明是新增关联记录
+            cc = request.POST.getlist('cc[]')
+
             if link_id:
                 form.instance.link_id = link_id
                 followorder_obj = FollowOrder.objects.get(pk=link_id)
@@ -259,6 +263,20 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
             form.instance.user = request.user
             form.save()
+
+            # 带抄送功能
+            if cc:
+                content = "%s fm:%s" % (request.POST.get('content'), request.user.nickname)
+                for each in cc:
+                    form.instance.content = content
+                    cc_user = UserInfo.objects.filter(pk=each).first()
+                    if cc_user:
+                        # 此处是否可以使用pk置为null的方式，然后form.save()来新建一条记录
+                        form.instance.pk=None
+                        form.instance.user = cc_user
+                        form.instance.content = content
+                        form.save()
+
             return JsonResponse({"status":True, "msg":'任务快速添加成功'})
 
         # 更新一条任务

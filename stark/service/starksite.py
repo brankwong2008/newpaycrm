@@ -284,7 +284,7 @@ class StarkHandler(object):
             batch_process_dict = None
 
         if request.method == "POST":
-            print(request.POST)
+            # print(request.POST)
             func_name = request.POST.get("handle_type")
             if func_name in batch_process_dict:
                 func = getattr(self,func_name)
@@ -375,7 +375,7 @@ class StarkHandler(object):
 
         # 根据以上过滤条件过滤数据, 如果筛选条件为'all'的要去掉这个条件
         filter_condition = { k:v for k,v in filter_condition.items() if v != 'all' }
-        print(filter_condition)
+
         searched_queryset = searched_queryset.filter(**filter_condition)
 
         # 在由用户定义要进行筛选的字段 option_group = [option_obj, ]
@@ -385,7 +385,7 @@ class StarkHandler(object):
 
         ############## 1. 排序 ###############
         order_by_list = self.get_order_by_list(request)
-        print(order_by_list, "order_by_list")
+        # print(order_by_list, "order_by_list")
         ordered_queryset = searched_queryset.order_by(*order_by_list)
 
 
@@ -643,7 +643,6 @@ class StarkHandler(object):
             url_name = "%s:%s" % (self.namespace,url_name)
 
         url = reverse(url_name, args=args, kwargs=kwargs)
-        print("reverse_url kwargs:", kwargs)
 
         if self.save_query_param():
             url = "%s?%s" % (url, self.save_query_param())

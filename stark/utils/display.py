@@ -251,7 +251,6 @@ class PermissionHanlder:
         if is_header:
             return mark_safe("<span class='hidden-xs'>操作</span>")
         else:
-            print('PermissionHanlde, del_display',args, kwargs)
             del_url = self.reverse_del_url(pk=obj.pk)
             return mark_safe("<a href='%s' class='hidden-xs'><i class='fa fa-trash'></i></a>" % del_url)
 
@@ -296,13 +295,9 @@ class PermissionHanlder:
     # 添加按钮的权限控制
     def add_btn_display(self,request,*args, **kwargs):
         permission_dict = request.session.get(settings.PERMISSION_KEY)
-        print("permission addbutn display before ")
+
         get_add_url_name = '%s:%s' % (self.namespace, self.get_add_url_name)
         if get_add_url_name in permission_dict and self.has_add_btn:
-
-            print("permission addbutn display after ")
-            print("get add url name:",get_add_url_name)
-            print("permission_dict:",permission_dict)
 
             return self.get_add_btn(request,*args, **kwargs)
 

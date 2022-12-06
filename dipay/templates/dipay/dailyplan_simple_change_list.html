@@ -1,7 +1,9 @@
 {% load static %}
 
      <style>
-
+         .form-group{
+             margin-top: 10px;
+         }
 
      </style>
 
@@ -9,7 +11,6 @@
       <div class="mymodal-details">
 
         <div>
-
             <!-- 修改数据 -->
             <form action="" method="post" enctype='multipart/form-data' class="form-inline">
                 {% csrf_token %}
@@ -36,7 +37,7 @@
 
                 {% endfor %}
 
-                <div>
+                <div >
                     <span class="btn btn-success {{ model_name }}"> 提交 </span>
                 </div>
 
