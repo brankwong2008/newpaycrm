@@ -8,7 +8,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.forms.forms import AddApplyOrderModelForm, EditApplyOrderModelForm, ConfirmApplyOrderModelForm, \
     ManualAddApplyOrderModelForm
 from dipay.models import CurrentNumber, Customer, FollowOrder, ApplyOrder, Currency, Inwardpay, Bank, Pay2Orders, \
-    UserInfo, Payer
+    UserInfo, Payer, DailyPlan
 from openpyxl import load_workbook
 from django.conf.urls import url
 from django.db import transaction
@@ -713,16 +713,23 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 if not form.instance.confirm_date:
                     form.instance.confirm_date = datetime.now()
                 # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
-                exists_follow_order = FollowOrder.objects.filter(order=order_obj).exists()
-                if not exists_follow_order:
-                    FollowOrder.objects.create(order=order_obj, salesman=order_obj.salesperson)
-
+                followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
+                if not followorder_obj:
+                    followorder_obj = FollowOrder(order=order_obj, salesman=order_obj.salesperson)
+                    followorder_obj.save()
                 form.save()
                 order_number = order_obj.order_number
                 link = reverse("stark:dipay_followorder_list")+"?q=%s" % order_number
                 follow_order_link = "<a href='%s' target='_blank'>%s</a>" % (link, order_number)
                 msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单，已自动生成跟单记录:'+ follow_order_link
                 msg = mark_safe(msg)
+
+                # 给外贸跟单推送一条任务，并关联订单
+                content = '刚下一个新订单：%s' % order_number
+                order_link = followorder_obj
+                user = UserInfo.objects.filter(username='kelly').first()
+                DailyPlan.objects.create(content=content,link=order_link,user=user)
+
                 return render(request, 'dipay/msg_after_submit.html', locals())
             else:
                 return render(request, 'dipay/confirm_order.html', locals())

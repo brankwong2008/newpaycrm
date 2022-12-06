@@ -1,4 +1,5 @@
 
+
 //定义全局变量 货代，货币
 let forwarder_list=[];
 let currency_list=[];
@@ -19,7 +20,7 @@ function showTotalValue(val,currency) {
 //  点击单元格也能触发 function addToPayCharge，方便操作，这里重点是防止冒泡事件的发生
 $("[name$=amount]").parent('td').click(function (event) {
     if (event.target==this){ $(this).children(":first").trigger("click");}
-    return false; //只能阻止空间的默认事件，但是不能阻止冒泡
+    return false; //return false只能阻止控件的默认事件，但是不能阻止冒泡, 只有event.target==this的判断才能阻止冒泡
 })
 
 

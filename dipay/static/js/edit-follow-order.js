@@ -1,19 +1,4 @@
 
-// 自定义消息提示框的淡入淡出
-function ShowTip(tip, type,time=2000) {
-    var $tip = $('#tip');
-    if ($tip.length == 0) {
-        var $tip_span = `<span id='tip' style='position:fixed; top:100px;left:50%;z-index:99;height:35px;line-height: 8px'>${tip}</span>`;
-        $('body').append($tip_span);
-    }
-    $('#tip').stop(true).prop('class', 'alert alert-' + type).text(tip).fadeIn(500).delay(time).fadeOut(500);
-}
-
-function ShowMsg(msg,time=2000) {
-    console.log('show msg....:', msg)
-    ShowTip(msg, 'info',time)
-}
-
 
 // 功能：双击表格，替换成相应的input控件，点击保存更新到数据库
 function savePlan(btn) {

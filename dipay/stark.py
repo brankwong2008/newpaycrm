@@ -103,3 +103,12 @@ site.register(models.Charge, ForwarderChargeHandler,prev='forwarder')
 
 # 货代费用付款单-货代版
 site.register(models.ChargePay, ForwarderChargePayHandler,prev='forwarder' )
+
+# 产品管理
+site.register(models.Product )
+
+# 供应商管理
+site.register(models.Supplier )
+
+# 报价管理
+site.register(models.Quote )

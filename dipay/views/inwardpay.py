@@ -139,9 +139,11 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
-        fast_add_list = ['payer', 'bank', ]
+        """新增一笔收款"""
 
         page_title = self.page_title
+        #  外键字段快速添加一条记录，弹窗式
+        fast_add_list = ['payer', 'bank', ]
 
         if request.method == "GET":
             form = self.get_model_form("add")()
@@ -151,11 +153,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     field_obj = self.model_class._meta.get_field(field.name)
                     related_model_name = field_obj.related_model._meta.model_name
                     related_url = '/%s/%s/%s/create/' % (self.namespace, self.app_label, related_model_name)
-                    print(related_url)
+                    # 把快速添加的url绑定到field对象中
                     setattr(field, 'url', related_url)
             form.instance.create_date = datetime.now()
-            # print('inwardpay datetime now',datetime.now())
-            # 控制应显示快速添加按钮的字段名
+
             return render(request, "dipay/inwardpay_add.html", locals())
 
         if request.method == "POST":

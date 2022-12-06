@@ -12,7 +12,7 @@ from django.conf import settings
 from django.conf.urls import url
 from datetime import datetime
 
-class ChargePayHandler(StarkHandler):
+class ChargePayHandler(PermissionHanlder,StarkHandler):
 
     show_detail_template = "dipay/show_chargepay_detail.html"
     page_title = "付费记录"

@@ -23,10 +23,11 @@ class StarkForm(forms.ModelForm):
 class TaskAddModelForm(forms.ModelForm):
     class Meta:
         model = DailyPlan
-        fields = ["content", "remind_date",]
+        fields = ["content", "remind_date",'cc']
         widgets = {
             'content': forms.TextInput(attrs={'id': 'task_input'}),
             'remind_date': forms.DateInput(attrs={ "required":False,"type":"date",}),
+            'cc': forms.SelectMultiple(attrs={ "required":False,"size":"1"}),
         }
 
     def __init__(self, *args, **kwargs):

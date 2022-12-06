@@ -12,7 +12,7 @@ from dipay.utils.displays import fees_display
 from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
 
 
-class ChargeHandler(StarkHandler):
+class ChargeHandler(PermissionHanlder,StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
 
     page_title = '货代费用'

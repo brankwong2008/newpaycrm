@@ -179,7 +179,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             model_name = self.model_name
             # 当返回数据给模态框时，get_type = simple，只返回核心内容
             get_type = request.GET.get('get_type')
-            print('get type', get_type)
+
+            # 从跟单页面直接添加关联任务时触发这个功能，以get_type来区分
             if get_type == 'simple':
                 self.add_list_template = "dipay/dailyplan_simple_change_list.html"
             return render(request, self.add_list_template or "stark/change_list.html", locals())

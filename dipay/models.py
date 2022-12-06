@@ -257,6 +257,7 @@ class DailyPlan(models.Model):
     remark = models.TextField(verbose_name='备注', default='-')
     urgence = models.BooleanField(verbose_name="紧急",default=False)
     user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='创建人',default=3)
+    cc = models.ManyToManyField(to=UserInfo, related_name='cc', verbose_name='抄送')
 
     def __str__(self):
         return "%s %s" % (self.start_date.strftime('%Y/%m/%d'), self.content)
@@ -323,7 +324,7 @@ class ChargePay(models.Model):
     currency = models.ForeignKey(to=Currency,on_delete=models.CASCADE, verbose_name='货币',default=1)
     amount =  models.DecimalField( verbose_name='金额',max_digits=10,decimal_places=2)
     ttcopy =  models.ImageField(upload_to="ttcopy", verbose_name='付款水单', null=True)
-    charge = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单',null=True,blank=True)
+    charge = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单')
     remark = models.TextField(verbose_name='备注', default='--')
     status_choices = [(0, '待付'), (1, '已出账')]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='支付状态', default=0)
@@ -343,12 +344,24 @@ class PayToCharge(models.Model):
         return str(self.charge) + str(self.amount)
 
 
-# class Supplier(models.Model):
-#     name = models.CharField(max_length=128, verbose_name='供应商名称')
-#
-# class Product(models.Model):
-#     name = models.CharField(max_length=128, verbose_name='品名')
-#     supplier = models.ForeignKey(to=Supplier,on_delete=models.CASCADE, verbose_name='供应商')
-#     quote = models.ManyToManyField(to=Customer, through='Quote', verbose_name='关联账单',null=True,blank=True)
-#
-#
+class Supplier(models.Model):
+    title = models.CharField(max_length=128, verbose_name='供应商名称')
+    contact =  models.CharField(max_length=128, verbose_name='联系人',null=True,blank=True)
+    phone =  models.CharField(max_length=128, verbose_name='电话',null=True,blank=True)
+    email =  models.EmailField(max_length=128, verbose_name='电邮',null=True,blank=True)
+    remark = models.TextField(verbose_name='备注', default='--')
+
+class Product(models.Model):
+    title = models.CharField(max_length=128, verbose_name='品名')
+    spec =  models.CharField(max_length=128, verbose_name='规格')
+    thick = models.DecimalField(verbose_name='厚度',max_digits=10,decimal_places=2, default=0.3)
+    quote = models.ManyToManyField(to=Supplier, through='Quote', verbose_name='报价单',null=True, blank=True)
+    remark = models.TextField(verbose_name='备注', default='--')
+
+class Quote(models.Model):
+    product = models.ForeignKey(to=Product,on_delete=models.CASCADE, related_name='related_product', verbose_name='产品')
+    supplier = models.ForeignKey(to=Supplier,on_delete=models.CASCADE, verbose_name='供应商',default=1)
+    price = models.DecimalField(verbose_name='价格',max_digits=10,decimal_places=4, default=0)
+    vol = models.DecimalField(verbose_name='单只体积',max_digits=10,decimal_places=3, default=0)
+    gw = models.DecimalField(verbose_name='单只重量',max_digits=10,decimal_places=3, default=0)
+    remark = models.TextField(verbose_name='备注', default='--')
