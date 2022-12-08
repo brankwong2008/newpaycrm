@@ -140,7 +140,6 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     # 自定义添加记录view
     def add_list(self, request, *args, **kwargs):
         """新增一笔收款"""
-
         page_title = self.page_title
         #  外键字段快速添加一条记录，弹窗式
         fast_add_list = ['payer', 'bank', ]

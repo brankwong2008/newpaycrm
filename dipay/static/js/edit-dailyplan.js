@@ -49,35 +49,4 @@ function switchUrgence(atag) {
 }
 
 
-//  点击显示全部文本内容
-// var pointX;
-// var pointY;
-//
-// $(function(){
-//     $(".txtstyle").bind("mouseover",function(e){
-//         pointX = e.pageX;
-//         pointY = e.pageY;
-//         showTip(e);
-//     }).bind("mouseout",function(e){
-//        closeTip()
-//     }).bind("mousedown",function(e){
-//        closeTip()
-//     });
-//
-// });
-//
-// function showTip(e){
-//     var e = e || event;
-//     var oText = e.srcElement;
-//     var sTextValue = oText.value;
-//     if(sTextValue.length > 0){
-//         $("#kyqToolTip").css("display","block");
-//         $("#kyqToolTip").css("left",pointX+10);
-//         $("#kyqToolTip").css("top",pointY-10);
-//         $("#kyqToolTip").html(sTextValue);
-//     }
-// }
-//
-// function closeTip(e){
-//
-// }
+//  点击添加任务显示

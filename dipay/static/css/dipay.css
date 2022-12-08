@@ -432,7 +432,11 @@ span[id^="content"].red {
 }
 
 #task_input {
-    width: 240px;
+    width: 185px;
+}
+
+#id_remind_date {
+    width: 112px;
 }
 
 #id_cc{
@@ -445,10 +449,7 @@ span[id^="content"].red {
 
 span.dailyplan {
     margin-top: 30px
-
 }
-
-
 /* end of  任务页面的css */
 
 

@@ -323,8 +323,9 @@ function simpleAddDailyPlan(atag) {
             $('#myModal .modal-body .mymodal-details form').attr('action', href);
             var $input = `<input type="hidden" name="link_id" id="id_link_id" value=''>`
             $('#myModal .modal-body .mymodal-details form').append($input);
-            $('#myModal .modal-body .mymodal-details form span.dailyplan').attr('id', 'task_button')
+            $('#myModal .modal-body .mymodal-details form span.dailyplan').attr('id', 'task_button');
             $('#myModal').modal('show');
+            $('#myModal .modal-body .mymodal-details form .selectpicker').selectpicker('show');
             // 光标foucus到第一个input框
             setTimeout("$('#myModal form input[type=text]').first().focus()", 500)
 

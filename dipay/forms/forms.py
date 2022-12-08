@@ -27,16 +27,23 @@ class TaskAddModelForm(forms.ModelForm):
         widgets = {
             'content': forms.TextInput(attrs={'id': 'task_input'}),
             'remind_date': forms.DateInput(attrs={ "required":False,"type":"date",}),
-            'cc': forms.Select(attrs={ "required":False,"size":"3","multiple":""}),
+            'cc': forms.Select(attrs={ "required":False,
+                                       "size":"3",
+                                       "multiple":"",
+                                       "class":"selectpicker bla bli form-control",
+                                       "style":"display: none;",
+                                       "data-live-search":"true",
+                                       }),
         }
 
     def __init__(self, *args, **kwargs):
         super(TaskAddModelForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            field.widget.attrs["class"] = "form-control"
+            print(name, field)
+            if name != 'cc':
+                field.widget.attrs["class"] = "form-control"
 
     def update_choices(self,field,choices):
-        print("TaskAddModelForm, working add", )
         self.fields[field].choices = choices
 
 
