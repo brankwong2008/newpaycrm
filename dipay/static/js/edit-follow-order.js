@@ -3,6 +3,7 @@
 // 功能：双击表格，替换成相应的input控件，点击保存更新到数据库
 function savePlan(btn) {
     // 找到控件和input信息
+    console.log('coloe work save plan')
     var pk = $(btn).attr('pk');
     var url = $(btn).attr('url');
     var $textarea_list = $(`[id$='-id-${pk}']`);
@@ -115,8 +116,10 @@ function showInputBox(sp) {
 
 // 给编辑框旁边的小对钩绑定事件，直接指向同一行的save按钮
 function fastInfoSave(btn) {
+    console.log('fast info save btn')
     var pk = $(btn).attr('pk');
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
+    console.log($(`.save-sequence[pk="${pk}"]`))
 }
 
 
@@ -271,6 +274,7 @@ function addDailyPlan(atag) {
             var $input = `<input type="hidden" name="link_id" id="id_link_id" value='${pk}'>`
             $('#myModal .modal-body .mymodal-details form').append($input);
             $('#myModal').modal('show');
+            $('#myModal .modal-body .mymodal-details form .selectpicker').selectpicker('show');
             setTimeout("$('#myModal form input[type=text]').first().focus()", 500)
         }
     });

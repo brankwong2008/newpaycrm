@@ -162,6 +162,7 @@ class FollowOrder(models.Model):
                                  verbose_name='船公司', null=True )
     container = models.CharField(max_length=20, verbose_name='生产情况', default='--')
     update_date = models.DateTimeField(auto_now=True, verbose_name='更新时间', null=True)
+    is_notified = models.BooleanField(verbose_name='到港通知否',default=False)
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
@@ -300,7 +301,7 @@ class FollowChance(models.Model):
 
 # 货代费用单表
 class Charge(models.Model):
-    BL_date = models.DateField(verbose_name='提单日期', default="2022-10-01")
+    BL_date = models.DateField(verbose_name='提单日期')
     followorder =  models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE, verbose_name='跟单号')
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
     seafreight = models.IntegerField(verbose_name='海运费U$',default=0)

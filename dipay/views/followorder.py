@@ -347,7 +347,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
-        print('request.POST',request.POST)
+        # print('request.POST',request.POST)
         if request.is_ajax():
             data_dict = request.POST.dict()
             pk = data_dict.pop('pk')
@@ -359,6 +359,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 for item, val in data_dict.items():
                     # 金额要保存到applyorder表
+                    print('follow obj, item val',item, val)
                     if item == 'amount':
                         applyorder_obj = followorder_obj.order
                         try:
@@ -380,13 +381,15 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     #         print('this is foreign Key')
                     #         item = item + '_id'
                     #
+                    elif item == 'ETA':
+                        followorder_obj.ETA = val
+                        followorder_obj.is_notified = False
 
                     else:
                         temp_model = followorder_obj._meta.model
                         field_obj = temp_model._meta.get_field(item)
                         print(field_obj, type(field_obj))
                         if isinstance(field_obj, ForeignKey):
-                            print('this is foreign Key')
                             item = item + '_id'
                         setattr(followorder_obj, item, val)
                         # 如果follow_order完结，更新applyorder的status

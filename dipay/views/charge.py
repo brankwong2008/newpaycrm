@@ -8,7 +8,7 @@ from stark.utils.display import PermissionHanlder, get_date_display, get_choice_
 from django.conf.urls import url
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
-from dipay.utils.displays import fees_display
+from dipay.utils.displays import fees_display, forwarder_display
 from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
 
 
@@ -130,16 +130,6 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                           "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
             return res
 
-    def forwarder_display(self, obj=None, is_header=None, *args, **kwargs):
-        """  显示货代  """
-        if is_header:
-            return "货代"
-        else:
-            span_tag = "<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" % \
-                       (obj.pk, obj.forwarder_id, obj.forwarder.shortname)
-            forwarder_url = reverse("stark:dipay_forwarder_show_detail", kwargs={"pk":obj.forwarder_id})
-            return mark_safe(f"<a href='{forwarder_url}' target='_blank' class='normal-a'>{span_tag}</a>")
-
     def ETD_display(self, obj=None, is_header=None, *args, **kwargs):
         """  显示货代  """
         if is_header:
@@ -248,8 +238,9 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             form = self.get_model_form("add")()
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
-                print("charge py: followorder_obj:", followorder_obj)
                 form.fields['followorder'].initial= followorder_obj
+                if followorder_obj.ETD:
+                    form.fields['BL_date'].initial = followorder_obj.ETD
             namespace = self.namespace
             app_label = self.app_label
             popup_list = self.popup_list

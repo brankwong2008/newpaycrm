@@ -442,3 +442,16 @@ def fees_display(field,title=None):
             else:
                 return val
     return inner
+
+
+
+"""  显示货代  """
+def forwarder_display(handler, obj=None, is_header=None, *args, **kwargs):
+    """  显示货代  """
+    if is_header:
+        return "货代"
+    else:
+        span_tag = "<span pk='%s' forwarder_id='%s' name='forwarder'>%s</span>" % \
+                   (obj.pk, obj.forwarder_id, obj.forwarder.shortname)
+        forwarder_url = reverse("stark:dipay_forwarder_show_detail", kwargs={"pk":obj.forwarder_id})
+        return mark_safe(f"<a href='{forwarder_url}' target='_blank' class='normal-a'>{span_tag}</a>")

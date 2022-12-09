@@ -145,9 +145,29 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         queryset =  self.model_class.objects.filter(user=request.user)
         # 检查reminder的状态, 如果提醒日期到了，status变更为进行
         for item in queryset.filter(status=self.status_dict.get('提醒')):
-            if item.remind_date <= datetime.date.today():
+            if item.remind_date <= datetime.date.today() and item.status == self.status_dict.get('提醒'):
                 item.status = self.status_dict.get('进行')
                 item.save()
+
+        # 检查跟单表里面的ETA，如果ETA距离现在的时间小于等于7天，需要给对应的业务员和跟单发送一个跟进任务
+        to_notify_followorder_queryset = FollowOrder.objects.filter(
+            status__in = [1,2,3,5],
+            ETA__range= [datetime.date.today(), datetime.date.today()+datetime.timedelta(days=7),],
+            is_notified= False
+        )
+        print('notify queryset', to_notify_followorder_queryset)
+        for each in to_notify_followorder_queryset:
+            print('需要通知的订单',each)
+            # 通知业务员
+            DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
+                                     link=each,
+                                     user=each.salesman or each.order.salesperson)
+            # 通知跟单
+            # DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
+            #                          link=each,
+            #                          user=UserInfo.objects.filter(roles__title='外贸跟单').first())
+            each.is_notified = True
+            each.save()
 
         if is_search:
             return  queryset
@@ -157,7 +177,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
         for item in self.tab_list:
             if item[2] == 'active':
-
                 return queryset.filter(status=self.status_dict.get(item[0]))
 
 
@@ -211,6 +230,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 for item, val in data_dict.items():
                     if item=='urgence':
                         val = False if val.strip() == 'False' else True
+                    # 提醒日期设置了，需要检查设置是否合格，如合格存入数据库
                     if item=='remind_date':
                         remind_date = datetime.datetime.strptime(val,'%Y-%m-%d')
                         if remind_date <= datetime.datetime.today():
@@ -220,7 +240,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                             return JsonResponse(data_dict)
 
                         save_obj.status = 2
-                        save_obj.urgence = True
+                        save_obj.urgence = False
                         res['msg'] = '提醒设置成功'
                     setattr(save_obj, item, val)
                 save_obj.save()
@@ -266,7 +286,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
             # 带抄送功能
             if cc:
-                content = "%s fm:%s" % (request.POST.get('content'), request.user.nickname)
+                content = "fm %s: %s " % (request.user.nickname, request.POST.get('content'))
                 for each in cc:
                     form.instance.content = content
                     cc_user = UserInfo.objects.filter(pk=each).first()
