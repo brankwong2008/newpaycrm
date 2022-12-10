@@ -18,6 +18,8 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = "dipay/show_chance_list.html"
 
+    option_group = [Option('owner',control_list=['Echo','Cindy','Brank'])]
+
     page_title = "商机统计"
 
     # 月份的display
@@ -160,9 +162,6 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
         # 在由用户定义要进行筛选的字段 option_group = [option_obj, ]
         # 在option中内置方法，获取对应字段的关联值，yield给调用者
 
-        # 前端进行显示，并把value值包含到标签中
-
-
 
         ############## 1. 分页 ###############
         query_params = request.GET.copy()
@@ -181,36 +180,7 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
 
         data_query_set = searched_queryset[pager.start:pager.end]
 
-        ############## 1. 定制显示列 ############
-        if fields_display:
-            # 处理表头
-            for k in fields_display:
-                if isinstance(k, FunctionType):
-                    verbose_name = k(self, obj=None, is_header=True, *args, **kwargs)
-                elif isinstance(k, MethodType):
-                    verbose_name = k(obj=None, is_header=True, *args, **kwargs)
-                else:
-                    verbose_name = self.model_class._meta.get_field(k).verbose_name
-                header_list.append(verbose_name)
-
-            # 处理表体 方式一
-            for row in data_query_set:
-                row_list = []
-                for key in fields_display:
-                    if isinstance(key, FunctionType):
-                        field_val = key(self, obj=row, is_header=False, *args, **kwargs)
-                    elif isinstance(key, MethodType):
-                        field_val = key(obj=row, is_header=False, *args, **kwargs)
-                    else:
-                        field_val = getattr(row, key)
-                    row_list.append(field_val)
-                data_list.append(row_list)
-                # 方法二
-                # data_list = self.model_class.objects.values_list(*self.fields_display)
-
-        else:
-            header_list.extend([self.model_name, "操作"])
-            data_list = [[str(row), self.edit_del_display(row, False, *args, **kwargs)] for row in data_query_set]
+        header_list, data_list = self.get_table_data(data_query_set, fields_display, *args, **kwargs)
 
         #
         show_template = self.show_list_template or "stark/show_list.html"

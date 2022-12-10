@@ -24,7 +24,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     page_title = "订单管理"
 
     # 自定义列表，外键字段快速添加数据，在前端显示加号
-    popup_list = ['customer', ]
+    popup_list = ['customer','discharge_port' ]
 
     # 加入一个组合筛选框
     option_group = [
@@ -131,12 +131,19 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return '-'
 
-    fields_display = [get_date_display('create_date'),
-                      'salesperson', order_number_display,
-                      'customer', 'goods',
-                      status_display, to_workshop_display,
-                      amount_display, rcvd_amount_display]
+    fields_display = ['create_date',
+                      'salesperson',
+                      order_number_display,
+                      'customer',
+                      'goods',
+                      'discharge_port',
+                      status_display,
+                      to_workshop_display,
+                      amount_display,
+                      rcvd_amount_display,
+                      ]
 
+    # 自定义添加和编辑所用的ModelForm
     def get_model_form(self, handle_type=None):
         if handle_type == 'add':
             return AddApplyOrderModelForm
@@ -164,8 +171,6 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             for item in Customer.objects.filter(owner=request.user).values('id', 'title'):
                 choices.append((item['id'], item['title']))
             form.fields['customer'].choices = choices
-
-            print('add list form:', type(form),dir(form),form.fields)
 
             back_url = self.reverse_list_url()
             return render(request, "dipay/apply_new_order.html", locals())

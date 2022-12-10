@@ -66,11 +66,11 @@ class TaskEditModelForm(forms.ModelForm):
 class AddApplyOrderModelForm(StarkForm):
     class Meta:
         model = ApplyOrder
-        fields = ['order_type', 'customer', 'goods', 'term', 'currency', 'amount', 'remark']
+        fields = ['order_type', 'customer', 'goods', 'term', 'currency', 'amount', 'remark', 'discharge_port']
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
             'customer': forms.Select(attrs={'required':True}),
-            'create_date': forms.DateInput(attrs={'type': 'date'}),
+            "amount": forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
 
         }
 
@@ -145,6 +145,8 @@ class AddInwardPayModelForm(StarkForm):
         widgets = {
             'create_date': forms.DateInput(attrs={'type': 'date'}),
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
+            'amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
+            'got_amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
             'ttcopy': forms.FileInput(attrs={'required':True}),
         }
 

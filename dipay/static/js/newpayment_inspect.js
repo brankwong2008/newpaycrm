@@ -37,24 +37,11 @@ function inspectSubmitPayment() {
 }
 
 
-// 实收金额和水单金额的input输入后触发onblur的检查和自动纠正
-// $('#id_amount,#id_got_amount').bind('input',function () {
-//
-//      console.log('get the key content',$(this).prop('value'));
+// 校正input number里面的输入，自动去除非数值字符
+function justifyNumberInput(inputTag){
+    var content = $(inputTag).val();
+    if (content){
+        $(inputTag).val(content.replaceAll(/[^0-9\.]/g,''))
+    }
+}
 
-    // var content = $(this).val();
-    // var special_chars = ['$','￥', ','];
-    // console.log('special_chars',special_chars)
-    // console.log('content before process',content)
-    // if (content) {
-    //     for (let i in special_chars) {
-    //         content = content.replaceAll(special_chars[i], '');
-    //         console.log(i, content)
-    //     }
-    // }
-    //
-    // console.log(content)
-    //
-    // $(this).val(content)
-
-// })

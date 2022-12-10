@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.db.models import QuerySet
 from django.http import QueryDict, JsonResponse
-from django.db.models import Q,ForeignKey,ManyToManyField, TextField
+from django.db.models import Q,ForeignKey,ManyToManyField, TextField, DateField,BooleanField, SmallIntegerField, ImageField
 import functools
 from django.forms import ModelForm
 from django import forms
@@ -388,7 +388,6 @@ class StarkHandler(object):
         # print(order_by_list, "order_by_list")
         ordered_queryset = searched_queryset.order_by(*order_by_list)
 
-
         ############## 1. 分页 ###############
         query_params = request.GET.copy()
         query_params._mutable = True
@@ -417,42 +416,91 @@ class StarkHandler(object):
 
         data_query_set = ordered_queryset[pager.start:pager.end]
 
+        ############## 6. 定制显示列 ############
+        header_list, data_list = self.get_table_data(data_query_set, fields_display, *args, **kwargs)
 
-        ############## 1. 定制显示列 ############
-        if fields_display:
-            # 处理表头
-            for k in fields_display:
-                if isinstance(k,FunctionType):
-                    verbose_name = k(self,obj=None,is_header=True,*args,**kwargs)
-                elif isinstance(k,MethodType):
-                    verbose_name = k(obj=None, is_header=True,*args,**kwargs)
-                else:
-                    verbose_name = self.model_class._meta.get_field(k).verbose_name
-                header_list.append(verbose_name)
 
-            # 处理表体 方式一
-            for row in data_query_set:
-                row_list = []
-                for key in fields_display:
-                    if isinstance(key,FunctionType):
-                        field_val = key(self, obj = row, is_header = False,*args,**kwargs)
-                    elif isinstance(key,MethodType):
-                        field_val = key(obj=row, is_header=False,*args,**kwargs)
-                    else:
-                        field_val = getattr(row, key)
-                    row_list.append(field_val)
-                data_list.append(row_list)
-                # 方法二
-                # data_list = self.model_class.objects.values_list(*self.fields_display)
+        ############## 7. 记录总数显示 ############
+        total_count = ordered_queryset.count()
+        this_page_count = data_query_set.count()
 
-        else:
-            header_list.extend([self.model_name,"操作"])
-            data_list = [ [str(row), self.edit_del_display(row,False,*args,**kwargs)] for row in data_query_set]
-
-        #
         show_template = self.show_list_template or "stark/show_list.html"
 
         return render(request,show_template,locals())
+
+    def get_table_data(self, data_query_set, fields_display, active_row=None, *args, **kwargs):
+        """整理表格显示数据"""
+        header_list, data_list = [], []
+
+        # 如果不指定显示方式
+        if not fields_display:
+            header_list.extend([self.model_name, "操作"])
+            data_list = [[str(row), self.edit_del_display(row, False, *args, **kwargs)] for row in data_query_set]
+            return header_list, data_list
+
+        # 处理表头
+        for k in fields_display:
+            if isinstance(k, FunctionType):
+                verbose_name = k(self, obj=None, is_header=True, *args, **kwargs)
+            elif isinstance(k, MethodType):
+                verbose_name = k(obj=None, is_header=True, *args, **kwargs)
+            else:
+                verbose_name = self.model_class._meta.get_field(k).verbose_name
+            header_list.append(verbose_name)
+
+        # 处理表体 方式一
+        for row in data_query_set:
+            row_dict = {}
+            row_data = []
+            for key in fields_display:
+                if isinstance(key, FunctionType):
+                    field_val = key(self, obj=row, is_header=False, *args, **kwargs)
+                elif isinstance(key, MethodType):
+                    field_val = key(obj=row, is_header=False, *args, **kwargs)
+                else:
+                    field_val = getattr(row, key)
+                    # 如果是choice字段
+                    field_obj = self.model_class._meta.get_field(key)
+                    if isinstance(field_obj, SmallIntegerField):
+                        field_val = getattr(row, "get_%s_display" % key)()
+                    # 如果是图片字段
+                    elif isinstance(field_obj, ImageField) and getattr(row, key):
+                        img_url = getattr(row, key).url
+                        img_tag = f"<img class='ttcopy-small-img hidden-xs' src={img_url} " \
+                                  f"onclick='return popupImg(this)' width='30px' height='30px'>"
+                        field_val = mark_safe(img_tag)
+                    #  布尔字段
+                    elif isinstance(field_obj, BooleanField):
+                        field_val = "是" if field_val is True else "否"
+
+                    # 日期字段
+                    elif isinstance(field_obj, DateField):
+                        if not isinstance(field_val, str):
+                            field_val = field_val.strftime("%Y-%m-%d")
+
+                    # 多对多字段
+                    elif isinstance(field_obj, ManyToManyField):
+                        text_list = []
+                        for each in field_val.all():
+                            text_list.append("<span style='margin-right:5px'>%s</span>" % each)
+                        field_val = mark_safe("".join(text_list))
+
+                    #  外键字段，加详情链接
+                    elif isinstance(field_obj, ForeignKey) and field_val:
+                        target_field = field_obj.target_field
+                        model_name = target_field.model._meta.model_name
+                        app_label = field_obj.related_model._meta.app_label
+                        if app_label == self.app_label:
+                            url_name = f"{self.namespace}:{self.app_label}_{model_name}_show_detail"
+                            detail_url = reverse(url_name, kwargs={"pk": field_val.pk})
+                            field_val = mark_safe(f"<a href='{detail_url}' target='_blank'>{str(field_val)}</a>")
+                    field_val = '-' if field_val is None else field_val
+                row_data.append(field_val)
+            row_dict["data"] = row_data
+            if active_row and row.pk in active_row:
+                row_dict["active"] = "active"
+            data_list.append(row_dict)
+        return header_list, data_list
 
     # 新增一条记录
     def add_list(self, request,*args,**kwargs):

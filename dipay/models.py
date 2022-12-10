@@ -81,6 +81,15 @@ class ShipLines(models.Model):
         return "%s %s" % (self.shortname , self.link)
 
 
+# 港口
+class Ports(models.Model):
+    title = models.CharField(max_length=30, verbose_name="港口名")
+
+    def __str__(self):
+        return self.title
+
+
+
 class ApplyOrder(models.Model):
     create_date = models.DateField(auto_now_add=True, verbose_name='申请日期')
     confirm_date = models.DateField( verbose_name='下单日期',null=True, blank=True )
@@ -115,6 +124,7 @@ class ApplyOrder(models.Model):
                     (3, 'EXW'),
                     ]
     term = models.SmallIntegerField(choices=term_choices, verbose_name='贸易条款',default=0)
+    discharge_port =  models.ForeignKey(to=Ports, on_delete=models.CASCADE,verbose_name='目的港',null=True)
 
     status_choices = [(0, '申请中'),
                     (1, '已配单号'),

@@ -103,7 +103,7 @@
                     <tbody>
                     {% for row in data_list %}
                         <tr>
-                            {% for item in row %}
+                            {% for item in row.data %}
                                 {% if forloop.counter == 2 %}
                                     <td class="txt-ell" nowrap>{{ item }} </td>
                                 {% else %}

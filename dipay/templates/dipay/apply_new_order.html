@@ -58,9 +58,9 @@
                     </div>
                 </div>
 
-                {#            货物和贸易条款#}
+                <!-- 贸易条款 港口  货物   -->
                 <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
-                    <div style="width: 25%">
+                    <div style="width: 15%">
                         <label for="">{{ form.term.label }}</label>
                         <div class="form-row">
                             {{ form.term }}
@@ -68,7 +68,17 @@
                         </div>
 
                     </div>
-                    <div style="width: 70%">
+                    <div style="width: 25%">
+                        <label for="">{{ form.discharge_port.label }}</label>
+                        <a href="{% url 'stark:dipay_ports_create' %}" onclick="return showAPP(this)"
+                           style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
+                        <div class="form-row">
+                            {{ form.discharge_port }}
+                            <span style="color:#ff0000">{{ form.discharge_port.errors.0 }}</span>
+                        </div>
+
+                    </div>
+                    <div style="width: 55%">
                         <label for="">{{ form.goods.label }}</label>
                         <div class="form-row">
                             {{ form.goods }}
@@ -76,6 +86,8 @@
                         </div>
                     </div>
                 </div>
+
+
 
                 {#            币种和金额 #}
 
@@ -122,5 +134,6 @@
 
     <!-- js代码：处理外键字段快速新增一条记录 -->
     <script src="{% static 'js/popup_create.js' %}"></script>
+    <script src="{% static 'js/newpayment_inspect.js' %}"></script>
 
 {% endblock %}

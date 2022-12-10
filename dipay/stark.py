@@ -22,6 +22,7 @@ from dipay.views.forwarder_charge import ForwarderChargeHandler
 from dipay.views.forwarder_chargepay import ForwarderChargePayHandler
 from dipay.views.chance_stats import ChanceStatsHandler
 from dipay.views.forwarder import ForwarderHandler
+from dipay.views.ports import PortsHandler
 
 
 
@@ -67,6 +68,9 @@ site.register(models.Payer,PayerHandler)
 
 # 船公司
 site.register(models.ShipLines)
+
+# 港口
+site.register(models.Ports, PortsHandler)
 
 # 最新编码
 site.register(models.CurrentNumber)

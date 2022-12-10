@@ -160,11 +160,11 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
         if request.method == "POST":
             # 如果要上传文件，必须加上request.FILES, 再试试
-            print('request files ttcopy', request.POST, request.FILES.get('ttcopy'))
+            # print('request files ttcopy', request.POST, request.FILES.get('ttcopy'))
             form = self.get_model_form("add")(request.POST, request.FILES)
             if form.is_valid():
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
-                form.instance.torelate_amount = form.instance.got_amount
+                form.instance.torelate_amount = form.instance.amount
                 currentnumber_obj = CurrentNumber.objects.get(pk=1)
                 new_reference = currentnumber_obj.reference + 1
                 while Inwardpay.objects.filter(reference=new_reference).exists():
