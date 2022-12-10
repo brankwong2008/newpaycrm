@@ -49,7 +49,9 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
         from django.db.models.functions import TruncMonth
         from django.db.models import Count
         ret = Chance.objects.annotate(month=TruncMonth("create_date")).values(
-            "month","owner").annotate(c=Count("id")).values("month","owner__nickname", "c")
+            "month","owner").annotate(c=Count("id")).values("month","owner__nickname", "c").order_by("-month")
+
+        print(ret,type(ret))
 
         return ret
 

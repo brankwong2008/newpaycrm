@@ -2,6 +2,7 @@
 
 // 点击切换任务状态 (模拟点击批量处理按钮的效果）
 function accomplishTask(atag) {
+    console.log('enter accompany task')
     var data_obj = new Object();
     // 加入csrf token
     data_obj['csrfmiddlewaretoken'] = $("[name='csrfmiddlewaretoken']").val();

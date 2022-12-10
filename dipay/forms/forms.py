@@ -97,7 +97,7 @@ class EditApplyOrderModelForm(StarkForm):
 class ConfirmApplyOrderModelForm(StarkForm):
     class Meta:
         model = ApplyOrder
-        fields = ['confirm_date','order_number','sub_sequence','customer','goods','currency','amount','remark']
+        fields = ['confirm_date','order_number','sub_sequence','customer','goods','discharge_port','currency','amount','remark']
 
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),

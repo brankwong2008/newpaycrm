@@ -719,11 +719,13 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                     form.instance.confirm_date = datetime.now()
                 # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
                 followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
+
                 if not followorder_obj:
                     load_info = '装箱：%s' % form.instance.remark
                     followorder_obj = FollowOrder(order=order_obj,
                                                   salesman=order_obj.salesperson,
                                                   load_info=load_info,
+                                                  discharge_port= str(form.instance.discharge_port),
                                                   )
                     followorder_obj.save()
                 form.save()
