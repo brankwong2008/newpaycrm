@@ -9,6 +9,12 @@ a.normal-a:hover{
     color: darkorange;
 }
 
+/*批量处理组件*/
+.batch-process-div{
+    margin-left: 20px;
+}
+
+
 .table tbody tr td {
     vertical-align: middle;
 

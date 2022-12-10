@@ -59,7 +59,7 @@
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
                 {% if batch_process_dict %}
-                    <div class="pull-right  {{ batch_process_hidden }}">
+                    <div class="pull-left batch-process-div {{ batch_process_hidden }}">
 
                         <select name="handle_type" class="handle-select">
                             <option value="">请选择处理方式</option>
@@ -92,6 +92,10 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
+
+            {% block beforetable %}
+
+            {% endblock %}
 
                 <table class="table table-bordered table-striped">
 
