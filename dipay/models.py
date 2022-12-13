@@ -361,6 +361,9 @@ class Supplier(models.Model):
     phone =  models.CharField(max_length=128, verbose_name='电话',null=True,blank=True)
     email =  models.EmailField(max_length=128, verbose_name='电邮',null=True,blank=True)
     remark = models.TextField(verbose_name='备注', default='--')
+    def __str__(self):
+        return self.title[:5]
+
 
 class Product(models.Model):
     title = models.CharField(max_length=128, verbose_name='品名')
@@ -368,6 +371,8 @@ class Product(models.Model):
     thick = models.DecimalField(verbose_name='厚度',max_digits=10,decimal_places=2, default=0.3)
     quote = models.ManyToManyField(to=Supplier, through='Quote', verbose_name='报价单',null=True, blank=True)
     remark = models.TextField(verbose_name='备注', default='--')
+    def __str__(self):
+        return self.title
 
 class Quote(models.Model):
     product = models.ForeignKey(to=Product,on_delete=models.CASCADE, related_name='related_product', verbose_name='产品')
@@ -376,3 +381,5 @@ class Quote(models.Model):
     vol = models.DecimalField(verbose_name='单只体积',max_digits=10,decimal_places=3, default=0)
     gw = models.DecimalField(verbose_name='单只重量',max_digits=10,decimal_places=3, default=0)
     remark = models.TextField(verbose_name='备注', default='--')
+    def __str__(self):
+        return '%s-%s' % (self.product, self.supplier)

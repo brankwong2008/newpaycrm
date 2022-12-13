@@ -11,7 +11,7 @@ a.normal-a:hover{
 
 /*批量处理组件*/
 .batch-process-div{
-    margin-left: 20px;
+    margin-left: 67px;
 }
 
 
@@ -438,7 +438,7 @@ span[id^="content"].red {
 }
 
 #task_input {
-    width: 185px;
+    width: 255px;
 }
 
 #id_remind_date {

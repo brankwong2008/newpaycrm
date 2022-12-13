@@ -152,15 +152,16 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         # 检查跟单表里面的ETA，如果ETA距离现在的时间小于等于7天，需要给对应的业务员和跟单发送一个跟进任务
         to_notify_followorder_queryset = FollowOrder.objects.filter(
             status__in = [1,2,3,5],
-            ETA__range= [datetime.date.today(), datetime.date.today()+datetime.timedelta(days=7),],
+            ETA__range= [datetime.date.today(), datetime.date.today()+datetime.timedelta(days=10),],
             is_notified= False
         )
-        print('notify queryset', to_notify_followorder_queryset)
+
         for each in to_notify_followorder_queryset:
             print('需要通知的订单',each)
             # 通知业务员
             DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
                                      link=each,
+                                     remark="ETA %s" % each.ETA.strftime("%Y-%m-%d"),
                                      user=each.salesman or each.order.salesperson)
             # 通知跟单
             # DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
