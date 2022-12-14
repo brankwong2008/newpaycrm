@@ -257,12 +257,14 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     # 新建任务的方法
     def save_form(self,form,request,is_update=False,*args, **kwargs):
+        print("enter into save form dailypan ")
         if not request.user:
             return
 
         remind_date = request.POST.get('remind_date')
         # 判断是否有输入提醒日期
         if remind_date:
+            print("enter into save form remind_date ")
             remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
             if remind_date > datetime.datetime.today():
                 form.instance.status = 2
@@ -271,6 +273,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
         # 新增一条任务
         if not is_update:
+            print("enter into save form not is_update ")
             print("request.POST",request.POST)
             link_id = request.POST.get('link_id')
             cc = request.POST.getlist('cc[]')
@@ -287,6 +290,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
             # 带抄送功能
             if cc:
+                print("enter into save form if cc: ")
                 content = "fm %s: %s " % (request.user.nickname, request.POST.get('content'))
                 for each in cc:
                     form.instance.content = content
@@ -301,4 +305,5 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return JsonResponse({"status":True, "msg":'任务快速添加成功'})
 
         # 更新一条任务
+        print("enter into save form not final form.save ")
         form.save()
