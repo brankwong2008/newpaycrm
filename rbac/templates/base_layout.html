@@ -102,11 +102,11 @@
                     {% endif %}
                 {% endif %}
 
-                {% if "商机"  in request.menu_names %}
-                    {% if request.top_menu_title == '商机' %}
-                        <li><a href="{% url 'stark:dipay_chance_list' %}" class="active">商机</a></li>
+                {% if "询盘"  in request.menu_names %}
+                    {% if request.top_menu_title == '询盘' %}
+                        <li><a href="{% url 'stark:dipay_chance_list' %}" class="active">询盘</a></li>
                     {% else %}
-                        <li><a href="{% url 'stark:dipay_chance_list' %}">商机</a></li>
+                        <li><a href="{% url 'stark:dipay_chance_list' %}">询盘</a></li>
                     {% endif %}
                 {% endif %}
 

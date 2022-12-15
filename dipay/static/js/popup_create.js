@@ -12,6 +12,12 @@ function showAPP(tag) {
             $('#FastCreateModal .modal-body .modal-details form').attr('action', href);
             $('#FastCreateModal .modal-error').html('')
 
+            // 获取对应的select的id值，并传递给模态框的提交按钮
+            var $select = $(tag).next().find('select')
+            console.log($select)
+            $('#submit_data').data('select_dom',$select);
+
+
             // 显示模态框
             // $('#id_customer').selectpicker('render');
             $('#FastCreateModal .modal-body .modal-details form .selectpicker').selectpicker('show');
@@ -59,18 +65,22 @@ function closePopup(buttontag){
         async: false,
         data: formdata,
         success: function (respond) {
-            // console.log(respond);
+            console.log(respond);
             if (respond.status) {
+                // 如果成功，关闭模态框
+                 $('#FastCreateModal').modal('toggle');
                 var newID = respond.data.pk;
                 var newRepr = respond.data.title;
                 var id = respond.data.id_name;
                 // 将新增加的数据添加到select的选项里面，并设为已选
-                $(id).children().attr('selected', false);
-                $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
+                var $select = $('#submit_data').data('select_dom');
+                $select.children().attr('selected', false);
+                $select.prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
                 // 必须要刷新picker，否则不显示也搜不到
-                $(id).selectpicker('refresh');
-                $(id).selectpicker('render');
+                $select.selectpicker('refresh');
+                $select.selectpicker('render');
             } else {
+                // 如果失败在模态框中显示错误信息
                 $('#FastCreateModal .modal-error').html(respond.error)
                 failure_flag = true;
             }
@@ -79,10 +89,10 @@ function closePopup(buttontag){
     });
 
   //   ajax处理是异步的，所以这个时候，failure flag还是false
-  if (!failure_flag) {
-      // console.log('failure lag is ',failure_flag )
-        $('#FastCreateModal').modal('toggle');
-    }
+  // if (!failure_flag) {
+  //     // console.log('failure lag is ',failure_flag )
+  //       $('#FastCreateModal').modal('toggle');
+  //   }
 
 }
 
