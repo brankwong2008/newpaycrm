@@ -3,10 +3,16 @@
 
 
 {% block css %}
-    <style>
-    talbe{
-        font-size: x-large;
 
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+        table {
+            font-size: medium;
+        }
+    table thead{
+        color: grey;
+        font-size: small;
     }
 
     </style>
@@ -17,23 +23,24 @@
 {% block showListExtra %}
 
     <!-- Modal 模态对话框 添加任务用弹窗 -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h5 class="modal-title" id="myModalLabel">modal title</h5>
-      </div>
-      <div class="modal-body">
-          <div class="mymodal-details"> </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="myModalLabel">modal title</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mymodal-details"></div>
 
-      </div>
-{#      <div class="modal-footer">#}
-{#        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
-{#      </div>#}
+                </div>
+                {#      <div class="modal-footer">#}
+                {#        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
+                {#      </div>#}
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
 
     <script src="{% static "js/edit-dailyplan.js" %}"></script>

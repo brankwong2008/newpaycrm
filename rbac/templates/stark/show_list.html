@@ -4,10 +4,9 @@
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
 
-    <style>
+    {% block self-css %}
 
-
-    </style>
+    {% endblock %}
 
 {% endblock %}
 
@@ -97,7 +96,7 @@
 
             {% endblock %}
 
-                <table class="table table-bordered table-striped">
+                <table class="table  table-striped">
 
                     <thead>
                     {% for item in header_list %}
