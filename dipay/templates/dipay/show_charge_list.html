@@ -1,9 +1,5 @@
-{% extends 'stark/show_list.html' %}
+{% extends 'layout.html' %}
 {% load static %}
-
-
-
-
 
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
@@ -16,24 +12,150 @@
 {% endblock %}
 
 
+{% block content %}
+    <div class="luffy-container">
 
-{% block beforetable %}
-             <!-- 显示选择的金额合计 -->
+        <div class="col-md-12">
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default options-section {{ filter_hidden }}">
+                    {#                    <div class="panel-heading">#}
+                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
+                    {#                    </div>#}
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-left" style="margin-right: 80px">
+
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"
+                                                                            style="margin: 3px 2px 3px"></i></button>
+
+
+                </form>
+            {% endif %}
+
+
+            <form action="" method="post">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+                    <div class="pull-left  {{ batch_process_hidden }}">
+
+                        <select name="handle_type" class="handle-select">
+                            <option value="">请选择处理方式</option>
+                            {% for func,text in batch_process_dict.items %}
+                                <option value="{{ func }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-primary handle-btn" onclick="return createPaySlip()">
+                            <i class="fa fa-send"></i></button>
+                    </div>
+
+                {% endif %}
+
+                <!-- 添加按钮 -->
+                <div class="pull-right">
+                    {% if add_btn %}
+                        {{ add_btn|safe }}
+                    {% endif %}
+
+                </div>
+
+
+                <div class="clearfix">{{ msg }}</div>
+
+                {% if tabs %}
+                    <ul class="nav nav-tabs">
+                        {% for tab in tabs %}
+                            <li role="presentation" class="{{ tab.active }}"><a href="{{ tab.url }}">{{ tab.label }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <!-- 显示选择的金额合计 -->
                 <div id="total-chozen-amount-label" style="display:none;float:right;margin-right: 42%">
                     选择金额合计：
                     <span id="total-chozen-amount-currency"></span>
                     <span id="total-chozen-amount"></span>
                 </div>
-{% endblock %}
+
+                <table class="table table-bordered table-striped">
+
+                    <thead>
+                    {% for item in header_list %}
+                        <th class="header-{{ forloop.counter }}"> {{ item }}</th>
+                    {% endfor %}
 
 
+                    </thead>
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            {% for item in row.data %}
+                                <td>{{ item }} </td>
+                            {% endfor %}
+                        </tr>
 
-{% block showListExtra %}
+                    {% endfor %}
+                    </tbody>
 
+                </table>
+
+            </form>
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+    <div class="guideline" style="margin-bottom: 100px">{{ guideline }}</div>
+
+    <!-- 图片弹窗 -->
+    <div id="ImgModal" class="newmodal">
+        <!-- 关闭按钮 -->
+        <span class="img-close" onclick="document.getElementById('ImgModal').style.display='none'">&times;</span>
+        <!-- 弹窗内容 -->
+        <img class="newmodal-content" id="img01">
+        <!-- 文本描述 -->
+        <div id="caption"></div>
+    </div>
+
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
     <script src="{% static "js/decimal.js/decimal.js" %}"></script>
     <script src="{% static "js/edit-charge-list.js" %}"></script>
 
-
 {% endblock %}
-
 

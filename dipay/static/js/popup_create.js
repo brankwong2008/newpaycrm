@@ -32,7 +32,6 @@ function showAPP(tag) {
 
 function closePopup(buttontag){
 
-
  console.log("closePopup() workds");
     // 如果required的字没有填，则直接调用form的button方法
     var empty_flag = false;
@@ -53,12 +52,21 @@ function closePopup(buttontag){
     $.each(form_list, function (index, data) {
         formdata.append(data.name, data.value);
     })
-    var failure_flag = false;
+
+    // 是否需要后端执行相似性检查， handle_type = force （不检查）
+    var handle_type = $('#submit_data').attr("handle_type");
+    console.log(handle_type,'handle_type')
+    var url = $('#FastCreateModal .modal-body .modal-details form').attr('action');
+    if (handle_type === "force") {
+        console.log(  'force ==== ' )
+        formdata.append("handle_type", "force");
+        $('#submit_data').html("提交").removeAttr("handle_type");
+    }
 
   // 手动搜集forms中的data，发post请求，并获得返回值，决定是否关闭模态框
 
     $.ajax({
-        url: $('#FastCreateModal .modal-body .modal-details form').attr('action'),
+        url: url,
         contentType: false,
         processData: false,
         type: 'post',
@@ -81,30 +89,24 @@ function closePopup(buttontag){
                 $select.selectpicker('render');
             } else {
                 // 如果失败在模态框中显示错误信息
-                $('#FastCreateModal .modal-error').html(respond.error)
-                failure_flag = true;
+                console.log(respond.error)
+                $('#FastCreateModal .modal-error').html(respond.error.msg)
+                if (respond.error.code ==='REPEAT'){
+                    console.log('repeat');
+                    $('#submit_data').html("强制提交").attr("handle_type","force");
+                }
             }
         }
-
     });
 
-  //   ajax处理是异步的，所以这个时候，failure flag还是false
-  // if (!failure_flag) {
-  //     // console.log('failure lag is ',failure_flag )
-  //       $('#FastCreateModal').modal('toggle');
-  //   }
 
 }
 
+//  给modal关闭按钮绑定事件，清除强制提交属性
+ function shutFastCreateModal(btn) {
+     $('#FastCreateModal').modal('hide');
 
+     // 清除提前按钮上的强制提交属性
+      $('#submit_data').html("提交").removeAttr("handle_type");
 
-
-
-// $(id).children().attr('selected',false);
-// $(id).prepend('<option value=' + newID + ' selected >' + newRepr + '</option>')
-// win.close();
-//  // 必须要刷新picker，否则不显示也搜不到
-// $(id).selectpicker('refresh');
-// $(id).selectpicker('render');
-
-
+ }

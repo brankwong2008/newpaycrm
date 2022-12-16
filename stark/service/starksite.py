@@ -613,26 +613,38 @@ class StarkHandler(object):
 
     # 外键字段中，popup窗口快速添加一条记录
     def create_list(self,request, *args, **kwargs):
-        form = self.get_model_form()(request.POST or None)
+        # 接收handle_type
+        handle_type =  request.POST.get("handle_type")
+        copy_POST = request.POST.dict()
+        if handle_type:
+            copy_POST.pop("handle_type")
+        print('handle_type',handle_type)
+
+        form = self.get_model_form()(copy_POST or None)
         # 如果有数据，说明是post请求，如果没有数据说明是get请求
         if form.is_valid():
             # 对指定的字段进行字段的字符串相似度检查，以免重复添加，大于70%要提醒
-            verify_similarity_list = self.verify_similarity_list
-            for field in verify_similarity_list:
-                val = form.cleaned_data.get(field)
-                # 与数据库中已有字段进行相似度比较
-                for item in  self.model_class.objects.all().values_list(field):
-                    try:
-                        field_val = item[0].lower()
-                        val = val.lower()
-                        sim = difflib.SequenceMatcher(None,val, field_val)
-                        print('sim', sim.ratio(), val, item[0])
+            if handle_type != "force":
+                verify_similarity_list = self.verify_similarity_list
+                for field in verify_similarity_list:
+                    val = form.cleaned_data.get(field)
+                    # 与数据库中已有字段进行相似度比较
+                    for item in  self.model_class.objects.all().values_list(field):
+                        try:
+                            field_val = item[0].lower()
+                            val = val.lower()
+                            sim = difflib.SequenceMatcher(None,val, field_val)
+                            print('sim', sim.ratio(), val, item[0])
 
-                        # 如果新增数据包含于数据库数据或者相似度大于0.7，则告知前端记录可能重复
-                        if val in field_val or sim.ratio() > 0.7:
-                            return JsonResponse({'status': False, "error": '可能重复的记录:%s' % item[0]})
-                    except:
-                        continue
+                            # 如果新增数据包含于数据库数据或者相似度大于0.7，则告知前端记录可能重复
+                            if val in field_val or sim.ratio() > 0.7:
+                                return JsonResponse({'status': False,
+                                                     "error": {
+                                                         "code":'REPEAT',
+                                                         "msg":'可能重复的记录:%s' % item[0]
+                                                     }})
+                        except:
+                            continue
 
             # 如果数据校验合格，存在数据库，返回instance
             instance = form.save()
