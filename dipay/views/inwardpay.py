@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import Q
+from django.db.models import F, Q, Max, Min, Avg, Sum, Count
 from django.utils.safestring import mark_safe
 from django import forms
 from stark.service.starksite import StarkHandler, Option
@@ -295,7 +296,12 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             confirm_url = self.reverse_url("confirm_pay", inwardpay_id=inwardpay_id)
             return redirect(confirm_url)
 
-        total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj)])
+
+        # total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj)])
+        total_dist_amounts =  Pay2Orders.objects.filter(payment=inwardpay_obj).aggregate(sumup = Sum("amount"))["sumup"]
+        if not total_dist_amounts:
+            total_dist_amounts = 0
+
         inwardpay_obj.torelate_amount = inwardpay_obj.amount - total_dist_amounts
         inwardpay_obj.save()
 
@@ -314,7 +320,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             for each in ['order_number', 'customer', 'currency', 'amount', 'rcvd_amount', 'collect_amount']:
                 row[each] = getattr(order_obj, each)
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
-            dist_amount = pay2order_obj.amount if pay2order_obj else 0
+            if not pay2order_obj:
+                dist_amount = 0
+            else:
+                dist_amount = round(pay2order_obj.amount/pay2order_obj.rate,2)
             display_dist_amount = '%s%s' % (order_obj.currency.icon, dist_amount) if dist_amount else '--'
 
             # 判断是否固定定金
@@ -325,10 +334,28 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             row['followorder_url'] = reverse('stark:dipay_followorder_list') + '?q=' + order_obj.order_number
 
             # 分配金额加上span标签和class，便于js操作，链接showinputbox,点击直接编辑
-            amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s</span>" % (
-                'amount', order_obj.pk, dist_amount, display_dist_amount
+            currency_order = order_obj.currency.title
+            currency_inward = inwardpay_obj.currency.title
+
+            # # 可关联订单中，显示每个订单分配的转换汇率，默认为1的不显示
+            rate_tag = ""
+            if pay2order_obj and pay2order_obj.rate != 1:
+                rate_tag = f"<span style='margin-left:6px'> " \
+                           f" (分配:{inwardpay_obj.currency.icon}{pay2order_obj.amount} " \
+                           f"汇率:{pay2order_obj.rate}) <span>"
+
+            # 可关联订单中，显示每个订单已分配的金额的tag
+            amount_tag = "<span class='invoice-amount-display' " \
+                         "id='%s-id-%s' " \
+                         "currency_order='%s' " \
+                         "currency_inward='%s'  " \
+                         "amount='%s' " \
+                         "onclick='showDistInput(this)'" \
+                         ">%s</span>" % (
+                'amount', order_obj.pk, currency_order,currency_inward, dist_amount, display_dist_amount
             )
-            row['dist_amount'] = mark_safe(amount_tag)
+
+            row['dist_amount'] = mark_safe(amount_tag + rate_tag)
             row['dist_value'] = dist_amount
             row['pk'] = order_obj.pk
 
@@ -371,14 +398,17 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
         if request.is_ajax():
             order_id = request.POST.get('pk')
-            dist_amount = request.POST.get('amount')
+            amount = request.POST.get('amount')  # 从收款中分出的金额，币种比如是人民币
+            rate = Decimal(request.POST.get('rate',1))     # 分出的金额关联到订单上的计算汇率 实际关联结果 = amount/rate, 按常识来处理
+
             try:
-                dist_amount = Decimal(dist_amount)
+                dist_amount = Decimal(amount)      # 从款中来的金额
+                dist_to_amount = Decimal(amount)/Decimal(rate)   #分配到订单中的金额
             except Exception as e:
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填数值'})
 
-            if dist_amount <= 0:
-                return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填大于0的数值'})
+            # if dist_amount <= 0:
+            #     return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填大于0的数值'})
 
             order_obj = ApplyOrder.objects.filter(pk=order_id).first()
             if not order_obj:
@@ -388,25 +418,26 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             pay2order_obj = Pay2Orders.objects.filter(payment=inwardpay_obj, order=order_obj).first()
 
             if pay2order_obj:
-                # 如果是更新已经关联记录，看看关联金额的差异，只处理差异部分即可
+                # 如果是更新已经关联记录，看看关联金额的差异，只处理差异部分即可 pay2order中记载的是 dist_amount
                 diff_amount = dist_amount - Decimal(pay2order_obj.amount)
                 if diff_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
-                if diff_amount > order_obj.collect_amount:
+                if diff_amount/rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj.amount = dist_amount
-                order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount
-                order_obj.collect_amount = order_obj.collect_amount - diff_amount
+                pay2order_obj.rate = rate
+                order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount/rate
+                order_obj.collect_amount = order_obj.collect_amount - diff_amount/rate
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 # 如果是新增关联记录
                 if dist_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
-                if dist_amount > order_obj.collect_amount:
+                if dist_amount/rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
-                pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount)
+                pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount,rate=rate)
                 current_number_obj = CurrentNumber.objects.get(pk=1)
 
                 # 给每一个新增的分配记录自动的加上分配编号，同时更新currentnumber_obj
@@ -417,7 +448,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 current_number_obj.dist_ref = new_dist_ref
                 current_number_obj.save()
 
-                order_obj.rcvd_amount = order_obj.rcvd_amount + dist_amount
+                order_obj.rcvd_amount = order_obj.rcvd_amount + dist_amount/rate
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - dist_amount
             try:
                 order_obj.save()

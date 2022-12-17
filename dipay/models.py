@@ -221,6 +221,7 @@ class Pay2Orders(models.Model):
     payment = models.ForeignKey(to=Inwardpay, on_delete=models.CASCADE,verbose_name='收款')
     order = models.ForeignKey(to=ApplyOrder, on_delete=models.CASCADE,verbose_name='订单')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='关联金额')
+    rate = models.DecimalField(max_digits=9, decimal_places=3, verbose_name='转换率', default=1)
     dist_ref = models.IntegerField(verbose_name='分配编号',default=10000)
 
     def __str__(self):

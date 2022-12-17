@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 {% load menu_list %}
 {% load static %}
+{% load filter-tool %}
+
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
     <style>
@@ -34,85 +36,7 @@
             color: blue;
         }
 
-        {#/* ***********弹窗图片的样式 *************/#}
-        {##}
-        {#/* 弹窗背景 */#}
-        {#.newmodal {#}
-        {#    display: none; /* Hidden by default */#}
-        {#    position: fixed; /* Stay in place */#}
-        {#    z-index: 1; /* Sit on top */#}
-        {#    padding-top: 100px; /* Location of the box */#}
-        {#    left: 0;#}
-        {#    top: 0;#}
-        {#    width: 100%; /* Full width */#}
-        {#    height: 100%; /* Full height */#}
-        {#    overflow: auto; /* Enable scroll if needed */#}
-        {#    background-color: rgb(0, 0, 0); /* Fallback color */#}
-        {#    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */#}
-        {#}#}
-        {##}
-        {#/* 图片 */#}
-        {#.newmodal-content {#}
-        {#    margin: auto;#}
-        {#    display: block;#}
-        {#    width: 100%;#}
-        {#    max-width: 900px;#}
-        {#}#}
-        {##}
-        {##}
-        {#/* 添加动画 */#}
-        {#.newmodal-content, #caption {#}
-        {#    -webkit-animation-name: zoom;#}
-        {#    -webkit-animation-duration: 0.6s;#}
-        {#    animation-name: zoom;#}
-        {#    animation-duration: 0.6s;#}
-        {#}#}
-        {##}
-        {#/* 这些是什么意思，后面再慢慢搞懂，先用起来再说 */#}
-        {#@-webkit-keyframes zoom {#}
-        {#    from {#}
-        {#        -webkit-transform: scale(0)#}
-        {#    }#}
-        {#    to {#}
-        {#        -webkit-transform: scale(1)#}
-        {#    }#}
-        {#}#}
-        {##}
-        {#@keyframes zoom {#}
-        {#    from {#}
-        {#        transform: scale(0)#}
-        {#    }#}
-        {#    to {#}
-        {#        transform: scale(1)#}
-        {#    }#}
-        {#}#}
-        {##}
-        {##}
-        {#/* 关闭按钮 */#}
-        {#.close {#}
-        {#    position: absolute;#}
-        {#    top: 15px;#}
-        {#    right: 35px;#}
-        {#    color: #f1f1f1;#}
-        {#    font-size: 40px;#}
-        {#    font-weight: bold;#}
-        {#    transition: 0.3s;#}
-        {#    opacity: 2.2;#}
-        {#}#}
-        {##}
-        {#.close:hover, .close:focus {#}
-        {#    color: #bbb;#}
-        {#    text-decoration: none;#}
-        {#    cursor: pointer;#}
-        {#}#}
-        {##}
-        {#img.ttcopy-small-img:hover {#}
-        {#    cursor: pointer;#}
-        {##}
-        {#}#}
-        {##}
-        {##}
-        {#/* ***********end  弹窗图片的样式 *************/#}
+
 
     </style>
 
@@ -184,7 +108,7 @@
             <div class="panel panel-success">
                 <div class="panel-heading"><i class="fa fa-building"></i> 已关联记录</div>
                 <div class="panel-body">
-                    <!-- 待关联订单列表 -->
+                    <!-- 已关联订单列表 -->
                     <table class="table">
                         <thead>
                         <tr>
@@ -194,7 +118,6 @@
                             <th>已收金额</th>
                             <th>已关联金额</th>
                             <th>操作</th>
-
 
                         </tr>
                         </thead>
@@ -206,7 +129,13 @@
                                 <td>{{ row.order.customer.shortname }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.amount }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.rcvd_amount }}</td>
-                                <td class="dist-amount">{{ row.order.currency.icon }} {{ row.amount }} </td>
+                                <td class="dist-amount">
+                                     {{ row.order.currency.icon }} {{row.amount|div:row.rate}}
+                                    {% if row.rate != 1 %}
+                                        <span> (分配：{{ row.payment.currency.icon }}{{ row.amount }} 转换汇率 {{ row.rate }}) </span>
+                                    {% endif %}
+
+                                </td>
                                 <td>
                                     <a href="{% url 'stark:dipay_pay2orders_edit'  row.pk %}"><i class="fa fa-edit"></i></a>
 

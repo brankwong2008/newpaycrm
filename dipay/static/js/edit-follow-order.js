@@ -283,4 +283,33 @@ function addDailyPlan(atag) {
 
 
 
+// 可关联订单中，点击每行分配金额的show inputbox
+
+// 点击后将文本替换为输入框
+function showDistInput(sp) {
+    // content可能自带空格，需要trim一下
+    var content = $(sp).text().trim();
+    var id = $(sp).attr('id');
+    var temp = id.split('-');
+    var pk = temp[temp.length - 1]
+    var amount = $(sp).attr('amount').trim();
+    var currency_order = $(sp).attr("currency_order");
+    var currency_inward = $(sp).attr("currency_inward");
+
+    var $input = `<textarea id=${id}> ${amount} </textarea> 
+                    <i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`;
+
+
+    if (currency_inward !== currency_order){
+        console.log('they are not same currency')
+        var $inputRate = `<textarea id="rate-id-${pk}" placeholder="请输入转换汇率"></textarea> 
+                    <i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`;
+        $input += $inputRate;
+    }
+
+    $(sp).replaceWith($input);
+
+}
+
+
 
