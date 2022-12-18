@@ -1,16 +1,9 @@
-
+from django.db.models.functions import TruncMonth
 from stark.service.starksite import StarkHandler,Option
-from stark.utils.display import get_date_display,get_choice_text
-from django.utils.safestring import mark_safe
 from django.shortcuts import reverse,render
 from stark.utils.display import PermissionHanlder, info_display, save_display
 from django.conf.urls import url
-from django.conf import settings
-from django.http import JsonResponse
-from dipay.utils.tools import str_width_control
-from dipay.forms.forms import ChanceModelForm
 from dipay.models import Chance
-from types import FunctionType,MethodType
 from stark.service.pagination import Pagination
 from django.db.models import Q,ForeignKey,ManyToManyField, TextField
 
@@ -46,7 +39,7 @@ class ChanceStatsHandler(PermissionHanlder,StarkHandler):
     fields_display = [month_display,owner_display,count_display]
 
     def get_queryset_data(self,request,is_search=None,*args,**kwargs):
-        from django.db.models.functions import TruncMonth
+
         from django.db.models import Count
         ret = Chance.objects.annotate(month=TruncMonth("create_date")).values(
             "month","owner").annotate(c=Count("id")).values("month","owner__nickname", "c").order_by("-month")

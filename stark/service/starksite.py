@@ -162,6 +162,7 @@ class StarkHandler(object):
     popup_list = []
     search_placeholder = ''
     filter_control_dict = {}   # 给Option筛选字段指定动态的control_list( 如果可筛选值特别多，只筛选指定的值 )
+    time_search = ""
 
     def __init__(self, site, model_class,prev):
         self.site = site
@@ -262,6 +263,9 @@ class StarkHandler(object):
     def get_tabs(self,request,*args,**kwargs):
         return self.tabs
 
+    def get_time_search(self,time_query=None):
+        return self.time_search
+
     # 列表页面
     def show_list(self, request,*args,**kwargs):
         fields_display = self.get_fields_display(request,*args,**kwargs)
@@ -271,6 +275,7 @@ class StarkHandler(object):
         filter_hidden = self.filter_hidden
         batch_process_hidden = self.batch_process_hidden
         guideline = self.guideline
+
 
         tabs = self.get_tabs(request,*args,**kwargs)
 
@@ -341,6 +346,15 @@ class StarkHandler(object):
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
         filter_condition = self.get_url_filter()
+
+        ###  时间范围的筛选的过滤条件 #############
+        time_query = self.request.GET.get("t","")
+        if time_query:
+            time_field, year_month = time_query.split("__")
+            year,month = [ int(each) for each in year_month.split("-")]
+            filter_condition.update({time_field+"__year": year, time_field+"__month":month})
+        # 把已经选好的显示在select中
+        time_search = self.get_time_search(time_query)
 
 
         ############## 1. 组合筛选的区域显示 ###############
@@ -501,6 +515,7 @@ class StarkHandler(object):
                 row_dict["active"] = "active"
             data_list.append(row_dict)
         return header_list, data_list
+
 
     # 新增一条记录
     def add_list(self, request,*args,**kwargs):

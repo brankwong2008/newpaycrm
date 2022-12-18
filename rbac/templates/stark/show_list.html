@@ -39,7 +39,7 @@
 
             {% endif %}
 
-
+            <!-- 模糊搜索条 -->
             {% if search_list %}
 
                 <form action="" method="get" class="form-group pull-left">
@@ -48,9 +48,22 @@
                     <button type="submit"><i class="fa fa-search"></i></button>
                     <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"
                                                                             style="margin: 3px 2px 3px"></i></button>
-
-
                 </form>
+            {% endif %}
+
+
+            <!-- 按月筛选字段 -->
+            {% if time_search %}
+
+
+                <div class="form-group pull-left" style="margin-left: 10px">
+                    <select name="t" id="">
+
+                    </select>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"
+                                                                            style="margin: 3px 2px 3px"></i></button>
+                </div>
+
             {% endif %}
 
 
@@ -92,9 +105,9 @@
                     </ul>
                 {% endif %}
 
-            {% block beforetable %}
+                {% block beforetable %}
 
-            {% endblock %}
+                {% endblock %}
 
                 <table class="table  table-striped">
 

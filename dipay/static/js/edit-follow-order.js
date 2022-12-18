@@ -312,4 +312,48 @@ function showDistInput(sp) {
 }
 
 
+// 时间按月筛选
+
+function filterTime(tag) {
+
+    console.log("time filter worked ")
+    // 获取字段，年月
+    var field = $(tag).prop("id").split("-")[1];
+    var year_month = $(tag).val();
+
+    // 获取现有queryParams，并把timesearch加载到进去
+    var path = window.location.pathname
+    console.log("path",path)
+    var searchParams =  new URLSearchParams(window.location.search);
+    if (searchParams.has('t')){
+        searchParams.set("t",field+'__'+year_month)
+    }else{
+        searchParams.append("t",field+'__'+year_month)
+    }
+
+    // 发get请求
+    var target_path = path + "?"+searchParams.toString()
+    window.location.href= target_path
+
+}
+
+
+// 移除时间筛选的queryParam
+function clearTimeSearch(){
+    // 获取现有queryParams，并把timesearch加载到进去
+    var path = window.location.pathname
+    var searchParams =  new URLSearchParams(window.location.search);
+    if (searchParams.has('t')){
+        searchParams.delete("t")
+    }
+    // 发get请求
+    var target_path = path;
+    if (searchParams.toString()){
+         target_path = path + "?"+searchParams.toString()
+    }
+
+    window.location.href= target_path
+
+}
+
 

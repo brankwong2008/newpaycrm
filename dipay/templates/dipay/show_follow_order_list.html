@@ -11,10 +11,12 @@
             list-style-type: none;
         }
 
-    .fa-caret-down{
-        font-size: large;
+        .fa-caret-down {
+            font-size: large;
+        }
+    .time-search-chozen{
+        background-color: paleturquoise;
     }
-
 
 
     </style>
@@ -52,6 +54,7 @@
             {% endif %}
 
 
+            <!-- 模糊搜索 字段 -->
             {% if search_list %}
 
                 <form action="" method="get" class="form-group pull-left">
@@ -63,6 +66,29 @@
 
                 </form>
             {% endif %}
+
+            <!-- 按月筛选字段 -->
+            {% if time_search %}
+                {% for row in time_search %}
+
+                    <div class="form-group pull-left" style="margin-left: 30px">
+                        <button>{{ row.title }}</button>
+                        <select  id="search-{{ row.field }}" onchange="filterTime(this)" class="{{ row.active }}">
+                            <option value>----</option>
+                            {% for each in row.options %}
+                                <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <button id="id-clear-search" onclick="clearTimeSearch()"><i class="fa fa-rotate-left"
+                                                                                style="margin: 3px 2px 3px"></i>
+                        </button>
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+
+
 
 
             <form action="" method="post">

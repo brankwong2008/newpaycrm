@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
+from django.db.models.functions import TruncMonth
 from datetime import datetime
 from django.conf import settings
 from django.http import JsonResponse
@@ -15,7 +16,7 @@ from django.db.models import ForeignKey
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
 from django.conf.urls import url
-from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo
+from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo, FollowOrder
 from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
 
@@ -23,6 +24,35 @@ from dipay.utils.order_updates import order_payment_update
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
+
+    # 按月筛选的字段列表
+    def get_time_search(self,time_query):
+        year_month = ""
+        if time_query:
+            year_month = time_query.split("__")[1]
+        month_list = FollowOrder.objects.exclude(ETD__isnull=True). \
+            annotate(month=TruncMonth("ETD")).values("month").distinct().order_by("-month")
+        options = []
+        is_chozen = ""
+        for each in month_list:
+            time_item = each["month"].strftime("%Y-%m")
+            if time_item == year_month:
+                options.append({"val":time_item, "selected":"selected"})
+                is_chozen = "time-search-chozen"
+            else:
+                options.append({"val": time_item, "selected": ""})
+
+
+        time_search = [{
+            "title": "ETD",
+            "field": "ETD",
+            "options": options,
+            "active": is_chozen,
+        }, ]
+
+        return time_search
+
+
 
     detail_fields_display = ['order','load_port','discharge_port','ETD','ETA','book_info','load_info',
                              'produce_info','sales_remark',]
