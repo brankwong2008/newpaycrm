@@ -30,8 +30,8 @@ class FollowChanceHandler(PermissionHanlder,StarkHandler):
         return patterns
 
     # model_form的自定义
-    def get_model_form(self,type=None):
-        return FollowChanceEditForm if type == "edit" else FollowChanceAddForm
+    def get_model_form(self,handle_type=None):
+        return FollowChanceEditForm if handle_type == "edit" else FollowChanceAddForm
 
     # show_list数据源筛选
     def get_queryset_data(self,request,is_search=None,*args,**kwargs):

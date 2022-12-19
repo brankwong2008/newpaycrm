@@ -94,7 +94,7 @@ class ChanceHandler(PermissionHanlder,StarkHandler):
         else:
             return []
 
-    def get_model_form(self,type=None):
+    def get_model_form(self,handle_type=None):
         return ChanceModelForm
 
     def save_form(self,form,request,is_update=False,*args, **kwargs):

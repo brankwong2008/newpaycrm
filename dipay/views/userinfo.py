@@ -16,7 +16,7 @@ class MyUserInfoHandler(StarkHandler):
 
     page_title = "用户管理"
 
-    def get_model_form(self,type=None):
+    def get_model_form(self,handle_type=None):
         class UserAddModelForm(StarkModelForm):
             re_password = forms.CharField(max_length=30,label="确认密码",widget=forms.PasswordInput())
             class Meta:
@@ -44,13 +44,13 @@ class MyUserInfoHandler(StarkHandler):
                 model = MyUserInfo
                 exclude = ["password",'forwarder']
 
-        if type == "add":
+        if handle_type == "add":
             return UserAddModelForm
 
-        if type == "edit":
+        if handle_type == "edit":
             return UserEditModelForm
 
-        if type == "forwarder":
+        if handle_type == "forwarder":
             return FowarderUserEditModelForm
 
     def save_form(self,form,request,is_update=False,*args, **kwargs):

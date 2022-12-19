@@ -38,7 +38,7 @@
                 {% for field in form %}
                     <label for="">{{ field.label }}</label>
                     {% if field.name in popup_list %}
-                        <a href="/{{ namespace }}/{{ app_label }}/{{ field.name }}/create/"
+                        <a href="/{{ namespace }}/{{ app_label }}/{{ field.help_text }}/create/"
                            onclick="return showAPP(this)"
                            style="float:right"> <i class="fa fa-plus" aria-hidden="true"></i> </a>
                         <div class="form-row">

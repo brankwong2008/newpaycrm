@@ -208,7 +208,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return render(request, self.add_list_template or "stark/change_list.html", locals())
 
         if request.method == "POST":
-            form = self.get_model_form(htype="add")(request.POST, request.FILES)
+            form = self.get_model_form(handle_type="add")(request.POST, request.FILES)
             if form.is_valid():
                 result = self.save_form(form, request, False, *args, **kwargs)
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
@@ -249,8 +249,8 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 res.update(data_dict)
             return JsonResponse(res)
 
-    def get_model_form(self,htype=None):
-        if htype=="add":
+    def get_model_form(self,handle_type=None):
+        if handle_type=="add":
             return TaskAddModelForm
         else:
             return TaskEditModelForm

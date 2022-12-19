@@ -15,7 +15,7 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
     search_list = ['create_date','amount','customer__title__icontains',]
     search_placeholder = '搜索 日期 金额 客户名 '
 
-    def get_model_form(self, type=None):
+    def get_model_form(self, handle_type=None):
         if type == 'add':
             return AddInwardPayModelForm
         if type == 'edit':

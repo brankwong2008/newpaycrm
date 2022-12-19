@@ -132,7 +132,7 @@ class ForwarderChargeHandler(PermissionHanlder,StarkHandler):
         get_choice_text("status"),
     ]
 
-    def get_model_form(self,type=None):
+    def get_model_form(self,handle_type=None):
         return ForwarderChargeModelForm
 
 

@@ -83,7 +83,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         form.save()
 
 
-    def get_model_form(self,type=None):
+    def get_model_form(self,handle_type=None):
         return ChargePayModelForm
 
     # 显示一条记录详情

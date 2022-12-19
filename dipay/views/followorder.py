@@ -324,7 +324,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     def get_per_page(self):
         return 20
 
-    def get_model_form(self, type=None):
+    def get_model_form(self, handle_type=None):
         return EditFollowOrderModelForm
 
     def get_extra_urls(self):

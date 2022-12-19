@@ -92,7 +92,12 @@ class EditApplyOrderModelForm(StarkForm):
                                             }),
         }
 
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name,field in self.fields.items():
+            if isinstance(field,forms.ModelChoiceField):
+                model_name = field.queryset.first()._meta.model_name
+                field.help_text = model_name
 
 class ConfirmApplyOrderModelForm(StarkForm):
     class Meta:

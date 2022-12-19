@@ -41,7 +41,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         add_btn = "<span><a href='%s' class='btn btn-primary inwardpay-add-record'> + </a></span>" % (add_url)
         return add_btn+ "<span class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </span>"
 
-    def get_model_form(self, type=None):
+    def get_model_form(self, handle_type=None):
         if type == 'add':
             return AddInwardPayModelForm
         if type == 'edit':

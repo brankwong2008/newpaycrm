@@ -205,12 +205,20 @@ class StarkHandler(object):
         return self.get_add_btn(request,*args,**kwargs) if self.has_add_btn else None
 
 
-    def get_model_form(self,type=None):
+    def get_model_form(self,handle_type=None):
         # 通用modelForm
         class DynamicModelForm(StarkForm):
             class Meta:
                 model = self.model_class
                 fields = "__all__"
+
+            def __init__(self, *args, **kwargs):
+                super().__init__(*args, **kwargs)
+                for name, field in self.fields.items():
+                    if isinstance(field, forms.ModelChoiceField):
+                        model_name = field.queryset.first()._meta.model_name
+                        field.help_text = model_name
+
         return DynamicModelForm
 
 
