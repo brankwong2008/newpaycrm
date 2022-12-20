@@ -132,7 +132,7 @@
                                 <td class="dist-amount">
                                      {{ row.order.currency.icon }} {{row.amount|multiply:row.rate}}
                                     {% if row.rate != 1 %}
-                                        <span> (分配：{{ row.payment.currency.icon }}{{ row.amount }} x 转换汇率 {{ row.rate }}) </span>
+                                        <span> (分配：{{ row.payment.currency.icon }}{{ row.amount }} x 汇率 {{ row.rate }}) </span>
                                     {% endif %}
 
                                 </td>

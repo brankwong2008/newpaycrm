@@ -23,6 +23,7 @@ from dipay.views.forwarder_chargepay import ForwarderChargePayHandler
 from dipay.views.chance_stats import ChanceStatsHandler
 from dipay.views.forwarder import ForwarderHandler
 from dipay.views.ports import PortsHandler
+from dipay.views.product import ProductHandler
 
 
 
@@ -109,7 +110,7 @@ site.register(models.Charge, ForwarderChargeHandler,prev='forwarder')
 site.register(models.ChargePay, ForwarderChargePayHandler,prev='forwarder' )
 
 # 产品管理
-site.register(models.Product )
+site.register(models.Product, ProductHandler )
 
 # 供应商管理
 site.register(models.Supplier )

@@ -16,6 +16,8 @@ class ForwarderChargePayHandler(PermissionHanlder,StarkHandler):
 
     has_add_btn =  False
 
+    css_for_show_list = ".header-7{width:30%}"
+
     order_by_list = ['-id','-create_date']
 
     search_list = ["id__contains", 'create_date']

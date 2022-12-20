@@ -7,6 +7,11 @@
     {% block self-css %}
 
     {% endblock %}
+    <style>
+
+        {{ css_for_show_list }}
+
+    </style>
 
 {% endblock %}
 
@@ -172,6 +177,7 @@
 
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static 'js/chances-operator.js' %}"></script>
 
 
 {% endblock %}

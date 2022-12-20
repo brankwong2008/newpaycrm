@@ -162,7 +162,10 @@ class StarkHandler(object):
     popup_list = []
     search_placeholder = ''
     filter_control_dict = {}   # 给Option筛选字段指定动态的control_list( 如果可筛选值特别多，只筛选指定的值 )
-    time_search = ""
+    time_search = ""     # 按月筛选按钮的控制
+    css_for_show_list = ""   # show list页面的css
+
+
 
     def __init__(self, site, model_class,prev):
         self.site = site
@@ -283,7 +286,7 @@ class StarkHandler(object):
         filter_hidden = self.filter_hidden
         batch_process_hidden = self.batch_process_hidden
         guideline = self.guideline
-
+        css_for_show_list = self.css_for_show_list
 
         tabs = self.get_tabs(request,*args,**kwargs)
 

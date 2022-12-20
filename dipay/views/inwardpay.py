@@ -323,8 +323,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             if not pay2order_obj:
                 dist_amount = 0
             else:
-                dist_amount = round(pay2order_obj.amount * pay2order_obj.rate,2)
-            display_dist_amount = '%s%s' % (order_obj.currency.icon, dist_amount) if dist_amount else '--'
+                dist_amount =pay2order_obj.amount
+            display_dist_amount = '%s%s' % (order_obj.currency.icon,  round(pay2order_obj.amount * pay2order_obj.rate,2)) if dist_amount else '--'
 
             # 判断是否固定定金
             is_fix_amount = 'true' if order_obj.order_number.startswith('L') else 'false'
@@ -339,9 +339,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
             # # 可关联订单中，显示每个订单分配的转换汇率，默认为1的不显示
             rate_tag = ""
+            rate = pay2order_obj.rate if pay2order_obj else 0
             if pay2order_obj and pay2order_obj.rate != 1:
                 rate_tag = f"<span style='margin-left:6px'> " \
-                           f" (分配:{inwardpay_obj.currency.icon}{pay2order_obj.amount} " \
+                           f" (分配: {inwardpay_obj.currency.icon}{pay2order_obj.amount} x " \
                            f"汇率:{pay2order_obj.rate}) <span>"
 
             # 可关联订单中，显示每个订单已分配的金额的tag
@@ -350,9 +351,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                          "currency_order='%s' " \
                          "currency_inward='%s'  " \
                          "amount='%s' " \
+                         "rate='%s' " \
                          "onclick='showDistInput(this)'" \
                          ">%s</span>" % (
-                'amount', order_obj.pk, currency_order,currency_inward, dist_amount, display_dist_amount
+                'amount', order_obj.pk, currency_order,currency_inward, dist_amount,rate,display_dist_amount
             )
 
             row['dist_amount'] = mark_safe(amount_tag + rate_tag)

@@ -170,7 +170,7 @@ class FollowOrder(models.Model):
     produce_sequence = models.SmallIntegerField(verbose_name='排产顺序', default=999)
     shipline = models.ForeignKey(to=ShipLines, on_delete=models.CASCADE,
                                  verbose_name='船公司', null=True )
-    container = models.CharField(max_length=20, verbose_name='生产情况', default='--')
+    container = models.CharField(max_length=20, verbose_name='集装箱号', default='--')
     update_date = models.DateTimeField(auto_now=True, verbose_name='更新时间', null=True)
     is_notified = models.BooleanField(verbose_name='到港通知否',default=False)
 
