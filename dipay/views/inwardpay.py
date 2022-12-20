@@ -323,7 +323,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             if not pay2order_obj:
                 dist_amount = 0
             else:
-                dist_amount = round(pay2order_obj.amount/pay2order_obj.rate,2)
+                dist_amount = round(pay2order_obj.amount * pay2order_obj.rate,2)
             display_dist_amount = '%s%s' % (order_obj.currency.icon, dist_amount) if dist_amount else '--'
 
             # 判断是否固定定金
@@ -399,11 +399,11 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         if request.is_ajax():
             order_id = request.POST.get('pk')
             amount = request.POST.get('amount')  # 从收款中分出的金额，币种比如是人民币
-            rate = Decimal(request.POST.get('rate',1))     # 分出的金额关联到订单上的计算汇率 实际关联结果 = amount/rate, 按常识来处理
+            rate = Decimal(request.POST.get('rate',1))     # 分出的金额关联到订单上的计算汇率 实际关联结果 = amount*rate, 按常识来处理
 
             try:
                 dist_amount = Decimal(amount)      # 从款中来的金额
-                dist_to_amount = Decimal(amount)/Decimal(rate)   #分配到订单中的金额
+                dist_to_amount = Decimal(amount)*Decimal(rate)   #分配到订单中的金额
             except Exception as e:
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '必须填数值'})
 
@@ -422,19 +422,19 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 diff_amount = dist_amount - Decimal(pay2order_obj.amount)
                 if diff_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
-                if diff_amount/rate > order_obj.collect_amount:
+                if diff_amount*rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj.amount = dist_amount
                 pay2order_obj.rate = rate
-                order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount/rate
-                order_obj.collect_amount = order_obj.collect_amount - diff_amount/rate
+                order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount*rate
+                order_obj.collect_amount = order_obj.collect_amount - diff_amount*rate
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 # 如果是新增关联记录
                 if dist_amount > inwardpay_obj.torelate_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
-                if dist_amount/rate > order_obj.collect_amount:
+                if dist_amount*rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj = Pay2Orders(payment=inwardpay_obj, order=order_obj, amount=dist_amount,rate=rate)
@@ -448,7 +448,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 current_number_obj.dist_ref = new_dist_ref
                 current_number_obj.save()
 
-                order_obj.rcvd_amount = order_obj.rcvd_amount + dist_amount/rate
+                order_obj.rcvd_amount = order_obj.rcvd_amount + dist_amount*rate
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - dist_amount
             try:
                 order_obj.save()

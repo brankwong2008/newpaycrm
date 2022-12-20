@@ -26,7 +26,7 @@
                     <tr>
                         <td>
                             {% if row.rate != 1 %}
-                              {{ row.amount|div:row.rate }} (折算汇率:{{row.rate}})
+                              {{ row.amount|multiply:row.rate }} (x 折算汇率:{{row.rate}})
                             {% else %}
                               {{ row.amount }}
                             {% endif  %}

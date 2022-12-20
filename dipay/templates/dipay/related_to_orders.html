@@ -130,9 +130,9 @@
                                 <td>{{ row.order.currency.icon }}{{ row.order.amount }}</td>
                                 <td>{{ row.order.currency.icon }}{{ row.order.rcvd_amount }}</td>
                                 <td class="dist-amount">
-                                     {{ row.order.currency.icon }} {{row.amount|div:row.rate}}
+                                     {{ row.order.currency.icon }} {{row.amount|multiply:row.rate}}
                                     {% if row.rate != 1 %}
-                                        <span> (分配：{{ row.payment.currency.icon }}{{ row.amount }} 转换汇率 {{ row.rate }}) </span>
+                                        <span> (分配：{{ row.payment.currency.icon }}{{ row.amount }} x 转换汇率 {{ row.rate }}) </span>
                                     {% endif %}
 
                                 </td>
