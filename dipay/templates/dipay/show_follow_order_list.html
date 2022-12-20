@@ -108,7 +108,7 @@
                         <select id="search-{{ row.field }}"
                                 onchange="filterTime(this)"
                                 class="{{ row.active }} form-control search-item">
-                            <option value>----</option>
+                            <option value>按月筛选</option>
                             {% for each in row.options %}
                                 <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
                             {% endfor %}
@@ -130,7 +130,7 @@
                     <div class="pull-right hidden-xs">
 
                         <select name="handle_type" class="handle-select">
-                            <option value="">请选择处理方式</option>
+                            <option value="">处理方式</option>
                             {% for func,text in batch_process_dict.items %}
                                 <option value="{{ func }}">{{ text }}</option>
                             {% endfor %}

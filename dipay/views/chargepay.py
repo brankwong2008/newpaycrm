@@ -15,6 +15,9 @@ from datetime import datetime
 class ChargePayHandler(PermissionHanlder,StarkHandler):
 
     show_detail_template = "dipay/show_chargepay_detail.html"
+
+    show_list_template = "dipay/show_chargepay_list.html"
+
     page_title = "付费记录"
 
     search_list = ['id__icontains', "create_date"]

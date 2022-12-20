@@ -42,9 +42,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         return add_btn+ "<span class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </span>"
 
     def get_model_form(self, handle_type=None):
-        if type == 'add':
+        if handle_type == 'add':
             return AddInwardPayModelForm
-        if type == 'edit':
+        if handle_type == 'edit':
             return EditInwardPayModelForm
 
     def amount_display(self, obj=None, is_header=False, *args, **kwargs):

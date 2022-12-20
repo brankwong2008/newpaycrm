@@ -320,6 +320,10 @@ function filterTime(tag) {
     // 获取字段，年月
     var field = $(tag).prop("id").split("-")[1];
     var year_month = $(tag).val();
+    if (!year_month) {
+        clearTimeSearch()
+        return
+    }
 
     // 获取现有queryParams，并把timesearch加载到进去
     var path = window.location.pathname
