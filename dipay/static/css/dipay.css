@@ -160,13 +160,16 @@ textarea[id^="amount"] {
 }
 
 /*批量操作的select标签样式*/
-select.handle-select, button.handle-btn {
+select.handle-select {
     height: 26px;
     vertical-align: middle;
+    color: grey;
 }
 
 /*批量操作的select标签后面的执行按钮样式*/
 button.handle-btn {
+    height: 26px;
+    vertical-align: middle;
     padding: 2px 4px;
     line-height: 20px;
 }

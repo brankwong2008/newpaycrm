@@ -79,12 +79,12 @@
                     <div class="pull-left batch-process-div {{ batch_process_hidden }}">
 
                         <select name="handle_type" class="handle-select">
-                            <option value="">请选择处理方式</option>
+                            <option value="">处理方式</option>
                             {% for func,text in batch_process_dict.items %}
                                 <option value="{{ func }}">{{ text }}</option>
                             {% endfor %}
                         </select>
-                        <button type="submit" class="btn btn-primary handle-btn">
+                        <button type="submit" class="handle-btn">
                             <i class="fa fa-send"></i></button>
                     </div>
 
