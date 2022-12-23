@@ -300,7 +300,7 @@ class StarkHandler(object):
             batch_process_dict = None
 
         if request.method == "POST":
-            # print(request.POST)
+            print(request.POST)
             func_name = request.POST.get("handle_type")
             if func_name in batch_process_dict:
                 func = getattr(self,func_name)

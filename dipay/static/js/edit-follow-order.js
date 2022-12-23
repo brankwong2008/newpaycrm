@@ -1,5 +1,3 @@
-
-
 // 功能：双击表格，替换成相应的input控件，点击保存更新到数据库
 function savePlan(btn) {
     // 找到控件和input信息
@@ -282,7 +280,6 @@ function addDailyPlan(atag) {
 }
 
 
-
 // 可关联订单中，点击每行分配金额的show inputbox
 
 // 点击后将文本替换为输入框
@@ -298,10 +295,10 @@ function showDistInput(sp) {
     var currency_inward = $(sp).attr("currency_inward");
 
     var $input = `<textarea id=${id}> ${amount} </textarea>`;
-    var $icon =  `<i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`
+    var $icon = `<i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`
 
 
-    if (currency_inward !== currency_order){
+    if (currency_inward !== currency_order) {
 
         var $inputRate = ` x <textarea id="rate-id-${pk}" placeholder="请输入转换汇率">${rate}</textarea> 
                     <i class="fa fa-check" pk="${pk}"  onclick="fastInfoSave(this)"></i>`;
@@ -330,37 +327,66 @@ function filterTime(tag) {
 
     // 获取现有queryParams，并把timesearch加载到进去
     var path = window.location.pathname
-    console.log("path",path)
-    var searchParams =  new URLSearchParams(window.location.search);
-    if (searchParams.has('t')){
-        searchParams.set("t",field+'__'+year_month)
-    }else{
-        searchParams.append("t",field+'__'+year_month)
+    console.log("path", path)
+    var searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('t')) {
+        searchParams.set("t", field + '__' + year_month)
+    } else {
+        searchParams.append("t", field + '__' + year_month)
     }
 
     // 发get请求
-    var target_path = path + "?"+searchParams.toString()
-    window.location.href= target_path
+    var target_path = path + "?" + searchParams.toString()
+    window.location.href = target_path
 
 }
 
 
 // 移除时间筛选的queryParam
-function clearTimeSearch(){
+function clearTimeSearch() {
     // 获取现有queryParams，并把timesearch加载到进去
     var path = window.location.pathname
-    var searchParams =  new URLSearchParams(window.location.search);
-    if (searchParams.has('t')){
+    var searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('t')) {
         searchParams.delete("t")
     }
     // 发get请求
     var target_path = path;
-    if (searchParams.toString()){
-         target_path = path + "?"+searchParams.toString()
+    if (searchParams.toString()) {
+        target_path = path + "?" + searchParams.toString()
     }
 
-    window.location.href= target_path
+    window.location.href = target_path
 
 }
 
 
+// 确认发票金额, 使用toggle方式
+
+function confirmInvoiceVal(iTag) {
+
+    if ($(iTag).hasClass("unchecked")) {
+        $(iTag).removeClass("unchecked fa-circle-o").addClass("fa-check checked")
+    } else {
+        $(iTag).removeClass("fa-check checked").addClass("unchecked fa-circle-o")
+    }
+
+    // 发ajax，更新后台数据
+
+    var data = {
+        'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
+        "handle_type": "check_amount",
+        "pk": $(iTag).attr("pk")
+    };
+
+    $.ajax({
+        url: location.href,
+        type: 'post',
+        data: data,
+        success: function (respond) {
+            console.log(respond);
+            ShowMsg(respond.msg)
+        }
+    });
+
+}

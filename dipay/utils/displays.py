@@ -364,7 +364,7 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
         else:
             customer_details_url = "#"
 
-        print('update_date:', obj.update_date  )
+        # print('update_date:', obj.update_date  )
         if not obj.update_date:
             update_date = '---'
         else:
@@ -389,7 +389,12 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
 
         rcvd_collect_amount = rcvd_amount_blance_display(handler, obj, False)
 
-        content = f'票：{amount_tag} <br>' \
+        if obj.order.amount_check:
+            amount_check = "fa-check checked"
+        else:
+            amount_check = "fa-circle-o unchecked"
+
+        content = f'票：{amount_tag} <i class="fa {amount_check}"  pk="{obj.pk}" onclick="confirmInvoiceVal(this)"></i> <br>' \
                   f'{rcvd_collect_amount}'
 
         return mark_safe("<div class='hidden-xs'>%s</div>" % content)

@@ -93,6 +93,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     batch_to_produce.text = '批量排产'
 
+    # 检查发票金额
+    def check_amount(self, request, *args, **kwargs):
+        print("enter check amont, ", request.POST.getlist('pk'))
+        pk_list = request.POST.getlist('pk')
+        for pk in pk_list:
+            followorder_obj = self.model_class.objects.filter(pk=pk).first()
+            print(followorder_obj.order.amount_check, not followorder_obj.order.amount_check )
+            followorder_obj.order.amount_check = not followorder_obj.order.amount_check
+            followorder_obj.order.save()
+        return JsonResponse({"status":True, "msg":"检查发票金额成功"})
+
+    check_amount.text = "金额核查"
+
     # 批量拆分订单的选项卡
     def batch_split_order(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
@@ -255,8 +268,10 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     apply_release.text = '申请放单'
 
+
+
     # 批量处理列表
-    batch_process_list = [batch_to_produce, batch_split_order, apply_release]
+    batch_process_list = [batch_to_produce, batch_split_order, apply_release,check_amount]
 
     def edit_display(self, obj=None, is_header=False, *args, **kwargs):
         """

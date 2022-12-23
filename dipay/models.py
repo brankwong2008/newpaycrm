@@ -135,6 +135,7 @@ class ApplyOrder(models.Model):
                     (5, '无效'),
                     ]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='订单状态',default=0)
+    amount_check = models.BooleanField(verbose_name='发票金额确认否',default=False)
 
     def __str__(self):
         return self.order_number
