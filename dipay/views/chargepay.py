@@ -125,7 +125,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
                 CNY_amount = item.amount
                 CNY_total += CNY_amount
             BL_date = item.charge.BL_date.strftime("%Y-%m-%d")
-            remark = item.charge.remark
+            remark = item.charge.remark.replace("\n"," ").replace("\t"," ")
             order_number = str(item.charge.followorder)
             row = [BL_date,remark,order_number,USD_amount or "-", CNY_amount or "-"]
             ws.append(row)
