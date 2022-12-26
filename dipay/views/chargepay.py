@@ -117,7 +117,8 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         USD_total, CNY_total = 0,0
         for item in PayToCharge.objects.filter(chargepay_id=pk):
             USD_amount,CNY_amount  = 0,0
-            if item.currency ==1:
+            print("currency.title:",item.currency.title)
+            if item.currency.title =="美元":
                 USD_amount = item.amount
                 USD_total += USD_amount
             else:
@@ -128,7 +129,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
             order_number = str(item.charge.followorder)
             row = [BL_date,remark,order_number,USD_amount or "-", CNY_amount or "-"]
             ws.append(row)
-        ws.append(["合计","","", USD_total or "", CNY_total] or "")
+        ws.append(["合计","","", USD_total or "-", CNY_total  or "-"])
 
         file_name = "F%s.xlsx" % (str(pk).zfill(5))
         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
