@@ -15,6 +15,7 @@ from dipay.models import ApplyOrder, Pay2Orders, Inwardpay, CurrentNumber
 import threading
 from rbac.utils.common import compress_image_task
 from datetime import datetime
+from dipay.utils.order_updates import order_payment_update
 
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
@@ -298,7 +299,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             return redirect(confirm_url)
 
 
-        # total_dist_amounts = sum([each.amount for each in Pay2Orders.objects.filter(payment=inwardpay_obj)])
+        # 已分配金额合计
         total_dist_amounts =  Pay2Orders.objects.filter(payment=inwardpay_obj).aggregate(sumup = Sum("amount"))["sumup"]
         if not total_dist_amounts:
             total_dist_amounts = 0
@@ -431,7 +432,6 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 pay2order_obj.amount = dist_amount
                 pay2order_obj.rate = rate
                 order_obj.rcvd_amount = order_obj.rcvd_amount + diff_amount*rate
-                order_obj.collect_amount = order_obj.collect_amount - diff_amount*rate
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 # 如果是新增关联记录
@@ -455,10 +455,14 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - dist_amount
             try:
                 order_obj.save()
+
                 if inwardpay_obj.torelate_amount == 0:
                     inwardpay_obj.status = 1
                 inwardpay_obj.save()
                 pay2order_obj.save()
+
+                # 更新订单的已收和应收
+                order_payment_update(order_obj=order_obj)
 
             except Exception as e:
                 return JsonResponse({'status': False, 'field': 'amount', 'error': '分配收款失败'})
