@@ -166,6 +166,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             if form.is_valid():
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
                 form.instance.torelate_amount = form.instance.amount
+                form.instance.keyin_user = request.user
                 currentnumber_obj = CurrentNumber.objects.get(pk=1)
                 new_reference = currentnumber_obj.reference + 1
                 while Inwardpay.objects.filter(reference=new_reference).exists():
