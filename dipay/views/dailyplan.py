@@ -1,19 +1,18 @@
-
 from django.http import JsonResponse
-from django.shortcuts import reverse,render,redirect
+from django.shortcuts import reverse, render, redirect
 from django.conf.urls import url
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
-from stark.utils.display import get_date_display, checkbox_display, PermissionHanlder,info_display,change_date_display
+from stark.utils.display import get_date_display, checkbox_display, PermissionHanlder, info_display, change_date_display
 from dipay.utils.displays import save_display
 from dipay.utils.tools import get_choice_value
 from dipay.models import DailyPlan, FollowOrder, UserInfo
-from dipay.forms.forms import TaskAddModelForm,TaskEditModelForm
+from dipay.forms.forms import TaskAddModelForm, TaskEditModelForm
 import datetime
 
-class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
+class DailyPlanHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/show_dailyplan_list.html'
     page_title = "日计划"
 
@@ -28,15 +27,16 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
     search_placeholder = '搜索 任务 备注 日期'
 
     def get_order_by_list(self, request):
-        if request.GET.get('status')=='1':
-            return ['-id',]
-        return ['sequence','-id']
+        if request.GET.get('status') == '1':
+            return ['-id', ]
+        return ['sequence', '-id']
 
     # 添加按钮的显示方法
-    def add_btn_display(self,request,*args,**kwargs):
+    def add_btn_display(self, request, *args, **kwargs):
         if self.has_add_btn:
-            add_url = self.reverse_add_url(*args,**kwargs)
-            return "<a href='%s?get_type=simple' class='btn btn-primary add-record' onclick='return simpleAddDailyPlan(this)'> + </a>" % (add_url)
+            add_url = self.reverse_add_url(*args, **kwargs)
+            return "<a href='%s?get_type=simple' class='btn btn-primary add-record' onclick='return simpleAddDailyPlan(this)'> + </a>" % (
+                add_url)
         else:
             return None
 
@@ -46,9 +46,10 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return 'Done'
         else:
             list_url = self.reverse_list_url()
-            switch = 'off' if obj.status==1 else 'on'
-            return mark_safe("<a href='%s' pk='%s' onclick='return accomplishTask(this)'><i class='fa fa-toggle-%s' ></i></a>" %
-                             (list_url, obj.pk,switch ))
+            switch = '' if obj.status == 1 else '-thin'
+            return mark_safe(
+                "<a href='%s' pk='%s' onclick='return accomplishTask(this)'><i class='fa fa-circle%s' ></i></a>" %
+                (list_url, obj.pk, switch))
 
     # 重要性的显示方法
     def urgence_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -57,9 +58,10 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         else:
             list_url = self.reverse_list_url()
             color = 'red' if obj.urgence else 'grey'
-            return mark_safe("<a href='%s' class pk='%s' urgence='%s' onclick='return switchUrgence(this)' style='color:%s'>"
-                             "<i class='fa fa-exclamation'></i></a>" %
-                             (list_url,obj.pk, obj.urgence, color))
+            return mark_safe(
+                "<a href='%s' class pk='%s' urgence='%s' onclick='return switchUrgence(this)' style='color:%s'>"
+                "<i class='fa fa-exclamation'></i></a>" %
+                (list_url, obj.pk, obj.urgence, color))
 
     # 显示关联跟单记录的display
     def link_display(self, obj=None, is_header=False, *args, **kwargs):
@@ -67,7 +69,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return "关联"
         else:
             if obj.link:
-                followorder_url = reverse("stark:dipay_followorder_list")+"?q=%s" % obj.link.order.order_number
+                followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % obj.link.order.order_number
                 return mark_safe("<a href='%s' target='_blank'>%s</a>" % (followorder_url, obj.link))
             else:
                 return '--'
@@ -81,37 +83,41 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             return mark_safe("<span class='text-display %s' onclick='showInputBox(this)' "
                              "id='%s-id-%s'> %s </span>" % (color, "content", obj.pk, obj.content))
 
-
-
     # 任务字段列表
-    fields_display = [content_display,info_display('remark'), accomplish_display,
-                      urgence_display, info_display('sequence',hidden_xs='hidden-xs'),
-                      link_display,get_date_display("start_date",time_format='%m-%d',hidden_xs='hidden-xs'),
-                      change_date_display('remind_date',time_format='%m-%d'), ]
+    fields_display = [
+        accomplish_display,
+        content_display,
+        info_display('remark'),
+        link_display,
+        change_date_display('remind_date', time_format='%m-%d'),
+        urgence_display,
+        # info_display('sequence',hidden_xs='hidden-xs'),
+        # get_date_display("start_date",time_format='%m-%d',hidden_xs='hidden-xs'),
 
+    ]
 
     # 按状态筛选
-    option_group = [Option(field='status'),]
+    option_group = [Option(field='status'), ]
 
     # 批量处理： 切换状态
     def batch_switch_status(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
         for pk in pk_list:
             obj = self.model_class.objects.filter(pk=pk).first()
-            status = '进行' if obj.status==1 else '完成'
-            obj.status = get_choice_value(self.model_class.status_choices,status)
+            status = '进行' if obj.status == 1 else '完成'
+            obj.status = get_choice_value(self.model_class.status_choices, status)
             obj.save()
-        return JsonResponse({'status':200, 'data':'切换成功'})
+        return JsonResponse({'status': 200, 'data': '切换成功'})
 
     batch_switch_status.text = '切换状态'
 
-    batch_process_list = [batch_switch_status,]
+    batch_process_list = [batch_switch_status, ]
 
     # 控制筛选框的显示
     filter_hidden = "hidden"
     batch_process_hidden = 'hidden'
 
-    tab_list = [('进行', '进行', 'active'),  ('提醒', '提醒', ""),('完成', '完成', ""), ]
+    tab_list = [('进行', '进行', 'active'), ('提醒', '提醒', ""), ('完成', '完成', ""), ]
     status_dict = {item[1]: item[0] for item in DailyPlan.status_choices}
 
     # 定义筛选标签页头
@@ -142,7 +148,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
     def get_queryset_data(self, request, is_search=None, *args, **kwargs):
         # 搜索所用的数据另行指定范围
-        queryset =  self.model_class.objects.filter(user=request.user)
+        queryset = self.model_class.objects.filter(user=request.user)
         # 检查reminder的状态, 如果提醒日期到了，status变更为进行
         for item in queryset.filter(status=self.status_dict.get('提醒')):
             if item.remind_date <= datetime.date.today() and item.status == self.status_dict.get('提醒'):
@@ -151,13 +157,13 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
 
         # 检查跟单表里面的ETA，如果ETA距离现在的时间小于等于7天，需要给对应的业务员和跟单发送一个跟进任务
         to_notify_followorder_queryset = FollowOrder.objects.filter(
-            status__in = [1,2,3,5],
-            ETA__range= [datetime.date.today(), datetime.date.today()+datetime.timedelta(days=10),],
-            is_notified= False
+            status__in=[1, 2, 3, 5],
+            ETA__range=[datetime.date.today(), datetime.date.today() + datetime.timedelta(days=10), ],
+            is_notified=False
         )
 
         for each in to_notify_followorder_queryset:
-            print('需要通知的订单',each)
+            print('需要通知的订单', each)
             # 通知业务员
             DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
                                      link=each,
@@ -171,7 +177,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
             each.save()
 
         if is_search:
-            return  queryset
+            return queryset
         # status 0 进行  1 完成
         if request.GET.get('status'):
             return queryset
@@ -179,7 +185,6 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         for item in self.tab_list:
             if item[2] == 'active':
                 return queryset.filter(status=self.status_dict.get(item[0]))
-
 
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):
@@ -197,7 +202,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         if request.method == "GET":
             form = self.get_model_form("add")()
             # 手动更新cc抄送字段的choice，只能自定一个更新的方法，choices源必须是列表等可迭代对象
-            form.update_choices('cc',UserInfo.objects.all().exclude(pk=request.user.pk).values_list("id","nickname"))
+            form.update_choices('cc', UserInfo.objects.all().exclude(pk=request.user.pk).values_list("id", "nickname"))
             model_name = self.model_name
             # 当返回数据给模态框时，get_type = simple，只返回核心内容
             get_type = request.GET.get('get_type')
@@ -229,11 +234,11 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 res = {'status': False, 'msg': 'obj not found'}
             else:
                 for item, val in data_dict.items():
-                    if item=='urgence':
+                    if item == 'urgence':
                         val = False if val.strip() == 'False' else True
                     # 提醒日期设置了，需要检查设置是否合格，如合格存入数据库
-                    if item=='remind_date':
-                        remind_date = datetime.datetime.strptime(val,'%Y-%m-%d')
+                    if item == 'remind_date':
+                        remind_date = datetime.datetime.strptime(val, '%Y-%m-%d')
                         if remind_date <= datetime.datetime.today():
                             data_dict['status'] = False
                             data_dict['field'] = 'remind_date'
@@ -249,14 +254,14 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 res.update(data_dict)
             return JsonResponse(res)
 
-    def get_model_form(self,handle_type=None):
-        if handle_type=="add":
+    def get_model_form(self, handle_type=None):
+        if handle_type == "add":
             return TaskAddModelForm
         else:
             return TaskEditModelForm
 
     # 新建任务的方法
-    def save_form(self,form,request,is_update=False,*args, **kwargs):
+    def save_form(self, form, request, is_update=False, *args, **kwargs):
         print("enter into save form dailypan ")
         if not request.user:
             return
@@ -274,7 +279,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
         # 新增一条任务
         if not is_update:
             print("enter into save form not is_update ")
-            print("request.POST",request.POST)
+            print("request.POST", request.POST)
             link_id = request.POST.get('link_id')
             cc = request.POST.getlist('cc[]')
 
@@ -282,7 +287,7 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                 form.instance.link_id = link_id
                 followorder_obj = FollowOrder.objects.get(pk=link_id)
                 form.instance.remark = '%s %s ' % (
-                followorder_obj.order.customer.shortname, followorder_obj.order.order_number)
+                    followorder_obj.order.customer.shortname, followorder_obj.order.order_number)
                 # 如果设置了提醒日期，判断日期是否大于当前日期
 
             form.instance.user = request.user
@@ -297,12 +302,12 @@ class DailyPlanHandler(PermissionHanlder,StarkHandler):
                     cc_user = UserInfo.objects.filter(pk=each).first()
                     if cc_user:
                         # 此处是否可以使用pk置为null的方式，然后form.save()来新建一条记录
-                        form.instance.pk=None
+                        form.instance.pk = None
                         form.instance.user = cc_user
                         form.instance.content = content
                         form.save()
 
-            return JsonResponse({"status":True, "msg":'任务快速添加成功'})
+            return JsonResponse({"status": True, "msg": '任务快速添加成功'})
 
         # 更新一条任务
         print("enter into save form not final form.save ")
