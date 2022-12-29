@@ -53,7 +53,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         return time_search
 
 
-
     detail_fields_display = ['order','load_port','discharge_port','ETD','ETA','book_info','load_info',
                              'produce_info','sales_remark',]
 

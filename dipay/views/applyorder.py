@@ -14,6 +14,7 @@ from django.conf.urls import url
 from django.db import transaction
 import re
 from decimal import Decimal
+from dipay.utils.order_updates import order_payment_update
 
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
@@ -709,7 +710,8 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             form = ConfirmApplyOrderModelForm(instance=order_obj, initial={'confirm_date': datetime.now()})
             return_url = self.reverse_list_url()
             return render(request, 'dipay/confirm_order.html', locals())
-        else:
+
+        if request.method == "POST":
             form = ConfirmApplyOrderModelForm(request.POST, instance=order_obj)
             if form.is_valid():
                 # 下单的动作1，把订单状态变为已下单
@@ -729,6 +731,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                                                   )
                     followorder_obj.save()
                 form.save()
+                order_payment_update(order_obj=followorder_obj.order)
                 order_number = order_obj.order_number
                 link = reverse("stark:dipay_followorder_list")+"?q=%s" % order_number
                 follow_order_link = "<a href='%s' target='_blank'>%s</a>" % (link, order_number)

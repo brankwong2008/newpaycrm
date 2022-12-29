@@ -86,6 +86,7 @@ class EditApplyOrderModelForm(StarkForm):
             'order_number': forms.TextInput(attrs={'readonly': True}),
             'rcvd_amount': forms.TextInput(attrs={'readonly': True}),
             'collect_amount': forms.TextInput(attrs={'readonly': True}),
+            "amount": forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
             'customer': forms.Select(attrs={'data-live-search': 'true',
                                             'style': "display: none;",
                                             'class':'selectpicker bla bli form-control',
@@ -110,6 +111,7 @@ class ConfirmApplyOrderModelForm(StarkForm):
             'confirm_date': forms.DateInput(attrs={'type': 'date'}),
             'order_number': forms.TextInput(attrs={'readonly': True}),
             'customer': forms.Select(attrs={'readonly': True}),
+            "amount": forms.TextInput(attrs={'oninput': 'justifyNumberInput(this)'}),
         }
 
 

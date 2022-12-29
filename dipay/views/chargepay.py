@@ -6,22 +6,23 @@ from django.shortcuts import render, HttpResponse
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display,forwarder_display
 from django.http import JsonResponse
-from dipay.models import PayToCharge,Charge
+from dipay.models import PayToCharge,Charge,Forwarder
 from dipay.forms.forms import ChargePayModelForm
 from django.conf import settings
 from django.conf.urls import url
-from datetime import datetime
 
 class ChargePayHandler(PermissionHanlder,StarkHandler):
-
+    page_title = "付费记录"
     show_detail_template = "dipay/show_chargepay_detail.html"
-
     show_list_template = "dipay/show_chargepay_list.html"
 
-    page_title = "付费记录"
+    option_group = [Option(field="forwarder")]
+    # 动态指定
+    def get_filter_control_list(self):
+        return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
+
 
     search_list = ['id__icontains', "create_date"]
-
     search_placeholder = '搜索 付费单号 日期'
 
     def amount_display(self, obj=None, is_header=None,*args,**kwargs):
