@@ -21,7 +21,7 @@ from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo, FollowO
 from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
 from openpyxl import load_workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Alignment
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -481,7 +481,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
 
         # 返回下载文件
-        queryset = FollowOrder.objects.filter(**filter_param)   # followorder_queryset
+        queryset = FollowOrder.objects.filter(**filter_param).order_by("order__confirm_date")   # followorder_queryset
         file_name = "follow_up_%s_%s.xlsx" % (request.user.username, datetime.now().strftime("%Y-%m-%d-%H%M%S"))
         file_path = os.path.join("media/followorder", file_name)
         f = self.make_orderdownload_file(queryset, file_path)
@@ -556,12 +556,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                     italic=False,
                     vertAlign='baseline',
                        )
+        align_center = Alignment(horizontal="center",vertical="center")
+        align_right = Alignment(horizontal="right",vertical="center")
+        align_left = Alignment(horizontal="left",vertical="center")
         for row in ws.iter_rows(2):
             for cell in row:
-                if cell.column_letter in ["S","U","W"]:
-                    cell.font = font_bold
-                    continue
                 cell.font = font
+                if cell.column_letter in ["P",]:
+                    cell.alignment = align_right
+                elif cell.column_letter in ["Q",]:
+                    cell.alignment = align_left
+                elif cell.column_letter in ["S","U","W"]:
+                    cell.font = font_bold
+                    cell.alignment  = align_center
 
         wb.save(file_path)
 
