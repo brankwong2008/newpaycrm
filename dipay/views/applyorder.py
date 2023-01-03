@@ -713,40 +713,43 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
         if request.method == "POST":
             form = ConfirmApplyOrderModelForm(request.POST, instance=order_obj)
-            if form.is_valid():
-                # 下单的动作1，把订单状态变为已下单
-                form.instance.status = 2
-                # 下单的动作2，把下单日期改为当日
-                if not form.instance.confirm_date:
-                    form.instance.confirm_date = datetime.now()
-                # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
-                followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
 
-                if not followorder_obj:
-                    load_info = '装箱：%s' % form.instance.remark
-                    followorder_obj = FollowOrder(order=order_obj,
-                                                  salesman=order_obj.salesperson,
-                                                  load_info=load_info,
-                                                  discharge_port= str(form.instance.discharge_port),
-                                                  )
-                    followorder_obj.save()
-                form.save()
-                order_payment_update(order_obj=followorder_obj.order)
-                order_number = order_obj.order_number
-                link = reverse("stark:dipay_followorder_list")+"?q=%s" % order_number
-                follow_order_link = "<a href='%s' target='_blank'>%s</a>" % (link, order_number)
-                msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单，已自动生成跟单记录:'+ follow_order_link
-                msg = mark_safe(msg)
-
-                # 给外贸跟单推送一条任务，并关联订单
-                content = '刚下一个新订单：%s' % order_number
-                order_link = followorder_obj
-                user = UserInfo.objects.filter(username='kelly').first()
-                DailyPlan.objects.create(content=content,link=order_link,user=user)
-
-                return render(request, 'dipay/msg_after_submit.html', locals())
-            else:
+            if not form.is_valid():
                 return render(request, 'dipay/confirm_order.html', locals())
+
+            # 下单的动作1，把订单状态变为已下单
+            form.instance.status = 2
+            # 下单的动作2，把下单日期改为当日
+            if not form.instance.confirm_date:
+                form.instance.confirm_date = datetime.now()
+            # 下单的动作3，创建一条新的跟单记录, 此地要做一下判断，如果跟单记录已经存在就不要创建了。
+            followorder_obj = FollowOrder.objects.filter(order=order_obj).first()
+
+            if not followorder_obj:
+                load_info = '装箱：%s' % form.instance.remark
+                followorder_obj = FollowOrder(order=order_obj,
+                                              salesman=order_obj.salesperson,
+                                              load_info=load_info,
+                                              discharge_port= str(form.instance.discharge_port),
+                                              )
+                followorder_obj.save()
+            form.save()
+            order_payment_update(order_obj=followorder_obj.order)
+
+            order_number = order_obj.order_number
+            link = reverse("stark:dipay_followorder_list")+"?q=%s" % order_number
+            follow_order_link = "<a href='%s' target='_blank'>%s</a>" % (link, order_number)
+            msg = '下单成功, 请将PI, 生产单，水单，唛头文件等邮件发到工厂跟单，已自动生成跟单记录:'+ follow_order_link
+            msg = mark_safe(msg)
+
+            # 给外贸跟单推送一条任务，并关联订单
+            content = '刚下一个新订单：%s' % order_number
+            order_link = followorder_obj
+            user = UserInfo.objects.filter(username='kelly').first()
+            DailyPlan.objects.create(content=content,link=order_link,user=user)
+
+            return render(request, 'dipay/msg_after_submit.html', locals())
+
 
     # 手动创建订单
     def manual_add(self, request, *args, **kwargs):

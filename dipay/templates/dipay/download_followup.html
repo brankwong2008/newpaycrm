@@ -1,0 +1,41 @@
+{% load static %}
+
+<style>
+    .form-group {
+        margin-top: 10px;
+    }
+
+    .bootstrap-select, .form-inline .bootstrap-select.form-control:not([class*="col-"]) {
+        width: 85px;
+    }
+    #download-followorder input{
+        margin-right: 50px;
+    }
+
+
+</style>
+
+
+<div class="mymodal-details">
+
+    <div>
+        <!-- form 提交数据 -->
+        <form id="download-followorder" action="{{ download_url }}" method="post" enctype='multipart/form-data'
+              class="form-inline">
+            {% csrf_token %}
+            <label for="start_date">下单起始日</label>
+            <input type="date" id="start_date" name="start_date">
+
+            <label for="end_date">下单截止日</label>
+            <input type="date" id="end_date" name="end_date">
+
+            <div>
+                <span class="btn btn-success" onclick="submitDownloadRequest()"> 提交 </span>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+

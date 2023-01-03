@@ -48,6 +48,11 @@
             font-size: small;
         }
 
+    .download-icon{
+        margin-right: 30px;
+        padding-top: 10px ;
+    }
+
 
     </style>
 
@@ -122,6 +127,7 @@
 
 
 
+
             <form action="" method="post">
                 <!-- 批量处理按钮 -->
                 {% csrf_token %}
@@ -140,6 +146,15 @@
                     </div><!-- /input-group -->
 
                 {% endif %}
+
+
+            <!-- 下载跟单表按钮 -->
+            <div class="pull-right" >
+                <i class="fa fa-download download-icon" link="/stark/dipay/followorder/download/"  onclick="showDownloadBox(this)"></i>
+
+            </div>
+
+
 
                 <!-- 添加按钮 -->
                 {% if add_btn %}

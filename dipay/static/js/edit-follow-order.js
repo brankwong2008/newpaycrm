@@ -362,7 +362,6 @@ function clearTimeSearch() {
 
 
 // 确认发票金额, 使用toggle方式
-
 function confirmInvoiceVal(iTag) {
 
     if ($(iTag).hasClass("unchecked")) {
@@ -389,4 +388,57 @@ function confirmInvoiceVal(iTag) {
         }
     });
 
+}
+
+// 下载跟单表时，弹窗modal框
+function showDownloadBox(iTag) {
+
+    console.log("enter into dowload box ")
+    // 从后台get下载提示页面，让用户选择要下载的时间段
+    $.ajax({
+        url: $(iTag).attr("link"),
+        type: 'get',
+        data: '',
+        success: function (respond) {
+            // 把页面显示到modal框中
+            var title = "跟单表下载";
+            $('#myModalLabel').text(title);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
+            $('#myModal').modal('show');
+        }
+    });
+
+
+}
+
+// 提交下载跟单表的时间段信息，并返回下载的链接
+function submitDownloadRequest() {
+
+    // 检查end-date，start-date是否合法
+    let start_date = $("#download-followorder [name=start_date]").val();
+    let end_date = $("#download-followorder [name=end_date]").val();
+    console.log(start_date,end_date)
+    var warning = $("<div style='color:red'></div>")
+    var $download =  $("#download-followorder");
+    if (!start_date || !end_date) {
+        warning.html("截止日期、起始日期不能为空");
+        $download .prepend(warning);
+         return false
+    }
+    if (end_date < start_date) {
+        warning.html("截止日期须大于起始日期");
+        $download .prepend(warning)
+        return false
+    }
+
+    // 模拟a标签获取下载文件
+    var url= $download.prop("action");
+    url += `?start_date=${start_date}&end_date=${end_date}`;
+    var a = $(`<a href="${url}"></a>`)
+    $("body").append(a);
+    a[0].click();
+    a.remove();
+
+    $('#myModal').modal('hide');
+    ShowMsg("申请发送成功，下载将自动完成")
 }

@@ -213,7 +213,7 @@ def change_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs="")
             datetime_obj = getattr(obj, field)
             year = ''
             if not datetime_obj:
-                create_date = "--"
+                create_date = "-"
             else:
                 try:
                     create_date = datetime_obj.strftime(time_format)

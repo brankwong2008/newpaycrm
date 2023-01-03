@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from django.db.models.functions import TruncMonth
 from datetime import datetime
@@ -19,6 +20,8 @@ from django.conf.urls import url
 from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo, FollowOrder
 from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
+from openpyxl import load_workbook
+from openpyxl.styles import Font
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -349,6 +352,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 name=self.get_url_name('show_pay_details')),
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
             url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
+            url("^download/$", self.wrapper(self.download), name=self.get_url_name('download')),
         ]
 
         return patterns
@@ -458,5 +462,109 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 预留的接口，用户批量整理数据资料
     def tests(self, request, *args, **kwargs):
         count = 0
-
         return render(request, 'dipay/tests.html')
+
+
+    # 下载跟单表  （需要用户指定下载的时间段）
+    def download(self,request, *args, **kwargs):
+        start_date = request.GET.get("start_date")
+        end_date = request.GET.get("end_date")
+        print(request.GET)
+        # 返回提示用户输入起止时间
+        if not start_date:
+            download_url = self.reverse_url("download")
+            return render(request, "dipay/download_followup.html",locals())
+
+        filter_param = {"order__confirm_date__gte":start_date,"order__confirm_date__lte":end_date }
+        if request.user.roles.filter(title__in=["外销员"]).exists() and request.user.username !="brank":
+            filter_param["salesman"]=request.user
+
+
+        # 返回下载文件
+        queryset = FollowOrder.objects.filter(**filter_param)   # followorder_queryset
+        file_name = "follow_up_%s_%s.xlsx" % (request.user.username, datetime.now().strftime("%Y-%m-%d-%H%M%S"))
+        file_path = os.path.join("media/followorder", file_name)
+        f = self.make_orderdownload_file(queryset, file_path)
+        try:
+            response = HttpResponse(f)
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="%s"' % (file_name)
+            f.close()
+            return response
+        except Exception as e:
+            print(e)
+            f.close()
+            return HttpResponse("下载失败")
+
+
+    def make_orderdownload_file(self,queryset,file_path):
+        """
+        将queryset中数据写入跟单表下载excel文件
+        :param queryset: 已经筛选好的数据 followorder_queryset
+        :return: file句柄
+        """
+        print("make_orderdownload_file", file_path, queryset)
+        wb = load_workbook("media/followorder/followup_template.xlsx")
+        ws = wb.active
+        for each in queryset:
+            data_dict = {}
+            data_dict["A"] = each.order.order_number  # 订单号
+            data_dict["B"] = each.order.salesperson.nickname[0] if  each.order.salesperson else "-" #  #B:  业务员
+            data_dict["C"] = ""  #   C:  跟单
+            data_dict["D"] = each.get_status_display()  #   D:  跟单状态
+            data_dict["E"] = each.order.customer.shortname if each.order.customer else "-" #  E： 客户
+            data_dict["F"] = ""  #  F： 特殊
+            data_dict["G"] = each.order.goods  #  G： Goods
+            data_dict["H"] = each.order.get_term_display()  #  H： Term
+            data_dict["I"] = each.discharge_port or "-"  #  I:  Ports
+            data_dict["J"] = each.order.confirm_date.strftime("%Y-%m-%d") if each.order.confirm_date else "-"  #  J: 下单日
+            data_dict["K"] = each.ETD.strftime("%Y-%m-%d") if each.ETD else "-"  #  K： ETD
+            data_dict["L"] = each.ETA.strftime("%Y-%m-%d") if each.ETA else "-"   #  L:  ETA
+            data_dict["M"] = each.shipline.shortname if each.shipline else "-"  #  M： 船公司
+            data_dict["N"] = each.load_info  #  N:  装箱info
+            data_dict["O"] = each.book_info  #  O： 订舱info
+            data_dict["P"] = each.order.currency.icon if each.order.currency else "-"  #   P： 币种
+            data_dict["Q"] = each.order.amount  #  Q： 发票金额
+            data_dict["R"] = ""  #  R: 尾款收齐日
+            pay2order_queryset = Pay2Orders.objects.filter(order=each.order).order_by("payment__create_date")
+            if each.get_status_display()=="完成" and pay2order_queryset.exists() :
+                data_dict["R"] = pay2order_queryset.last().payment.create_date.strftime("%Y-%m-%d")  # R: 尾款收齐日
+
+            row = [item for item in data_dict.values()]
+            # 收款的处理 S列开始都是收款记录
+            for item in pay2order_queryset:
+                row.append(item.amount*item.rate)
+                payment_detail = "%s %s%s" % (
+                    item.payment.create_date.strftime("%Y/%m/%d"),
+                    item.payment.currency.icon,
+                    item.payment.amount )
+                row.append(payment_detail)
+
+            ws.append(row)
+        # 设置单元格格式
+
+        font = Font(name='Arial',
+                    size=8,
+                    color='FF000000',
+                    bold=False,
+                    italic=False,
+                    vertAlign='baseline', )
+        font_bold = Font(name='Arial',
+                    size=8,
+                    color='FF000000',
+                    bold=True,
+                    italic=False,
+                    vertAlign='baseline',
+                       )
+        for row in ws.iter_rows(2):
+            for cell in row:
+                if cell.column_letter in ["S","U","W"]:
+                    cell.font = font_bold
+                    continue
+                cell.font = font
+
+        wb.save(file_path)
+
+        f = open(file_path,'rb')
+        return f
+

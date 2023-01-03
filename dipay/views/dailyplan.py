@@ -72,7 +72,7 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
                 followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % obj.link.order.order_number
                 return mark_safe("<a href='%s' target='_blank'>%s</a>" % (followorder_url, obj.link))
             else:
-                return '--'
+                return '-'
 
     # 显示任务名称的display
     def content_display(self, obj=None, is_header=None, *args, **kwargs):

@@ -10,6 +10,7 @@ from dipay.models import PayToCharge,Charge,Forwarder
 from dipay.forms.forms import ChargePayModelForm
 from django.conf import settings
 from django.conf.urls import url
+from openpyxl import load_workbook
 
 class ChargePayHandler(PermissionHanlder,StarkHandler):
     page_title = "付费记录"
@@ -106,10 +107,10 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         if not chargepay_obj:
             return HttpResponse("付费单号不存在")
 
-        sample_file = os.path.join(settings.MEDIA_ROOT, "charge_list_sample.xlsx")
+        sample_file = os.path.join(settings.MEDIA_ROOT,"paybills", "charge_list_sample.xlsx")
 
         # 读入sample_file
-        from openpyxl import load_workbook
+
         wb = load_workbook(sample_file,data_only=True)
         ws = wb.active
         ws["B1"].value = chargepay_obj.forwarder.title
@@ -133,7 +134,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         ws.append(["合计","","", USD_total or "-", CNY_total  or "-"])
 
         file_name = "F%s.xlsx" % (str(pk).zfill(5))
-        file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+        file_path = os.path.join(settings.MEDIA_ROOT,"paybills", file_name)
         wb.save(file_path)
 
         with open(file_path, 'rb') as f:
