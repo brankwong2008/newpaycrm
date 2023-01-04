@@ -1,15 +1,12 @@
 {% load static %}
 
 <style>
-    .form-group {
-        margin-top: 10px;
-    }
 
-    .bootstrap-select, .form-inline .bootstrap-select.form-control:not([class*="col-"]) {
-        width: 85px;
-    }
     #download-followorder input{
         margin-right: 50px;
+    }
+    #downloadSubmitBtn{
+        margin-top: 22px;
     }
 
 
@@ -29,8 +26,8 @@
             <label for="end_date">下单截止日</label>
             <input type="date" id="end_date" name="end_date">
 
-            <div>
-                <span class="btn btn-success" onclick="submitDownloadRequest()"> 提交 </span>
+            <div id="downloadSubmitBtn">
+                <span  class="btn btn-success" onclick="submitDownloadRequest()"> 提交 </span>
             </div>
 
         </form>

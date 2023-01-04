@@ -201,7 +201,9 @@ function trackShipment(atag) {
     var pk = $(atag).attr('pk');
     // console.log($('#clipboard-btn-'+pk));
     $('#clipboard-btn-' + pk).trigger('click');
-    var win = window.open(atag.href, 'trackship', 'left=600,top=300,width=850,height=850');
+    console.log("document.body.clientWidth",document.body.clientWidth)
+    var new_win_width = document.body.clientWidth * 0.725
+    var win = window.open(atag.href, 'trackship', `left=600,top=300,width=${new_win_width},height=850`);
     win.focus();
     return false;
 }
@@ -313,7 +315,6 @@ function showDistInput(sp) {
 
 
 // 时间按月筛选
-
 function filterTime(tag) {
 
     console.log("time filter worked ")
@@ -434,7 +435,7 @@ function submitDownloadRequest() {
     // 模拟a标签获取下载文件
     var url= $download.prop("action");
     url += `?start_date=${start_date}&end_date=${end_date}`;
-    var a = $(`<a href="${url}"></a>`)
+    var a = $(`<a href="${url}" style="display:none"></a>`)
     $("body").append(a);
     a[0].click();
     a.remove();
