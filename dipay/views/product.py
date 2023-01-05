@@ -8,6 +8,7 @@ class ProductHandler(StarkHandler):
     page_title = "产品管理"
 
     search_list = ['title__icontains',]
+    search_placeholder = "搜索 品名"
 
     # 详情display
     def remark_display(max_length = None):

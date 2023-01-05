@@ -15,8 +15,13 @@ class StarkForm(forms.ModelForm):
                 field.widget.attrs["class"] = "selectpicker bla bli form-control"
                 field.widget.attrs["style"] = "display: none;"
                 field.widget.attrs["data-live-search"] = 'true'
-            else:
-                field.widget.attrs["class"] = " form-control"
+                model_name = field.queryset.first()._meta.model_name
+                field.help_text = model_name  # 获取关联model的名称，通过help_text传递给前端
+                continue
+
+            field.widget.attrs["class"] = " form-control"
+            if isinstance(field, forms.DateInput):
+                field.widget.attrs["type"] = 'date'
 
 
 # 用于添加任务的model form

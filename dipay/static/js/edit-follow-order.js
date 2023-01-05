@@ -201,7 +201,7 @@ function trackShipment(atag) {
     var pk = $(atag).attr('pk');
     // console.log($('#clipboard-btn-'+pk));
     $('#clipboard-btn-' + pk).trigger('click');
-    console.log("document.body.clientWidth",document.body.clientWidth)
+    console.log("document.body.clientWidth", document.body.clientWidth)
     var new_win_width = document.body.clientWidth * 0.725
     var win = window.open(atag.href, 'trackship', `left=600,top=300,width=${new_win_width},height=850`);
     win.focus();
@@ -418,22 +418,32 @@ function submitDownloadRequest() {
     // 检查end-date，start-date是否合法
     let start_date = $("#download-followorder [name=start_date]").val();
     let end_date = $("#download-followorder [name=end_date]").val();
-    console.log(start_date,end_date)
+    console.log(start_date, end_date)
     var warning = $("<div style='color:red'></div>")
-    var $download =  $("#download-followorder");
+    var $download = $("#download-followorder");
+    console.log("type of date:", typeof start_date)
     if (!start_date || !end_date) {
         warning.html("截止日期、起始日期不能为空");
-        $download .prepend(warning);
-         return false
+        $download.prepend(warning);
+        return false
     }
     if (end_date < start_date) {
         warning.html("截止日期须大于起始日期");
-        $download .prepend(warning)
+        $download.prepend(warning)
+        return false
+    }
+
+    var start = new Date(start_date);
+    var end = new Date(end_date);
+    var duration = Math.ceil((end - start) / 1000 / 60 / 60 / 24)
+    if (duration > 365) {
+        warning.html("时间跨度要小于一年");
+        $download.prepend(warning)
         return false
     }
 
     // 模拟a标签获取下载文件
-    var url= $download.prop("action");
+    var url = $download.prop("action");
     url += `?start_date=${start_date}&end_date=${end_date}`;
     var a = $(`<a href="${url}" style="display:none"></a>`)
     $("body").append(a);
