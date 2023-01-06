@@ -2,6 +2,7 @@ from django.utils.safestring import mark_safe
 from django.forms import DateInput
 from django.conf import settings
 from django.db import models
+from stark.utils.tools import  str_width_control
 
 class MyDateInput(DateInput):
     input_type = "date"
@@ -302,3 +303,20 @@ class PermissionHanlder:
             return self.get_add_btn(request,*args, **kwargs)
 
 
+
+# 显示text文本字段的通用方法，（带隐藏按钮）
+def text_area_display(field, max_length = 130, title=None):
+    def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
+        if is_header:
+            return title or handler_obj.model_class._meta.get_field(field).verbose_name
+        else:
+            remark = getattr(obj, field)
+            remark_incontrol, is_long = str_width_control(remark,max_length)
+            if is_long:
+                remark_text = "<span id='remark_%s' text='%s'>%s</span>" % (obj.pk, remark, remark_incontrol) + \
+                              "<i class='fa fa-chevron-down more' pk='%s' onclick='expandRemark(this)'></i>" % obj.pk
+            else:
+                remark_text = remark_incontrol
+
+            return mark_safe(remark_text)
+    return inner

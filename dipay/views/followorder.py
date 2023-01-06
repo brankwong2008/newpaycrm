@@ -481,7 +481,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
 
         # 返回下载文件
-        queryset = FollowOrder.objects.filter(**filter_param).order_by("order__confirm_date")   # followorder_queryset
+        queryset = FollowOrder.objects.filter(**filter_param).order_by("order__confirm_date","order__order_number")   # followorder_queryset
         file_name = "follow_up_%s_%s.xlsx" % (request.user.username, datetime.now().strftime("%Y-%m-%d-%H%M%S"))
         file_path = os.path.join("media/followorder", file_name)
         f = self.make_orderdownload_file(queryset, file_path)

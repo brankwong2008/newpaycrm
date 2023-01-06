@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.db.models import QuerySet
 from django.http import QueryDict, JsonResponse
-from django.db.models import Q,ForeignKey,ManyToManyField, TextField, DateField,BooleanField, SmallIntegerField, ImageField
+from django.db.models import Q,ForeignKey,ManyToManyField, TextField, DateField,\
+    BooleanField, SmallIntegerField, ImageField, TextField
 import functools
 from django.forms import ModelForm
 from django import forms
@@ -501,6 +502,11 @@ class StarkHandler(object):
                         for each in field_val.all():
                             text_list.append("<span style='margin-right:5px'>%s</span>" % each)
                         field_val = mark_safe("".join(text_list))
+                    # text字段
+
+                    elif isinstance(field_obj, TextField):
+                        from stark.utils.display import text_area_display
+                        field_val = text_area_display(key)(self, obj=row, is_header=False, *args, **kwargs)
 
                     #  外键字段，加详情链接
                     elif isinstance(field_obj, ForeignKey) and field_val:

@@ -20,7 +20,9 @@ class StarkForm(forms.ModelForm):
                 continue
 
             field.widget.attrs["class"] = " form-control"
-            if isinstance(field, forms.DateInput):
+            print("type of field", type(field))
+            if isinstance(field, forms.DateField):
+                print("yes, this is datefield")
                 field.widget.attrs["type"] = 'date'
 
 

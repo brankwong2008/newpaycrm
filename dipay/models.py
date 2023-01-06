@@ -6,13 +6,13 @@ from datetime import datetime
 # 货代表
 class Forwarder(models.Model):
     title = models.CharField(max_length=128, unique=True, verbose_name='货代名')
-    shortname = models.CharField(max_length=20, verbose_name='货代简称')
-    contact = models.CharField(max_length=20, verbose_name='货代联系人',default='-')
+    shortname = models.CharField(max_length=20, verbose_name='简称')
+    contact = models.CharField(max_length=20, verbose_name='联系人',default='-')
     phone = models.CharField(max_length=11, verbose_name='电话', default='-')
-    email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
+    email = models.CharField(max_length=128, verbose_name='邮件', default='-')
     bank_account = models.TextField(verbose_name='银行信息', default='--')
-    remark = models.TextField(verbose_name='货代详情', default='--')
-    is_option = models.BooleanField(verbose_name='加入筛选',default=False)
+    remark = models.TextField(verbose_name='详情', default='--')
+    is_option = models.BooleanField(verbose_name='筛选',default=False)
     # user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE,verbose_name='绑定用户',null=True)
 
     def __str__(self):

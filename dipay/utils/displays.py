@@ -460,3 +460,5 @@ def forwarder_display(handler, obj=None, is_header=None, *args, **kwargs):
                    (obj.pk, obj.forwarder_id, obj.forwarder.shortname)
         forwarder_url = reverse("stark:dipay_forwarder_show_detail", kwargs={"pk":obj.forwarder_id})
         return mark_safe(f"<a href='{forwarder_url}' target='_blank' class='normal-a'>{span_tag}</a>")
+
+

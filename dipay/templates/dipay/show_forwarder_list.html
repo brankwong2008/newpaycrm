@@ -1,0 +1,55 @@
+{% extends 'stark/show_list.html' %}
+{% load static %}
+
+{% block css %}
+
+     <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+
+     /* id */
+    .header-1{
+         width: 2%;
+    }
+
+    /* 货代名 */
+    .header-2, .header-3{
+         width: 14%;
+    }
+
+    /* 货代简称 */
+    .header-4, .header-5{
+         width: 4%;
+    }
+
+    /* 邮件地址 */
+    .header-6{
+          width: 6%;
+    }
+      /* 银行信息  */
+    .header-7, .header-8{
+        width: 25%;
+    }
+
+    /* 加入筛选 隐藏 */
+    .header-9, .header-10{
+
+    }
+
+
+
+    textarea[id^="remark"] {
+    width: 350px;
+    height: 80px;
+}
+
+    i.more:hover{
+        cursor:pointer;
+    }
+
+
+
+    </style>
+
+{% endblock %}
+
