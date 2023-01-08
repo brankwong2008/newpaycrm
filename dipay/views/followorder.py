@@ -27,6 +27,23 @@ from openpyxl.styles import Font, Alignment
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
+    detail_fields_display = ['order', 'load_port', 'discharge_port', 'ETD', 'ETA', 'book_info', 'load_info',
+                             'produce_info', 'sales_remark', ]
+    page_title = "跟单"
+    show_list_template = 'dipay/show_follow_order_list.html'
+    order_by_list = ['-order__confirm_date', '-order__sequence', ]
+
+    search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
+                   'order__customer__title__icontains','book_info__icontains','load_info__icontains']
+    search_placeholder = '搜 订单号/客户/货物/装箱/订舱'
+
+
+    # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
+    option_group = [
+        Option(field='status', is_multi=False, default='1'),
+        Option(field='salesman', filter_param={'roles__title': '外销员'}, verbose_name='业务'),
+        # Option(field='depart'),
+    ]
 
     # 按月筛选的字段列表
     def get_time_search(self,time_query):
@@ -55,35 +72,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
         return time_search
 
-
-    detail_fields_display = ['order','load_port','discharge_port','ETD','ETA','book_info','load_info',
-                             'produce_info','sales_remark',]
-
-    page_title = "跟单"
-
-
-    show_list_template = 'dipay/show_follow_order_list.html'
-
-    # 排序字段
-    order_by_list = ['-order__confirm_date', '-order__sequence', ]
-
-    # 自定义列表，外键字段快速添加数据，在前端显示加号
-    # popup_list = ['customer',]
-
-    # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
-    option_group = [
-        Option(field='status', is_multi=False, default='1'),
-        Option(field='salesman', filter_param={'roles__title': '外销员'}, verbose_name='业务'),
-        # Option(field='depart'),
-    ]
-
-    """ [(0, '备货'), (1, '发货'), (2, '单据'),   (3, '等款'), (4, '完成'),"""
-
-    search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
-                   'order__customer__title__icontains','book_info__icontains','load_info__icontains']
-    search_placeholder = '搜 订单号/客户/货物/装箱/订舱'
-
-
     # 批量排产
     def batch_to_produce(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
@@ -108,7 +96,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     check_amount.text = "金额核查"
 
-    # 批量拆分订单的选项卡
+    # 批量拆分订单的 选项卡
     def batch_split_order(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
         if len(pk_list) > 1:
@@ -164,10 +152,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             for n, item in enumerate(request.POST.getlist(field)):
                 data_list[n][field] = item
 
-        # 获取拆分定金金额（第二个订单分配的金额）
-        dist_amount = request.POST.getlist('rcvd_amount')[-1]
-        dist_amount = Decimal(dist_amount)
-
         order_obj = ApplyOrder.objects.filter(pk=pk).first()
         pay2order_queryset = Pay2Orders.objects.filter(order=order_obj).order_by('amount')
         followorder_obj = order_obj.followorder
@@ -180,50 +164,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 setattr(order_obj, key, val)
             order_obj.order_number = "%s%s-%s" % (
                 order_obj.get_order_type_display(), order_obj.sequence, order_obj.sub_sequence)
-            if i > 0:
+            if i == 0:
                 try:
-                    # 新增拆分的订单, 把id置为None即可
-                    order_obj.pk = None
-                    # 只需要把收款关联记录都修改了，在最后一步做订单更新即可，这一步不能直接确定rcvd_amount
-                    # order_obj.rcvd_amount = dist_amount
                     order_obj.save()
-                    neworder_pk = order_obj.pk
-                    # 同时创建跟单记录, 清空ETD  ETA, Status =0
-                    followorder_obj.pk = None
-                    followorder_obj.order_id = neworder_pk
-                    followorder_obj.ETD = None
-                    followorder_obj.ETA = None
-                    followorder_obj.status = 0
-                    followorder_obj.book_info = '订舱'
-                    followorder_obj.salesman = order_obj.salesperson
-                    followorder_obj.save()
-
-                    # 处理款项重新分配
-                    for each in pay2order_queryset:
-                        # 从比较小的金额开始分配，避免出现拆的太散的问题
-                        if each.amount <= dist_amount :
-                            # 更新老订单的应收已收  没有必要每一步都做订单应收已收更新，最后统一做一次就好。
-                            # each.order.rcvd_amount -= dist_amount
-                            # each.order.collect_amount = each.order.amount - each.order.rcvd_amount
-                            # each.order.save()
-                            each.order_id = neworder_pk
-                            dist_amount -= each.amount
-                            each.save()
-
-                        else:
-                            each.amount -= dist_amount
-                            each.save()
-                            # 创建新的关联记录, 给拆分的新订单建立新的关联记录
-                            new_pay2order = Pay2Orders(order_id=neworder_pk,amount=dist_amount,payment=each.payment)
-                            new_pay2order.save()
-                            # 因为是从小金额开始捋，所以遇到可分配款项大于待分配金额时，就可以跳出循环
-                            break
                 except Exception as e:
                     msg = '订单号可能重复，请检查。 错误内容：%s' % e
                     return render(request, 'dipay/msg_after_submit.html', locals())
             else:
                 try:
-                    order_obj.save()
+                    # 获取拆分定金金额
+                    dist_amount = Decimal(request.POST.getlist('rcvd_amount')[i])
+                    # 拆分订单并分配金额
+                    self.dist_deposit_order(request, pay2order_queryset, order_obj,followorder_obj, dist_amount)
+
                 except Exception as e:
                     msg = '订单号可能重复，请检查。 错误内容：%s' % e
                     return render(request, 'dipay/msg_after_submit.html', locals())
@@ -239,11 +192,39 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         for each in splited_order_list:
             order_payment_update(order_obj, order_id=each[0])
 
-
         msg = mark_safe('成功拆分%s个订单: %s ' % (count, ' '.join(order_list)))
         return render(request, 'dipay/msg_after_submit.html', locals())
 
     batch_split_order.text = '拆分订单'
+
+    def dist_deposit_order(self,request, pay2order_queryset, order_obj,followorder_obj, dist_amount):
+        # 新增拆分的订单, 把id置为None即可
+        order_obj.pk = None
+        order_obj.save()
+        # 创建新跟单记录, 清空ETD  ETA, Status =0
+        temp_data = [("pk", None), ("ETD", None), ("ETA", None), ("status", 0),
+                     ("order_id", order_obj.pk), ("book_info", "订舱"),
+                     ("salesman", order_obj.salesperson)]
+        [setattr(followorder_obj, x[0], x[1]) for x in temp_data]
+        followorder_obj.save()
+
+        # 处理款项重新分配
+        for pay2order_obj in pay2order_queryset:
+            # pay2order_queryset 已经按金额由小到大排序
+            if pay2order_obj.amount <= dist_amount:
+                # 如果该款项小于目标分配，直接分配到-2订单
+                pay2order_obj.order_id = order_obj.pk
+                dist_amount -= pay2order_obj.amount
+                pay2order_obj.save()
+            else:
+                pay2order_obj.amount -= dist_amount
+                pay2order_obj.save()
+                # 创建新的关联记录, 给拆分的新订单建立新的关联记录
+                new_pay2order = Pay2Orders(order_id=order_obj.pk, amount=dist_amount,
+                                           rate=pay2order_obj.rate, payment=pay2order_obj.payment)
+                new_pay2order.save()
+                # 因为是从小金额开始捋，所以遇到可分配款项大于待分配金额时，就可以跳出循环
+                break
 
     # 申请放单
     def apply_release(self, request, *args, **kwargs):

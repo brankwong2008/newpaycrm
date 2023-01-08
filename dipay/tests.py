@@ -23,6 +23,23 @@ def hook():
 
 
 
+# if __name__ == "__main__":
+#         app.run(host="0.0.0.0",port=9001,debug=True)
+
 if __name__ == "__main__":
-        app.run(host="0.0.0.0",port=9001,debug=True)
+    class F:
+        a = 0
+        b = 0
+    f = F()
+
+    data = [("a",3),("b",4)]
+
+    [setattr(f, x[0], x[1]) for x in data]
+
+    print("f.a,f.b",f.a,f.b)
+
+
+
+
+
 
