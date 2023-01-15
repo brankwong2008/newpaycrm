@@ -142,50 +142,35 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 拆分订单的view
     def split_record(self, request, pk, *args, **kwargs):
-
-        fields_list = ['sub_sequence', 'goods', 'amount']
-        length = len(request.POST.getlist(fields_list[0]))
-        # 初始化数据列表，含n个字典
-        data_list = [{} for i in range(length)]
-        # 整理成列表套字典的格式，方便后续添加到ORM
-        for field in fields_list:
-            for n, item in enumerate(request.POST.getlist(field)):
-                data_list[n][field] = item
-
         order_obj = ApplyOrder.objects.filter(pk=pk).first()
         pay2order_queryset = Pay2Orders.objects.filter(order=order_obj).order_by('amount')
         followorder_obj = order_obj.followorder
-        count = 0
-        splited_order_list = []
-        order_list = []
-        for i in range(length):
+
+        count,splited_order_list, order_list = 0, [],[]
+        fields_list = ['sub_sequence', 'goods', 'amount']
+        for i in range(len(request.POST.getlist(fields_list[0]))):
             # 更新已有订单
-            for key, val in data_list[i].items():
-                setattr(order_obj, key, val)
+            for key in fields_list:
+                setattr(order_obj, key, request.POST.getlist(key)[i])
             order_obj.order_number = "%s%s-%s" % (
                 order_obj.get_order_type_display(), order_obj.sequence, order_obj.sub_sequence)
-            if i == 0:
-                try:
+            try:
+                if i == 0:
                     order_obj.save()
-                except Exception as e:
-                    msg = '订单号可能重复，请检查。 错误内容：%s' % e
-                    return render(request, 'dipay/msg_after_submit.html', locals())
-            else:
-                try:
+                else:
                     # 获取拆分定金金额
                     dist_amount = Decimal(request.POST.getlist('rcvd_amount')[i])
                     # 拆分订单并分配金额
                     self.dist_deposit_order(request, pay2order_queryset, order_obj,followorder_obj, dist_amount)
-
-                except Exception as e:
-                    msg = '订单号可能重复，请检查。 错误内容：%s' % e
-                    return render(request, 'dipay/msg_after_submit.html', locals())
+            except Exception as e:
+                msg = '订单号可能重复，请检查。 错误内容：%s' % e
+                return render(request, 'dipay/msg_after_submit.html', locals())
 
             # 拆分订单列表，为后面更新应收已收做准备
             splited_order_list.append([order_obj.pk, order_obj.order_number])
             count += 1
-            list_url = self.reverse_list_url()
-            order_list = [f"<a href='{list_url}?q={item[1][:5]}'> {item[1]} </a>" for item in
+        list_url = self.reverse_list_url()
+        order_list = [f"<a href='{list_url}?q={item[1][:5]}'> {item[1]} </a>" for item in
                           splited_order_list]
 
         # 在最后更新订单应收已收
@@ -198,7 +183,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     batch_split_order.text = '拆分订单'
 
     def dist_deposit_order(self,request, pay2order_queryset, order_obj,followorder_obj, dist_amount):
-        # 新增拆分的订单, 把id置为None即可
+        # 新增拆分的订单, 把id置为None 然后save即可
         order_obj.pk = None
         order_obj.save()
         # 创建新跟单记录, 清空ETD  ETA, Status =0

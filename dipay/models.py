@@ -129,10 +129,8 @@ class ApplyOrder(models.Model):
     status_choices = [(0, '申请中'),
                     (1, '已配单号'),
                     (2, '已下单'),
-                    (6, '款齐'),
                     (3, '完结'),
-                    (4, '固定账户'),
-                    (5, '无效'),
+                    # (4, '固定账户'),
                     ]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='订单状态',default=0)
     amount_check = models.BooleanField(verbose_name='发票金额确认否',default=False)

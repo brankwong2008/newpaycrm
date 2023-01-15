@@ -82,8 +82,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         else:
             if obj.status == 0:
                 return obj.order_number[0] + "____"
-            else:
+            if obj.status == 1:
                 return obj.order_number
+
+            followorder_url = reverse("stark:dipay_followorder_list") + f"?q={obj.order_number}"
+            return mark_safe(f"<a href='{followorder_url}' target='_blank'>{obj.order_number}</a>")
+
 
     def status_display(self, obj=None, is_header=False, *args, **kwargs):
         """

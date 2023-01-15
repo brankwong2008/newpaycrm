@@ -148,6 +148,7 @@ class StarkHandler(object):
     add_list_template = None   # 添加页面模板
     del_list_template = None   # 删除页面模板
     show_list_template = None  # 显示页面模板
+    per_page_options = []
     show_detail_template = None  # 显示页面模板
     fields_display = '__all__'    # 显示的列字段
     filter_hidden = None   # 控制快速筛选的显示
@@ -165,6 +166,7 @@ class StarkHandler(object):
     filter_control_dict = {}   # 给Option筛选字段指定动态的control_list( 如果可筛选值特别多，只筛选指定的值 )
     time_search = ""     # 按月筛选按钮的控制
     css_for_show_list = ""   # show list页面的css
+    request = None
 
 
 
@@ -280,8 +282,10 @@ class StarkHandler(object):
         batch_process_hidden = self.batch_process_hidden
         guideline = self.guideline
         css_for_show_list = self.css_for_show_list
+        per_page_options = self.per_page_options
 
         tabs = self.get_tabs(request,*args,**kwargs)
+        self.request = request
 
         ############## 1. 批量删除或者初始化 ###############
 
@@ -413,12 +417,17 @@ class StarkHandler(object):
         # print("ordered_queryset.count()",ordered_queryset.count())
         # print('request.GET.get("page")',request.GET.get("page"))
 
+        per_page = self.get_per_page()
+        if per_page_options:
+            for each in per_page_options:
+                each["selected"] = "selected" if per_page == each["val"] else ""
+
         pager = Pagination(
             current_page=request.GET.get("page"),
             all_count=ordered_queryset.count(),
             base_url=request.path,
             query_params=query_params,
-            per_page=self.get_per_page(),
+            per_page=per_page,
         )
 
         """

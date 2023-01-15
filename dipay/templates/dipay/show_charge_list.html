@@ -124,6 +124,18 @@
 
             </form>
 
+            <!--  页面记录数选择   -->
+        {% if per_page_options %}
+            <div style="float: right; color: lightgray">
+                <select name="" id="" onchange="setPerPageCount(this)">
+                    {% for each in per_page_options %}
+                         <option value="{{ each.val }}" {{each.selected}}>{{ each.val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endif %}
+
+
 
             <!-- 分页器    -->
             <nav aria-label="Page navigation">
@@ -156,6 +168,7 @@
     <script src="{% static "js/edit-follow-order.js" %}"></script>
     <script src="{% static "js/decimal.js/decimal.js" %}"></script>
     <script src="{% static "js/edit-charge-list.js" %}"></script>
+    <script src="{% static "js/common.js" %}"></script>
 
 {% endblock %}
 

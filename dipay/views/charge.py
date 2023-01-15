@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
 from dipay.utils.displays import fees_display, forwarder_display
 from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
-
+from django_redis import get_redis_connection
 
 class ChargeHandler(PermissionHanlder,StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
@@ -18,6 +18,13 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
     page_title = '货代费用'
 
     order_by_list = ['-BL_date',]
+
+    # 页面显示行数的选择
+    per_page_options =[
+        {"val":10,"selected":""},
+        {"val":20,"selected":""},
+        {"val":30,"selected":""},
+    ]
 
     # 快速筛选： 货代，付费状态
     option_group = [
@@ -31,6 +38,21 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
     # 动态指定
     def get_filter_control_list(self):
         return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
+
+    def get_per_page(self):
+        key = "%s:%s" % (self.request.path, self.request.user)
+        conn = get_redis_connection()
+        print("key",key)
+        per_page_count = self.request.POST.get("per_page_count")
+        if per_page_count:
+            conn.set(key,per_page_count,ex=300)
+            print("per_page_count",per_page_count)
+            return int(per_page_count)
+        per_page_redis = conn.get(key)
+        print(per_page_redis,"per_page_redis")
+        per_page_count = int(per_page_redis.decode("utf8"))  if per_page_redis else 10
+        print("per_page_count", per_page_count)
+        return per_page_count
 
 
     search_list = ['followorder__order__order_number__icontains',]

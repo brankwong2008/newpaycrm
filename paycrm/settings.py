@@ -196,92 +196,15 @@ AUTO_DISCOVER_EXCLUDE = [
 SESSION_COOKIE_AGE = 259200  # 用户的cookie存储最长时间3天，3天后必须重新登录
 
 
-# # 日志的配置
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': True,
-#     'formatters': {
-#         'standard': {
-#             'format': '%(asctime)s [%(name)s:%(lineno)d] [%(module)s:%(funcName)s] [%(levelname)s] %(message)s'}
-#         # 日志格式
-#     },
-#     'filters': {
-#     },
-#     'handlers': {
-#         'mail_admins': {
-#             'level': 'ERROR',
-#             'class': 'django.utils.log.AdminEmailHandler',
-#             'include_html': True,
-#         },
-#         'default': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': '{}/Log/QWebFX_{}.log'.format(BASE_DIR, datetime.datetime.now().date()),  # 日志输出文件
-#             'maxBytes': 1024 * 1024 * 5,  # 文件大小
-#             'backupCount': 5,  # 备份份数
-#             'formatter': 'standard',  # 使用哪种formatters日志格式
-#         },
-#         'error': {
-#             'level': 'ERROR',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': '{}/Log/Error/QWebFX_Error_{}.log'.format(BASE_DIR, datetime.datetime.now().date()),
-#             'maxBytes': 1024 * 1024 * 5,
-#             'backupCount': 5,
-#             'formatter': 'standard',
-#         },
-#         'console': {
-#             'level': 'DEBUG',
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'standard'
-#         },
-#         'request_handler': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': '{}/Log/Request/QWebFX_Request_{}.log'.format(BASE_DIR, datetime.datetime.now().date()),
-#             'maxBytes': 1024 * 1024 * 5,
-#             'backupCount': 5,
-#             'formatter': 'standard',
-#         },
-#         'scripts_handler': {
-#             'level': 'DEBUG',
-#             'class': 'logging.handlers.RotatingFileHandler',
-#             'filename': '{}/Log/Script/QWebFX_Script_{}.log'.format(BASE_DIR, datetime.datetime.now().date()),
-#             'maxBytes': 1024 * 1024 * 5,
-#             'backupCount': 5,
-#             'formatter': 'standard',
-#         }
-#     },
-#     'loggers': {
-#         'django': {   # django，打印所有信息到名称为console的handler。
-#             'handlers': ['default'],
-#             'level': 'DEBUG',
-#             'propagate': False
-#         },
-#         'django.request': {
-#             'handlers': ['request_handler'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#         'scripts': {
-#             'handlers': ['scripts_handler'],
-#             'level': 'INFO',
-#             'propagate': False
-#         },
-#         'console': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': True
-#         },
-#         # API/Views 模块的日志处理
-#         'views': {
-#             'handlers': ['default', 'error'],
-#             'level': 'DEBUG',
-#             'propagate': True
-#         },
-#         'util': {
-#             'handlers': ['error'],
-#             'level': 'ERROR',
-#             'propagate': True
-#         },
-#     }
-# }
+# Redis设置
+CACHES = {
+    'default' : {
+    "BACKEND": 'django_redis.cache.RedisCache',
+    "LOCATION": 'redis://0.0.0.0:6379',
+    "OPTIONS" :{
+        "CLIENT_CLASS" : "django_redis.client.DefaultClient",
+        # "PASSWORD": '123',
+    }
+}
+}
+
