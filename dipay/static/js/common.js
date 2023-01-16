@@ -4,14 +4,6 @@ function setPerPageCount(selectTag) {
 
     var perPage = $(selectTag).val();
 
-
-    var url = location.href;
-
-    url += location.search?`&per_page_count=${perPage}`:`?per_page_count=${perPage}`;
-
-    console.log(url, "url")
-
-
     var data = {
         'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
         "per_page_count":perPage
@@ -28,5 +20,4 @@ function setPerPageCount(selectTag) {
         }
         }
     )
-
 }

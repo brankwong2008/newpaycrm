@@ -110,6 +110,14 @@
                     {% endif %}
                 {% endif %}
 
+                {% if "产品" in request.menu_names %}
+                    {% if request.top_menu_title == '产品' %}
+                        <li><a href="{% url 'stark:dipay_product_list' %}" class="active">产品</a></li>
+                    {% else %}
+                        <li><a href="{% url 'stark:dipay_product_list' %}">产品</a></li>
+                    {% endif %}
+                {% endif %}
+
                 {% if request.user.username == 'brank' %}
                     <li><a href="{% url 'stark:dipay_applyorder_list_verify' %}">订单审核</a></li>
                 {% endif %}
@@ -153,20 +161,20 @@
 <div class="base-content">
     {% block base_content %}
 
-{% endblock %}
+    {% endblock %}
 
 </div>
 
 
 <footer class="myfooter">
-  <div class="container" >
-    <ul class="myfooter-links">
-      <li> &copy; Wenan Jinkai Building 2022 </li>
-    </ul>
+    <div class="container">
+        <ul class="myfooter-links">
+            <li> &copy; Wenan Jinkai Building 2022</li>
+        </ul>
 
-    <p></p>
+        <p></p>
 
-  </div>
+    </div>
 </footer>
 
 

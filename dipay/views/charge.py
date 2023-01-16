@@ -43,16 +43,16 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
         key = "%s:%s" % (self.request.path, self.request.user)
         conn = get_redis_connection()
         print("key",key)
+
         per_page_count = self.request.POST.get("per_page_count")
         if per_page_count:
             conn.set(key,per_page_count,ex=300)
-            print("per_page_count",per_page_count)
             return int(per_page_count)
+
         per_page_redis = conn.get(key)
-        print(per_page_redis,"per_page_redis")
-        per_page_count = int(per_page_redis.decode("utf8"))  if per_page_redis else 10
-        print("per_page_count", per_page_count)
-        return per_page_count
+        if per_page_redis:
+            return int(per_page_redis.decode("utf8"))
+        return 10
 
 
     search_list = ['followorder__order__order_number__icontains',]
