@@ -17,8 +17,9 @@ class ProductHandler(StarkHandler):
                 return '详情'
             else:
                 remark, is_long = str_width_control(obj.remark,max_length)
+                remark_origin = obj.remark.replace('"','&quot')
                 if is_long:
-                    remark_text = "<span id='remark_%s' text='%s'>%s</span>" % (obj.pk, obj.remark, remark) + \
+                    remark_text = "<span id='remark_%s' text='%s'>%s</span>" % (obj.pk, remark_origin, remark) + \
                                   "<i class='fa fa-chevron-down more' pk='%s' onclick='expandRemark(this)'></i>" % obj.pk
                 else:
                     remark_text = remark
