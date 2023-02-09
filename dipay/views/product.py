@@ -28,10 +28,11 @@ class ProductHandler(StarkHandler):
         return inner
 
 
-    fields_display = ["title",
-                      "spec",
-                      "thick",
-                      remark_display(50),
+    fields_display = [
+                      "title",
+                      "title_English",
+
+                       remark_display(50),
                       ]
 
 

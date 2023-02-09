@@ -325,7 +325,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     def show_pay_details(self, request, order_id, *args, **kwarg):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()
-        print(1232434,'order obj', order_obj)
+
         if not order_obj:
             return HttpResponse('订单号不存在')
 

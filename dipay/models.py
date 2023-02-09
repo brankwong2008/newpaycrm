@@ -365,14 +365,26 @@ class Supplier(models.Model):
         return self.title[:5]
 
 
+class Catagory(models.Model):
+    title = models.CharField(max_length=128, verbose_name='产品分组')
+    def __str__(self):
+        return self.title
+
+
 class Product(models.Model):
     title = models.CharField(max_length=128, verbose_name='品名')
-    spec =  models.CharField(max_length=128, verbose_name='规格')
-    thick = models.DecimalField(verbose_name='厚度',max_digits=10,decimal_places=2, default=0.3)
-    quote = models.ManyToManyField(to=Supplier, through='Quote', verbose_name='报价单',null=True, blank=True)
+    title_English = models.CharField(max_length=128, verbose_name='英文品名',null=True)
+    catagory = models.ForeignKey(to=Catagory,on_delete=models.CASCADE, verbose_name='组别',null=True)
     remark = models.TextField(verbose_name='备注', default='--')
     def __str__(self):
         return self.title
+
+class ModelNumbers(models.Model):
+    product = models.ForeignKey(to=Product,on_delete=models.CASCADE, verbose_name='品名')
+    spec = models.CharField(max_length=128, verbose_name='规格')
+    thick = models.DecimalField(verbose_name='厚度', max_digits=10, decimal_places=2, default=0.3)
+    price = models.DecimalField(verbose_name='价格', max_digits=10, decimal_places=2, default=0)
+
 
 class Quote(models.Model):
     product = models.ForeignKey(to=Product,on_delete=models.CASCADE, related_name='related_product', verbose_name='产品')

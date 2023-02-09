@@ -117,3 +117,6 @@ site.register(models.Supplier )
 
 # 报价管理
 site.register(models.Quote )
+
+# 产品类别
+site.register(models.Catagory )

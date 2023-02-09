@@ -174,6 +174,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     new_reference += 1
                 form.instance.reference = new_reference
                 currentnumber_obj.reference = new_reference
+                charge_fee = form.instance.amount - form.instance.got_amount
+                form.instance.remark += f"手续费:{form.instance.currency.icon}{charge_fee}"
                 form.save()
                 currentnumber_obj.save()
                 # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理

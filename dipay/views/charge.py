@@ -258,7 +258,6 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
         if request.method == "GET":
             followorder_id = request.GET.get("followorder_id")
             form = self.get_model_form("add")()
-            print("form",form)
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
                 form.fields['followorder'].initial= followorder_obj
