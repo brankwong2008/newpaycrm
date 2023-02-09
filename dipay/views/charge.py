@@ -1,5 +1,5 @@
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.shortcuts import redirect
 from stark.service.starksite import StarkHandler, Option
 from django.utils.safestring import mark_safe
@@ -253,11 +253,18 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
 
         return render(request, 'dipay/simple_charges_list.html', locals())
 
+
     # 新增一条记录
     def add_list(self, request, *args, **kwargs):
         if request.method == "GET":
             followorder_id = request.GET.get("followorder_id")
-            form = self.get_model_form("add")()
+            form = self.get_model_form("add")()   # StarkForm对象 有update_choices方法
+
+            # 筛选180天内的followorder的数据，避免前端显示的太慢
+            choices = FollowOrder.objects.filter(ETD__gte= datetime.now()-timedelta(days=180)).values_list("id","order__order_number")
+            print("choice count:", choices.count())
+            form.update_choices(field="followorder",choices=choices)
+
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
                 form.fields['followorder'].initial= followorder_obj

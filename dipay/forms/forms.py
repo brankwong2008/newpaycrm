@@ -5,6 +5,8 @@ from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, \
 from datetime import datetime
 
 
+
+
 # 自定义的通用modelForm
 class StarkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -24,6 +26,12 @@ class StarkForm(forms.ModelForm):
             if isinstance(field, forms.DateField):
                 print("yes, this is datefield")
                 field.widget.attrs["type"] = 'date'
+
+    def update_choices(self,field,choices):
+        self.fields[field].choices = choices
+
+
+
 
 
 # 用于添加任务的model form
