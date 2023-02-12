@@ -18,7 +18,6 @@ class Forwarder(models.Model):
     def __str__(self):
         return self.shortname if self is not None else '-'
 
-
 class UserInfo(MyUser):
     nickname = models.CharField(max_length=30,verbose_name="姓名")
     department_choices = [(1, '业务部'),

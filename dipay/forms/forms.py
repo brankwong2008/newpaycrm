@@ -22,16 +22,13 @@ class StarkForm(forms.ModelForm):
                 continue
 
             field.widget.attrs["class"] = " form-control"
-            print("type of field", type(field))
+
             if isinstance(field, forms.DateField):
-                print("yes, this is datefield")
-                field.widget.attrs["type"] = 'date'
+                print("yes, this is datefield, field",field,field.label)
+                field.widget = forms.DateInput(attrs={ "required":True,"type":"date","class":"form-control"})
 
     def update_choices(self,field,choices):
         self.fields[field].choices = choices
-
-
-
 
 
 # 用于添加任务的model form

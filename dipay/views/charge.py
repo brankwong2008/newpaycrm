@@ -262,8 +262,7 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
 
             # 筛选180天内的followorder的数据，避免前端显示的太慢
             choices = FollowOrder.objects.filter(ETD__gte= datetime.now()-timedelta(days=180)).values_list("id","order__order_number")
-            print("choice count:", choices.count())
-            form.update_choices(field="followorder",choices=choices)
+            form.update_choices(field="followorder",choices=[(None,"--------")]+list(choices))
 
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)

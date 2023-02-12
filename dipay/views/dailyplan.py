@@ -68,7 +68,12 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
         if is_header:
             return "关联"
         else:
-            if obj.link:
+            try:
+                exists = obj.link
+            except:
+                return "-"
+
+            if exists:
                 followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % obj.link.order.order_number
                 return mark_safe("<a href='%s' target='_blank'>%s</a>" % (followorder_url, obj.link))
             else:
