@@ -188,7 +188,9 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
             else:
-                return render(request, self.add_list_template or "stark/apply_new_order.html", locals())
+                print(form.errors)
+                msg = "提交失败" + str(form.errors)
+                return render(request, "dipay/msg_after_submit.html", locals())
 
     # 保存表单数据
     def save_form(self, form, request, is_update=False, *args, **kwargs):

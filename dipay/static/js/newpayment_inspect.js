@@ -41,7 +41,18 @@ function inspectSubmitPayment() {
 function justifyNumberInput(inputTag){
     var content = $(inputTag).val();
     if (content){
-        $(inputTag).val(content.replaceAll(/[^0-9\.]/g,''))
+        // 去掉非数字字符
+        var reg_keep_digit = /[^0-9\.]/g
+        content = content.replaceAll(reg_keep_digit,'')
+        // 小数点要控制在两位
+        var reg_over_three = /\d+\.\d{3,}/g
+        var reg_get_two = /\d+\.\d{1,2}/g
+        if (reg_over_three.test(content)){
+            content = reg_get_two.exec(content)[0]
+        }
+
+        $(inputTag).val(content)
     }
+
 }
 
