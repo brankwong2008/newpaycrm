@@ -266,6 +266,9 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
 
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
+                extra_option = (followorder_obj.pk, followorder_obj.order.order_number)
+                if extra_option not in choices:
+                    form.update_choices(field="followorder",choices=[(None,"--------")]+list(choices)+[extra_option,])
                 form.fields['followorder'].initial= followorder_obj
                 if followorder_obj.ETD:
                     form.fields['BL_date'].initial = followorder_obj.ETD
