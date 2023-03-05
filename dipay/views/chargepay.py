@@ -1,5 +1,6 @@
 
 import os
+import threading
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler,Option
 from django.shortcuts import render, HttpResponse
@@ -11,6 +12,8 @@ from dipay.forms.forms import ChargePayModelForm
 from django.conf import settings
 from django.conf.urls import url
 from openpyxl import load_workbook
+from rbac.utils.common import compress_image
+
 
 class ChargePayHandler(PermissionHanlder,StarkHandler):
     page_title = "付费记录"
@@ -87,6 +90,10 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
                     item.save()
         form.save()
 
+        # 压缩图片
+        if form.instance.ttcopy:
+            t = threading.Thread(target=compress_image, args=(form.instance.ttcopy.path, 800))
+            t.start()
 
     def get_model_form(self,handle_type=None):
         return ChargePayModelForm

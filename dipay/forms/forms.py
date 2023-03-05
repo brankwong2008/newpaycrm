@@ -24,7 +24,7 @@ class StarkForm(forms.ModelForm):
             field.widget.attrs["class"] = " form-control"
 
             if isinstance(field, forms.DateField):
-                print("yes, this is datefield, field",field,field.label)
+                # print("yes, this is datefield, field",field,field.label)
                 field.widget = forms.DateInput(attrs={ "required":True,"type":"date","class":"form-control"})
 
     def update_choices(self,field,choices):
