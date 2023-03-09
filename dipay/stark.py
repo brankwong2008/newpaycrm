@@ -24,6 +24,7 @@ from dipay.views.chance_stats import ChanceStatsHandler
 from dipay.views.forwarder import ForwarderHandler
 from dipay.views.ports import PortsHandler
 from dipay.views.product import ProductHandler
+from dipay.views.currentnumber import CurrentNumberHandler
 
 
 
@@ -74,7 +75,7 @@ site.register(models.ShipLines)
 site.register(models.Ports, PortsHandler)
 
 # 最新编码
-site.register(models.CurrentNumber)
+site.register(models.CurrentNumber, CurrentNumberHandler)
 
 # 申请放单
 site.register(models.ApplyRelease, ApplyReleaseHandler)

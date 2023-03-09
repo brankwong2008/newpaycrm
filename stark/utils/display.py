@@ -285,12 +285,15 @@ class PermissionHanlder:
         get_edit_url_name = '%s:%s' % (self.namespace, self.get_edit_url_name)
         get_del_url_name = '%s:%s' % (self.namespace, self.get_del_url_name)
 
-        if get_edit_url_name in permission_dict and get_del_url_name in permission_dict:
+        edit_btn_exists = get_edit_url_name in permission_dict
+        del_btn_exists = get_del_url_name in permission_dict
+        if edit_btn_exists and del_btn_exists:
             val.extend([self.edit_del_display, ])
-        elif get_edit_url_name in permission_dict:
+        elif edit_btn_exists:
             val.extend([self.edit_display, ])
-        elif get_del_url_name in permission_dict:
+        elif del_btn_exists:
             val.extend([self.del_display, ])
+
         return val
 
     # 添加按钮的权限控制
