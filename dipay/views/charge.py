@@ -115,7 +115,7 @@ class ChargeHandler(PermissionHanlder, StarkHandler):
     batch_process_list = [batch_pay, ]
 
     def check_pay_status(self, obj, currency_code):
-        """  检查某项费用是否已付，并标识状态  """
+        """  检查某项费用是否已付，并标识状态 USD=1, CNY=2  """
         if obj.status == 0:
             return False
         if obj.status == 3:
@@ -127,8 +127,17 @@ class ChargeHandler(PermissionHanlder, StarkHandler):
         if is_header:
             return "美元合计"
         else:
-            is_paid = self.check_pay_status(obj, 1)
             total_amount = obj.seafreight + obj.insurance
+            total_CNY_amount = obj.trailer_charge + obj.port_charge + obj.other_charge
+            ## 更新旧数据中结清状态问题, 判断目前的状态和分货币总数金额的对应性，可以视为结清的status更新为3
+            if (obj.status == 1 and total_CNY_amount <=0) \
+                    or (obj.status == 2 and total_amount <=0):
+                obj.status = 3
+                obj.save()
+                print("corrected")
+
+            is_paid = self.check_pay_status(obj, 1)
+
             if total_amount == 0:
                 return "-"
             if is_paid:
