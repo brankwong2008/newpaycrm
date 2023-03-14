@@ -12,18 +12,19 @@ from dipay.utils.displays import fees_display, forwarder_display
 from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
 from django_redis import get_redis_connection
 
-class ChargeHandler(PermissionHanlder,StarkHandler):
+
+class ChargeHandler(PermissionHanlder, StarkHandler):
     show_list_template = "dipay/show_charge_list.html"
 
     page_title = '货代费用'
 
-    order_by_list = ['-BL_date',]
+    order_by_list = ['-BL_date', ]
 
     # 页面显示行数的选择
-    per_page_options =[
-        {"val":10,"selected":""},
-        {"val":20,"selected":""},
-        {"val":30,"selected":""},
+    per_page_options = [
+        {"val": 10, "selected": ""},
+        {"val": 20, "selected": ""},
+        {"val": 30, "selected": ""},
     ]
 
     # 快速筛选： 货代，付费状态
@@ -32,7 +33,12 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                is_multi=False,
                # control_list=['汇昌','迪斯泰','誉洲','永鑫海','惠和','深圳鑫顺源',]  # 静态指定
                ),
-        Option(field='status'),
+        Option(field='status',
+               control_list=["结清", ],
+               extra=[{
+                   "text": "未结清",
+                   "val": "lt__3"
+               }, ]),
     ]
 
     # 动态指定
@@ -42,11 +48,11 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
     def get_per_page(self):
         key = "%s:%s" % (self.request.path, self.request.user)
         conn = get_redis_connection()
-        print("key",key)
+        print("key", key)
 
         per_page_count = self.request.POST.get("per_page_count")
         if per_page_count:
-            conn.set(key,per_page_count,ex=300)
+            conn.set(key, per_page_count, ex=300)
             return int(per_page_count)
 
         per_page_redis = conn.get(key)
@@ -54,8 +60,7 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             return int(per_page_redis.decode("utf8"))
         return 10
 
-
-    search_list = ['followorder__order__order_number__icontains',]
+    search_list = ['followorder__order__order_number__icontains', ]
 
     search_placeholder = '搜索 订单号'
 
@@ -74,37 +79,36 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
         if not USD_amount and not CNY_amount:
             return JsonResponse({"status": False, "msg": '至少选择一项费用金额'})
 
-
         # 创建付款单记录， 水单，银行等字段后续再填写
         amount_list = USD_amount or CNY_amount
         total_amount = sum([Decimal(each) for each in amount_list])
         currency = Currency.objects.get(title='美元') if USD_amount else Currency.objects.get(title='人民币')
 
         # 生成付费单(草稿)
-        chargepay_obj = ChargePay(create_date=datetime.now(),forwarder_id=forwarder_id, currency=currency, amount=total_amount)
-
+        chargepay_obj = ChargePay(create_date=datetime.now(), forwarder_id=forwarder_id, currency=currency,
+                                  amount=total_amount)
 
         paytocharge_list = []
         for ind, val in enumerate(pk_list):
             # 第一步需要查重，并告知前端哪笔是重复的
-            if PayToCharge.objects.filter(charge_id=val,currency=currency).exists():
+            if PayToCharge.objects.filter(charge_id=val, currency=currency).exists():
                 order_number = self.model_class.objects.get(pk=val).followorder.order.order_number
                 msg = f"订单{order_number}的{currency.title}费用有可能重复支付"
-                return JsonResponse({"status": False, "msg": msg,})
+                return JsonResponse({"status": False, "msg": msg, })
 
             # 创建付费单-费用单关联记录
             paytocharge_obj = PayToCharge(
-                                          charge_id=val,
-                                          chargepay=chargepay_obj,
-                                          currency=currency,
-                                          amount=amount_list[ind])
+                charge_id=val,
+                chargepay=chargepay_obj,
+                currency=currency,
+                amount=amount_list[ind])
             paytocharge_list.append(paytocharge_obj)
 
         chargepay_obj.save()
         PayToCharge.objects.bulk_create(paytocharge_list)
 
         chargepay_url = reverse("stark:dipay_chargepay_list")
-        return JsonResponse({"status": True, "msg": '付费单生成成功','url': chargepay_url})
+        return JsonResponse({"status": True, "msg": '付费单生成成功', 'url': chargepay_url})
 
     batch_pay.text = "生成付费单"
 
@@ -118,21 +122,23 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             return True
         return obj.status % 2 == currency_code
 
-
     def total_USD(self, obj=None, is_header=None, *args, **kwargs):
         """  美元金额合计显示  """
         if is_header:
             return "美元合计"
         else:
-            is_paid = self.check_pay_status(obj,1)
+            is_paid = self.check_pay_status(obj, 1)
             total_amount = obj.seafreight + obj.insurance
             if total_amount == 0:
                 return "-"
             if is_paid:
-                res = mark_safe("<span class='money status-paid'>$</span><span class='status-paid' name='USD_amount'>%s</span>" % (total_amount))
+                res = mark_safe(
+                    "<span class='money status-paid'>$</span><span class='status-paid' name='USD_amount'>%s</span>" % (
+                        total_amount))
             else:
-                res = mark_safe("<span class='money status-unpaid'>$</span><span class='status-unpaid' pk='%s' name='USD_amount' "
-                          "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
+                res = mark_safe(
+                    "<span class='money status-unpaid'>$</span><span class='status-unpaid' pk='%s' name='USD_amount' "
+                    "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
             return res
 
     def total_CNY(self, obj=None, is_header=None, *args, **kwargs):
@@ -146,10 +152,13 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                 return "-"
 
             if is_paid:
-                res = mark_safe("<span class='money status-paid'>￥</span><span class='status-paid' name='CNY_amount'>%s</span>" % (total_amount))
+                res = mark_safe(
+                    "<span class='money status-paid'>￥</span><span class='status-paid' name='CNY_amount'>%s</span>" % (
+                        total_amount))
             else:
-                res = mark_safe("<span class='money status-unpaid'>￥</span><span class='status-unpaid' pk='%s' name='CNY_amount' "
-                          "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
+                res = mark_safe(
+                    "<span class='money status-unpaid'>￥</span><span class='status-unpaid' pk='%s' name='CNY_amount' "
+                    "onclick='addToPayCharge(this)'>%s</span>" % (obj.pk, total_amount))
             return res
 
     def ETD_display(self, obj=None, is_header=None, *args, **kwargs):
@@ -171,7 +180,6 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             followorder_url = reverse("stark:dipay_followorder_list") + "?q=%s" % order_number
             return mark_safe(f"<a href='{followorder_url}' target='_blank' class='normal-a'>{order_number}</a>")
 
-
     def related_chargepay_display(self, obj=None, is_header=None, *args, **kwargs):
         """  显示货代  """
         if is_header:
@@ -181,12 +189,11 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             data_list = []
 
             for item in chargepay_queryset:
-                chargepay_url = reverse("stark:dipay_chargepay_list")+f"?q={item.pk}"
+                chargepay_url = reverse("stark:dipay_chargepay_list") + f"?q={item.pk}"
                 tag = f"<a href='{chargepay_url}' target='_blank'>F{str(item.pk).zfill(5)}</a>"
                 data_list.append(tag)
 
             return mark_safe(" ,".join(data_list))
-
 
     fields_display = [
         checkbox_display_func(hidden_xs="hidden-md hidden-lg"),
@@ -225,7 +232,7 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
             row = {}
             row["forwarder"] = each.forwarder.shortname
             row["data"] = []
-            row["total"]=[]
+            row["total"] = []
             total_USD, total_CNY = Decimal(0), Decimal(0)
             total_USD, total_CNY = 0, 0
             for name in ['seafreight', 'insurance', 'port_charge', 'trailer_charge', 'other_charge']:
@@ -233,7 +240,7 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                     verbose_name = self.model_class._meta.get_field(name).verbose_name
                     if verbose_name.endswith('$'):
                         total_USD += Decimal(getattr(each, name))
-                        print('total_USD',total_USD)
+                        print('total_USD', total_USD)
                     else:
                         total_CNY += Decimal(getattr(each, name))
                         print('total_CNY', total_USD)
@@ -247,29 +254,30 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                     if status == 3:
                         is_paid = 'paid'
                     row["data"].append({"label": verbose_name, "text": getattr(each, name), "is_paid": is_paid})
-            row["total"].extend([{"label":"美元合计:","text":total_USD},{"label":"人民币合计:","text":total_CNY}])
-            print("row['total']",row["total"])
+            row["total"].extend([{"label": "美元合计:", "text": total_USD}, {"label": "人民币合计:", "text": total_CNY}])
+            print("row['total']", row["total"])
             charge_list.append(row)
 
         return render(request, 'dipay/simple_charges_list.html', locals())
-
 
     # 新增一条记录
     def add_list(self, request, *args, **kwargs):
         if request.method == "GET":
             followorder_id = request.GET.get("followorder_id")
-            form = self.get_model_form("add")()   # StarkForm对象 有update_choices方法
+            form = self.get_model_form("add")()  # StarkForm对象 有update_choices方法
 
             # 筛选180天内的followorder的数据，避免前端显示的太慢
-            choices = FollowOrder.objects.filter(ETD__gte= datetime.now()-timedelta(days=180)).values_list("id","order__order_number")
-            form.update_choices(field="followorder",choices=[(None,"--------")]+list(choices))
+            choices = FollowOrder.objects.filter(ETD__gte=datetime.now() - timedelta(days=180)).values_list("id",
+                                                                                                            "order__order_number")
+            form.update_choices(field="followorder", choices=[(None, "--------")] + list(choices))
 
             if followorder_id:
                 followorder_obj = FollowOrder.objects.get(pk=followorder_id)
                 extra_option = (followorder_obj.pk, followorder_obj.order.order_number)
                 if extra_option not in choices:
-                    form.update_choices(field="followorder",choices=[(None,"--------")]+list(choices)+[extra_option,])
-                form.fields['followorder'].initial= followorder_obj
+                    form.update_choices(field="followorder",
+                                        choices=[(None, "--------")] + list(choices) + [extra_option, ])
+                form.fields['followorder'].initial = followorder_obj
                 if followorder_obj.ETD:
                     form.fields['BL_date'].initial = followorder_obj.ETD
             namespace = self.namespace
@@ -285,4 +293,3 @@ class ChargeHandler(PermissionHanlder,StarkHandler):
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 return render(request, self.add_list_template or "stark/change_list.html", locals())
-

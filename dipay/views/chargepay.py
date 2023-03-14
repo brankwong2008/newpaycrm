@@ -83,10 +83,25 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
 
             # 且同时要把相关联的付费单的状态改变美元已付，人民币已付，或者结清
             currency_code = 1 if form.instance.currency.title == '美元' else 2
+
             for item in Charge.objects.filter(chargepay=form.instance):
                 # 如果currency与费用表中的状态值相等，说明已经更新过了
                 if item.status < 3 and item.status != currency_code:
                     item.status += currency_code
+                    # 如果只有美元账单或者人民币账单，则结清的要求小于3
+                    total_USD = item.insurance + item.seafreight
+
+                    total_CNY = item.port_charge + item.trailer_charge + item.other_charge
+                    print("total_USD, type(total_USD)", total_USD, type(total_USD))
+                    print("total_CNY, type(total_CNY)", total_CNY, type(total_CNY))
+
+                    status_ceiling = 3
+                    if total_USD <= 0 and total_CNY > 0:
+                        status_ceiling = 2
+                    elif total_USD >0 and total_CNY <=0:
+                        status_ceiling = 1
+                    item.status = 3 if item.status >= status_ceiling else item.status
+
                     item.save()
         form.save()
 

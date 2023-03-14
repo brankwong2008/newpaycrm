@@ -404,25 +404,29 @@ class Product(models.Model):
     title_English = models.CharField(max_length=128, verbose_name='英文品名', null=True)
     catagory = models.ForeignKey(to=Catagory, on_delete=models.CASCADE, verbose_name='组别', null=True)
     remark = models.TextField(verbose_name='备注', default='--')
+    supplier = models.ManyToManyField(to=Supplier,verbose_name='供应商',null=True,blank=True)
 
     def __str__(self):
         return self.title
+
+class ProductPhoto(models.Model):
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, verbose_name='产品', null=True)
+    photo = models.ImageField(upload_to="productphoto", verbose_name='产品图片',)
+    ismain = models.BooleanField(verbose_name='是否主图',default=False)
 
 
 class ModelNumbers(models.Model):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, verbose_name='品名')
     spec = models.CharField(max_length=128, verbose_name='规格')
     thick = models.DecimalField(verbose_name='厚度', max_digits=10, decimal_places=2, default=0.3)
-    price = models.DecimalField(verbose_name='价格', max_digits=10, decimal_places=2, default=0)
+    price = models.DecimalField(verbose_name='参考价格', max_digits=10, decimal_places=2, default=0)
+    vol = models.DecimalField(verbose_name='单只体积', max_digits=10, decimal_places=3, default=0)
+    gw = models.DecimalField(verbose_name='单只重量', max_digits=10, decimal_places=3, default=0)
 
 
 class Quote(models.Model):
-    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, related_name='related_product', verbose_name='产品')
+    create_date = models.DateField(auto_now_add=True, verbose_name='报价日期')
+    modelnumbers = models.ForeignKey(to=ModelNumbers, on_delete=models.CASCADE, related_name='related_product', verbose_name="型号",null=True)
     supplier = models.ForeignKey(to=Supplier, on_delete=models.CASCADE, verbose_name='供应商', default=1)
-    price = models.DecimalField(verbose_name='价格', max_digits=10, decimal_places=4, default=0)
-    vol = models.DecimalField(verbose_name='单只体积', max_digits=10, decimal_places=3, default=0)
-    gw = models.DecimalField(verbose_name='单只重量', max_digits=10, decimal_places=3, default=0)
+    price = models.DecimalField(verbose_name='工厂报价', max_digits=10, decimal_places=4, default=0)
     remark = models.TextField(verbose_name='备注', default='--')
-
-    def __str__(self):
-        return '%s-%s' % (self.product, self.supplier)

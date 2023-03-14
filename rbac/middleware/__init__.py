@@ -61,7 +61,7 @@ class RbacMiddleWare(MiddlewareMixin):
                     request.menu = request.session.get(settings.MENU_LIST_KEY)
 
                     request.menu_names = [ item["title"] for item in request.menu.values()]
-                    print("request.menu_names ",request.menu_names )
+                    # print("request.menu_names ",request.menu_names )
                     # 设置导航条的nav_list, 如果pid存在，则是三级菜单，显示一级和二级菜单
                     if item['pid']:
                         request.navi_list.extend([{"title": item['p_title'], "url": item['p_url']},

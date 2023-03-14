@@ -2,7 +2,6 @@ from django.shortcuts import HttpResponse, redirect, render, reverse
 from decimal import Decimal
 from django.http import JsonResponse
 from django.conf.urls import url
-from django.db.models import Q
 from django.db.models import F, Q, Max, Min, Avg, Sum, Count
 from django.utils.safestring import mark_safe
 from django import forms
