@@ -138,7 +138,7 @@ function showPayDetails(tag) {
     var customer_name = $(tag).attr('customer_name');
     customer_name = customer_name ? customer_name : '--';
     console.log('is_fix_amount', is_fix_amount);
-    var title = '收款明细';
+    var title = '收款明细 Accounts Detail';
     if (is_fix_amount == 'true') {
         console.log('fixe amount is true')
         title = '固定定金';
