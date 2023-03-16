@@ -12,7 +12,7 @@
         <p>发票  Invoice ：{{ order_obj.currency.icon }} {{ order_obj.amount }}</p>
 
         <p>定金  Deposit ：{{ order_obj.currency.icon }} {{ order_obj.rcvd_amount }}</p>
-        <p>尾款  Balance ：{{ order_obj.currency.icon }} {{ order_obj.collect_amount }}</p>
+        <p>尾款  Balance ：<span style="border-bottom: 2px solid orange;display: inline-block">{{ order_obj.currency.icon }} {{ order_obj.collect_amount }}</span></p>
         <h5> Details </h5>
         <div>
             <table class="table table-striped table-bordered table-hover">
