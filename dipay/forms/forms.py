@@ -3,7 +3,7 @@ from django import forms
 from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, \
     DailyPlan, FollowChance, Chance, ChargePay, Charge
 from datetime import datetime
-
+from dipay.models import ProductPhoto
 
 
 
@@ -283,3 +283,17 @@ class ForwarderChargeModelForm(StarkForm):
         widgets = {
             "BL_date": forms.DateInput(attrs={'type': 'date'}),
         }
+
+# 添加产品图片的model form
+class ProductPhotoAddModelForm(StarkForm):
+    class Meta:
+        model = ProductPhoto
+        fields = ["photo","ismain"]
+
+
+class ProductPhotoEditModelForm(StarkForm):
+    class Meta:
+        model = ProductPhoto
+        fields = "__all__"
+
+

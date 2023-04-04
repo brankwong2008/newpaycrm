@@ -10,7 +10,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
-    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display
+    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details
 
 from django.db.models import ForeignKey
 
@@ -36,6 +36,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
                    'order__customer__title__icontains','book_info__icontains','load_info__icontains']
     search_placeholder = '搜 订单号/客户/货物/装箱/订舱'
+
 
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
@@ -236,8 +237,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     apply_release.text = '申请放单'
 
-
-
     # 批量处理列表
     batch_process_list = [batch_to_produce, batch_split_order, apply_release,check_amount]
 
@@ -284,6 +283,24 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       more_tag_display,
                       details_display,
                       ]
+
+
+
+    detail_fields_display = [
+        "order",
+        customer_display,
+        "load_port",
+        "discharge_port",
+        "ETD",
+        "ETA",
+        "book_info",
+        "load_info",
+        "produce_info",
+        "salesman",
+        amount_details(is_hidden=""),
+    ]
+
+
 
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):

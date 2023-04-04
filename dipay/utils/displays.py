@@ -379,9 +379,9 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
         return mark_safe(basic_info)
 
 
-def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwargs):
+def amount_rvcd_collect_display(handler, obj=None, is_header=False, is_hidden="hidden-xs", *args, **kwargs):
     if is_header:
-        return mark_safe("<span class='hidden-xs'>账务</span>")
+        return mark_safe(f"<span class='{is_hidden}'>账务</span>")
     else:
         amount_tag = "<span class='invoice-amount-display' id='%s-id-%s' amount='%s' onclick='showInputBox(this)'>%s%s</span>" % (
             'amount', obj.pk, obj.order.amount, obj.order.currency.icon, obj.order.amount
@@ -397,8 +397,13 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, *args, **kwa
         content = f'票：{amount_tag} <i class="fa {amount_check}"  pk="{obj.pk}" onclick="confirmInvoiceVal(this)"></i> <br>' \
                   f'{rcvd_collect_amount}'
 
-        return mark_safe("<div class='hidden-xs'>%s</div>" % content)
+        return mark_safe(f"<div class='{is_hidden}'>%s</div>" % content)
 
+
+def amount_details(is_hidden):
+    def inner(handler,obj=None, is_header=False, *args, **kwargs):
+        return  amount_rvcd_collect_display(handler, obj=obj, is_header=is_header, is_hidden=is_hidden, *args, **kwargs)
+    return inner
 
 
 # 每行的more_tag显示

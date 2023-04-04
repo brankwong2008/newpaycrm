@@ -25,8 +25,11 @@ from dipay.views.forwarder import ForwarderHandler
 from dipay.views.ports import PortsHandler
 from dipay.views.product import ProductHandler
 from dipay.views.currentnumber import CurrentNumberHandler
+from dipay.views.productphoto import ProductPhotoHandler
 
 
+# 产品图片管理
+site.register(models.ProductPhoto, ProductPhotoHandler)
 
 
 # 用户信息管理

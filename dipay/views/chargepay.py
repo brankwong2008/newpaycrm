@@ -92,9 +92,6 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
                     total_USD = item.insurance + item.seafreight
 
                     total_CNY = item.port_charge + item.trailer_charge + item.other_charge
-                    print("total_USD, type(total_USD)", total_USD, type(total_USD))
-                    print("total_CNY, type(total_CNY)", total_CNY, type(total_CNY))
-
                     status_ceiling = 3
                     if total_USD <= 0 and total_CNY > 0:
                         status_ceiling = 2
