@@ -28,6 +28,11 @@ from dipay.views.currentnumber import CurrentNumberHandler
 from dipay.views.productphoto import ProductPhotoHandler
 
 
+
+# 型号管理
+site.register(models.ModelNumbers)
+
+
 # 产品图片管理
 site.register(models.ProductPhoto, ProductPhotoHandler)
 

@@ -301,7 +301,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     ]
 
 
-
     # 自定义按钮的权限控制
     def get_extra_fields_display(self, request, *args, **kwargs):
         permission_dict = request.session.get(settings.PERMISSION_KEY)

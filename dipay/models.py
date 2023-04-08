@@ -418,10 +418,17 @@ class ProductPhoto(models.Model):
 class ModelNumbers(models.Model):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, verbose_name='品名')
     spec = models.CharField(max_length=128, verbose_name='规格')
-    thick = models.DecimalField(verbose_name='厚度', max_digits=10, decimal_places=2, default=0.3)
+    thick = models.DecimalField(verbose_name='厚度', max_digits=10, decimal_places=2, default=0)
     price = models.DecimalField(verbose_name='参考价格', max_digits=10, decimal_places=2, default=0)
-    vol = models.DecimalField(verbose_name='单只体积', max_digits=10, decimal_places=3, default=0)
-    gw = models.DecimalField(verbose_name='单只重量', max_digits=10, decimal_places=3, default=0)
+    vol = models.DecimalField(verbose_name='单只体积', max_digits=10, decimal_places=5, default=0)
+    gw = models.DecimalField(verbose_name='单只重量', max_digits=10, decimal_places=5, default=0)
+    remark = models.TextField(verbose_name='备注', default='--')
+
+    def __str__(self):
+        if not self.thick:
+            return self.product.title + " " + self.spec
+        else:
+            return self.product.title + " " + self.spec + " " + str(self.thick)+"mm"
 
 
 class Quote(models.Model):

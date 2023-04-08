@@ -50,6 +50,6 @@ class ProductPhotoHandler(StarkHandler):
 
         form.save()
 
-        productphoto_list_url = self.reverse_list_url(*args, **kwargs) + "?product_id=" + str(form.instance.product_id)
+        productphoto_list_url = self.reverse_list_url(*args, **kwargs)
         return redirect(productphoto_list_url)
 
