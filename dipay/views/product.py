@@ -7,13 +7,17 @@ from dipay.models import Product, ProductPhoto, Quote, ModelNumbers
 
 
 class ProductHandler(StarkHandler):
+
+
     page_title = "产品管理"
 
-    search_list = ['title__icontains',"title_English__icontains" ]
+    search_list = ['title__icontains', "title_English__icontains"]
     search_placeholder = "搜索 品名 英文品名"
 
-    popup_list = ["supplier",]
+    popup_list = ["supplier", ]
 
+    # def get_per_page(self):
+    #     return 3
 
     # 详情display
     def remark_display(max_length=None):
@@ -45,7 +49,7 @@ class ProductHandler(StarkHandler):
             if photos:
                 img_url = photos.get(ismain=True).photo.url
                 img_tag = f"<img class='ttcopy-small-img' src={img_url} " \
-                                  f"onclick='return popupImg(this)' width='30px' height='30px'>"
+                          f"onclick='return popupImg(this)' width='30px' height='30px'>"
             product_photo_url = reverse("stark:dipay_productphoto_list") + "?product_id=" + str(obj.pk)
             more_tag = f"<a href='{product_photo_url}' target='_blank' style='font-size:larger'>...</a>"
 
@@ -55,13 +59,15 @@ class ProductHandler(StarkHandler):
         if is_header:
             return '工厂报价'
         else:
-            model_number = ModelNumbers.objects.filter(product=obj)
-            if not model_number:
-                return "报价"
 
-            # Quote.objects.filter()
+            quotes = Quote.objects.filter(modelnumbers__product=obj)
+            if not quotes:
+                return "--"
 
-            return "报价"
+            quote = quotes.order_by("-create_date").first()
+            quote_url = reverse("stark:dipay_quote_list") + "?q=" + obj.title
+            price_tag = f"<a href='{quote_url}' target='_blank'>{quote.price}</a>"
+            return mark_safe(price_tag)
 
     def modelnumber_display(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
@@ -77,17 +83,19 @@ class ProductHandler(StarkHandler):
             # print(product_objs.modelnumbers_set.all(), type(product_objs.modelnumbers_set.all()))
 
             model_numbers_tag = "".join(["<div>%s %s </div>"
-                                         % (item.spec,item.thick) for item in model_numbers])
+                                         % (item.spec, item.thick) for item in model_numbers])
 
             return mark_safe(model_numbers_tag)
+
+
+
+    css_for_show_list = " .header-4{width:30%}"
 
     fields_display = [
         "title",
         "title_English",
         photo_display,
-        # quote_display,
         modelnumber_display,
+        quote_display,
         remark_display(50),
     ]
-
-    css_for_show_list = " .header-4{width:30%}"

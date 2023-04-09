@@ -432,8 +432,8 @@ class ModelNumbers(models.Model):
 
 
 class Quote(models.Model):
-    create_date = models.DateField(auto_now_add=True, verbose_name='报价日期')
     modelnumbers = models.ForeignKey(to=ModelNumbers, on_delete=models.CASCADE, related_name='related_product', verbose_name="型号",null=True)
-    supplier = models.ForeignKey(to=Supplier, on_delete=models.CASCADE, verbose_name='供应商', default=1)
     price = models.DecimalField(verbose_name='工厂报价', max_digits=10, decimal_places=4, default=0)
+    supplier = models.ForeignKey(to=Supplier, on_delete=models.CASCADE, verbose_name='供应商', default=1)
+    create_date = models.DateField(auto_now_add=True, verbose_name='报价日期')
     remark = models.TextField(verbose_name='备注', default='--')

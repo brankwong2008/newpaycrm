@@ -26,6 +26,7 @@ from dipay.views.ports import PortsHandler
 from dipay.views.product import ProductHandler
 from dipay.views.currentnumber import CurrentNumberHandler
 from dipay.views.productphoto import ProductPhotoHandler
+from dipay.views.quote import QuoteHandler
 
 
 
@@ -125,7 +126,7 @@ site.register(models.Product, ProductHandler )
 site.register(models.Supplier )
 
 # 报价管理
-site.register(models.Quote )
+site.register(models.Quote, QuoteHandler )
 
 # 产品类别
 site.register(models.Catagory )
