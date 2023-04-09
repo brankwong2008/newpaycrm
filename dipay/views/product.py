@@ -47,8 +47,8 @@ class ProductHandler(StarkHandler):
             photos = obj.productphoto_set.all()
             img_tag = "--"
             if photos:
-                img_url = photos.get(ismain=True).photo.url
-                img_tag = f"<img class='ttcopy-small-img' src={img_url} " \
+                    img_url = photos.get(ismain=True).photo.url
+                    img_tag = f"<img class='ttcopy-small-img' src={img_url} " \
                           f"onclick='return popupImg(this)' width='30px' height='30px'>"
             product_photo_url = reverse("stark:dipay_productphoto_list") + "?product_id=" + str(obj.pk)
             more_tag = f"<a href='{product_photo_url}' target='_blank' style='font-size:larger'>...</a>"

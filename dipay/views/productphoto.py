@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from dipay.forms.forms import ProductPhotoAddModelForm,ProductPhotoEditModelForm
 from rbac.utils.common import compress_image
 import threading
+from dipay.models import ProductPhoto
 
 class ProductPhotoHandler(StarkHandler):
     page_title = "产品图片"
@@ -39,6 +40,9 @@ class ProductPhotoHandler(StarkHandler):
         if is_update == False:
             product_id = request.GET.get("product_id")
             form.instance.product_id =  product_id
+            # 如果是第一张照片，自动设为主图
+            if not ProductPhoto.objects.filter(product_id=product_id):
+                form.instance.ismain = True
             # 压缩图片
             if form.instance.photo:
                 t = threading.Thread(target=compress_image, args=(form.instance.photo.path, 900))
@@ -49,7 +53,6 @@ class ProductPhotoHandler(StarkHandler):
             self.model_class.objects.filter(product_id=product_id,ismain=True).update(ismain=False)
 
         form.save()
-
         productphoto_list_url = self.reverse_list_url(*args, **kwargs)
         return redirect(productphoto_list_url)
 
