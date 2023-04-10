@@ -586,7 +586,7 @@ class StarkHandler(object):
 
         if request.method == "GET":
             form = form_class(instance=edit_obj)
-            back_url = self.reverse_list_url()
+            back_url = self.reverse_list_url(*args, **kwargs)
             namespace = self.namespace
             app_label = self.app_label
             # 自定义列表，外键字段快速添加数据，在前端显示加号

@@ -41,13 +41,15 @@
             margin-bottom: 20px;
         }
 
-        i.fa-pencil {
+        i.fa-pencil, i.fa-trash {
             color: lightgrey;
+            margin-right: 10px ;
 
         }
 
-        i.fa-pencil:hover {
+        i.fa-pencil:hover, i.fa-trash:hover {
             cursor: pointer;
+            color: darkorange;
         }
 
         li.dropdown {
@@ -100,9 +102,17 @@
                              alt="{{ productphoto.photo.name }}">
 
                         <!-- 设为主图的按钮 -->
-                        <a href='{% url "stark:dipay_productphoto_edit" pk=productphoto.pk %}'>
+                        <a href='{% url "stark:dipay_productphoto_edit" pk=productphoto.pk product_id=productphoto.product.pk %}'>
                             <i class="fa fa-pencil"></i>
                         </a>
+
+                       <!-- 设为删除图片按钮 -->
+                        {% if request.user.username == 'brank' %}
+                          <a href='{% url "stark:dipay_productphoto_del" pk=productphoto.pk product_id=productphoto.product.pk %}'>
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        {% endif %}
+
                     </div>
 
                 {% endfor %}
@@ -132,8 +142,13 @@
 
     <!-- 图片弹窗 -->
     <div id="ImgModal" class="newmodal">
-        <!-- 关闭按钮 -->
-        <span class="img-close" onclick="document.getElementById('ImgModal').style.display='none'">&times;</span>
+        <!-- 关闭 放大和缩小按钮 -->
+        <div class="img-close" style="display: flex; flex-direction: column">
+            <span  onclick="document.getElementById('ImgModal').style.display='none'"> &times; </span>
+            <span  onclick="Zoomout()"> + </span>
+            <span  onclick="Zoomin()"> - </span>
+        </div>
+
         <!-- 弹窗内容 -->
         <img class="newmodal-content" id="img01">
         <!-- 文本描述 -->
@@ -146,6 +161,7 @@
 
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/img_operate.js" %}"></script>
 
 
 {% endblock %}
