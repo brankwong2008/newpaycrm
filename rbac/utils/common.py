@@ -25,6 +25,7 @@ def compress_image(outfile, target_width=550):
         im = Image.open(outfile)
         # print('image x, y', x, y)
         x, y = im.size
+        print("image size:", im.size)
         if x <= target_width:
             break
 
@@ -41,8 +42,8 @@ def compress_image(outfile, target_width=550):
     return outfile
 
 # 处理图片压缩的线程任务
-def compress_image_task(file_path):
-    result = compress_image(outfile=file_path)
+def compress_image_task(file_path,target_width):
+    result = compress_image(file_path,target_width)
     print(result)
 
 def convert_img_jpg(file_path):

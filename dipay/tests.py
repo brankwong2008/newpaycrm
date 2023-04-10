@@ -24,24 +24,23 @@
 #         app.run(host="0.0.0.0",port=9001,debug=True)
 
 
-from django.test import TestCase
-
-import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'paycrm.settings')
-
-if __name__ == "__main__":
-    from django_redis import get_redis_connection
-
-    conn = get_redis_connection()
-    conn.set("phone/var/url", "1223", ex=300)
-    res = conn.get("phone/var/url")
-
-    print("the res is:", res)
-
-
-
-
-
+# from django.test import TestCase
+#
+# import os
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'paycrm.settings')
+#
+# if __name__ == "__main__":
+#     from django_redis import get_redis_connection
+#
+#     conn = get_redis_connection()
+#     conn.set("phone/var/url", "1223", ex=300)
+#     res = conn.get("phone/var/url")
+#
+#     print("the res is:", res)
+#
+#
+#
+#
 
 
 

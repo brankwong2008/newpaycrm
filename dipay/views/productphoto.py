@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect
 from django.conf.urls import url
 from django.http import JsonResponse, HttpResponse
 from dipay.forms.forms import ProductPhotoAddModelForm,ProductPhotoEditModelForm
-from rbac.utils.common import compress_image
+from rbac.utils.common import compress_image_task
 import threading
 from dipay.models import ProductPhoto
 
@@ -63,14 +63,15 @@ class ProductPhotoHandler(StarkHandler):
                 form.instance.ismain = True
             # 压缩图片
             if form.instance.photo:
-                t = threading.Thread(target=compress_image, args=(form.instance.photo.path, 900))
+                form.save()
+                t = threading.Thread(target=compress_image_task, args=(form.instance.photo.path, 900))
                 t.start()
 
         product_id = form.instance.product_id
         if form.instance.ismain == True:
             self.model_class.objects.filter(product_id=product_id,ismain=True).update(ismain=False)
-
         form.save()
+
         productphoto_list_url = self.reverse_list_url(*args, **kwargs)
         return redirect(productphoto_list_url)
 
