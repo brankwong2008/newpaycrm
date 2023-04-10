@@ -1,3 +1,13 @@
+
+// 关闭照片popup
+
+function closeImg() {
+    $("#ImgModal").css("display","none");
+    $("#img01").css("width","auto").css("height","auto");
+    $("#img01").css("max-height","80%").css("max-width","80%");
+}
+
+
 // 放大图片
 function Zoomout() {
    // 获取图片控件

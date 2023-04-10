@@ -165,7 +165,7 @@
     <div id="ImgModal" class="newmodal">
         <!-- 关闭 放大和缩小按钮 -->
         <div class="img-close" style="display: flex; flex-direction: column">
-            <span  onclick="document.getElementById('ImgModal').style.display='none'"> &times; </span>
+            <span  onclick="closeImg()"> &times; </span>
             <span  onclick="Zoomout()"> + </span>
             <span  onclick="Zoomin()"> - </span>
         </div>
@@ -184,7 +184,6 @@
 
     <script src="{% static "js/edit-follow-order.js" %}"></script>
     <script src="{% static "js/img_operate.js" %}"></script>
-
     <script src="{% static 'js/chances-operator.js' %}"></script>
 
 
