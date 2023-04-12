@@ -86,7 +86,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 检查发票金额
     def check_amount(self, request, *args, **kwargs):
-        print("enter check amont, ", request.POST.getlist('pk'))
         pk_list = request.POST.getlist('pk')
         for pk in pk_list:
             followorder_obj = self.model_class.objects.filter(pk=pk).first()

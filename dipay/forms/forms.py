@@ -12,6 +12,7 @@ class StarkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StarkForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
+            print(name,field,type(field))
             if isinstance(field, forms.ModelChoiceField):
                 # 给外键字段添加搜索功能，前端一定要加载bootstap-select.js
                 field.widget.attrs["class"] = "selectpicker bla bli form-control"
@@ -24,8 +25,11 @@ class StarkForm(forms.ModelForm):
             field.widget.attrs["class"] = " form-control"
 
             if isinstance(field, forms.DateField):
-                # print("yes, this is datefield, field",field,field.label)
                 field.widget = forms.DateInput(attrs={ "required":True,"type":"date","class":"form-control"})
+
+            if isinstance(field, forms.CharField) and isinstance(field.widget,forms.Textarea):
+                field.widget = forms.Textarea(attrs={ "rows":4,"class":"form-control"})
+
 
     def update_choices(self,field,choices):
         self.fields[field].choices = choices

@@ -27,11 +27,12 @@ from dipay.views.product import ProductHandler
 from dipay.views.currentnumber import CurrentNumberHandler
 from dipay.views.productphoto import ProductPhotoHandler
 from dipay.views.quote import QuoteHandler
+from dipay.views.modelnumbers import ModelNumbersHandler
 
 
 
 # 型号管理
-site.register(models.ModelNumbers)
+site.register(models.ModelNumbers, ModelNumbersHandler)
 
 
 # 产品图片管理

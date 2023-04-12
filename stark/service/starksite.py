@@ -553,12 +553,17 @@ class StarkHandler(object):
             data_list.append(row_dict)
         return header_list, data_list
 
+    def get_render_form(self,form,*args, **kwargs):
+        # 对于add_form进行部分值的初始化
+        return form
+
     # 新增一条记录
     def add_list(self, request, *args, **kwargs):
         page_title = self.page_title
 
         if request.method == "GET":
             form = self.get_model_form("add")()
+            form = self.get_render_form(form, *args, **kwargs)
             namespace = self.namespace
             app_label = self.app_label
             popup_list = self.popup_list

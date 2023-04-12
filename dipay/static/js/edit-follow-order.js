@@ -453,3 +453,31 @@ function submitDownloadRequest() {
     $('#myModal').modal('hide');
     ShowMsg("申请发送成功，下载将自动完成")
 }
+
+
+// 通用的弹窗添加表单
+function addPopupWindow(atag) {
+    var href = atag.href;
+    var title = $(atag).attr('title');
+    var backUrl = $(atag).attr('backurl');
+    console.log("通用添加working.... ")
+
+    $.ajax({
+        url: href,
+        type: 'get',
+        data: '',
+        success: function (respond) {
+            console.log("get a responds ")
+            $('#myModalLabel').text(title);
+            $('#myModal .modal-body .mymodal-details').replaceWith(respond);
+            // 给form的action加上url
+            $('#myModal .modal-body .mymodal-details form').attr('action', href);
+            var $input = `<input type="hidden" name="backurl" id="backurl" value='${backUrl}'>`
+            $('#myModal .modal-body .mymodal-details form').append($input);
+            $('#myModal').modal('show');
+            $('#myModal .modal-body .mymodal-details form .selectpicker').selectpicker('show');
+
+        }
+    });
+    return false;
+}

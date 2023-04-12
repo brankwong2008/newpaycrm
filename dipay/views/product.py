@@ -7,8 +7,6 @@ from dipay.models import Product, ProductPhoto, Quote, ModelNumbers
 
 
 class ProductHandler(StarkHandler):
-
-
     page_title = "产品管理"
 
     search_list = ['title__icontains', "title_English__icontains"]
@@ -16,8 +14,8 @@ class ProductHandler(StarkHandler):
 
     popup_list = ["supplier", ]
 
-    # def get_per_page(self):
-    #     return 3
+    def get_per_page(self):
+        return 3
 
     # 详情display
     def remark_display(max_length=None):
@@ -74,19 +72,19 @@ class ProductHandler(StarkHandler):
             return '型号'
         else:
             model_numbers = ModelNumbers.objects.filter(product=obj)
+            add_modelnumber_url = reverse("stark:dipay_modelnumbers_add", kwargs={"product_id": obj.pk})
+            add_tag = f"<a href='{add_modelnumber_url}?get_type=simple' " \
+                      f" title='新增产品型号'  onclick='return addPopupWindow(this)'" \
+                      f" backurl='{self.request.get_full_path()}'> + </a>"
             if not model_numbers:
-                return "--"
+                return mark_safe(add_tag)
 
-            # 外键字段的反向查询
-            # product_objs = Product.objects.filter(modelnumbers__isnull=False).first()
-            # print("product_objs",product_objs)
-            # print(product_objs.modelnumbers_set.all(), type(product_objs.modelnumbers_set.all()))
+
 
             model_numbers_tag = "".join(["<div>%s %s </div>"
-                                         % (item.spec, item.thick) for item in model_numbers])
+                                         % (item.spec, item.thick if float(item.thick) else "") for item in model_numbers])
 
-            return mark_safe(model_numbers_tag)
-
+            return mark_safe(model_numbers_tag + add_tag)
 
 
     css_for_show_list = " .header-4{width:30%}"
