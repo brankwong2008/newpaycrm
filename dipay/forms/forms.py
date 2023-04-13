@@ -12,7 +12,6 @@ class StarkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StarkForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            print(name,field,type(field))
             if isinstance(field, forms.ModelChoiceField):
                 # 给外键字段添加搜索功能，前端一定要加载bootstap-select.js
                 field.widget.attrs["class"] = "selectpicker bla bli form-control"
@@ -55,7 +54,6 @@ class TaskAddModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TaskAddModelForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            print(name, field)
             if name != 'cc':
                 field.widget.attrs["class"] = "form-control"
 
