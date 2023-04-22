@@ -68,3 +68,7 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
             return HttpResponse('upload successfully...')
 
         return render(request, 'dipay/upload_customer.html', locals())
+
+    def get_render_form(self,form,*args, **kwargs):
+        form.fields['owner'].initial = self.request.user
+        return form

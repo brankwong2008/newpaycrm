@@ -19,7 +19,7 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
     ]
 
     # 模糊搜索
-    search_list = ['customer__title__contains', 'goods__contains', 'order_number__contains']
+    search_list = ['customer__title__icontains', 'goods__icontains', 'order_number__contains']
     search_placeholder = '搜索 客户/货品/订单'
 
     def collect_amount_display(self, obj=None, is_header=False, *args, **kwargs):

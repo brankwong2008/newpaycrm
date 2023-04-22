@@ -675,6 +675,7 @@ class StarkHandler(object):
         print('handle_type', handle_type)
 
         form = self.get_model_form()(copy_POST or None)
+        form = self.get_render_form(form, *args,**kwargs)
         # 如果有数据，说明是post请求，如果没有数据说明是get请求
         if form.is_valid():
             # 对指定的字段进行字段的字符串相似度检查，以免重复添加，大于70%要提醒

@@ -3,10 +3,10 @@ from stark.service.starksite import StarkHandler
 from stark.utils.display import PermissionHanlder
 from django.utils.safestring import mark_safe
 from dipay.utils.tools import str_width_control
-from dipay.models import Product, ProductPhoto, Quote, ModelNumbers
+from dipay.models import ProductPhoto, Quote, ModelNumbers, Supplier
 
 
-class ProductHandler(StarkHandler):
+class ProductHandler(PermissionHanlder,StarkHandler):
     page_title = "产品管理"
 
     search_list = ['title__icontains', "title_English__icontains"]
@@ -97,3 +97,9 @@ class ProductHandler(StarkHandler):
         quote_display,
         remark_display(50),
     ]
+
+    def get_render_form(self,form,*args, **kwargs):
+        obj = Supplier.objects.filter(title="金凯建材")
+        form.fields['supplier'].initial = obj
+
+        return form
