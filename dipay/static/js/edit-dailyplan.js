@@ -108,6 +108,37 @@ $('#taskModal .modal-body').on('click', 'span.dailyplan', function (e) {
 });
 
 
+// 在跟单页面提交新增任务  ， 因为模态框有多个名字的情况，可能导致使用的时候混乱，需要提前规划好
+function  submitAddDailyplanForm(spanTag){
+    var $form = $(spanTag).parent().parent();
+    console.log($form)
+    var href = $form.attr('action');
+    var data_obj = new Object();
+    // 手动获取form中的input name和val， 存入data_obj
+    $form.find('[name]').each(function (i) {
+        data_obj[$(this).attr('name')] = $(this).val()
+    })
+
+    $.ajax({
+        url: href,
+        type: 'post',
+        data: data_obj,
+        success: function (respond) {
+            console.log(respond)
+            if (respond.status) {
+                $('#myModal').modal('hide');
+                ShowMsg(respond.msg);
+                setTimeout("location.reload()", 500);
+            } else {
+                 $('#myModal .modal-header .modal-error').html(respond.msg)
+            }
+        }
+    });
+
+}
+
+
+
 //回车事件清除默认动作 （需要事件委派，因为input这个内容是后生成的）
 $('#taskModal .modal-body').on('keypress', 'input', function (event) {
     console.log('event kecode:', event.keyCode)
