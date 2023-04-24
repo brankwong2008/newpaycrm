@@ -80,32 +80,32 @@ function simpleAddDailyPlan(atag) {
 
 
 // 给提交任务信息手动绑定一个点击事件
-$('#taskModal .modal-body').on('click', 'span.dailyplan', function (e) {
-    var href = $('#taskModal .modal-body  form').attr('action');
-    var data_obj = new Object();
-    // 手动获取form中的input name和val， 存入data_obj
-    $('#taskModal .modal-body form [name]').each(function (i) {
-        data_obj[$(this).attr('name')] = $(this).val()
-    })
-
-
-    $.ajax({
-        url: href,
-        type: 'post',
-        data: data_obj,
-        success: function (respond) {
-            console.log(respond)
-            if (respond.status) {
-                $('#taskModal').modal('hide');
-                ShowMsg(respond.msg);
-                setTimeout("location.reload()", 500);
-            } else {
-                 $('#taskModal .modal-header .modal-error').html(respond.msg)
-            }
-        }
-    });
-
-});
+// $('#taskModal .modal-body').on('click', 'span.dailyplan', function (e) {
+//     var href = $('#taskModal .modal-body  form').attr('action');
+//     var data_obj = new Object();
+//     // 手动获取form中的input name和val， 存入data_obj
+//     $('#taskModal .modal-body form [name]').each(function (i) {
+//         data_obj[$(this).attr('name')] = $(this).val()
+//     })
+//
+//
+//     $.ajax({
+//         url: href,
+//         type: 'post',
+//         data: data_obj,
+//         success: function (respond) {
+//             console.log(respond)
+//             if (respond.status) {
+//                 $('#taskModal').modal('hide');
+//                 ShowMsg(respond.msg);
+//                 setTimeout("location.reload()", 500);
+//             } else {
+//                  $('#taskModal .modal-header .modal-error').html(respond.msg)
+//             }
+//         }
+//     });
+//
+// });
 
 
 // 在跟单页面提交新增任务  ， 因为模态框有多个名字的情况，可能导致使用的时候混乱，需要提前规划好
@@ -126,11 +126,11 @@ function  submitAddDailyplanForm(spanTag){
         success: function (respond) {
             console.log(respond)
             if (respond.status) {
-                $('#myModal').modal('hide');
+                $("[id$='Modal']").modal('hide');
                 ShowMsg(respond.msg);
                 setTimeout("location.reload()", 500);
             } else {
-                 $('#myModal .modal-header .modal-error').html(respond.msg)
+                 $('[id$="Modal"] .modal-header .modal-error').html(respond.msg)
             }
         }
     });
@@ -139,7 +139,7 @@ function  submitAddDailyplanForm(spanTag){
 
 
 
-//回车事件清除默认动作 （需要事件委派，因为input这个内容是后生成的）
+//回车提交新增任务，并清除默认动作 （需要事件委派，因为input这个内容是后生成的）
 $('#taskModal .modal-body').on('keypress', 'input', function (event) {
     console.log('event kecode:', event.keyCode)
     // 判断keycode 是不是回车，回车的code是13
