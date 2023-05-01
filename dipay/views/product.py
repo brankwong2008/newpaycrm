@@ -57,15 +57,20 @@ class ProductHandler(PermissionHanlder,StarkHandler):
         if is_header:
             return '工厂报价'
         else:
-
-            quotes = Quote.objects.filter(modelnumbers__product=obj)
-            if not quotes:
+            model_numbers = ModelNumbers.objects.filter(product=obj)
+            if  not model_numbers:
                 return "--"
+            quote_list = []
+            for each in model_numbers:
+                link = reverse("stark:dipay_quote_list", kwargs={"modelnumber_id":each.pk})
+                quote_obj = each.related_product.all().first()
+                if quote_obj:
+                    quote_list.append("<div><a href='%s' target='_blank'>%s</a></div>" %(link,quote_obj.price))
+                else:
+                    quote_list.append("<div><a href='%s' target='_blank'>%s</a></div>" % (link,"-"))
+            quotes = "".join(quote_list)
 
-            quote = quotes.order_by("-create_date").first()
-            quote_url = reverse("stark:dipay_quote_list") + "?q=" + obj.title
-            price_tag = f"<a href='{quote_url}' target='_blank'>{quote.price}</a>"
-            return mark_safe(price_tag)
+            return mark_safe(quotes)
 
     def modelnumber_display(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
