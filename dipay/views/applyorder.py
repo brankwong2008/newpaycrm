@@ -159,7 +159,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
     # 根据用户筛选数据源
     def get_queryset_data(self, request, *args, **kwargs):
-        if request.user.username in ['brank','tony'] :
+        if request.user.username in ['brank','tony','kelly'] :
             return self.model_class.objects.all()
         if request.user:
             return self.model_class.objects.filter(salesperson=request.user, status__lte=3)
