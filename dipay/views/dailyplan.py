@@ -151,6 +151,7 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
             tabs.append(row)
         return tabs
 
+    # 给出list的表格数据，包括到港自动提醒的数据
     def get_queryset_data(self, request, is_search=None, *args, **kwargs):
         # 搜索所用的数据另行指定范围
         queryset = self.model_class.objects.filter(user=request.user)
@@ -168,9 +169,8 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
         )
 
         for each in to_notify_followorder_queryset:
-            print('需要通知的订单', each)
             # 通知业务员
-            DailyPlan.objects.create(content='订单%s即将到港' % each.order.order_number,
+            DailyPlan.objects.create(content='订单%s %s即将到港' % (each.order.order_number,each.order.customer.shortname),
                                      link=each,
                                      remark="ETA %s" % each.ETA.strftime("%Y-%m-%d"),
                                      user=each.salesman or each.order.salesperson)
