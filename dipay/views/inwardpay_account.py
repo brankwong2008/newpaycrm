@@ -137,6 +137,8 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
             data_list.append({"label":"到账金额","data":obj.currency.icon+str(obj.got_amount)})
             data_list.append({"label":"中间行扣费","data":obj.currency.icon+str(obj.amount-obj.got_amount)})
             data_list.append({"label": "备注", "data": str(obj.remark)})
+            data_list.append({"label": "水单", "data": str(obj.ttcopy.url)})
+
             return render(request, 'dipay/inwardpayment_detail.html', {'data_list': data_list})
 
         if request.method == 'POST':

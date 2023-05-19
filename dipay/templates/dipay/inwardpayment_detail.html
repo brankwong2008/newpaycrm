@@ -1,24 +1,24 @@
+<div class="payment-details">
 
 
+    <table class="table table-bordered table-striped">
+
+        <tbody>
+        {% for row in data_list %}
+            <tr>
+                <td>{{ row.label }} </td>
+                <td>{{ row.data|default:'-' }} </td>
+            </tr>
+
+        {% endfor %}
+        <tr>
+            <td colspan="2">
+                <img src="{{ data_list.9.data }}" alt="" width="100%" >
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
 
 
-
-    <div class="payment-details">
-
-
-            <table class="table table-bordered table-striped">
-
-                <tbody>
-                {% for row in data_list %}
-                    <tr>
-                        <td>{{ row.label }} </td>
-                        <td>{{ row.data|default:'-' }} </td>
-                    </tr>
-
-                {% endfor %}
-                </tbody>
-
-            </table>
-
-
-    </div>
+</div>
