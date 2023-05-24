@@ -26,7 +26,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
 
 
-    search_list = ['id__icontains', "create_date"]
+    search_list = ['id', "create_date"]
     search_placeholder = '搜索 付费单号 日期'
 
     def amount_display(self, obj=None, is_header=None,*args,**kwargs):

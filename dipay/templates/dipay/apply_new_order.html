@@ -28,6 +28,10 @@
 
     }
 
+    #col-currency  .filter-option-inner-inner {
+            color: orange;
+        }
+
     </style>
 
 {% endblock %}
@@ -36,7 +40,7 @@
 {% block content %}
     <div class="luffy-container">
 
-        <div class="col-md-6">
+        <div class="col-md-7">
 
             <form action="" method="post">
                 {% csrf_token %}
@@ -92,7 +96,7 @@
                 {#            币种和金额 #}
 
               <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
-                    <div style="width: 25%">
+                    <div style="width: 25%" id="col-currency">
                         <label for="">{{ form.currency.label }}</label>
                         <div class="form-row">
                             {{ form.currency }}
