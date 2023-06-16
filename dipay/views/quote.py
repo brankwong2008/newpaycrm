@@ -35,7 +35,10 @@ class QuoteHandler(StarkHandler):
     def get_render_form(self, form, *args, **kwargs):
         # 对于add_form进行部分值的初始化
         modelnumber_id = kwargs.get("modelnumber_id")
-        form.fields['modelnumbers'].initial = ModelNumbers.objects.get(pk=modelnumber_id)
+        modelnumber_obj = ModelNumbers.objects.get(pk=modelnumber_id)
+        form.fields['modelnumbers'].initial = modelnumber_obj
+        form.fields['supplier'].initial = modelnumber_obj.product.supplier.all().first()
+        print("the supplier is:", modelnumber_obj.product.supplier.all().first())
         return form
 
     def get_queryset_data(self, request, is_search=None, *args, **kwargs):
