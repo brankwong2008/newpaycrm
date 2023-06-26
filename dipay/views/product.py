@@ -70,7 +70,7 @@ class ProductHandler(PermissionHanlder,StarkHandler):
                     quote_list.append("<div><a href='%s' target='_blank'>%s</a></div>" % (link,"-"))
             quotes = "".join(quote_list)
 
-            return mark_safe(quotes)
+            return mark_safe(quotes + "<a style='color:lightgrey'> . </a>")
 
     def modelnumber_display(self, obj=None, is_header=None, *args, **kwargs):
         if is_header:
