@@ -160,13 +160,11 @@ function deferToNextDay(spanTag) {
     var nextDay = new Date(+date + 1000*60*60*24);
     var year = nextDay.getFullYear();
     var month = nextDay.getMonth()+1;
-    if(month<10){
-      month = "0" + month
-    }
     var day = nextDay.getDate();
+    month = month<10?("0"+month):(month);
+    day = day<10?("0"+day):(day);
 
     var inputTag = `<input type="date" id="remind_date-id-${pk}" value="${year}-${month}-${day}">`;
-    // var inputTag = `<input type="date" id="remind_date-id-${pk}" value="2023/6/27">`;
     $(`#remind_date-id-`+pk).replaceWith(inputTag);
 
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
