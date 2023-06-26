@@ -150,3 +150,27 @@ $('#taskModal .modal-body').on('keypress', 'input', function (event) {
         return false;
     }
 })
+
+// 提醒项目中的延后一天提醒按钮的功能
+function deferToNextDay(spanTag) {
+    console.log("defer working")
+    var $spanTag = $(spanTag);
+    var pk = $spanTag.attr("pk");
+    var date = new Date();
+    var nextDay = new Date(+date + 1000*60*60*24);
+    var year = nextDay.getFullYear();
+    var month = nextDay.getMonth()+1;
+    if(month<10){
+      month = "0" + month
+    }
+    var day = nextDay.getDate();
+
+    var inputTag = `<input type="date" id="remind_date-id-${pk}" value="${year}-${month}-${day}">`;
+    // var inputTag = `<input type="date" id="remind_date-id-${pk}" value="2023/6/27">`;
+    $(`#remind_date-id-`+pk).replaceWith(inputTag);
+
+    $(`.save-sequence[pk="${pk}"]`).trigger('click');
+    return false;
+
+}
+
