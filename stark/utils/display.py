@@ -221,7 +221,7 @@ def change_date_display(field, title=None, time_format="%Y-%m-%d", hidden_xs="")
                     year = datetime_obj.year
                 except:
                     create_date = '日期格式错误'
-            defer_btn = "<span style='color:grey;font-size: x-small;cursor:pointer' " \
+            defer_btn = "<span style='color:grey;font-size: x-small;cursor:pointer;margin-left:15px' " \
                         " pk='%s' onclick='deferToNextDay(this)'>延</span>" % obj.pk
             change_date_btn = "<span class='date-display %s' year='%s' onclick='showInputBox(this)' id='%s-id-%s' > %s </span>" \
                               % (hidden_xs, year, field, obj.pk, create_date)
