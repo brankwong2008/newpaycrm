@@ -214,6 +214,7 @@ function showInwardpayConfirm(atag) {
     var pk = $(atag).attr('pk');
     $('button.confirm-pay').attr('pk', pk);
     $('button.confirm-pay').attr('link', href);
+    $('div.modal-dialog').css('width','736px');
 
     $('#myModal').modal('show');
 

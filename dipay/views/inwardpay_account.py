@@ -6,6 +6,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import related_orders_display, ttcopy_display
 from dipay.forms.forms import AddInwardPayModelForm, EditInwardPayModelForm
 from django.db import transaction
+from dipay.models import Pay2Orders
 
 class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
@@ -138,6 +139,14 @@ class InwardPayAccountHandler(PermissionHanlder, StarkHandler):
             data_list.append({"label":"中间行扣费","data":obj.currency.icon+str(obj.amount-obj.got_amount)})
             data_list.append({"label": "备注", "data": str(obj.remark)})
             data_list.append({"label": "水单", "data": str(obj.ttcopy.url)})
+
+            order_objs = Pay2Orders.objects.filter(payment=obj)
+            orders_text = ','.join([item.order.order_number for item in order_objs])
+            data_list.append({"label": "关联订单", "data": orders_text})
+
+            data_list.append({"label": "业务员", "data": obj.keyin_user.nickname})
+
+
 
             return render(request, 'dipay/inwardpayment_detail.html', {'data_list': data_list})
 
