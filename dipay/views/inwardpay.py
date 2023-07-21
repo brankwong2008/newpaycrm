@@ -188,11 +188,12 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     def save_form(self, form, request, is_update=False, *args, **kwargs):
         if is_update:
             form.save()
-            # 压缩图片
-            t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,550))
-            t.start()
+
         else:
             form.save()
+            # 压缩图片
+            t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path, 550))
+            t.start()
 
     # def get_detail_extra_btn(self, request, pk, *args, **kwargs):
     #     detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
