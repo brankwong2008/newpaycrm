@@ -19,7 +19,6 @@ function savePlan(btn) {
                     content = content.replaceAll(remove_chars[i], '');
                 }
             }
-
             data_obj[name] = content;
         }
     });
@@ -114,10 +113,15 @@ function showInputBox(sp) {
 
 // 给编辑框旁边的小对钩绑定事件，直接指向同一行的save按钮
 function fastInfoSave(btn) {
-    console.log('fast info save btn')
     var pk = $(btn).attr('pk');
+    // 款项分配的金额检查：必须大于0
+    var $distamount = $(".dist-amount #amount-id-"+pk);
+    if($distamount.val().trim()=="0"){
+        ShowMsg("金额必须大于0")
+        return false
+    }
+    // 触发本行的保存按钮
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
-    console.log($(`.save-sequence[pk="${pk}"]`))
 }
 
 
