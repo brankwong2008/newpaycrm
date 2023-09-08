@@ -115,10 +115,13 @@ function showInputBox(sp) {
 function fastInfoSave(btn) {
     var pk = $(btn).attr('pk');
     // 款项分配的金额检查：必须大于0
-    var $distamount = $(".dist-amount #amount-id-"+pk);
-    if($distamount.val().trim()=="0"){
-        ShowMsg("金额必须大于0")
-        return false
+    var $distamount = $(".dist-amount #amount-id-" + pk);
+    console.log($distamount.val(), typeof $distamount.val())
+    if ($distamount.val()) {
+        if ($distamount.val().trim() == "0") {
+            ShowMsg("金额必须大于0")
+            return false
+        }
     }
     // 触发本行的保存按钮
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
@@ -218,7 +221,7 @@ function showInwardpayConfirm(atag) {
     var pk = $(atag).attr('pk');
     $('button.confirm-pay').attr('pk', pk);
     $('button.confirm-pay').attr('link', href);
-    $('div.modal-dialog').css('width','736px');
+    $('div.modal-dialog').css('width', '736px');
 
     $('#myModal').modal('show');
 
