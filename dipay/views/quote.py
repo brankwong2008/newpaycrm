@@ -14,7 +14,7 @@ class QuoteHandler(StarkHandler):
 
     popup_list = ["supplier",]
 
-    order_by_list = ["-create_date"]
+    order_by_list = ["-id"]
 
     def get_urls(self):
         patterns = [

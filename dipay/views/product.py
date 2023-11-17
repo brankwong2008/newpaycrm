@@ -63,7 +63,7 @@ class ProductHandler(PermissionHanlder,StarkHandler):
             quote_list = []
             for each in model_numbers:
                 link = reverse("stark:dipay_quote_list", kwargs={"modelnumber_id":each.pk})
-                quote_obj = each.related_product.all().first()
+                quote_obj = each.related_product.all().order_by("-id").first()
                 if quote_obj:
                     quote_list.append("<div><a href='%s' target='_blank'>%s</a></div>" %(link,quote_obj.price))
                 else:

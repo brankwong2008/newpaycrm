@@ -392,7 +392,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             torelate_order_list.append(row)
 
         # 先按订单号排序
-        torelate_order_list.sort(key=lambda x: x['order_number'], reverse=True)
+        torelate_order_list.sort(key=lambda x: x['order_number'][1:], reverse=True)
         # 按关联金额大小排序
         torelate_order_list.sort(key=lambda x: x['dist_value'], reverse=True)
 
