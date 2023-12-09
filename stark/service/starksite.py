@@ -521,7 +521,7 @@ class StarkHandler(object):
 
                     # 日期字段
                     elif isinstance(field_obj, DateField):
-                        if not isinstance(field_val, str):
+                        if not isinstance(field_val, str) and field_val:
                             field_val = field_val.strftime("%Y-%m-%d")
 
                     # 多对多字段

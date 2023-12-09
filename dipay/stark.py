@@ -28,6 +28,7 @@ from dipay.views.currentnumber import CurrentNumberHandler
 from dipay.views.productphoto import ProductPhotoHandler
 from dipay.views.quote import QuoteHandler
 from dipay.views.modelnumbers import ModelNumbersHandler
+from dipay.views.orderstatistic import OrderStatisticHandler
 
 
 
@@ -44,6 +45,10 @@ site.register(models.UserInfo,MyUserInfoHandler)
 
 # 订单跟进
 site.register(models.FollowOrder, FollowOrderHandler)
+
+# 订单统计
+site.register(models.FollowOrder, OrderStatisticHandler,prev='statistic')
+
 
 # 排产计划
 site.register(models.FollowOrder, WeekelyPlanHandler,prev='plan')
@@ -66,8 +71,6 @@ site.register(models.ApplyOrder,ApplyOrderVerifyHandler,prev='verify')
 # 收款记录
 site.register(models.Inwardpay, InwardPayHandler)
 
-# 收款记录
-site.register(models.Inwardpay, InwardPayHandler)
 
 # 收款记录(财务版）
 site.register(models.Inwardpay, InwardPayAccountHandler, prev='account')
