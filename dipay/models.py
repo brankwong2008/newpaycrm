@@ -111,7 +111,6 @@ class ApplyOrder(models.Model):
                     (1, 'M'),
                     (2, 'X'),
                     (3, 'D'),
-                    # (4, 'L'),
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号', unique=True, null=True, blank=True)

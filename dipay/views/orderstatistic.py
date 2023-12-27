@@ -21,7 +21,7 @@ class OrderStatisticHandler(PermissionHanlder,StarkHandler):
         data_list = []
 
         # 统计已经出货的，单据和收款两个状态的应收账款合计
-        total_collect_queryset = model_class.objects.filter(status__in=[2,3]).values("order__currency__title").annotate(total_to_collect= Sum("order__collect_amount"))
+        total_collect_queryset = model_class.objects.filter(status__in=[2,3],order__order_type__in=[0,1,]).values("order__currency__title").annotate(total_to_collect= Sum("order__collect_amount"))
 
         count = 0
         for item in total_collect_queryset:
