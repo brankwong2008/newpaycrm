@@ -84,7 +84,10 @@ class AddApplyOrderModelForm(StarkForm):
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
             'customer': forms.Select(attrs={'required':True}),
-            "amount": forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
+            'goods': forms.TextInput(attrs={'onkeydown': 'if(event.keyCode==13) return false;'}),
+            "amount": forms.TextInput(attrs={'oninput':'justifyNumberInput(this)',
+                                             'onkeydown': 'if(event.keyCode==13) return false;'}),
+
 
         }
 
@@ -166,8 +169,10 @@ class AddInwardPayModelForm(StarkForm):
         widgets = {
             'create_date': forms.DateInput(attrs={'type': 'date'}),
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
-            'amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
-            'got_amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)'}),
+            'amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)',
+                                             'onkeydown': 'if(event.keyCode==13) return false;'}),
+            'got_amount': forms.TextInput(attrs={'oninput':'justifyNumberInput(this)',
+                                                 'onkeydown': 'if(event.keyCode==13) return false;'}),
             'ttcopy': forms.FileInput(attrs={'required':True}),
         }
 

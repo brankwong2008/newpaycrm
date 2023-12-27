@@ -26,7 +26,7 @@ class OrderStatisticHandler(PermissionHanlder,StarkHandler):
         count = 0
         for item in total_collect_queryset:
             count += 1
-            currency_label = "{}应收账款".format(item["order__currency__title"])
+            currency_label = "金凯{}应收账款".format(item["order__currency__title"])
             total_to_collect_amount =format( item.get("total_to_collect"),",f")
             row = {"active":"", "data":[count,currency_label,total_to_collect_amount]}
             data_list.append(row)
