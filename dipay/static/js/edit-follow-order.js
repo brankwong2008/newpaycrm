@@ -289,6 +289,40 @@ function addDailyPlan(atag) {
     return false;
 }
 
+// 在每条记录的三条杠下面添加对应批量处理操作，以便简化用户操作
+function dropButtonEachRecord(atag) {
+    var pk = $(atag).attr('pk');
+    var handle_type = $(atag).attr('handle_type');
+
+    // 直接发ajax更新后台数据只进行局部更新，不能利用原有form功能模块，然后直接且简单但效果不太一样
+    // var data = {
+    //     'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
+    //     "handle_type": handle_type,
+    //     "pk": pk
+    // };
+    //
+    // $.ajax({
+    //     url: location.href,
+    //     type: 'post',
+    //     data: data,
+    //     success: function (respond) {
+    //         console.log(respond);
+    //         ShowMsg("放单申请成功",3000)
+    //     }
+    // });
+
+    $("select[name='handle_type']").val(handle_type);
+    $("#form_contain_table table input[name='pk']").attr("checked",false) // 清空所有选择
+    $(`#form_contain_table table input[name='pk'][value=${pk}]`).attr("checked", true) //选择该条记录
+    $("#form_contain_table button[type='submit']").click();  // 提交form
+
+     return false;  // 取消a标签的默认点击事件
+
+}
+
+
+
+
 
 // 可关联订单中，点击每行分配金额的show inputbox
 

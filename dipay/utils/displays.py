@@ -417,9 +417,11 @@ def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
                         <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true'
                            aria-expanded='false'> <span class='fa fa-navicon'></span></a>
                         <ul class='dropdown-menu'>
-                            <li><a pk='%s' href='%s?get_type=simple' onclick='return addDailyPlan(this)'>添加任务</a></li>
+                            <li><a pk='%(pk)s' href='%(url)s?get_type=simple' onclick='return addDailyPlan(this)'>添加任务</a></li>
+                            <li><a pk='%(pk)s' href='%(url)s' handle_type='apply_release' onclick='return dropButtonEachRecord(this)'>申请放单</a></li>
+                            <li><a pk='%(pk)s' href='%(url)s' handle_type='batch_split_order' onclick='return dropButtonEachRecord(this)'>拆分订单</a></li>
                         </ul>
-                    </li></ul>""" % (obj.pk, add_dailyplan_url) )
+                    </li></ul>""" % {"pk":obj.pk,"url":add_dailyplan_url})
 
 
 # 显示水单小图片
