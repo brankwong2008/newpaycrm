@@ -1,0 +1,209 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    {% block self-css %}
+
+    {% endblock %}
+    <style>
+
+        {{ css_for_show_list }}
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="luffy-container">
+
+        <div class="col-md-12">
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default options-section {{ filter_hidden }}">
+                    {#                    <div class="panel-heading">#}
+                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
+                    {#                    </div>#}
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+            <!-- 模糊搜索条 -->
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-left">
+
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"
+                                                                            style="margin: 3px 2px 3px"></i></button>
+                </form>
+            {% endif %}
+
+            <!-- 显示汇率 -->
+
+            <div class="form-group pull-left" style="color: grey; margin-left: 30% ">
+                 {{ extra_render_data_show_list.today }}汇率
+                {% for dollar, rate in extra_render_data_show_list.exchangerate.items %}
+                    {% if not forloop.first %} |
+                    {% endif %}
+                    <span>{{ dollar }}</span>
+                    <span>{{ rate }}</span>
+                {% endfor %}
+            </div>
+
+
+            <form action="" method="post">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+                    <div class="pull-left batch-process-div {{ batch_process_hidden }}">
+
+                        <select name="handle_type" class="handle-select">
+                            <option value="">处理方式</option>
+                            {% for func,text in batch_process_dict.items %}
+                                <option value="{{ func }}">{{ text }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="handle-btn">
+                            <i class="fa fa-send"></i></button>
+                    </div>
+
+                {% endif %}
+
+                <!-- 添加按钮 -->
+                <div class="pull-right">
+                    {% if add_btn %}
+                        {{ add_btn|safe }}
+                    {% endif %}
+
+                </div>
+
+
+                <div class="clearfix">{{ msg }}</div>
+
+                {% if tabs %}
+                    <ul class="nav nav-tabs">
+                        {% for tab in tabs %}
+                            <li role="presentation" class="{{ tab.active }}"><a href="{{ tab.url }}">{{ tab.label }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% block beforetable %}
+
+                {% endblock %}
+
+                <table class="table  table-striped">
+
+                    <thead>
+                    {% for item in header_list %}
+                        <th class="header-{{ forloop.counter }}"> {{ item }}</th>
+                    {% endfor %}
+
+
+                    </thead>
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            {% for item in row.data %}
+                                <td>{{ item }} </td>
+                            {% endfor %}
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </form>
+
+
+            <!--  页面记录数显示   -->
+            {% if total_count %}
+                <div style="float: right; color: lightgray"> {{ this_page_count }}/{{ total_count }}</div>
+            {% endif %}
+
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+    <!-- 图片弹窗 -->
+    <div id="ImgModal" class="newmodal">
+        <!-- 关闭 放大和缩小按钮 -->
+        <div class="img-close" style="display: flex; flex-direction: column">
+            <span  onclick="closeImg()"> &times; </span>
+            <span  onclick="Zoomout()"> + </span>
+            <span  onclick="Zoomin()"> - </span>
+        </div>
+
+
+        <!-- 弹窗内容 -->
+        <img class="newmodal-content" id="img01">
+        <!-- 文本描述 -->
+        <div id="caption"></div>
+    </div>
+
+
+     <!-- Modal 模态对话框 MyModal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="myModalLabel">title</h5>
+                    <div class="modal-error" style="color: red"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="mymodal-details"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    {% block showListExtra %}
+
+    {% endblock %}
+
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/img_operate.js" %}"></script>
+    <script src="{% static 'js/chances-operator.js' %}"></script>
+
+
+{% endblock %}
+
