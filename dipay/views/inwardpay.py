@@ -10,7 +10,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import related_orders_display, ttcopy_display, info_display
 from dipay.forms.forms import AddInwardPayModelForm, ConfirmInwardpayModelForm, \
     EditInwardPayModelForm
-from dipay.models import ApplyOrder, Pay2Orders, Inwardpay, CurrentNumber
+from dipay.models import ApplyOrder, Pay2Orders, Inwardpay, CurrentNumber, Currency
 import threading
 from rbac.utils.common import compress_image_task
 from datetime import datetime
@@ -22,6 +22,16 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     filter_hidden = "hidden"
 
     page_title = "收款管理"
+
+    show_list_template = "dipay/inwardpay_show_list.html"
+
+    extra_render_data_show_list = {"exchangerate":{},"today":datetime.now().strftime("%Y/%m/%d")}
+
+    for currency in Currency.objects.exclude(title="人民币"):
+        # rate = ExchangeRate.objects.filter(currency=currency).order_by("-id").first().rate
+        rate = currency.exchangerate_set.all().order_by("-id").first().rate
+        extra_render_data_show_list["exchangerate"][currency.icon]=rate
+
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [

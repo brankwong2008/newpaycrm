@@ -176,6 +176,7 @@ class StarkHandler(object):
     page_title = ""
     guideline = ""  # 列表页的操作指南
     batch_process_hidden = None
+    extra_render_data_show_list = dict()  # show_list渲染中需要的额外数据
 
     tabs = None  # 标签导航
     has_add_btn = True
@@ -188,6 +189,7 @@ class StarkHandler(object):
     time_search = ""  # 按月筛选按钮的控制
     css_for_show_list = ""  # show list页面的css
     request = None
+
 
     def __init__(self, site, model_class, prev):
         self.site = site
@@ -471,6 +473,7 @@ class StarkHandler(object):
         this_page_count = data_query_set.count()
 
         show_template = self.show_list_template or "stark/show_list.html"
+        extra_render_data_show_list = self.extra_render_data_show_list
 
         return render(request, show_template, locals())
 

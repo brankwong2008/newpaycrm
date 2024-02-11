@@ -29,8 +29,11 @@ from dipay.views.productphoto import ProductPhotoHandler
 from dipay.views.quote import QuoteHandler
 from dipay.views.modelnumbers import ModelNumbersHandler
 from dipay.views.orderstatistic import OrderStatisticHandler
+from dipay.views.exchange_rate import ExchangeRateHandler
 
 
+# 汇率管理
+site.register(models.ExchangeRate, ExchangeRateHandler)
 
 # 型号管理
 site.register(models.ModelNumbers, ModelNumbersHandler)
