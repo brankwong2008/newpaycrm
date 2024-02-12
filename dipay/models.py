@@ -245,7 +245,7 @@ class Book(models.Model):
 class ExchangeRate(models.Model):
     update_date = models.DateField(auto_now_add=True, verbose_name='日期')
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE, verbose_name='货币')
-    rate = models.DecimalField(max_digits=9, decimal_places=3, verbose_name='汇率')
+    rate = models.DecimalField(max_digits=9, decimal_places=4, verbose_name='汇率')
 
     def __str__(self):
         return '%s %s: %s' % (self.update_date.strftime('%Y/%m/%d'), self.currency.title, self.rate)

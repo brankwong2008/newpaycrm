@@ -59,8 +59,8 @@
             <!-- 显示汇率 -->
 
             <div class="form-group pull-left" style="color: grey; margin-left: 30% ">
-                 {{ extra_render_data_show_list.today }}汇率
-                {% for dollar, rate in extra_render_data_show_list.exchangerate.items %}
+                 {{ extra_render_func_data.today }} <span>汇率</span>
+                {% for dollar, rate in extra_render_func_data.exchangerate.items %}
                     {% if not forloop.first %} |
                     {% endif %}
                     <span>{{ dollar }}</span>

@@ -176,7 +176,8 @@ class StarkHandler(object):
     page_title = ""
     guideline = ""  # 列表页的操作指南
     batch_process_hidden = None
-    extra_render_data_show_list = dict()  # show_list渲染中需要的额外数据
+    extra_render_data_show_list = dict()   # show_list渲染中需要的额外静态数据
+    extra_render_func_show_list = dict()   # show_list渲染中需要的额外动态数据
 
     tabs = None  # 标签导航
     has_add_btn = True
@@ -474,6 +475,8 @@ class StarkHandler(object):
 
         show_template = self.show_list_template or "stark/show_list.html"
         extra_render_data_show_list = self.extra_render_data_show_list
+        if self.extra_render_func_show_list:
+         extra_render_func_data = self.extra_render_func_show_list["func"](self)
 
         return render(request, show_template, locals())
 
