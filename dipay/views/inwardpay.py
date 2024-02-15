@@ -26,25 +26,20 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     show_list_template = "dipay/inwardpay_show_list.html"
 
     #  这是一个静态数据，只在第一次初始化的时候运行，这个不会随着时间动态更新
-    extra_render_data_show_list = {"exchangerate":{},"today":datetime.now().strftime("%Y/%m/%d")}
+    # extra_render_data_show_list = {"exchangerate":{},"today":datetime.now().strftime("%Y/%m/%d")}
 
     # 给额外动态数据准备的一个func，把func传给handler，让其每次取数据时执行一次
     def get_exchangerate(self):
         extra_render_data = {"exchangerate": {}}
         for currency in Currency.objects.exclude(title="人民币"):
-            rate = currency.exchangerate_set.all().order_by("-id").first().rate
+            exchangerate_obj = currency.exchangerate_set.all().order_by("-id").first()
+            rate = exchangerate_obj.rate
+            extra_render_data["today"] = exchangerate_obj.update_date.strftime("%Y/%m/%d")
             extra_render_data["exchangerate"][currency.icon] = rate
-        extra_render_data["today"] = datetime.now().strftime("%Y/%m/%d")
-
         return extra_render_data
 
     # 改为一个动态数据，给render_data初入一个func
     extra_render_func_show_list = {"func":get_exchangerate}
-
-    for currency in Currency.objects.exclude(title="人民币"):
-        # rate = ExchangeRate.objects.filter(currency=currency).order_by("-id").first().rate
-        rate = currency.exchangerate_set.all().order_by("-id").first().rate
-        extra_render_data_show_list["exchangerate"][currency.icon]=rate
 
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串

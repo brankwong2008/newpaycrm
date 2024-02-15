@@ -176,8 +176,8 @@ class StarkHandler(object):
     page_title = ""
     guideline = ""  # 列表页的操作指南
     batch_process_hidden = None
-    extra_render_data_show_list = dict()   # show_list渲染中需要的额外静态数据
-    extra_render_func_show_list = dict()   # show_list渲染中需要的额外动态数据
+    extra_render_data_show_list = None   # show_list渲染中需要的额外静态数据
+    extra_render_func_show_list = None   # show_list渲染中需要的额外动态数据  {"func":function}, function返回值的必须是一个字典
 
     tabs = None  # 标签导航
     has_add_btn = True

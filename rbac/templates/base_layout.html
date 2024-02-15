@@ -96,13 +96,15 @@
                     {% endif %}
                 {% endif %}
 
-                {% if "跟单" in request.menu_names %}
-                    {% if request.top_menu_title == 'stark:dipay_followorder_list_plan' %}
-                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}" class="active">排产</a></li>
-                    {% else %}
-                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>
-                    {% endif %}
-                {% endif %}
+                <!--  排产功能暂时用不上，先不显示 -->
+
+{#                {% if "跟单" in request.menu_names %}#}
+{#                    {% if request.top_menu_title == 'stark:dipay_followorder_list_plan' %}#}
+{#                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}" class="active">排产</a></li>#}
+{#                    {% else %}#}
+{#                        <li><a href="{% url 'stark:dipay_followorder_list_plan' %}">排产</a></li>#}
+{#                    {% endif %}#}
+{#                {% endif %}#}
 
                 {% if "询盘"  in request.menu_names %}
                     {% if request.top_menu_title == '询盘' %}
