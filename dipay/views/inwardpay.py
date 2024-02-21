@@ -10,7 +10,7 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import related_orders_display, ttcopy_display, info_display
 from dipay.forms.forms import AddInwardPayModelForm, ConfirmInwardpayModelForm, \
     EditInwardPayModelForm
-from dipay.models import ApplyOrder, Pay2Orders, Inwardpay, CurrentNumber, Currency
+from dipay.models import ApplyOrder, Pay2Orders, Inwardpay, CurrentNumber, Currency, ExchangeRate
 import threading
 from rbac.utils.common import compress_image_task
 from datetime import datetime
@@ -192,8 +192,19 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     new_reference += 1
                 form.instance.reference = new_reference
                 currentnumber_obj.reference = new_reference
+                # 记录手续费
                 charge_fee = form.instance.amount - form.instance.got_amount
                 form.instance.remark += f"手续费:{form.instance.currency.icon}{charge_fee}"
+                # 记录汇率
+                if form.instance.currency.title != "人民币":
+                    create_date = form.instance.create_date
+                    exchangerate_obj = ExchangeRate.objects.filter(
+                        update_date=create_date,currency=form.instance.currency).first() or ExchangeRate.objects.filter(
+                        currency=form.instance.currency
+                    ).order_by("-id").first()
+
+                form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
+
                 form.save()
                 currentnumber_obj.save()
                 # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理
