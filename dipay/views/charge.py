@@ -46,16 +46,19 @@ class ChargeHandler(PermissionHanlder, StarkHandler):
         return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
 
     def get_per_page(self):
+        """获取页面显示条数，三种指定方式
+        1. 静态
+        2. 动态由后台指定
+        3. 动态由用户指定"""
         key = "%s:%s" % (self.request.path, self.request.user)
         conn = get_redis_connection()
-        print("key", key)
 
         per_page_count = self.request.POST.get("per_page_count")
         if per_page_count:
             conn.set(key, per_page_count, ex=300)
             return int(per_page_count)
-
         per_page_redis = conn.get(key)
+
         if per_page_redis:
             return int(per_page_redis.decode("utf8"))
         return 10

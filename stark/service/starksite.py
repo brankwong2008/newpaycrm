@@ -169,15 +169,20 @@ class StarkHandler(object):
     add_list_template = None  # 添加页面模板
     del_list_template = None  # 删除页面模板
     show_list_template = None  # 显示页面模板
-    per_page_options = []
+    per_page_options = []  # 页面显示记录条数的选择下拉框内容，要求数据格式如下：
+    """   per_page_options = [
+        {"val": 10, "selected": ""},
+        {"val": 20, "selected": ""},
+        {"val": 30, "selected": ""},
+    ]"""
     show_detail_template = None  # 显示页面模板
     fields_display = '__all__'  # 显示的列字段
     filter_hidden = None  # 控制快速筛选的显示
     page_title = ""
     guideline = ""  # 列表页的操作指南
     batch_process_hidden = None
-    extra_render_data_show_list = None   # show_list渲染中需要的额外静态数据
-    extra_render_func_show_list = None   # show_list渲染中需要的额外动态数据  {"func":function}, function返回值的必须是一个字典
+    extra_render_data_show_list = None  # show_list渲染中需要的额外静态数据
+    extra_render_func_show_list = None  # show_list渲染中需要的额外动态数据  {"func":function}, function返回值的必须是一个字典
 
     tabs = None  # 标签导航
     has_add_btn = True
@@ -190,7 +195,6 @@ class StarkHandler(object):
     time_search = ""  # 按月筛选按钮的控制
     css_for_show_list = ""  # show list页面的css
     request = None
-
 
     def __init__(self, site, model_class, prev):
         self.site = site
@@ -322,9 +326,9 @@ class StarkHandler(object):
             batch_process_dict = None
 
         if request.method == "POST":
-            print(request.POST)
+            """当用户选择批量处理按钮，直接走批处理分支"""
             func_name = request.POST.get("handle_type")
-            if func_name in batch_process_dict:
+            if func_name and func_name in batch_process_dict:
                 func = getattr(self, func_name)
                 result = func(request, *args, **kwargs)
                 return result
@@ -475,8 +479,10 @@ class StarkHandler(object):
 
         show_template = self.show_list_template or "stark/show_list.html"
         extra_render_data_show_list = self.extra_render_data_show_list
+
+        # 需要额外（除表体数据）动态显示到页面的数据
         if self.extra_render_func_show_list:
-         extra_render_func_data = self.extra_render_func_show_list["func"](self)
+            extra_render_func_data = self.extra_render_func_show_list["func"](self)
 
         return render(request, show_template, locals())
 
@@ -559,7 +565,7 @@ class StarkHandler(object):
             data_list.append(row_dict)
         return header_list, data_list
 
-    def get_render_form(self,form,*args, **kwargs):
+    def get_render_form(self, form, *args, **kwargs):
         # 对于add_form进行部分值的初始化
         return form
 
@@ -681,7 +687,7 @@ class StarkHandler(object):
         print('handle_type', handle_type)
 
         form = self.get_model_form()(copy_POST or None)
-        form = self.get_render_form(form, *args,**kwargs)
+        form = self.get_render_form(form, *args, **kwargs)
         # 如果有数据，说明是post请求，如果没有数据说明是get请求
         if form.is_valid():
             # 对指定的字段进行字段的字符串相似度检查，以免重复添加，大于70%要提醒

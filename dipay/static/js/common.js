@@ -15,7 +15,7 @@ function setPerPageCount(selectTag) {
         type:"post",
         data: data,
         success: function (res) {
-            // console.log(res)
+            console.log(res)
             location.reload()
         }
         }

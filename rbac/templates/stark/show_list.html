@@ -145,6 +145,16 @@
             {% endif %}
 
 
+         <!--  页面显示记录条数的用户选择   -->
+            {% if per_page_options %}
+                <div style="float: right; color: lightgray">
+                    <select name="" id="" onchange="setPerPageCount(this)">
+                        {% for each in per_page_options %}
+                            <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
 
             <!-- 分页器    -->
             <nav aria-label="Page navigation">
@@ -165,9 +175,9 @@
     <div id="ImgModal" class="newmodal">
         <!-- 关闭 放大和缩小按钮 -->
         <div class="img-close" style="display: flex; flex-direction: column">
-            <span  onclick="closeImg()"> &times; </span>
-            <span  onclick="Zoomout()"> + </span>
-            <span  onclick="Zoomin()"> - </span>
+            <span onclick="closeImg()"> &times; </span>
+            <span onclick="Zoomout()"> + </span>
+            <span onclick="Zoomin()"> - </span>
         </div>
 
 
@@ -178,7 +188,7 @@
     </div>
 
 
-     <!-- Modal 模态对话框 MyModal -->
+    <!-- Modal 模态对话框 MyModal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -206,6 +216,7 @@
     <script src="{% static "js/edit-follow-order.js" %}"></script>
     <script src="{% static "js/img_operate.js" %}"></script>
     <script src="{% static 'js/chances-operator.js' %}"></script>
+    <script src="{% static 'js/common.js' %}"></script>
 
 
 {% endblock %}
