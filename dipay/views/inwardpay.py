@@ -196,14 +196,15 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 charge_fee = form.instance.amount - form.instance.got_amount
                 form.instance.remark += f"手续费:{form.instance.currency.icon}{charge_fee}"
                 # 记录汇率
+                exchangerate_obj = None  # 初始赋值 避免出现未定义先试用的情况
                 if form.instance.currency.title != "人民币":
                     create_date = form.instance.create_date
                     exchangerate_obj = ExchangeRate.objects.filter(
                         update_date=create_date,currency=form.instance.currency).first() or ExchangeRate.objects.filter(
                         currency=form.instance.currency
                     ).order_by("-id").first()
-
-                form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
+                if exchangerate_obj is not None:
+                    form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
 
                 form.save()
                 currentnumber_obj.save()

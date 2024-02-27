@@ -40,7 +40,7 @@ class ExchangeRateHandler(PermissionHanlder, StarkHandler):
         print("get key working:",per_page_redis)
         if per_page_redis:
             return int(per_page_redis.decode("utf8"))
-        return 10
+        return 20
 
 
 
