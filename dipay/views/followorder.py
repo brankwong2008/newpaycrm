@@ -440,9 +440,22 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             count += 1
         return HttpResponse('整理成功%s条数据' % count)
 
-    # 预留的接口，用户批量整理数据资料
+    # 预留的接口，用户批量整理数据资料  跟单测试
     def tests(self, request, *args, **kwargs):
+        import requests
         count = 0
+        response = requests.get("https://www.baidu.com")
+        # 检查请求是否成功
+        if response.status_code == 200:
+            print('请求成功')
+            # 打印网页内容
+            print(response.text)
+            return HttpResponse("请求成功")
+        else:
+            print('请求失败')
+            return HttpResponse("请求失败")
+
+
         return render(request, 'dipay/tests.html')
 
 
