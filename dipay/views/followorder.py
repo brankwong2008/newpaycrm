@@ -455,8 +455,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             print('请求失败')
             return HttpResponse("请求失败")
 
-
-        return render(request, 'dipay/tests.html')
+        # return render(request, 'dipay/tests.html')
 
 
     # 下载跟单表  （需要用户指定下载的时间段）
