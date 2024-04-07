@@ -27,8 +27,8 @@ from openpyxl.styles import Font, Alignment
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
-    detail_fields_display = ['order', 'load_port', 'discharge_port', 'ETD', 'ETA', 'book_info', 'load_info',
-                             'produce_info', 'sales_remark', ]
+    show_detail_template = "dipay/show_follow_order_details.html"
+
     page_title = "跟单"
     show_list_template = 'dipay/show_follow_order_list.html'
     order_by_list = ['-order__confirm_date', '-order__sequence', ]
@@ -292,11 +292,13 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         "discharge_port",
         "ETD",
         "ETA",
-        "book_info",
+         book_info_display('book_info',hidden_xs=''),
         "load_info",
         "produce_info",
         "salesman",
         amount_details(is_hidden=""),
+        more_tag_display,
+        save_display,
     ]
 
 
@@ -376,7 +378,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     # 每行数据保存的方法，使用ajax
     def save_record(self, request, *args, **kwargs):
-        # print('request.POST',request.POST)
+        print('request.POST',request.POST)
         if request.is_ajax():
             data_dict = request.POST.dict()
             pk = data_dict.pop('pk')
