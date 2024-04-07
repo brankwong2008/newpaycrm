@@ -288,6 +288,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     detail_fields_display = [
         "order",
         customer_display,
+        goods_display,
         "load_port",
         "discharge_port",
         "ETD",
