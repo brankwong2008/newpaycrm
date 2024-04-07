@@ -1,3 +1,7 @@
+import os
+import time
+import random
+
 def is_chinese(c):
     return  u'\u4e00' <= c <= u'\u9fff'
 
@@ -20,3 +24,11 @@ def get_choice_value(orm_choices,text):
     return None
 
 
+
+def gen_file_name(pre, file_name):
+    # 生成带时间戳的文件名
+    print("file_name", file_name)
+    ext = os.path.splitext(file_name)[1]
+    # 合成文件名
+    fn =time.strftime('%Y%m%d%H%M%S') + '_%d' % random.randint(0, 100)
+    return pre + fn + ext

@@ -202,7 +202,7 @@ class Inwardpay(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE, verbose_name='币种')
     amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='水单金额', default=0)
     got_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='实收金额', default=0)
-    ttcopy = models.ImageField(upload_to="ttcopy", storage=ImageStorage(), verbose_name='电汇水单', null=True)
+    ttcopy = models.ImageField(upload_to="ttcopy", storage=ImageStorage(pre_filename="pay"), verbose_name='电汇水单', null=True)
     torelate_amount = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='待关联金额', default=0)
 
     status_choices = [(0, '待关联'),
@@ -340,15 +340,6 @@ import os
 
 
 def getPath(instance, filename):
-    # instance就是调用时的Userinfo的实例对象
-    # print(filename)
-    # name, ext = filename.rsplit(".")
-    # if ext not in ["jpg", "jpeg"]:
-    #     filename = name + ".jpg"
-    #     file_path = os.path.join(settings.MEDIA_ROOT, "ttcopy", name + "." + ext)
-    #     t = threading.Thread(target=convert_img_jpg, args=(file_path,))
-    #     t.start()
-
     return os.path.join("ttcopy", filename)
 
 
@@ -359,7 +350,7 @@ class ChargePay(models.Model):
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='货代')
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE, verbose_name='货币', default=1)
     amount = models.DecimalField(verbose_name='金额', max_digits=10, decimal_places=2)
-    ttcopy = models.ImageField(upload_to=getPath, verbose_name='付款水单', null=True)
+    ttcopy = models.ImageField(upload_to=getPath,storage=ImageStorage(pre_filename="fwd"), verbose_name='付款水单', null=True)
     charge = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单')
     remark = models.TextField(verbose_name='备注', default='--')
     status_choices = [(0, '待付'), (1, '已出账')]
@@ -411,7 +402,7 @@ class Product(models.Model):
 
 class ProductPhoto(models.Model):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, verbose_name='产品', null=True)
-    photo = models.ImageField(upload_to="productphoto", verbose_name='产品图片',)
+    photo = models.ImageField(upload_to="productphoto", storage=ImageStorage(pre_filename="prod"),verbose_name='产品图片',)
     ismain = models.BooleanField(verbose_name='是否主图',default=False)
 
 

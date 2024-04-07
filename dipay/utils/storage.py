@@ -1,11 +1,18 @@
 # 给上传的图片重命名
 from django.core.files.storage import FileSystemStorage
 
+
 class ImageStorage(FileSystemStorage):
     from django.conf import settings
 
-    def __init__(self, location=settings.MEDIA_ROOT, base_url=settings.MEDIA_URL):
+    def __init__(
+            self,
+            location=settings.MEDIA_ROOT,
+            base_url=settings.MEDIA_URL,
+            pre_filename = None,
+    ):
         # 初始化
+        self.pre_filename = pre_filename
         super(ImageStorage, self).__init__(location, base_url)
 
     # 重写 _save方法
@@ -18,8 +25,12 @@ class ImageStorage(FileSystemStorage):
         d = os.path.dirname(name)
         # 定义文件名，年月日时分秒随机数
         fn = time.strftime('%Y%m%d%H%M%S')
-        fn = fn + '_%d' % random.randint(0, 1000)
         # 重写合成文件名
+        if self.pre_filename:
+            fn = self.pre_filename + fn + '_%d' % random.randint(0, 1000)
+        else:
+            fn = fn + '_%d' % random.randint(0, 1000)
+
         name = os.path.join(d, fn + ext)
         # 调用父类方法
         return super(ImageStorage, self)._save(name, content)

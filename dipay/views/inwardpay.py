@@ -206,10 +206,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 if exchangerate_obj is not None:
                     form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
 
-                form.save()
+                form.save()   # 这里直接改写了ImageStorage的_save方法，参考dipay/utiles/storage
                 currentnumber_obj.save()
                 # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理
-                t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,))
+                t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,550))
                 t.start()
 
                 return redirect(self.reverse_list_url(*args, **kwargs))
@@ -219,16 +219,15 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     def save_form(self, form, request, is_update=False, *args, **kwargs):
         if is_update:
             form.save()
-
         else:
+            print("save_form: ",form.instance.ttcopy.path)
+
             form.save()
             # 压缩图片
             t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path, 550))
             t.start()
 
-    # def get_detail_extra_btn(self, request, pk, *args, **kwargs):
-    #     detail_confirm_url = self.reverse_url('confirm_pay', inwardpay_id=pk)
-    #     return "<a href='%s' class='btn btn-warning'> 确认 </a>" % detail_confirm_url
+
 
     def get_extra_urls(self):
         """ 收款关联订单的url  """
