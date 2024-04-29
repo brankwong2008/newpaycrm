@@ -31,10 +31,14 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     # 给额外动态数据准备的一个func，把func传给handler，让其每次取数据时执行一次
     def get_exchangerate(self):
         extra_render_data = {"exchangerate": {}}
+
         for currency in Currency.objects.exclude(title="人民币"):
-            exchangerate_obj = currency.exchangerate_set.all().order_by("-id").first()
-            rate = exchangerate_obj.rate
-            extra_render_data["today"] = exchangerate_obj.update_date.strftime("%Y/%m/%d")
+            exchangerate_obj = currency.exchangerate_set.all().\
+                filter(currency__title="美元").order_by("-id").first()
+
+            rate = exchangerate_obj.rate if exchangerate_obj else 0.00
+            if exchangerate_obj:
+                extra_render_data["today"] = exchangerate_obj.update_date.strftime("%Y/%m/%d")
             extra_render_data["exchangerate"][currency.icon] = rate
         return extra_render_data
 
