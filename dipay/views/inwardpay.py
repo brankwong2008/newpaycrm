@@ -33,8 +33,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         extra_render_data = {"exchangerate": {}}
 
         for currency in Currency.objects.exclude(title="人民币"):
-            exchangerate_obj = currency.exchangerate_set.all().\
-                filter(currency__title="美元").order_by("-id").first()
+            exchangerate_obj = currency.exchangerate_set.all().order_by("-id").first()
 
             rate = exchangerate_obj.rate if exchangerate_obj else 0.00
             if exchangerate_obj:
