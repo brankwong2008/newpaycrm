@@ -54,7 +54,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     popup_list = ['payer', 'bank']
 
-    search_list = ['create_date', 'amount', 'customer__title__icontains', ]
+    search_list = ['create_date', 'amount', 'customer__title__icontains', "orders__order_number__icontains",]
     search_placeholder = '搜索 日期 金额 客户名 '
 
     def add_btn_display(self, request, *args, **kwargs):

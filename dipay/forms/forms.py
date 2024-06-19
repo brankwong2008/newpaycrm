@@ -87,8 +87,6 @@ class AddApplyOrderModelForm(StarkForm):
             'goods': forms.TextInput(attrs={'onkeydown': 'if(event.keyCode==13) return false;'}),
             "amount": forms.TextInput(attrs={'oninput':'justifyNumberInput(this)',
                                              'onkeydown': 'if(event.keyCode==13) return false;'}),
-
-
         }
 
 
