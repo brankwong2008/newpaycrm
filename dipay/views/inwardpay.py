@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from decimal import Decimal
+from django.db.models import Q
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import F, Q, Max, Min, Avg, Sum, Count
@@ -249,7 +250,14 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         if pk:
             return self.model_class.objects.filter(pk=pk)
         else:
-            return self.model_class.objects.all()
+            # 对角色的控制 加一个对的款项显示权限的控制，业务员只能看到自己订单的款项
+            allowed = request.user.roles.all().filter(title__in=['外贸部经理','财务','外贸跟单','总经理']).exists()
+            if allowed:
+                return self.model_class.objects.all()
+            else:
+                # 关联了订单的，显示该业务员名下的款项， 或者是还待关联订单的款项
+                return self.model_class.objects.filter(Q(orders__salesperson=request.user) | Q(orders__isnull=True))
+
 
     # 认领款项
     def confirm_pay(self, request, inwardpay_id, *args, **kwargs):
