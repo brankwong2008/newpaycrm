@@ -30,7 +30,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     # extra_render_data_show_list = {"exchangerate":{},"today":datetime.now().strftime("%Y/%m/%d")}
 
     # 给额外动态数据准备的一个func，把func传给handler，让其每次取数据时执行一次
-    def get_exchangerate(self):
+    def get_exchangerate(self,request):
         extra_render_data = {"exchangerate": {}}
 
         for currency in Currency.objects.exclude(title="人民币"):
@@ -42,7 +42,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             extra_render_data["exchangerate"][currency.icon] = rate
         return extra_render_data
 
-    # 改为一个动态数据，给render_data初入一个func
+    # 改为一个动态数据，给render_data传入一个func
     extra_render_func_show_list = {"func":get_exchangerate}
 
 

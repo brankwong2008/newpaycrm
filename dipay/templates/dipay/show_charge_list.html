@@ -73,6 +73,18 @@
 
                 {% endif %}
 
+             {% if extra_render_func_data %}
+                    <div class="pull-left" style="color: grey">
+                     <span style="margin-left: 35px">未付</span>
+                        {% for item in extra_render_func_data.unpaid_amount  %}
+                            <span style="margin-left: 10px">  {{ item.currency }} {{ item.amount }}</span>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
                 <!-- 添加按钮 -->
                 <div class="pull-right">
                     {% if add_btn %}

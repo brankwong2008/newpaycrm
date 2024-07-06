@@ -482,7 +482,7 @@ class StarkHandler(object):
 
         # 需要额外（除表体数据）动态显示到页面的数据
         if self.extra_render_func_show_list:
-            extra_render_func_data = self.extra_render_func_show_list["func"](self)
+            extra_render_func_data = self.extra_render_func_show_list["func"](self,request)
 
         return render(request, show_template, locals())
 

@@ -9,7 +9,7 @@ from django.conf.urls import url
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
 from dipay.utils.displays import fees_display, forwarder_display
-from dipay.models import ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
+from dipay.models import Charge, ChargePay, PayToCharge, Currency, FollowOrder, Forwarder
 from django_redis import get_redis_connection
 
 
@@ -45,6 +45,7 @@ class ChargeHandler(PermissionHanlder, StarkHandler):
     def get_filter_control_list(self):
         return {"forwarder": [each.shortname for each in Forwarder.objects.filter(is_option=True)]}
 
+    # 动态设定每页显示的count
     def get_per_page(self):
         """获取页面显示条数，三种指定方式
         1. 静态
@@ -63,12 +64,55 @@ class ChargeHandler(PermissionHanlder, StarkHandler):
             return int(per_page_redis.decode("utf8"))
         return 10
 
+    # 模糊搜索的范围
     search_list = ['followorder__order__order_number__icontains', ]
 
+    # 模糊搜索框中的文字显示
     search_placeholder = '搜索 订单号'
 
     # 添加和修改ModelForm的外键字段快速添加记录
     popup_list = ['forwarder', ]
+
+    def get_unpaid_amount(self, request):
+        extra_render_data = {"unpaid_amount": []}
+        forwarder = request.GET.get("forwarder")
+        print("forwarder", forwarder)
+        if forwarder == "all" or forwarder is None:
+            return None
+
+        from django.db.models import Sum
+        # total = Charge.objects.filter(forwarder_id=forwarder,status=0).aggregate(total_seafreight=Sum("seafreight"),
+        #                                                                total_insurance = Sum("insurance")
+        #  )
+        USD_fields = [
+            "seafreight",
+            "insurance"
+        ]
+        total_USD = 0
+        for field in USD_fields:
+            total = Charge.objects.filter(forwarder_id=forwarder, status__in=[0, 2]).aggregate(
+                total_amount=Sum(field))
+            total_USD += total["total_amount"] if total["total_amount"] is not None else 0
+        extra_render_data["unpaid_amount"].append({"currency": "美元$:", "amount":total_USD})
+
+        RMB_fields = [
+            "port_charge",
+            "trailer_charge",
+            "other_charge"
+        ]
+        total_RMB = 0
+        for field in RMB_fields:
+            total = Charge.objects.filter(forwarder_id=forwarder, status__in=[0, 1]).aggregate(
+                total_amount=Sum(field))
+            total_RMB +=  total["total_amount"] if total["total_amount"] is not None else 0
+
+        extra_render_data["unpaid_amount"].append({"currency": "人民币￥:", "amount":total_RMB})
+
+        return extra_render_data
+
+        # 改为一个动态数据，给render_data传入一个func
+
+    extra_render_func_show_list = {"func": get_unpaid_amount}
 
     # 生成付费单
     def batch_pay(self, request, *args, **kwargs):
