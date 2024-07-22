@@ -194,7 +194,7 @@ class Bank(models.Model):
 
 
 class Inwardpay(models.Model):
-    create_date = models.DateField(verbose_name='汇入日期')
+    create_date = models.DateField(verbose_name='汇入出日期')
     payer = models.ForeignKey(to=Payer, on_delete=models.CASCADE, verbose_name='付款人', null=True)
     keyin_user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='录入人', default=3)
     bank = models.ForeignKey(to=Bank, on_delete=models.CASCADE, verbose_name='收款行')

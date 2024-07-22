@@ -29,7 +29,7 @@
         }
 
 
-        .col-currency {
+        .col-currency, .col-type {
             width: 16%;
         }
 
@@ -41,6 +41,11 @@
             flex-grow: 1;
             margin-left: 20px;
         }
+
+        .col-type {
+        margin-left: 20px;
+    }
+
 
 
     </style>
@@ -75,6 +80,14 @@
                         <div class="form-row">
                             {{ form.bank }} <span style="color:#ff0000">{{ form.bank.errors.0 }}</span>
                         </div>
+                    </div>
+                    <div class="col-type">
+                        <label for=""> 类型 </label>
+                         <p> <select name="payment_type" id="" class="form-control">
+                             <option value="0">普通</option>
+                             <option value="1">退定金</option>
+                         </select></p>
+
                     </div>
 
                 </div>

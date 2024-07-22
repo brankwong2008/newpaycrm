@@ -93,7 +93,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             return "实收金额"
         else:
             details_url = self.reverse_url("show_detail",pk=obj.pk)
-            return mark_safe('<a href="%s" target="_blank" style="color:black">%s %s</a>'  % (details_url,obj.currency.icon, obj.got_amount))
+            color = "red" if obj.got_amount < 0 else "black"
+            return mark_safe('<a href="%s" target="_blank" style="color:%s">%s %s</a>'  % (details_url,color, obj.currency.icon, obj.got_amount))
 
     def to_relate_amount_display(self, obj=None, is_header=False, *args, **kwargs):
         """
@@ -185,8 +186,17 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         if request.method == "POST":
             # 如果要上传文件，必须加上request.FILES, 再试试
             # print('request files ttcopy', request.POST, request.FILES.get('ttcopy'))
+            print(request.POST)
             form = self.get_model_form("add")(request.POST, request.FILES)
             if form.is_valid():
+                # 考虑到用户定金需要退款的情况，新增一个标志位，payment-type, 如果payment_type=1，则为退款
+                # 此时需要将所有金额的值都变为负值
+                payment_type = request.POST.get("payment_type")
+                print(payment_type,type(payment_type))
+                if payment_type == "1":
+                    form.instance.amount = -form.instance.amount
+                    form.instance.got_amount = -form.instance.got_amount
+
                 # 添加新的款项时，需要把待关联款项设为与收款金额一致
                 form.instance.torelate_amount = form.instance.amount
                 form.instance.keyin_user = request.user
@@ -230,7 +240,6 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             # 压缩图片
             t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path, 550))
             t.start()
-
 
 
     def get_extra_urls(self):
@@ -435,7 +444,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         # 先按订单号排序
         torelate_order_list.sort(key=lambda x: x['order_number'][1:], reverse=True)
         # 按关联金额大小排序
-        torelate_order_list.sort(key=lambda x: x['dist_value'], reverse=True)
+        torelate_order_list.sort(key=lambda x: abs(x['dist_value']), reverse=True)
 
         # 整理已关联订单数据
         related_order_list = Pay2Orders.objects.filter(payment=inwardpay_obj)
