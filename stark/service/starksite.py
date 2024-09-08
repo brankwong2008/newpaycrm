@@ -363,7 +363,7 @@ class StarkHandler(object):
                 conn.children.append((item, user_query))
             try:
                 # 测试filter的条件是否会出错
-                searched_queryset = queryset_data.filter(conn)
+                searched_queryset = queryset_data.filter(conn).distinct()
 
             except Exception as e:
                 # 如果出错，则逐一查询，将查询到的有效queryset的查询条件放入conn_good
@@ -376,7 +376,7 @@ class StarkHandler(object):
                     except:
                         continue
                 # 按合法的查询条件再次查询，这要重复消耗查询资源，暂时没有找到更好的办法。
-                searched_queryset = queryset_data.filter(conn_good)
+                searched_queryset = queryset_data.filter(conn_good).distinct()
 
         ###  获取url中的过滤条件 #############   ?depart=1&gender=2&page=123&q=999
         filter_condition = self.get_url_filter()
