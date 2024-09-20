@@ -4,8 +4,6 @@ from django.http import QueryDict, JsonResponse
 from django.db.models import Q, ForeignKey, ManyToManyField, TextField, DateField, \
     BooleanField, SmallIntegerField, ImageField, TextField
 import functools
-from django.forms import ModelForm
-from django import forms
 from django.utils.safestring import mark_safe
 from stark.service.pagination import Pagination
 from types import FunctionType, MethodType
@@ -13,7 +11,7 @@ from django.shortcuts import HttpResponse, render, redirect, reverse
 import difflib
 import json
 from dipay.forms.forms import StarkForm
-
+from django_redis import get_redis_connection
 
 class Option:
     def __init__(self, field,
@@ -183,6 +181,7 @@ class StarkHandler(object):
     batch_process_hidden = None
     extra_render_data_show_list = None  # show_list渲染中需要的额外静态数据
     extra_render_func_show_list = None  # show_list渲染中需要的额外动态数据  {"func":function}, function返回值的必须是一个字典
+    save_user_query2redis_ison = False
 
     tabs = None  # 标签导航
     has_add_btn = True
@@ -301,6 +300,35 @@ class StarkHandler(object):
     def get_time_search(self, time_query=None):
         return self.time_search
 
+
+    # 把用户搜索信息存入redis
+    def save_user_query2redis(self, user_query):
+        conn = get_redis_connection()
+        key_name = self.request.user.username + ":q"
+        length = conn.llen(key_name)
+        if length == 0:
+            conn.lpush(key_name,user_query)
+            return
+
+        old_list = conn.lrange(key_name, 0, 9)
+
+        old_list = [ x.decode("utf8") for x in old_list]
+        try:
+            idx = old_list.index(user_query)
+            if idx > 0:
+                temp = old_list[idx]
+                old_list[idx] = old_list[idx - 1]
+                old_list[idx - 1] = temp
+                conn.delete(key_name)
+                conn.rpush(key_name,*old_list)  #此处必须rpush，否则列表存入会发生倒序列
+        except ValueError:
+            conn.lpush(key_name, user_query)
+
+        # 只保留10个有效的搜索键值
+        if conn.llen(key_name) > 10:
+            conn.ltrim(key_name,0,9)
+
+
     # 列表页面
     def show_list(self, request, *args, **kwargs):
         fields_display = self.get_fields_display(request, *args, **kwargs)
@@ -355,6 +383,10 @@ class StarkHandler(object):
         user_query = self.request.GET.get("q", "")
         if user_query:
             user_query = user_query.strip()
+            # 将用户模糊搜索信息存入redis备后面使用
+            if self.save_user_query2redis_ison:
+                self.save_user_query2redis(user_query)
+
             queryset_data = self.get_queryset_data(request, is_search=True)
             conn = Q()
             conn.connector = "OR"

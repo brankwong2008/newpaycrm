@@ -88,6 +88,23 @@
 
             {% endif %}
 
+            {% if extra_render_func_data %}
+                 <div style="color: lightgray;margin-bottom: 10px"> 常搜:
+                     {% for item in extra_render_func_data.often_clicks %}
+
+                        <a href="{{ item.link }}" style="color: lightgray;margin-right: 12px"> {{ item.title }} </a>
+
+                     {% endfor %}
+
+                 </div>
+
+
+            {% endif %}
+
+
+
+
+
 
             <!-- 模糊搜索 字段 -->
             {% if search_list %}

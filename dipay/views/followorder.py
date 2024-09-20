@@ -22,6 +22,7 @@ from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
+from django_redis import get_redis_connection
 
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
@@ -36,7 +37,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
                    'order__customer__title__icontains','book_info__icontains','load_info__icontains']
     search_placeholder = '搜 订单号/客户/货物/装箱/订舱'
-
+    save_user_query2redis_ison = True   # 模糊搜索存入redis的开关
 
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
@@ -62,7 +63,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 is_chozen = "time-search-chozen"
             else:
                 options.append({"val": time_item, "selected": ""})
-
 
         time_search = [{
             "title": "ETD",
@@ -282,8 +282,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       more_tag_display,
                       details_display,
                       ]
-
-
 
     detail_fields_display = [
         "order",
@@ -572,3 +570,25 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         f = open(file_path,'rb')
         return f
 
+
+
+    # 在跟单页面搜索框上面显示最近常搜的关键词，点击可快速搜索
+    def get_often_clicks(self,request):
+        conn = get_redis_connection()
+        # 存储关键词列表的redis键名为 username:q
+        key_name = request.user.username +":q"
+        list_length = conn.llen(key_name)
+        if list_length == 0:
+            return []
+        q_list = conn.lrange(key_name,0,9)
+        q_list = [x.decode("utf8") for x in q_list]
+        list_url = self.reverse_list_url()
+        extra_render_data = {"often_clicks":[]}
+        for item in q_list:
+            row = {"link":list_url+"?q="+ item, "title": item}
+            extra_render_data["often_clicks"].append(row)
+
+        return extra_render_data
+
+    # 改为一个动态数据，给render_data传入一个func
+    extra_render_func_show_list = {"func":get_often_clicks}
