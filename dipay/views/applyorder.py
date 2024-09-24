@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import datetime
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from django.conf import settings
@@ -12,10 +13,10 @@ from dipay.models import CurrentNumber, Customer, FollowOrder, ApplyOrder, Curre
 from openpyxl import load_workbook
 from django.conf.urls import url
 from django.db import transaction
-import re
 from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
-
+from django_redis import get_redis_connection
+import uuid
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     # 每页显示记录数
@@ -169,6 +170,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     def add_list(self, request, *args, **kwargs):
         """ 申请/添加订单号  """
         page_title = "申请订单号"
+        conn = get_redis_connection()
         if request.method == "GET":
             form = self.get_model_form("add")()
             # 限定在客户选项里面，业务员只能看到自己的客户
@@ -177,15 +179,30 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 choices.append((item['id'], item['title']))
             form.fields['customer'].choices = choices
 
+            # 防抖处理， 生成token，存入redis，提交的时候需要携带这个token。
+            token = str(uuid.uuid4())
+            conn.set(token, 1, ex=600)
+            request.session["add_list_token"] = token
+
             back_url = self.reverse_list_url()
             return render(request, "dipay/apply_new_order.html", locals())
 
         if request.method == "POST":
+            # 防抖处理
+            token = request.session.get("add_list_token")
+            if not token:
+                return HttpResponse("token doesn't exist")
+            # 与redis中存储的进行比对
+            token_in_redis = conn.get(token)
+            if not token_in_redis:
+                return redirect(self.reverse_list_url(*args, **kwargs))
+
             form = self.get_model_form("add")(data=request.POST)
 
             if form.is_valid():
                 result = self.save_form(form, request, False, *args, **kwargs)
-
+                # 删除redis中防抖用的token
+                conn.delete(token)
                 return result or redirect(self.reverse_list_url(*args, **kwargs))
             else:
                 print(form.errors)

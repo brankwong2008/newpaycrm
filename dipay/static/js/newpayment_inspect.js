@@ -1,3 +1,5 @@
+var alreadySubmitted = false
+
 // 提交新增收款前的检查
 function inspectSubmitPayment() {
 
@@ -7,6 +9,14 @@ function inspectSubmitPayment() {
     // 检查如果发现可能有问题，提示用户，由用户决定是否继续提交
     // 手工检查通过后，触发form表单submit按钮
     console.log('enter intou sumit')
+    if (alreadySubmitted) {
+        // 如果已经提交过一次，阻止表单提交
+        preventDefault();
+        alert('已提交，请勿重复提交！');
+        console.log("alreadySubmitted",alreadySubmitted)
+        return;
+    }
+
 
     // 手工检查和调整需要调整的内容
     let $form = $('#new-payment');
@@ -34,20 +44,25 @@ function inspectSubmitPayment() {
     // 手工检查通过后，触发form表单submit按钮
     $form.find('button[type=submit]').trigger('click')
 
+    // 标记表单已提交
+    alreadySubmitted = true;
+    setTimeout(function () {
+        alreadySubmitted = false;
+    }, 5000);
 }
 
 
 // 校正input number里面的输入，自动去除非数值字符
-function justifyNumberInput(inputTag){
+function justifyNumberInput(inputTag) {
     var content = $(inputTag).val();
-    if (content){
+    if (content) {
         // 去掉非数字字符
         var reg_keep_digit = /[^0-9\.]/g
-        content = content.replaceAll(reg_keep_digit,'')
+        content = content.replaceAll(reg_keep_digit, '')
         // 小数点要控制在两位
         var reg_over_three = /\d+\.\d{3,}/g
         var reg_get_two = /\d+\.\d{1,2}/g
-        if (reg_over_three.test(content)){
+        if (reg_over_three.test(content)) {
             content = reg_get_two.exec(content)[0]
         }
 

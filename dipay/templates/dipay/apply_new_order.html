@@ -16,19 +16,21 @@
             font-size: 12px;
         }
 
-    .item-row{
-        margin-top: 20px;
+        .item-row {
+            margin-top: 20px;
 
-    }
-    label{
-        font-weight: bold;
-    }
-    input[type=submit]{
-        margin-right: 30px;
+        }
 
-    }
+        label {
+            font-weight: bold;
+        }
 
-    #col-currency  .filter-option-inner-inner {
+        input[type=submit] {
+            margin-right: 30px;
+
+        }
+
+        #col-currency .filter-option-inner-inner {
             color: orange;
         }
 
@@ -42,7 +44,7 @@
 
         <div class="col-md-7">
 
-            <form action="" method="post">
+            <form action="" method="post" id="myform">
                 {% csrf_token %}
 
                 {#            订单类型#}
@@ -92,10 +94,9 @@
                 </div>
 
 
-
                 {#            币种和金额 #}
 
-              <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
+                <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
                     <div style="width: 25%" id="col-currency">
                         <label for="">{{ form.currency.label }}</label>
                         <div class="form-row">
@@ -113,16 +114,15 @@
                     </div>
                 </div>
 
-            {#            详情 #}
-            <div class="item-row">
+                {#            详情 #}
+                <div class="item-row">
                     <label for="">{{ form.remark.label }}</label>
                     <p>{{ form.remark }} <span style="color:red">{{ form.remark.errors.0 }}</span></p>
                 </div>
 
 
-
                 <div class='item-row' style="margin-bottom:100px">
-                    <input type="submit" value="提交" class="btn btn-success">
+                    <input type="submit" value="提交" class="btn btn-success" id="submitButton">
                     <a href="{{ back_url }}" class="btn btn-warning">取消</a>
 
 
@@ -137,6 +137,36 @@
     </div>
 
     <!-- js代码：处理外键字段快速新增一条记录 -->
+    <script>
+        var alreadySubmitted = false;
+        var submitButton = document.getElementById('submitButton')
+        var form = document.getElementById('myform')
+
+        // 为按钮添加点击事件监听器
+        submitButton.addEventListener('click', function (event) {
+            if (alreadySubmitted) {
+                // 如果已经提交过一次，阻止表单提交
+                event.preventDefault();
+                alert('已提交，请勿重复提交！');
+                return;
+            } else {
+                // 提交表单
+                form.submit()
+                // 禁用按钮，防止重复提交
+                submitButton.disabled = true;
+
+                // 在这里可以添加一个计时器，如果在指定时间内没有再次点击，则重新启用按钮
+                // 例如，5秒后重新启用按钮
+                setTimeout(function () {
+                    submitButton.disabled = false;
+                }, 5000);
+                // 标记表单已提交
+                alreadySubmitted = true;
+            }
+        });
+
+    </script>
+
     <script src="{% static 'js/popup_create.js' %}"></script>
     <script src="{% static 'js/newpayment_inspect.js' %}"></script>
 

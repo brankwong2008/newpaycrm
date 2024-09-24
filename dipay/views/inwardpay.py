@@ -1,6 +1,6 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
 from decimal import Decimal
-from django.db.models import Q
+import uuid
 from django.http import JsonResponse
 from django.conf.urls import url
 from django.db.models import F, Q, Max, Min, Avg, Sum, Count
@@ -16,6 +16,8 @@ import threading
 from rbac.utils.common import compress_image_task
 from datetime import datetime
 from dipay.utils.order_updates import order_payment_update
+from django_redis import get_redis_connection
+
 
 
 class InwardPayHandler(PermissionHanlder, StarkHandler):
@@ -168,11 +170,11 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         page_title = self.page_title
         #  外键字段快速添加一条记录，弹窗式
         fast_add_list = ['payer', 'bank', ]
+        conn = get_redis_connection()
 
         if request.method == "GET":
             form = self.get_model_form("add")()
             for field in form:
-                print(field.name)
                 if field.name in fast_add_list:
                     field_obj = self.model_class._meta.get_field(field.name)
                     related_model_name = field_obj.related_model._meta.model_name
@@ -180,6 +182,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     # 把快速添加的url绑定到field对象中
                     setattr(field, 'url', related_url)
             form.instance.create_date = datetime.now()
+            # 防抖处理， 生成token，存入redis，提交的时候需要携带这个token。
+            token = str(uuid.uuid4())
+            conn.set(token,1,ex=600)
+            request.session["add_list_token"] = token
 
             return render(request, "dipay/inwardpay_add.html", locals())
 
@@ -187,6 +193,16 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             # 如果要上传文件，必须加上request.FILES, 再试试
             # print('request files ttcopy', request.POST, request.FILES.get('ttcopy'))
             print(request.POST)
+            # 防抖处理
+            token = request.session.get("add_list_token")
+            if not token:
+                return HttpResponse("token doesn't exist")
+            # 与redis中存储的进行比对
+            token_in_redis = conn.get(token)
+            if not token_in_redis:
+                print(token_in_redis,"token redis not exisit")
+                return redirect(self.reverse_list_url(*args, **kwargs))
+
             form = self.get_model_form("add")(request.POST, request.FILES)
             if form.is_valid():
                 # 考虑到用户定金需要退款的情况，新增一个标志位，payment-type, 如果payment_type=1，则为退款
@@ -221,6 +237,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                     form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
 
                 form.save()   # 这里直接改写了ImageStorage的_save方法，参考dipay/utiles/storage
+                # 删除redis中防抖用的token
+                conn.delete(token)
                 currentnumber_obj.save()
                 # 检查水单文件，如果过大的话，进行压缩处理，新开一个线程来处理
                 t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path,550))
