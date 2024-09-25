@@ -59,8 +59,7 @@ def init_permissions(request,user):
                                                            "class": "hide",
                                                            "children": [node, ], }
 
-    # menu_dict 的结构 { (menu_id,menu__sequence): { 'title':xx, 'icon':xx, 'mid':xx, 'children':[ {},{}  ]   }    }
-    # 把动态二级菜单的字典存入session
+
 
     print("initnig:   permission_dict")
     for key, val in permission_dict.items():

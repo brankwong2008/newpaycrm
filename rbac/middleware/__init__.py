@@ -10,7 +10,6 @@ from rbac.models import Menu
 # 按字符串导入模块
 rbac_user_model_class = import_string(settings.RBAC_USER_MODLE_CLASS)
 
-
 class RbacMiddleWare(MiddlewareMixin):
     def process_request(self, request):
         current_url = request.path

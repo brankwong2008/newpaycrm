@@ -1,4 +1,4 @@
-var alreadySubmitted = false
+let isSubmitted = false
 
 // 提交新增收款前的检查
 function inspectSubmitPayment() {
@@ -9,11 +9,11 @@ function inspectSubmitPayment() {
     // 检查如果发现可能有问题，提示用户，由用户决定是否继续提交
     // 手工检查通过后，触发form表单submit按钮
     console.log('enter intou sumit')
-    if (alreadySubmitted) {
+    if (isSubmitted) {
         // 如果已经提交过一次，阻止表单提交
         preventDefault();
         alert('已提交，请勿重复提交！');
-        console.log("alreadySubmitted",alreadySubmitted)
+        console.log("alreadySubmitted",isSubmitted)
         return;
     }
 
@@ -45,9 +45,9 @@ function inspectSubmitPayment() {
     $form.find('button[type=submit]').trigger('click')
 
     // 标记表单已提交
-    alreadySubmitted = true;
+    isSubmitted = true;
     setTimeout(function () {
-        alreadySubmitted = false;
+        isSubmitted = false;
     }, 5000);
 }
 

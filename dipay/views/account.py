@@ -20,6 +20,7 @@ def login(request):
         if user_obj:
             request.session[settings.LOGIN_KEY] = {"username":user_obj.username, "id":user_obj.id}
             request.user = user_obj
+            #  初始化用户权限，将用户的菜单列表存入session中
             init_permissions(request,user_obj)
 
             return redirect(reverse("index"))
