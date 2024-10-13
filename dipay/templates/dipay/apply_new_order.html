@@ -122,11 +122,11 @@
 
 
                 <div class='item-row' style="margin-bottom:100px">
-                    <input type="submit" value="提交" class="btn btn-success" id="submitButton">
+                    <span class="btn btn-success" style="margin-right: 50px" onclick="submitNewOrder()"> 提交 </span>
+                     <input type="submit" value="submit" class="btn btn-success" id="submitbtn" style="display:none">
                     <a href="{{ back_url }}" class="btn btn-warning">取消</a>
-
-
                 </div>
+
 
             </form>
 
@@ -136,38 +136,9 @@
 
     </div>
 
-    <!-- js代码：处理外键字段快速新增一条记录 -->
-    <script>
-        var alreadySubmitted = false;
-        var submitButton = document.getElementById('submitButton')
-        var form = document.getElementById('myform')
-
-        // 为按钮添加点击事件监听器
-        submitButton.addEventListener('click', function (event) {
-            if (alreadySubmitted) {
-                // 如果已经提交过一次，阻止表单提交
-                event.preventDefault();
-                alert('已提交，请勿重复提交！');
-                return;
-            } else {
-                // 提交表单
-                form.submit()
-                // 禁用按钮，防止重复提交
-                submitButton.disabled = true;
-
-                // 在这里可以添加一个计时器，如果在指定时间内没有再次点击，则重新启用按钮
-                // 例如，5秒后重新启用按钮
-                setTimeout(function () {
-                    submitButton.disabled = false;
-                }, 5000);
-                // 标记表单已提交
-                alreadySubmitted = true;
-            }
-        });
-
-    </script>
 
     <script src="{% static 'js/popup_create.js' %}"></script>
+    <script src="{% static 'js/standard-submit.js' %}"></script>
     <script src="{% static 'js/newpayment_inspect.js' %}"></script>
 
 {% endblock %}
