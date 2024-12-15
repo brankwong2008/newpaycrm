@@ -30,7 +30,7 @@ class OrderStatisticHandler(PermissionHanlder,StarkHandler):
             count += 1
             currency_title = item["order__currency__title"]
             currency_label = "金凯{}应收账款".format(currency_title)
-            total_to_collect_amount =format( item.get("total_to_collect"),",f")
+            total_to_collect_amount =format( item.get("total_to_collect"),",.2f")
             row = {"active":"", "data":[count,currency_label,total_to_collect_amount]}
             data_list.append(row)
             # sum the total amount in RMB, 1st to get exchange rate.
@@ -40,7 +40,7 @@ class OrderStatisticHandler(PermissionHanlder,StarkHandler):
             total_amount += item.get("total_to_collect") * exchang_rate
 
         # 最后一行加入折合人民币统计
-        row =  {"active":"", "data":["合计"," 折合人民币 ", format(total_amount,",.2f")]}
+        row =  {"active":"active", "data":["合计"," 折合人民币 ", format(total_amount,",.2f")]}
         data_list.append(row)
 
         return render(request, "stark/show_list.html", locals())

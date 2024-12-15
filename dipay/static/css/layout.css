@@ -11,7 +11,7 @@ html{
 body{
     min-height: 100%;
     position: relative;
-    padding-bottom: 60px;
+    padding-bottom: 0;
 }
 
 /* 图标大小 */
@@ -60,16 +60,30 @@ a span.nickname {
 }
 
 
+/*.myfooter{*/
+/*    margin-top: -60px;*/
+/*    height: 60px;*/
+/*    background-color: #eee;*/
+/*    text-align: center;*/
+/*    line-height: 60px;*/
+/*    position: absolute;*/
+/*    bottom: 0;*/
+/*    width: 100%;*/
+/*}*/
+
+
 .myfooter{
-    margin-top: -60px;
     height: 60px;
     background-color: #eee;
     text-align: center;
     line-height: 60px;
-    position: absolute;
-    bottom: 0;
+    position: relative;
+    clear: both;
     width: 100%;
+    margin-bottom:0 ;
 }
+
+
 
 .myfooter-links li{
     color: grey;
