@@ -7,9 +7,8 @@ from alibabacloud_tea_openapi import models as open_api_models
 from alibabacloud_dysmsapi20170525 import models as dysmsapi_20170525_models
 from alibabacloud_tea_util import models as util_models
 from alibabacloud_tea_util.client import Client as UtilClient
+from paycrm.secret import *
 
-ALIBABA_CLOUD_ACCESS_KEY_ID= "LTAI5tPfdRKYvGuYRB6V9XUD"
-ALIBABA_CLOUD_ACCESS_KEY_SECRET= "PnMguC6MJeXIv7zBt3k0J1FJki4LPf"
 
 def create_client() -> Dysmsapi20170525Client:
     """
