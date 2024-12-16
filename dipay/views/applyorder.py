@@ -17,6 +17,7 @@ from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
 from django_redis import get_redis_connection
 import uuid
+from dipay.utils.ali_sms import send_sms
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     # 每页显示记录数
@@ -232,7 +233,6 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             return redirect(self.reverse_list_url())
 
         # 新增订单的情况下
-
         # 获取当前最新订单序号，并把新申请订单号置为：最新单号+1
         current_num_obj = CurrentNumber.objects.get(pk=1)
         sequence = current_num_obj.num + 1
@@ -271,6 +271,16 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         content =  content.replace('&',' and ')
         mailto = f'<a href="mailto:brank@diligen.cn?subject={subject}&body={content}">点击快速发申请邮件</a>'
         msg = mark_safe('订单号申请提交成功，%s' % mailto)
+
+        # 给审核者发送提示短信
+        order_number = request.user.username
+        send_sms(
+                sign_name='文安县金凯建材有限公司',
+                template_code='SMS_475870960',
+                phone_numbers='13910566706',
+                template_param= '{"time":"%s", "order":"%s"}'% (send_time, order_number)
+        )
+        print("short msg sent")
 
         return render(request, 'dipay/msg_after_submit.html', {'msg': msg})
 
