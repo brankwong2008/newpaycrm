@@ -494,7 +494,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             if pay2order_obj:
                 # 如果是更新已经关联记录，看看关联金额的差异，只处理差异部分即可 pay2order中记载的是 dist_amount
                 diff_amount = dist_amount - Decimal(pay2order_obj.amount)
-                if diff_amount > inwardpay_obj.torelate_amount:
+                if abs(dist_amount) > abs(inwardpay_obj.torelate_amount):
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
                 if diff_amount*rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
@@ -505,7 +505,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 # 如果是新增关联记录
-                if dist_amount > inwardpay_obj.torelate_amount:
+                if abs(dist_amount) > abs(inwardpay_obj.torelate_amount):
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
                 if dist_amount*rate > order_obj.collect_amount:
                     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
