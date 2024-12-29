@@ -57,7 +57,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     popup_list = ['payer', 'bank']
 
-    search_list = ['create_date', 'amount', 'customer__title__icontains', "orders__order_number__icontains",]
+    search_list = ['create_date', 'amount', 'customer__title__icontains','customer__shortname__icontains', "orders__order_number__icontains",]
     search_placeholder = '搜索 日期 金额 客户名 '
 
     def add_btn_display(self, request, *args, **kwargs):
@@ -497,12 +497,13 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 # 如果是更新已经关联记录，看看关联金额的差异，只处理差异部分即可 pay2order中记载的是 dist_amount
                 diff_amount = dist_amount - Decimal(pay2order_obj.amount)
                 # 更新记录的情况下，要可关联金额要把此单已分配的金额加回去算是否超额
-                if dist_amount *inwardpay_obj.amount<0 \
-                        or abs(dist_amount) > abs(inwardpay_obj.torelate_amount+pay2order_obj.amount):
-                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
+                if dist_amount *inwardpay_obj.amount<0:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '分配金额须与款项同正负'})
+                if abs(dist_amount) > abs(inwardpay_obj.torelate_amount+pay2order_obj.amount):
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '超过可分配金额'})
                 # 不审查是否超过应收金额，但是前台需要进行提醒
                 # if diff_amount*rate > order_obj.collect_amount:
-                #     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})
+                #     return JsonResponse({'status': "warning", 'field': 'amount', 'error': '不能大于订单应收金额'})
 
                 pay2order_obj.amount = dist_amount
                 pay2order_obj.rate = rate
@@ -510,9 +511,10 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 inwardpay_obj.torelate_amount = inwardpay_obj.torelate_amount - diff_amount
             else:
                 # 如果是新增关联记录
-                if dist_amount *inwardpay_obj.amount<0 \
-                        or abs(dist_amount) > abs(inwardpay_obj.torelate_amount):
-                    return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于可分配的金额'})
+                if dist_amount *inwardpay_obj.amount<0:
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '分配金额须与款项同正负'})
+                if abs(dist_amount) > abs(inwardpay_obj.torelate_amount):
+                    return JsonResponse({'status': False, 'field': 'amount', 'error': '超过可分配金额'})
                 # 不审查是否超过应收金额，但是前台需要进行提醒
                 # if dist_amount*rate > order_obj.collect_amount:
                 #     return JsonResponse({'status': False, 'field': 'amount', 'error': '不能大于订单应收金额'})

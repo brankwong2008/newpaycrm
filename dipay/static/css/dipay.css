@@ -57,6 +57,10 @@ table {
 
 }
 
+.error{
+    color: orangered !important;
+}
+
 /*.save-sequence {*/
 /*    cursor: pointer;*/
 /*    color: dodgerblue;*/
@@ -144,6 +148,13 @@ textarea[id^="amount"] {
 .amount-value {
     margin-left: 20px;
 }
+
+/* 负数欠款金额*/
+.negtive-amount-value {
+    margin-left: 20px;
+    color: orangered;
+}
+
 
 /*标签导航active*/
 .nav-tabs li a {

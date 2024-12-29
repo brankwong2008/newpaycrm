@@ -35,7 +35,6 @@ function savePlan(btn) {
         data: data_obj,
         // 当响应正常的时候执行success，responses是响应的json数据
         success: function (response) {
-            console.log(response);
             if (response.status) {
                 if (response.msg) {
                     ShowMsg(response.msg);
@@ -47,7 +46,6 @@ function savePlan(btn) {
                 var name = response.field;
                 var $target = $(`[id='${name}-id-${pk}']`);
                 $target.next().after(`<p class="error">${response.error}</p>`)
-
             }
         }
     })
@@ -116,7 +114,20 @@ function fastInfoSave(btn) {
     var pk = $(btn).attr('pk');
     // 款项分配的金额检查：必须大于0
     var $distamount = $(".dist-amount #amount-id-" + pk);
-    console.log($distamount.val(), typeof $distamount.val())
+    var distAmount = $distamount.val()
+    // 检查分配的金额是否超过应收金额，否则给予用户提醒，如果坚持执行，则放行
+    var oldAmount = $distamount.attr("old_amount");
+    var toCollectAmount = $distamount.attr("to_collect_amount");
+    var rate = $(".dist-amount #rate-id-" + pk).val()
+    rate = rate?rate:1
+
+    if (parseFloat(toCollectAmount)+(parseFloat(oldAmount)-parseFloat(distAmount))*parseFloat(rate) < 0) {
+        var ret= window.confirm("警告：本分配款项将导致应收账款为负数，后续需退款平账来解决，如知悉由此带来的问题并坚持分配请点击确认，否则点击取消");
+        if (!ret){
+            return false
+        }
+    }
+    // 检查分配的金额是否为0
     if ($distamount.val()) {
         if ($distamount.val().trim() == "0") {
             ShowMsg("金额必须大于0")
@@ -333,17 +344,16 @@ function showDistInput(sp) {
     var id = $(sp).attr('id');
     var temp = id.split('-');
     var pk = temp[temp.length - 1]
+    var toCollectAmount = $(sp).parent().prev().html().match(/[-\d\.]+/)[0]
     var amount = $(sp).attr('amount').trim();
     var rate = $(sp).attr('rate').trim();
     var currency_order = $(sp).attr("currency_order");
     var currency_inward = $(sp).attr("currency_inward");
 
-    var $input = `<textarea id=${id}> ${amount} </textarea>`;
+    var $input = `<textarea id=${id} to_collect_amount="${toCollectAmount}" old_amount="${amount}"> ${amount}</textarea>`;
     var $icon = `<i class="fa fa-check" pk="${pk}" onclick="fastInfoSave(this)"></i>`
 
-
     if (currency_inward !== currency_order) {
-
         var $inputRate = ` x <textarea id="rate-id-${pk}" placeholder="请输入转换汇率">${rate}</textarea> 
                     <i class="fa fa-check" pk="${pk}"  onclick="fastInfoSave(this)"></i>`;
         $input = `${currency_inward}` + $input + $inputRate;
@@ -351,10 +361,9 @@ function showDistInput(sp) {
         $input += $icon
     }
 
-    $(sp).replaceWith($input);
-
+    $(sp).siblings().remove();
+    $(sp).replaceWith($input)
 }
-
 
 // 时间按月筛选
 function filterTime(tag) {

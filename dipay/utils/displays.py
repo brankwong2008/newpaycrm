@@ -150,9 +150,10 @@ def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwar
         return '已收和应收'
     else:
         return_url = handler.reverse_url('show_pay_details', order_id=obj.order.pk)
+        collect_amount_value_css = "amount-value" if obj.order.collect_amount >=0 else "negtive-amount-value"
         return mark_safe(
-            "<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><span>收: <span class='amount-value'>%s</span> </span><br><span>欠:<span class='amount-value'>%s</span></span></a>" % (
-                return_url, obj.order.customer, obj.order.rcvd_amount, obj.order.collect_amount))
+            "<a onclick='return showPayDetails(this)' href='%s' customer_name='%s'><span>收: <span class='amount-value'>%s</span> </span><br><span>欠:<span class='%s'>%s</span></span></a>" % (
+                return_url, obj.order.customer, obj.order.rcvd_amount, collect_amount_value_css,obj.order.collect_amount))
 
 
 # 发票金额
