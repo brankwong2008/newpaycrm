@@ -117,12 +117,14 @@ class  Pay2OrdersHandler(PermissionHanlder, StarkHandler):
 
         if not del_obj:
             return HttpResponse("将要删除的记录不存在")
-        back_url = self.reverse_list_url(*args, **kwargs)
+
 
         if request.method == "GET":
             return render(request, self.del_list_template or "stark/del_list.html", locals())
 
         if request.method == "POST":
+            # back_url = self.reverse_list_url(*args, **kwargs)
+            back_url = reverse("stark:dipay_inwardpay_relate2order", kwargs={'inwardpay_id':del_obj.payment.pk})
             del_obj.delete()
             # 更新订单的应收和已收
             order_payment_update(order_obj=order_obj)
