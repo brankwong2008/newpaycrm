@@ -23,7 +23,10 @@ from dipay.utils.order_updates import order_payment_update
 from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment
 from django_redis import get_redis_connection
+from dipay.utils.ali_sms import send_sms
+import logging
 
+logger = logging.getLogger('django')
 
 class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
@@ -232,6 +235,24 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                                         )
         applyrelease_obj.save()
         apply_release_url = reverse('stark:dipay_applyrelease_list')
+
+        # 短信通知财务审核放单
+        # 排除X和D开头的订单  王姐电话： 15933166226
+        today_time = datetime.now().strftime("%Y-%m-%d")
+        order_number = followorder_obj.order.order_number
+        if followorder_obj.order.order_number.startswith(("X","D")) is False:
+            try:
+                send_sms(
+                    sign_name='文安县金凯建材',
+                    template_code='SMS_478175035',
+                    phone_numbers= "15933166226",
+                    template_param='{"order_number":"%s","time":"%s"}' % (order_number,today_time)
+                )
+                print("short msg sent")
+            except Exception as e:
+                print("error:", e)
+                logger.error(e)
+
         return redirect(apply_release_url)
 
     apply_release.text = '申请放单'

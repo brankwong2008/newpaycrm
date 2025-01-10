@@ -1,0 +1,35 @@
+INFO 2025-01-10 12:42:23,191 autoreload 15369 8604262976 Watching for file changes with StatReloader
+INFO 2025-01-10 12:45:00,120 autoreload 15369 8604262976 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 12:45:00,709 autoreload 15398 8639005248 Watching for file changes with StatReloader
+INFO 2025-01-10 12:46:13,523 autoreload 15398 8639005248 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 12:46:14,002 autoreload 15419 8606347840 Watching for file changes with StatReloader
+INFO 2025-01-10 12:46:48,003 autoreload 15419 8606347840 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 12:46:48,494 autoreload 15429 8667365952 Watching for file changes with StatReloader
+INFO 2025-01-10 14:22:02,660 autoreload 15429 8667365952 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 14:22:03,330 autoreload 16373 8594829888 Watching for file changes with StatReloader
+INFO 2025-01-10 14:22:04,639 basehttp 16373 12940890112 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-01-10 14:22:10,157 basehttp 16373 12940890112 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO 2025-01-10 14:22:16,033 basehttp 16373 12940890112 "POST /stark/dipay/followorder/list/ HTTP/1.1" 200 18655
+INFO 2025-01-10 14:22:19,571 basehttp 16373 12940890112 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO 2025-01-10 14:22:23,413 basehttp 16373 12940890112 "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO 2025-01-10 14:22:28,397 basehttp 16373 12940890112 "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO 2025-01-10 14:22:28,524 basehttp 16373 12940890112 "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30603
+INFO 2025-01-10 14:25:38,204 autoreload 16373 8594829888 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 14:25:38,668 autoreload 16411 8629719616 Watching for file changes with StatReloader
+INFO 2025-01-10 14:30:59,593 autoreload 16411 8629719616 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 14:31:00,096 autoreload 16456 8637137472 Watching for file changes with StatReloader
+INFO 2025-01-10 14:31:15,699 autoreload 16456 8637137472 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 14:31:16,198 autoreload 16467 8663560768 Watching for file changes with StatReloader
+INFO 2025-01-10 14:31:18,076 basehttp 16467 13079359488 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO 2025-01-10 14:31:21,954 basehttp 16467 13079359488 "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO 2025-01-10 14:31:28,367 basehttp 16467 13079359488 "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO 2025-01-10 14:31:28,505 basehttp 16467 13079359488 "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30603
+INFO 2025-01-10 14:40:00,997 autoreload 16467 8663560768 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 14:40:01,635 autoreload 16625 8627536448 Watching for file changes with StatReloader
+INFO 2025-01-10 16:00:10,626 basehttp 16625 13006995456 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-01-10 16:00:14,824 basehttp 16625 13006995456 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO 2025-01-10 16:00:17,383 basehttp 16625 13006995456 "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO 2025-01-10 16:00:23,460 basehttp 16625 13006995456 "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO 2025-01-10 16:00:23,626 basehttp 16625 13006995456 "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30594
+INFO 2025-01-10 16:07:11,193 autoreload 16625 8627536448 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-01-10 16:07:11,829 autoreload 17320 8610865728 Watching for file changes with StatReloader

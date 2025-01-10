@@ -1,0 +1,35 @@
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO "POST /stark/dipay/followorder/list/ HTTP/1.1" 200 18655
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30603
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30603
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO "GET /stark/dipay/followorder/list/?status=5 HTTP/1.1" 200 61842
+INFO "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30594
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
