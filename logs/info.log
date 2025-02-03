@@ -33,3 +33,489 @@ INFO "POST /stark/dipay/followorder/list/?status=5 HTTP/1.1" 302 0
 INFO "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30594
 INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
 INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "GET /apple-touch-icon-precomposed.png HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /apple-touch-icon.png HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /favicon.ico HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8397
+INFO "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /static/icon/paycrm2.ico HTTP/1.1" 200 946
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO "GET /static/js/standard-submit.js HTTP/1.1" 200 521
+INFO "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO "GET /static/js/popup_create.js HTTP/1.1" 200 4154
+INFO "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18837
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/applyorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /favicon.ico HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /static/icon/paycrm2.ico HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO "GET /static/js/standard-submit.js HTTP/1.1" 304 0
+INFO "GET /static/js/newpayment_inspect.js HTTP/1.1" 304 0
+INFO "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18843
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO "GET /stark/dipay/followorder/list/?q=4806 HTTP/1.1" 200 20960
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO "GET /static/js/common.js HTTP/1.1" 304 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 40268
+INFO "GET /media/ttcopy/learning_EaWgPTu.jpg HTTP/1.1" 200 31455
+INFO "GET /media/ttcopy/20240406235343_326.jpg HTTP/1.1" 200 178899
+INFO "GET /media/ttcopy/plastic_fisher_with_screw.png HTTP/1.1" 200 181331
+INFO "GET /media/ttcopy/learning.ico HTTP/1.1" 200 132349
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39_Sw15UcT.png HTTP/1.1" 200 47595
+INFO "GET /media/ttcopy/WechatIMG1739_uXy7vVh.png HTTP/1.1" 200 59693
+INFO "GET /media/ttcopy/WechatIMG3475xx.png HTTP/1.1" 200 445046
+INFO "GET /media/ttcopy/WechatIMG9302_eE4JEEo.jpeg HTTP/1.1" 200 37253
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-28_18.44.49.png HTTP/1.1" 200 819004
+INFO "GET /media/ttcopy/WechatIMG3475_vDXnFjQ.png HTTP/1.1" 200 1248328
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 40268
+INFO "GET /stark/dipay/chargepay/list/?forwarder=17 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=12 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=5 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=all HTTP/1.1" 200 41060
+INFO "GET /stark/dipay/chargepay/list/?forwarder=2 HTTP/1.1" 200 31231
+INFO "GET /stark/dipay/chargepay/list/?forwarder=4 HTTP/1.1" 200 26276
+INFO "GET /stark/dipay/chargepay/list/?forwarder=5 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=8 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=12 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=16 HTTP/1.1" 200 24509
+INFO "GET /stark/dipay/chargepay/list/?forwarder=4 HTTP/1.1" 200 26276
+INFO "GET /stark/dipay/chargepay/list/?forwarder=2 HTTP/1.1" 200 31231
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "GET /apple-touch-icon-precomposed.png HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /apple-touch-icon.png HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /favicon.ico HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 304 0
+INFO "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /static/icon/paycrm2.ico HTTP/1.1" 200 946
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140048
+INFO "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8397
+INFO "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30131
+INFO "GET /static/js/common.js HTTP/1.1" 200 491
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/userinfo.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30940
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/userinfo.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/userinfo/edit/10/ HTTP/1.1" 200 21021
+INFO "GET /stark/dipay/userinfo/edit/3/ HTTP/1.1" 200 21068
+INFO "POST /stark/dipay/userinfo/edit/3/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30950
+INFO "GET /stark/dipay/userinfo/edit/10/ HTTP/1.1" 200 21021
+INFO "POST /stark/dipay/userinfo/edit/10/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30960
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140048
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39265
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39317
+INFO "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39287
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39295
+INFO "GET /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 29263
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 29543
+INFO "POST /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 19031
+INFO "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27618
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8456
+INFO "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8456
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /favicon.ico HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 304 0
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO - Broken pipe from ('127.0.0.1', 61173)
+
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 302 0
+INFO "GET /login/ HTTP/1.1" 200 2054
+INFO "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO "POST /login/ HTTP/1.1" 302 0
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8454
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/edit/710/?_filter=status%3Dall HTTP/1.1" 200 52250
+INFO "GET /static/js/popup_create.js HTTP/1.1" 200 4154
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39301
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18843
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39288
+INFO "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39258
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39335
+INFO "GET /stark/dipay/applyorder/to_workshop/971/ HTTP/1.1" 200 29556
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/applyorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO "GET /stark/dipay/dailyplan/list/ HTTP/1.1" 200 48207
+INFO "GET /stark/dipay/dailyplan/add/?get_type=simple HTTP/1.1" 200 2200
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39335
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /static/js/common.js HTTP/1.1" 200 491
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO "GET /static/js/standard-submit.js HTTP/1.1" 200 521
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/dailyplan/list/ HTTP/1.1" 200 48207
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28055
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18841
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28040
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8471
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41545
+INFO "GET /media/ttcopy/learning_EaWgPTu.jpg HTTP/1.1" 200 31455
+INFO "GET /media/ttcopy/learning.ico HTTP/1.1" 200 132349
+INFO "GET /media/ttcopy/plastic_fisher_with_screw.png HTTP/1.1" 200 181331
+INFO "GET /media/ttcopy/20240406235343_326.jpg HTTP/1.1" 200 178899
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39_Sw15UcT.png HTTP/1.1" 200 47595
+INFO "GET /media/ttcopy/WechatIMG9302_eE4JEEo.jpeg HTTP/1.1" 200 37253
+INFO "GET /media/ttcopy/WechatIMG3475xx.png HTTP/1.1" 200 445046
+INFO "GET /media/ttcopy/WechatIMG1739_uXy7vVh.png HTTP/1.1" 200 59693
+INFO "GET /media/ttcopy/WechatIMG3475_vDXnFjQ.png HTTP/1.1" 200 1248328
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-28_18.44.49.png HTTP/1.1" 200 819004
+INFO "GET /stark/dipay/chargepay/list/?page=2 HTTP/1.1" 200 30018
+INFO "GET /media/ttcopy/logo-Z.png HTTP/1.1" 200 14187
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39.png HTTP/1.1" 200 47595
+INFO "GET /media/ttcopy/CO_J4361_page_1_WIwM77h.jpg HTTP/1.1" 200 848504
+INFO "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42135
+INFO "GET /stark/dipay/chargepay/edit/42/?_filter=page%3D1 HTTP/1.1" 200 23908
+INFO "POST /stark/dipay/chargepay/edit/42/?_filter=page%3D1 HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 200 152610
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 304 0
+INFO "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 304 0
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/list/?q=J4325 HTTP/1.1" 200 25276
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/edit/921/?_filter=q%3DJ4325 HTTP/1.1" 200 33049
+INFO "POST /stark/dipay/applyorder/edit/921/?_filter=q%3DJ4325 HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyorder/list/?q=J4325 HTTP/1.1" 200 25429
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28040
+INFO "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18837
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39274
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39244
+INFO "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39378
+INFO "GET /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 29535
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 29511
+INFO "POST /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 19031
+INFO "GET /stark/dipay/followorder/list/?q=J4360 HTTP/1.1" 200 27199
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/applyorder/list/?q=J4360 HTTP/1.1" 200 25447
+INFO "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 33038
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 33038
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 30172

@@ -12,7 +12,7 @@ from rbac.utils.common import gen_md5
 MyUserInfo = import_string(settings.RBAC_USER_MODLE_CLASS)
 
 class MyUserInfoHandler(StarkHandler):
-    fields_display = ["username","nickname",manytomany_display("roles"), reset_pwd_display, get_choice_text('department')]
+    fields_display = ["username","nickname","phone",manytomany_display("roles"), reset_pwd_display, get_choice_text('department')]
 
     page_title = "用户管理"
 
@@ -21,7 +21,7 @@ class MyUserInfoHandler(StarkHandler):
             re_password = forms.CharField(max_length=30,label="确认密码",widget=forms.PasswordInput())
             class Meta:
                 model = MyUserInfo
-                fields = ["username","nickname","password","re_password","department"]
+                fields = ["username","nickname","phone","password","re_password","department"]
                 widgets = {
                     "password": forms.PasswordInput,
                 }

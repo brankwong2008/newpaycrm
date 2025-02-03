@@ -34,6 +34,7 @@ class UserInfo(MyUser):
                           ]
     department = models.SmallIntegerField(choices=department_choices, verbose_name='部门', default=1)
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='绑定货代', null=True)
+    phone =  models.CharField(max_length=11, verbose_name='手机',null=True)  # 新增手机号
 
     def __str__(self):
         return self.nickname
@@ -114,6 +115,7 @@ class ApplyOrder(models.Model):
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号', unique=True, null=True, blank=True)
+    po_number = models.CharField(max_length=20, verbose_name='PO号', null=True)
     sequence = models.IntegerField(verbose_name='订单序号', null=True, blank=True)
     sub_sequence = models.IntegerField(verbose_name='分批号', default=0)
     customer = models.ForeignKey(to=Customer, on_delete=models.RESTRICT, verbose_name='客户', null=True, blank=True)
@@ -141,6 +143,7 @@ class ApplyOrder(models.Model):
                       ]
     status = models.SmallIntegerField(choices=status_choices, verbose_name='订单状态', default=0)
     amount_check = models.BooleanField(verbose_name='发票金额确认否', default=False)
+
 
     def __str__(self):
         return self.order_number
@@ -179,6 +182,7 @@ class FollowOrder(models.Model):
     container = models.CharField(max_length=20, verbose_name='集装箱号', default='--')
     update_date = models.DateTimeField(auto_now=True, verbose_name='更新时间', null=True)
     is_notified = models.BooleanField(verbose_name='到港通知否', default=False)
+
 
     def __str__(self):
         # 注意这个地方要返回的必须是字符串，否则报错
@@ -351,6 +355,7 @@ class ChargePay(models.Model):
     currency = models.ForeignKey(to=Currency, on_delete=models.CASCADE, verbose_name='货币', default=1)
     amount = models.DecimalField(verbose_name='金额', max_digits=10, decimal_places=2)
     ttcopy = models.ImageField(upload_to=getPath,storage=ImageStorage(pre_filename="fwd"), verbose_name='付款水单', null=True)
+    fee_invoice = models.ImageField(upload_to="feeinvoice",storage=ImageStorage(pre_filename="inv"), verbose_name='费用发票', null=True)
     charge = models.ManyToManyField(to=Charge, through='PayToCharge', verbose_name='关联账单')
     remark = models.TextField(verbose_name='备注', default='--')
     status_choices = [(0, '待付'), (1, '已出账')]

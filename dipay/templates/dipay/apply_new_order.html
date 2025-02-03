@@ -47,11 +47,23 @@
             <form action="" method="post" id="myform">
                 {% csrf_token %}
 
-                {#            订单类型#}
-                <div class="item-row">
-                    <label for="">{{ form.order_type.label }}</label>
-                    <p>{{ form.order_type }} <span style="color:red">{{ form.order_type.errors.0 }}</span></p>
+                {#             订单和PO号  #}
+
+                <div class="item-row" style="display:flex;flex-direction: row;justify-content: space-between">
+                    <div style="width: 45%" id="col-order-type">
+                        <label for="">{{ form.order_type.label }}</label>
+                        <p>{{ form.order_type }} <span style="color:red">{{ form.order_type.errors.0 }}</span></p>
+                    </div>
+                    <div style="width: 45%">
+                        <label for="">{{ form.po_number.label }}</label>
+                        <div class="form-row">
+                            {{ form.po_number }}
+                            <span style="color:#ff0000">{{ form.po_number.errors.0 }}</span>
+                        </div>
+
+                    </div>
                 </div>
+
 
                 {#            客户 #}
                 <div class="item-row">
@@ -123,7 +135,7 @@
 
                 <div class='item-row' style="margin-bottom:100px">
                     <span class="btn btn-success" style="margin-right: 50px" onclick="submitNewOrder()"> 提交 </span>
-                     <input type="submit" value="submit" class="btn btn-success" id="submitbtn" style="display:none">
+                    <input type="submit" value="submit" class="btn btn-success" id="submitbtn" style="display:none">
                     <a href="{{ back_url }}" class="btn btn-warning">取消</a>
                 </div>
 

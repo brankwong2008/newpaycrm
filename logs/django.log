@@ -33,3 +33,489 @@ INFO 2025-01-10 16:00:23,460 basehttp 16625 13006995456 "POST /stark/dipay/follo
 INFO 2025-01-10 16:00:23,626 basehttp 16625 13006995456 "GET /stark/dipay/applyrelease/list/ HTTP/1.1" 200 30594
 INFO 2025-01-10 16:07:11,193 autoreload 16625 8627536448 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
 INFO 2025-01-10 16:07:11,829 autoreload 17320 8610865728 Watching for file changes with StatReloader
+INFO 2025-01-26 13:59:00,148 autoreload 42800 8665420352 Watching for file changes with StatReloader
+INFO 2025-01-26 13:59:06,922 basehttp 42800 13083930624 "GET / HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:06,935 basehttp 42800 13083930624 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 13:59:06,949 basehttp 42800 13100720128 "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO 2025-01-26 13:59:06,949 basehttp 42800 13117509632 "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO 2025-01-26 13:59:06,951 basehttp 42800 13083930624 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-01-26 13:59:06,990 basehttp 42800 13134299136 "GET /apple-touch-icon-precomposed.png HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:06,992 basehttp 42800 13134299136 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 13:59:06,994 basehttp 42800 13134299136 "GET /apple-touch-icon.png HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:06,995 basehttp 42800 13134299136 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 13:59:07,021 basehttp 42800 13083930624 "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:07,024 basehttp 42800 13083930624 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 13:59:13,540 basehttp 42800 13083930624 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:13,588 basehttp 42800 13083930624 "GET / HTTP/1.1" 302 0
+INFO 2025-01-26 13:59:13,705 basehttp 42800 13083930624 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-01-26 13:59:13,728 basehttp 42800 13100720128 "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO 2025-01-26 13:59:13,729 basehttp 42800 13151088640 "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO 2025-01-26 13:59:13,731 basehttp 42800 13117509632 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO 2025-01-26 13:59:13,731 basehttp 42800 13100720128 "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO 2025-01-26 13:59:13,731 basehttp 42800 13167878144 "GET /static/css/dipay.css HTTP/1.1" 200 8397
+INFO 2025-01-26 13:59:13,732 basehttp 42800 13151088640 "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO 2025-01-26 13:59:13,732 basehttp 42800 13184667648 "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO 2025-01-26 13:59:13,733 basehttp 42800 13083930624 "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO 2025-01-26 13:59:13,734 basehttp 42800 13117509632 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-01-26 13:59:13,741 basehttp 42800 13100720128 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-01-26 13:59:13,743 basehttp 42800 13083930624 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-01-26 13:59:13,748 basehttp 42800 13100720128 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-01-26 13:59:13,749 basehttp 42800 13083930624 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-01-26 13:59:13,754 basehttp 42800 13100720128 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 13:59:13,756 basehttp 42800 13083930624 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-01-26 13:59:13,771 basehttp 42800 13100720128 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 13:59:13,772 basehttp 42800 13083930624 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-01-26 13:59:13,772 basehttp 42800 13117509632 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 13:59:13,773 basehttp 42800 13151088640 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 13:59:13,817 basehttp 42800 13083930624 "GET /static/icon/paycrm2.ico HTTP/1.1" 200 946
+INFO 2025-01-26 13:59:20,821 basehttp 42800 13083930624 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO 2025-01-26 13:59:20,842 basehttp 42800 13100720128 "GET /static/js/standard-submit.js HTTP/1.1" 200 521
+INFO 2025-01-26 13:59:20,843 basehttp 42800 13117509632 "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO 2025-01-26 13:59:20,843 basehttp 42800 13083930624 "GET /static/js/popup_create.js HTTP/1.1" 200 4154
+INFO 2025-01-26 13:59:37,269 basehttp 42800 13083930624 "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18837
+INFO 2025-01-26 15:16:51,842 autoreload 42800 8665420352 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/applyorder.py changed, reloading.
+INFO 2025-01-26 15:16:52,510 autoreload 43490 8629609024 Watching for file changes with StatReloader
+INFO 2025-01-26 15:16:59,754 basehttp 43490 13010239488 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 302 0
+INFO 2025-01-26 15:16:59,760 basehttp 43490 13010239488 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 15:16:59,769 basehttp 43490 13043818496 "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO 2025-01-26 15:16:59,771 basehttp 43490 13027028992 "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO 2025-01-26 15:16:59,772 basehttp 43490 13010239488 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-01-26 15:17:01,891 basehttp 43490 13010239488 "GET / HTTP/1.1" 302 0
+INFO 2025-01-26 15:17:01,896 basehttp 43490 13010239488 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 15:17:02,044 basehttp 43490 13010239488 "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-01-26 15:17:02,050 basehttp 43490 13010239488 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-01-26 15:17:04,994 basehttp 43490 13010239488 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-01-26 15:17:05,038 basehttp 43490 13010239488 "GET / HTTP/1.1" 302 0
+INFO 2025-01-26 15:17:05,146 basehttp 43490 13010239488 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-01-26 15:17:05,175 basehttp 43490 13043818496 "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO 2025-01-26 15:17:05,180 basehttp 43490 13060608000 "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO 2025-01-26 15:17:05,181 basehttp 43490 13010239488 "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO 2025-01-26 15:17:05,183 basehttp 43490 13027028992 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO 2025-01-26 15:17:05,183 basehttp 43490 13077397504 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-01-26 15:17:05,209 basehttp 43490 13010239488 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-01-26 15:17:05,214 basehttp 43490 13043818496 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 15:17:05,215 basehttp 43490 13094187008 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-01-26 15:17:05,218 basehttp 43490 13077397504 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-01-26 15:17:05,226 basehttp 43490 13060608000 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-01-26 15:17:05,228 basehttp 43490 13010239488 "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO 2025-01-26 15:17:05,238 basehttp 43490 13027028992 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-01-26 15:17:05,241 basehttp 43490 13043818496 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 15:17:05,241 basehttp 43490 13094187008 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 15:17:05,242 basehttp 43490 13077397504 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-01-26 15:17:05,246 basehttp 43490 13060608000 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-01-26 15:17:05,265 basehttp 43490 13060608000 "GET /static/icon/paycrm2.ico HTTP/1.1" 304 0
+INFO 2025-01-26 15:17:07,239 basehttp 43490 13060608000 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO 2025-01-26 15:17:07,258 basehttp 43490 13077397504 "GET /static/js/standard-submit.js HTTP/1.1" 304 0
+INFO 2025-01-26 15:17:07,258 basehttp 43490 13060608000 "GET /static/js/newpayment_inspect.js HTTP/1.1" 304 0
+INFO 2025-01-26 15:17:17,754 basehttp 43490 13010239488 "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18843
+INFO 2025-01-27 09:56:47,689 basehttp 43490 13010239488 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140050
+INFO 2025-01-27 09:56:51,979 basehttp 43490 13010239488 "GET /stark/dipay/followorder/list/?q=4806 HTTP/1.1" 200 20960
+INFO 2025-01-27 13:33:46,087 basehttp 43490 13010239488 "GET / HTTP/1.1" 302 0
+INFO 2025-01-27 13:33:46,236 basehttp 43490 13010239488 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-01-27 13:33:48,217 basehttp 43490 13010239488 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO 2025-01-27 13:33:48,233 basehttp 43490 13010239488 "GET /static/js/common.js HTTP/1.1" 304 0
+INFO 2025-01-27 13:33:51,580 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 40268
+INFO 2025-01-27 13:33:51,630 basehttp 43490 13043818496 "GET /media/ttcopy/learning_EaWgPTu.jpg HTTP/1.1" 200 31455
+INFO 2025-01-27 13:33:51,636 basehttp 43490 13010239488 "GET /media/ttcopy/20240406235343_326.jpg HTTP/1.1" 200 178899
+INFO 2025-01-27 13:33:51,644 basehttp 43490 13027028992 "GET /media/ttcopy/plastic_fisher_with_screw.png HTTP/1.1" 200 181331
+INFO 2025-01-27 13:33:51,650 basehttp 43490 13094187008 "GET /media/ttcopy/learning.ico HTTP/1.1" 200 132349
+INFO 2025-01-27 13:33:51,684 basehttp 43490 13043818496 "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39_Sw15UcT.png HTTP/1.1" 200 47595
+INFO 2025-01-27 13:33:51,691 basehttp 43490 13010239488 "GET /media/ttcopy/WechatIMG1739_uXy7vVh.png HTTP/1.1" 200 59693
+INFO 2025-01-27 13:33:51,692 basehttp 43490 13060608000 "GET /media/ttcopy/WechatIMG3475xx.png HTTP/1.1" 200 445046
+INFO 2025-01-27 13:33:51,696 basehttp 43490 13094187008 "GET /media/ttcopy/WechatIMG9302_eE4JEEo.jpeg HTTP/1.1" 200 37253
+INFO 2025-01-27 13:33:51,697 basehttp 43490 13027028992 "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-28_18.44.49.png HTTP/1.1" 200 819004
+INFO 2025-01-27 13:33:51,700 basehttp 43490 13077397504 "GET /media/ttcopy/WechatIMG3475_vDXnFjQ.png HTTP/1.1" 200 1248328
+INFO 2025-01-27 13:33:53,980 basehttp 43490 13077397504 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO 2025-01-27 13:33:55,488 basehttp 43490 13077397504 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO 2025-01-27 13:33:56,413 basehttp 43490 13077397504 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 40268
+INFO 2025-01-27 13:35:41,007 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=17 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:43,009 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=12 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:44,267 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=5 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:45,350 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=all HTTP/1.1" 200 41060
+INFO 2025-01-27 13:35:47,247 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=2 HTTP/1.1" 200 31231
+INFO 2025-01-27 13:35:49,694 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=4 HTTP/1.1" 200 26276
+INFO 2025-01-27 13:35:56,218 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=5 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:57,377 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=8 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:58,370 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=12 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:35:59,145 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=16 HTTP/1.1" 200 24509
+INFO 2025-01-27 13:36:00,618 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=4 HTTP/1.1" 200 26276
+INFO 2025-01-27 13:36:01,964 basehttp 43490 13010239488 "GET /stark/dipay/chargepay/list/?forwarder=2 HTTP/1.1" 200 31231
+INFO 2025-01-27 13:45:09,553 autoreload 43490 8629609024 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO 2025-01-27 13:45:10,228 autoreload 53001 8662860352 Watching for file changes with StatReloader
+INFO 2025-01-27 14:02:37,889 autoreload 53063 8664793664 Watching for file changes with StatReloader
+INFO 2025-01-27 14:33:08,280 autoreload 1454 8603308608 Watching for file changes with StatReloader
+INFO 2025-02-02 23:10:47,559 autoreload 28594 8659673664 Watching for file changes with StatReloader
+INFO 2025-02-02 23:59:10,617 autoreload 30611 8665576000 Watching for file changes with StatReloader
+INFO 2025-02-03 00:33:20,366 autoreload 32979 8597643840 Watching for file changes with StatReloader
+INFO 2025-02-03 00:38:29,900 autoreload 33098 8599622208 Watching for file changes with StatReloader
+INFO 2025-02-03 00:38:45,060 basehttp 33098 12933468160 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:45,071 basehttp 33098 12933468160 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 00:38:45,078 basehttp 33098 12933468160 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-02-03 00:38:45,112 basehttp 33098 12938723328 "GET /apple-touch-icon-precomposed.png HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:45,114 basehttp 33098 12938723328 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 00:38:45,115 basehttp 33098 12938723328 "GET /apple-touch-icon.png HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:45,117 basehttp 33098 12938723328 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 00:38:45,138 basehttp 33098 12933468160 "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:45,140 basehttp 33098 12933468160 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 00:38:51,468 basehttp 33098 12933468160 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:51,514 basehttp 33098 12933468160 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 00:38:51,642 basehttp 33098 12933468160 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 00:38:51,661 basehttp 33098 12954488832 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 00:38:51,663 basehttp 33098 12964999168 "GET /static/js/edit-follow-order.js HTTP/1.1" 304 0
+INFO 2025-02-03 00:38:51,663 basehttp 33098 12959744000 "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO 2025-02-03 00:38:51,668 basehttp 33098 12949233664 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-02-03 00:38:51,668 basehttp 33098 12933468160 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-02-03 00:38:51,669 basehttp 33098 12943978496 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-02-03 00:38:51,676 basehttp 33098 12933468160 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 00:38:51,678 basehttp 33098 12949233664 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 00:38:51,681 basehttp 33098 12933468160 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 00:38:51,687 basehttp 33098 12949233664 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 00:38:51,692 basehttp 33098 12933468160 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 00:38:51,702 basehttp 33098 12943978496 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 00:38:51,704 basehttp 33098 12959744000 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-02-03 00:38:51,705 basehttp 33098 12954488832 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-02-03 00:38:51,721 basehttp 33098 12933468160 "GET /static/icon/paycrm2.ico HTTP/1.1" 200 946
+INFO 2025-02-03 00:42:36,263 basehttp 33098 12933468160 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140048
+INFO 2025-02-03 00:42:36,295 basehttp 33098 12933468160 "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO 2025-02-03 00:42:36,295 basehttp 33098 12943978496 "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO 2025-02-03 00:42:36,296 basehttp 33098 12938723328 "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO 2025-02-03 09:38:01,948 autoreload 35868 8675299904 Watching for file changes with StatReloader
+INFO 2025-02-03 09:40:06,624 autoreload 35880 8669151808 Watching for file changes with StatReloader
+INFO 2025-02-03 09:40:17,653 basehttp 35880 13072912384 "GET /index/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:40:17,760 basehttp 35880 13072912384 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 09:40:17,774 basehttp 35880 13093933056 "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO 2025-02-03 09:40:17,776 basehttp 35880 13088677888 "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO 2025-02-03 09:40:17,777 basehttp 35880 13083422720 "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO 2025-02-03 09:40:17,777 basehttp 35880 13093933056 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO 2025-02-03 09:40:17,778 basehttp 35880 13088677888 "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO 2025-02-03 09:40:17,779 basehttp 35880 13078167552 "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO 2025-02-03 09:40:17,780 basehttp 35880 13083422720 "GET /static/css/dipay.css HTTP/1.1" 200 8397
+INFO 2025-02-03 09:40:17,780 basehttp 35880 13088677888 "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO 2025-02-03 09:40:17,781 basehttp 35880 13072912384 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-02-03 09:40:17,781 basehttp 35880 13099188224 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO 2025-02-03 09:40:17,782 basehttp 35880 13078167552 "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO 2025-02-03 09:40:17,782 basehttp 35880 13093933056 "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO 2025-02-03 09:40:17,782 basehttp 35880 13088677888 "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO 2025-02-03 09:40:17,785 basehttp 35880 13083422720 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-02-03 09:40:17,792 basehttp 35880 13072912384 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-02-03 09:40:17,794 basehttp 35880 13078167552 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-02-03 09:40:17,800 basehttp 35880 13072912384 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-02-03 09:40:17,802 basehttp 35880 13078167552 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-02-03 09:40:17,808 basehttp 35880 13083422720 "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO 2025-02-03 09:40:17,809 basehttp 35880 13072912384 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 09:40:17,812 basehttp 35880 13078167552 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 09:40:17,817 basehttp 35880 13072912384 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 09:40:17,818 basehttp 35880 13078167552 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 09:40:17,823 basehttp 35880 13072912384 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 09:40:17,824 basehttp 35880 13078167552 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 09:40:21,124 basehttp 35880 13072912384 "GET /index/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:40:21,292 basehttp 35880 13072912384 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 09:40:26,137 basehttp 35880 13072912384 "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30131
+INFO 2025-02-03 09:40:26,155 basehttp 35880 13072912384 "GET /static/js/common.js HTTP/1.1" 200 491
+INFO 2025-02-03 09:41:25,996 autoreload 35880 8669151808 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/userinfo.py changed, reloading.
+INFO 2025-02-03 09:41:26,689 autoreload 35902 8677786176 Watching for file changes with StatReloader
+INFO 2025-02-03 09:41:29,972 basehttp 35902 13087408128 "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30940
+INFO 2025-02-03 09:43:10,698 autoreload 35902 8677786176 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/userinfo.py changed, reloading.
+INFO 2025-02-03 09:43:11,432 autoreload 35918 8663396928 Watching for file changes with StatReloader
+INFO 2025-02-03 09:43:14,625 basehttp 35918 13061894144 "GET /stark/dipay/userinfo/edit/10/ HTTP/1.1" 200 21021
+INFO 2025-02-03 09:43:26,015 basehttp 35918 13061894144 "GET /stark/dipay/userinfo/edit/3/ HTTP/1.1" 200 21068
+INFO 2025-02-03 09:43:32,638 basehttp 35918 13061894144 "POST /stark/dipay/userinfo/edit/3/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:43:32,726 basehttp 35918 13061894144 "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30950
+INFO 2025-02-03 09:43:38,291 basehttp 35918 13061894144 "GET /stark/dipay/userinfo/edit/10/ HTTP/1.1" 200 21021
+INFO 2025-02-03 09:43:45,475 basehttp 35918 13061894144 "POST /stark/dipay/userinfo/edit/10/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:43:45,534 basehttp 35918 13061894144 "GET /stark/dipay/userinfo/list/ HTTP/1.1" 200 30960
+INFO 2025-02-03 09:47:59,768 autoreload 35918 8663396928 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO 2025-02-03 09:48:00,462 autoreload 35949 8629097024 Watching for file changes with StatReloader
+INFO 2025-02-03 09:49:30,712 autoreload 35967 8672653888 Watching for file changes with StatReloader
+INFO 2025-02-03 09:49:43,358 basehttp 35967 13077262336 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140048
+INFO 2025-02-03 09:54:07,072 autoreload 35967 8672653888 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO 2025-02-03 09:54:07,852 autoreload 35992 8638272064 Watching for file changes with StatReloader
+INFO 2025-02-03 09:54:34,079 autoreload 36006 8626164288 Watching for file changes with StatReloader
+INFO 2025-02-03 09:56:32,137 basehttp 36006 12986363904 "GET /index/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:56:32,257 basehttp 36006 12986363904 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 09:56:36,329 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO 2025-02-03 09:56:36,351 basehttp 36006 12986363904 "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO 2025-02-03 09:56:40,845 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39265
+INFO 2025-02-03 09:56:46,534 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39317
+INFO 2025-02-03 09:56:51,693 basehttp 36006 12986363904 "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO 2025-02-03 09:56:51,818 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39287
+INFO 2025-02-03 09:56:52,993 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39295
+INFO 2025-02-03 09:56:54,684 basehttp 36006 12986363904 "GET /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 29263
+INFO 2025-02-03 09:57:57,065 autoreload 36006 8626164288 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 09:57:57,802 autoreload 36035 8660390464 Watching for file changes with StatReloader
+INFO 2025-02-03 09:58:00,527 basehttp 36035 13054509056 "GET /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 29543
+INFO 2025-02-03 09:58:17,023 basehttp 36035 13054509056 "POST /stark/dipay/applyorder/to_workshop/970/ HTTP/1.1" 200 19031
+INFO 2025-02-03 09:58:18,759 basehttp 36035 13054509056 "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27618
+INFO 2025-02-03 10:03:26,418 autoreload 36035 8660390464 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO 2025-02-03 10:03:27,087 autoreload 36075 8673477184 Watching for file changes with StatReloader
+INFO 2025-02-03 10:05:05,942 autoreload 36075 8673477184 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO 2025-02-03 10:05:06,683 autoreload 36103 8601780800 Watching for file changes with StatReloader
+INFO 2025-02-03 10:05:09,164 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO 2025-02-03 10:17:58,983 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO 2025-02-03 10:18:06,247 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 200 27670
+INFO 2025-02-03 10:18:32,636 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?q=M4357 HTTP/1.1" 302 0
+INFO 2025-02-03 10:18:32,648 basehttp 36103 12939161600 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 10:18:32,661 basehttp 36103 12949671936 "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO 2025-02-03 10:18:32,661 basehttp 36103 12944416768 "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO 2025-02-03 10:18:32,663 basehttp 36103 12939161600 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-02-03 10:18:37,739 basehttp 36103 12939161600 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-02-03 10:18:37,758 basehttp 36103 12939161600 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 10:18:37,913 basehttp 36103 12939161600 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 10:18:37,937 basehttp 36103 12939161600 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO 2025-02-03 10:18:37,938 basehttp 36103 12949671936 "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO 2025-02-03 10:18:37,941 basehttp 36103 12939161600 "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO 2025-02-03 10:18:37,941 basehttp 36103 12960182272 "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO 2025-02-03 10:18:37,941 basehttp 36103 12965437440 "GET /static/css/dipay.css HTTP/1.1" 200 8456
+INFO 2025-02-03 10:18:37,942 basehttp 36103 12949671936 "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO 2025-02-03 10:18:37,943 basehttp 36103 12944416768 "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO 2025-02-03 10:18:37,944 basehttp 36103 12939161600 "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO 2025-02-03 10:18:37,945 basehttp 36103 12960182272 "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO 2025-02-03 10:18:37,945 basehttp 36103 12954927104 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO 2025-02-03 10:18:37,947 basehttp 36103 12965437440 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-02-03 10:18:37,954 basehttp 36103 12939161600 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-02-03 10:18:37,955 basehttp 36103 12949671936 "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO 2025-02-03 10:18:37,960 basehttp 36103 12944416768 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-02-03 10:18:37,978 basehttp 36103 12949671936 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 10:18:37,980 basehttp 36103 12954927104 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:18:37,982 basehttp 36103 12960182272 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:18:37,983 basehttp 36103 12944416768 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-02-03 10:18:37,988 basehttp 36103 12939161600 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-02-03 10:18:37,991 basehttp 36103 12949671936 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:18:37,995 basehttp 36103 12954927104 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:18:37,996 basehttp 36103 12960182272 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 10:18:39,859 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 10:18:39,865 basehttp 36103 12944416768 "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO 2025-02-03 10:18:39,865 basehttp 36103 12954927104 "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO 2025-02-03 10:18:39,865 basehttp 36103 12949671936 "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO 2025-02-03 10:18:54,903 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:18:54,921 basehttp 36103 12939161600 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 10:19:04,523 basehttp 36103 12949671936 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO 2025-02-03 10:19:04,526 basehttp 36103 12939161600 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO 2025-02-03 10:19:04,527 basehttp 36103 12944416768 "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO 2025-02-03 10:21:53,889 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:21:53,920 basehttp 36103 12939161600 "GET /static/css/dipay.css HTTP/1.1" 200 8456
+INFO 2025-02-03 10:22:10,138 basehttp 36103 12944416768 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 10:22:10,146 basehttp 36103 12944416768 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 10:22:10,276 basehttp 36103 12944416768 "GET /favicon.ico HTTP/1.1" 302 0
+INFO 2025-02-03 10:22:10,282 basehttp 36103 12944416768 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 10:22:13,283 basehttp 36103 12944416768 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-02-03 10:22:13,299 basehttp 36103 12944416768 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 10:22:13,445 basehttp 36103 12944416768 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 10:22:13,469 basehttp 36103 12944416768 "GET /static/css/layout.css HTTP/1.1" 304 0
+INFO 2025-02-03 10:22:13,473 basehttp 36103 12944416768 "GET /static/js/edit-follow-order.js HTTP/1.1" 304 0
+INFO 2025-02-03 10:22:13,512 basehttp 36103 12944416768 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-02-03 10:22:13,514 basehttp 36103 12954927104 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-02-03 10:22:13,519 basehttp 36103 12970692608 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 10:22:13,523 basehttp 36103 12965437440 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:22:13,537 basehttp 36103 12960182272 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-02-03 10:22:13,539 basehttp 36103 12965437440 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:22:13,539 basehttp 36103 12944416768 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:22:13,540 basehttp 36103 12970692608 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 10:22:13,541 basehttp 36103 12954927104 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 10:22:13,541 basehttp 36103 12949671936 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-02-03 10:22:15,253 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 10:22:18,131 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:22:25,983 basehttp 36103 12949671936 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO 2025-02-03 10:22:25,996 basehttp 36103 12970692608 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO 2025-02-03 10:22:25,999 basehttp 36103 12949671936 "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO 2025-02-03 10:24:07,386 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:24:21,657 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:26:07,594 basehttp 36103 12939161600 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 10:26:07,702 basehttp 36103 12939161600 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 10:26:12,103 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 10:26:14,228 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:26:35,446 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 10:26:35,471 basehttp 36103 12949671936 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 21:46:07,090 basehttp 36103 12939161600 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 21:46:07,196 basehttp 36103 12939161600 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 21:46:07,197 basehttp 36103 12939161600 - Broken pipe from ('127.0.0.1', 61173)
+
+INFO 2025-02-03 21:46:17,380 basehttp 36103 12939161600 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 21:46:17,559 basehttp 36103 12939161600 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 21:46:25,501 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 21:46:28,847 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:46:47,017 basehttp 36103 12949671936 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:46:47,053 basehttp 36103 12949671936 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 21:51:20,667 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:51:24,280 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:52:09,155 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:52:37,845 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 302 0
+INFO 2025-02-03 21:52:37,856 basehttp 36103 12939161600 "GET /login/ HTTP/1.1" 200 2054
+INFO 2025-02-03 21:52:37,872 basehttp 36103 12949671936 "GET /static/plugins/bootstrap/js/bootstrap.js HTTP/1.1" 200 69707
+INFO 2025-02-03 21:52:37,873 basehttp 36103 12944416768 "GET /static/js/jquery-3.3.1.min.js HTTP/1.1" 200 86927
+INFO 2025-02-03 21:52:37,874 basehttp 36103 12939161600 "GET /static/plugins/bootstrap/css/bootstrap.css HTTP/1.1" 200 146010
+INFO 2025-02-03 21:52:37,901 basehttp 36103 12939161600 "GET /static/plugins/bootstrap/css/bootstrap.css.map HTTP/1.1" 200 389287
+INFO 2025-02-03 21:52:43,983 basehttp 36103 12939161600 "POST /login/ HTTP/1.1" 302 0
+INFO 2025-02-03 21:52:44,006 basehttp 36103 12939161600 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 21:52:44,170 basehttp 36103 12939161600 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 21:52:44,202 basehttp 36103 12954927104 "GET /static/css/layout.css HTTP/1.1" 200 1242
+INFO 2025-02-03 21:52:44,207 basehttp 36103 12944416768 "GET /static/rbac/rbac.css HTTP/1.1" 200 2230
+INFO 2025-02-03 21:52:44,207 basehttp 36103 12960182272 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css HTTP/1.1" 200 12860
+INFO 2025-02-03 21:52:44,208 basehttp 36103 12954927104 "GET /static/js/edit-follow-order.js HTTP/1.1" 200 17632
+INFO 2025-02-03 21:52:44,210 basehttp 36103 12949671936 "GET /static/plugins/font-awesome/css/font-awesome.css HTTP/1.1" 200 37414
+INFO 2025-02-03 21:52:44,210 basehttp 36103 12944416768 "GET /static/js/img_operate.js HTTP/1.1" 200 1352
+INFO 2025-02-03 21:52:44,212 basehttp 36103 12960182272 "GET /static/js/chances-operator.js HTTP/1.1" 200 635
+INFO 2025-02-03 21:52:44,213 basehttp 36103 12965437440 "GET /static/css/dipay.css HTTP/1.1" 200 8454
+INFO 2025-02-03 21:52:44,214 basehttp 36103 12939161600 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js HTTP/1.1" 200 112359
+INFO 2025-02-03 21:52:44,214 basehttp 36103 12949671936 "GET /static/rbac/rbac.js HTTP/1.1" 200 1432
+INFO 2025-02-03 21:52:44,217 basehttp 36103 12954927104 "GET /static/js/decimal.js/decimal.js HTTP/1.1" 200 135914
+INFO 2025-02-03 21:52:44,225 basehttp 36103 12939161600 "GET /media/ttcopy/pay20241228141310_163.png HTTP/1.1" 200 35655
+INFO 2025-02-03 21:52:44,242 basehttp 36103 12949671936 "GET /static/plugins/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 77160
+INFO 2025-02-03 21:52:44,246 basehttp 36103 12939161600 "GET /media/ttcopy/pay20241227141654_5.png HTTP/1.1" 200 32183
+INFO 2025-02-03 21:52:44,249 basehttp 36103 12960182272 "GET /static/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css.map HTTP/1.1" 200 25198
+INFO 2025-02-03 21:52:44,254 basehttp 36103 12944416768 "GET /media/ttcopy/pay20241229215559_161.png HTTP/1.1" 200 262796
+INFO 2025-02-03 21:52:44,266 basehttp 36103 12954927104 "GET /static/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.js.map HTTP/1.1" 200 314246
+INFO 2025-02-03 21:52:44,266 basehttp 36103 12949671936 "GET /media/ttcopy/pay20240924132507_395.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 21:52:44,267 basehttp 36103 12960182272 "GET /media/ttcopy/pay20240924131933_717.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 21:52:44,268 basehttp 36103 12939161600 "GET /media/ttcopy/pay20241009194235_975.jpg HTTP/1.1" 200 194286
+INFO 2025-02-03 21:52:44,276 basehttp 36103 12944416768 "GET /media/ttcopy/pay20240924121325_127.jpg HTTP/1.1" 200 40960
+INFO 2025-02-03 21:52:44,277 basehttp 36103 12939161600 "GET /media/ttcopy/pay20240924120841_401.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 21:52:44,283 basehttp 36103 12944416768 "GET /media/ttcopy/pay20240924120621_737.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 21:52:44,283 basehttp 36103 12939161600 "GET /media/ttcopy/pay20240924120809_487.jpg HTTP/1.1" 200 49042
+INFO 2025-02-03 21:52:45,895 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 21:52:45,926 basehttp 36103 12944416768 "GET /static/js/edit-charge-list.js HTTP/1.1" 200 4374
+INFO 2025-02-03 21:52:45,926 basehttp 36103 12939161600 "GET /static/js/clipboard/dist/clipboard.min.js HTTP/1.1" 200 9160
+INFO 2025-02-03 21:52:45,926 basehttp 36103 12949671936 "GET /static/js/edit-dailyplan.js HTTP/1.1" 200 5628
+INFO 2025-02-03 21:52:48,048 basehttp 36103 12939161600 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 21:53:08,057 basehttp 36103 12939161600 "GET /stark/dipay/followorder/edit/710/?_filter=status%3Dall HTTP/1.1" 200 52250
+INFO 2025-02-03 21:53:08,096 basehttp 36103 12939161600 "GET /static/js/popup_create.js HTTP/1.1" 200 4154
+INFO 2025-02-03 22:01:15,324 autoreload 36103 8601780800 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:01:16,152 autoreload 39325 8631611968 Watching for file changes with StatReloader
+INFO 2025-02-03 22:01:17,230 basehttp 39325 12997877760 "GET /index/ HTTP/1.1" 302 0
+INFO 2025-02-03 22:01:17,323 basehttp 39325 12997877760 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 22:01:18,054 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39301
+INFO 2025-02-03 22:01:19,272 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 27447
+INFO 2025-02-03 22:05:43,842 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:06:58,402 basehttp 39325 12997877760 "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18843
+INFO 2025-02-03 22:09:12,171 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39288
+INFO 2025-02-03 22:09:19,601 basehttp 39325 12997877760 "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO 2025-02-03 22:09:19,721 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39258
+INFO 2025-02-03 22:09:21,710 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39335
+INFO 2025-02-03 22:09:23,669 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/to_workshop/971/ HTTP/1.1" 200 29556
+INFO 2025-02-03 22:09:58,495 basehttp 39325 12997877760 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:11:50,588 autoreload 39325 8631611968 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/applyorder.py changed, reloading.
+INFO 2025-02-03 22:11:51,327 autoreload 39384 8599216704 Watching for file changes with StatReloader
+INFO 2025-02-03 22:11:52,541 basehttp 39384 12930121728 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:14:12,497 autoreload 39384 8599216704 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:14:13,219 autoreload 39411 8631906880 Watching for file changes with StatReloader
+INFO 2025-02-03 22:14:14,304 basehttp 39411 12995751936 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:16:26,737 basehttp 39411 12995751936 "GET /stark/dipay/dailyplan/list/ HTTP/1.1" 200 48207
+INFO 2025-02-03 22:16:28,606 basehttp 39411 12995751936 "GET /stark/dipay/dailyplan/add/?get_type=simple HTTP/1.1" 200 2200
+INFO 2025-02-03 22:17:01,515 autoreload 39440 8675381824 Watching for file changes with StatReloader
+INFO 2025-02-03 22:17:10,236 basehttp 39440 13083459584 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39335
+INFO 2025-02-03 22:17:10,262 basehttp 39440 13083459584 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:17:10,262 basehttp 39440 13088714752 "GET /static/js/common.js HTTP/1.1" 200 491
+INFO 2025-02-03 22:17:10,999 basehttp 39440 13083459584 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:17:11,002 basehttp 39440 13083459584 "GET /static/js/newpayment_inspect.js HTTP/1.1" 200 2169
+INFO 2025-02-03 22:17:11,003 basehttp 39440 13088714752 "GET /static/js/standard-submit.js HTTP/1.1" 200 521
+INFO 2025-02-03 22:18:07,756 autoreload 39440 8675381824 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:18:08,465 autoreload 39457 8643199552 Watching for file changes with StatReloader
+INFO 2025-02-03 22:18:11,391 basehttp 39457 13018841088 "GET /stark/dipay/dailyplan/list/ HTTP/1.1" 200 48207
+INFO 2025-02-03 22:18:13,791 basehttp 39457 13018841088 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28055
+INFO 2025-02-03 22:19:13,993 autoreload 39457 8643199552 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:19:14,695 autoreload 39472 8668668480 Watching for file changes with StatReloader
+INFO 2025-02-03 22:19:16,017 basehttp 39472 13070573568 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:20:05,552 autoreload 39472 8668668480 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:20:06,255 autoreload 39487 8606782016 Watching for file changes with StatReloader
+INFO 2025-02-03 22:20:07,386 basehttp 39487 12947050496 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28064
+INFO 2025-02-03 22:20:55,082 basehttp 39487 12947050496 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 22:20:55,116 basehttp 39487 12947050496 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:24:54,614 autoreload 39487 8606782016 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:24:55,371 autoreload 39524 8636494400 Watching for file changes with StatReloader
+INFO 2025-02-03 22:25:41,895 autoreload 39524 8636494400 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:25:42,445 autoreload 39535 8663392832 Watching for file changes with StatReloader
+INFO 2025-02-03 22:25:48,857 basehttp 39535 13058482176 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 22:25:48,900 basehttp 39535 13058482176 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:25:56,921 basehttp 39535 13063737344 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO 2025-02-03 22:26:17,335 basehttp 39535 13063737344 "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18841
+INFO 2025-02-03 22:26:20,581 basehttp 39535 13063737344 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO 2025-02-03 22:26:52,178 basehttp 39535 13063737344 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28044
+INFO 2025-02-03 22:27:30,169 autoreload 39535 8663392832 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:27:30,798 autoreload 39554 8595448384 Watching for file changes with StatReloader
+INFO 2025-02-03 22:27:31,907 basehttp 39554 12925751296 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28040
+INFO 2025-02-03 22:29:28,562 basehttp 39554 12925751296 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 22:29:30,917 basehttp 39554 12925751296 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 22:30:17,794 basehttp 39554 12925751296 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 22:30:20,268 basehttp 39554 12925751296 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 22:30:27,891 basehttp 39554 12936261632 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 22:30:27,908 basehttp 39554 12936261632 "GET /static/css/dipay.css HTTP/1.1" 200 8471
+INFO 2025-02-03 22:31:43,140 basehttp 39554 12936261632 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 154034
+INFO 2025-02-03 22:31:43,176 basehttp 39554 12936261632 "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO 2025-02-03 22:34:47,803 autoreload 39554 8595448384 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO 2025-02-03 22:34:48,367 autoreload 39628 8608932416 Watching for file changes with StatReloader
+INFO 2025-02-03 22:39:51,969 autoreload 39628 8608932416 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/utils/displays.py changed, reloading.
+INFO 2025-02-03 22:39:52,668 autoreload 39752 8669123136 Watching for file changes with StatReloader
+INFO 2025-02-03 22:39:53,720 basehttp 39752 13073674240 "GET /index/ HTTP/1.1" 302 0
+INFO 2025-02-03 22:39:53,813 basehttp 39752 13073674240 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO 2025-02-03 22:39:57,599 basehttp 39752 13073674240 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO 2025-02-03 22:39:59,731 basehttp 39752 13073674240 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41545
+INFO 2025-02-03 22:39:59,794 basehttp 39752 13089439744 "GET /media/ttcopy/learning_EaWgPTu.jpg HTTP/1.1" 200 31455
+INFO 2025-02-03 22:39:59,806 basehttp 39752 13099950080 "GET /media/ttcopy/learning.ico HTTP/1.1" 200 132349
+INFO 2025-02-03 22:39:59,808 basehttp 39752 13073674240 "GET /media/ttcopy/plastic_fisher_with_screw.png HTTP/1.1" 200 181331
+INFO 2025-02-03 22:39:59,812 basehttp 39752 13084184576 "GET /media/ttcopy/20240406235343_326.jpg HTTP/1.1" 200 178899
+INFO 2025-02-03 22:39:59,827 basehttp 39752 13073674240 "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39_Sw15UcT.png HTTP/1.1" 200 47595
+INFO 2025-02-03 22:39:59,830 basehttp 39752 13099950080 "GET /media/ttcopy/WechatIMG9302_eE4JEEo.jpeg HTTP/1.1" 200 37253
+INFO 2025-02-03 22:39:59,833 basehttp 39752 13094694912 "GET /media/ttcopy/WechatIMG3475xx.png HTTP/1.1" 200 445046
+INFO 2025-02-03 22:39:59,834 basehttp 39752 13084184576 "GET /media/ttcopy/WechatIMG1739_uXy7vVh.png HTTP/1.1" 200 59693
+INFO 2025-02-03 22:39:59,839 basehttp 39752 13078929408 "GET /media/ttcopy/WechatIMG3475_vDXnFjQ.png HTTP/1.1" 200 1248328
+INFO 2025-02-03 22:39:59,840 basehttp 39752 13089439744 "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-28_18.44.49.png HTTP/1.1" 200 819004
+INFO 2025-02-03 22:40:13,560 basehttp 39752 13089439744 "GET /stark/dipay/chargepay/list/?page=2 HTTP/1.1" 200 30018
+INFO 2025-02-03 22:40:13,588 basehttp 39752 13078929408 "GET /media/ttcopy/logo-Z.png HTTP/1.1" 200 14187
+INFO 2025-02-03 22:40:13,590 basehttp 39752 13089439744 "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39.png HTTP/1.1" 200 47595
+INFO 2025-02-03 22:40:13,594 basehttp 39752 13084184576 "GET /media/ttcopy/CO_J4361_page_1_WIwM77h.jpg HTTP/1.1" 200 848504
+INFO 2025-02-03 22:40:18,853 basehttp 39752 13084184576 "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42135
+INFO 2025-02-03 22:40:33,333 basehttp 39752 13084184576 "GET /stark/dipay/chargepay/edit/42/?_filter=page%3D1 HTTP/1.1" 200 23908
+INFO 2025-02-03 22:40:49,226 basehttp 39752 13084184576 "POST /stark/dipay/chargepay/edit/42/?_filter=page%3D1 HTTP/1.1" 302 0
+INFO 2025-02-03 22:40:49,344 basehttp 39752 13084184576 "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO 2025-02-03 22:40:49,367 basehttp 39752 13084184576 "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 200 152610
+INFO 2025-02-03 22:41:41,936 autoreload 39752 8669123136 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-02-03 22:41:42,746 autoreload 39788 8601018944 Watching for file changes with StatReloader
+INFO 2025-02-03 22:41:46,045 basehttp 39788 12934344704 "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO 2025-02-03 22:41:46,081 basehttp 39788 12934344704 "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 304 0
+INFO 2025-02-03 22:44:39,686 basehttp 39788 12934344704 "GET /stark/dipay/chargepay/list/?page=1 HTTP/1.1" 200 42238
+INFO 2025-02-03 22:44:39,755 basehttp 39788 12934344704 "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 304 0
+INFO 2025-02-03 22:45:40,345 basehttp 39788 12934344704 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO 2025-02-03 22:46:29,396 autoreload 39788 8601018944 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-02-03 22:46:30,225 autoreload 39827 8597365312 Watching for file changes with StatReloader
+INFO 2025-02-03 22:46:32,683 basehttp 39827 12928888832 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 140064
+INFO 2025-02-03 22:46:45,038 autoreload 39827 8597365312 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/followorder.py changed, reloading.
+INFO 2025-02-03 22:46:45,655 autoreload 39842 8672903744 Watching for file changes with StatReloader
+INFO 2025-02-03 22:46:48,184 basehttp 39842 13078355968 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO 2025-02-03 22:49:02,613 basehttp 39842 13078355968 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO 2025-02-03 22:49:13,875 basehttp 39842 13078355968 "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134729
+INFO 2025-02-03 22:52:26,796 basehttp 39842 13088866304 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO 2025-02-03 22:52:26,823 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO 2025-02-03 22:53:04,842 basehttp 39842 13088866304 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO 2025-02-03 22:53:04,859 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO 2025-02-03 22:53:50,867 basehttp 39842 13088866304 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO 2025-02-03 22:53:50,885 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 200 8474
+INFO 2025-02-03 22:54:58,289 basehttp 39842 13088866304 "GET /stark/dipay/followorder/list/?status=all HTTP/1.1" 200 148278
+INFO 2025-02-03 22:54:58,300 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:55:05,359 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/list/?q=J4325 HTTP/1.1" 200 25276
+INFO 2025-02-03 22:55:05,367 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:55:08,609 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/edit/921/?_filter=q%3DJ4325 HTTP/1.1" 200 33049
+INFO 2025-02-03 22:55:30,088 basehttp 39842 13088866304 "POST /stark/dipay/applyorder/edit/921/?_filter=q%3DJ4325 HTTP/1.1" 302 0
+INFO 2025-02-03 22:55:30,195 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/list/?q=J4325 HTTP/1.1" 200 25429
+INFO 2025-02-03 22:55:30,212 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:55:32,481 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/add/ HTTP/1.1" 200 28040
+INFO 2025-02-03 22:55:51,008 basehttp 39842 13088866304 "POST /stark/dipay/applyorder/add/ HTTP/1.1" 200 18837
+INFO 2025-02-03 22:55:53,086 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39274
+INFO 2025-02-03 22:55:53,107 basehttp 39842 13088866304 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:55:58,048 basehttp 39842 13088866304 "POST /stark/dipay/applyorder/verify/list/ HTTP/1.1" 302 0
+INFO 2025-02-03 22:55:58,162 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/verify/list/ HTTP/1.1" 200 39244
+INFO 2025-02-03 22:55:59,343 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/list/ HTTP/1.1" 200 39378
+INFO 2025-02-03 22:56:01,294 basehttp 39842 13088866304 "GET /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 29535
+INFO 2025-02-03 22:57:40,732 autoreload 39842 8672903744 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 22:57:41,445 autoreload 39893 8625775168 Watching for file changes with StatReloader
+INFO 2025-02-03 22:57:45,212 basehttp 39893 12987277312 "GET /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 29511
+INFO 2025-02-03 22:57:57,395 basehttp 39893 12987277312 "POST /stark/dipay/applyorder/to_workshop/973/ HTTP/1.1" 200 19031
+INFO 2025-02-03 22:57:59,565 basehttp 39893 12987277312 "GET /stark/dipay/followorder/list/?q=J4360 HTTP/1.1" 200 27199
+INFO 2025-02-03 22:57:59,581 basehttp 39893 12987277312 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-03 22:58:03,061 basehttp 39893 12987277312 "GET /stark/dipay/applyorder/list/?q=J4360 HTTP/1.1" 200 25447
+INFO 2025-02-03 22:58:05,664 basehttp 39893 12987277312 "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 33038
+INFO 2025-02-03 22:58:55,038 autoreload 39893 8625775168 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/models.py changed, reloading.
+INFO 2025-02-03 22:58:55,839 autoreload 39914 8638120512 Watching for file changes with StatReloader
+INFO 2025-02-03 22:58:57,178 basehttp 39914 13010370560 "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 33038
+INFO 2025-02-03 23:00:42,171 autoreload 39914 8638120512 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-03 23:00:42,764 autoreload 39929 8673239616 Watching for file changes with StatReloader
+INFO 2025-02-03 23:00:45,687 basehttp 39929 13079568384 "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 30172

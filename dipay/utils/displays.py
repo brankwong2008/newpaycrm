@@ -288,10 +288,18 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
         return '基本信息'
     else:
         order_number = obj.order.order_number
+        po_number = obj.order.po_number
+        if not po_number:
+            po_number_text = ""
+        else:
+            po_number_text = f'<span class="po-number-display">{po_number}</span><br>'
+
+
         salesperson = obj.order.salesperson.nickname if obj.order.salesperson else '-'
         confirm_date = confirm_date_display(handler, obj, False)
         order_link = reverse("stark:dipay_applyorder_list")+"?q=%s"% order_number
         basic_info = f'<span class="invoice-number-display"><a class="order-link" href="{order_link}" target="_blank">{order_number}</a></span> <br>' \
+                     f' {po_number_text}' \
                      f' <span>{confirm_date}</span><br>' \
                      f'<span>{salesperson}</span>'
         return mark_safe(basic_info)
@@ -435,10 +443,20 @@ def ttcopy_display(handler,obj=None, is_header=False, *args, **kwargs):
                       f"onclick='return popupImg(this)' width='30px' height='30px'>"
         else:
             img_tag = '<i class="fa fa-minus-square hidden-xs"></i>'
-
-
     return mark_safe(img_tag)
 
+
+# 港杂费发票小图片
+def fee_invoice_display(handler,obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return mark_safe("<span class='hidden-xs'>费用发票</span>")
+    else:
+        if obj.fee_invoice:
+            img_tag = f"<img class='ttcopy-small-img hidden-xs' src={obj.fee_invoice.url} " \
+                      f"onclick='return popupImg(this)' width='30px' height='30px'>"
+        else:
+            img_tag = '<i class="fa fa-minus-square hidden-xs"></i>'
+    return mark_safe(img_tag)
 
 
 # 费用单display

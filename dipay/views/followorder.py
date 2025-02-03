@@ -298,7 +298,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                       follow_date_display('ETA', time_format='%m/%d'),
                       info_display('load_info',hidden_xs='hidden-xs'),
                       book_info_display('book_info',hidden_xs='hidden-xs'),
-                      info_display('produce_info',hidden_xs='hidden-xs'),
+                      # info_display('produce_info',hidden_xs='hidden-xs'),
                       amount_rvcd_collect_display,
                       more_tag_display,
                       details_display,

@@ -138,6 +138,13 @@ textarea[id^="amount"] {
     font-weight: bolder;
 }
 
+/*PO号*/
+.po-number-display {
+    font-size: small;
+    color: #337ab7;
+}
+
+
 .invoice-amount-display {
     font-size: small;
     font-weight: bolder;
@@ -230,7 +237,7 @@ a.add-record-btn {
 
 /* 控制表格列宽  客户货物 */
 .followorder-table-head-3, .weekly-plan-col-2 {
-    width: 11%;
+    width: 12%;
 
 }
 
@@ -242,13 +249,13 @@ a.add-record-btn {
 
 /* 控制表格列宽  装箱信息 */
 .followorder-table-head-7, .weekly-plan-col-7 {
-    width: 20%;
+    width: 24%;
 
 }
 
 /* 控制表格列宽  订舱信息 */
 .followorder-table-head-8, .weekly-plan-col-8 {
-    width: 19%;
+    width: 23%;
 
 }
 

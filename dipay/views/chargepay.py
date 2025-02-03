@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler,Option
 from django.shortcuts import render, HttpResponse
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
-from dipay.utils.displays import ttcopy_display,forwarder_display
+from dipay.utils.displays import ttcopy_display,forwarder_display,fee_invoice_display
 from django.http import JsonResponse
 from dipay.models import PayToCharge,Charge,Forwarder
 from dipay.forms.forms import ChargePayModelForm
@@ -62,6 +62,7 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
         amount_display,
         get_choice_text("status"),
         ttcopy_display,
+        fee_invoice_display,
         related_charges_display,
         "remark",
 

@@ -78,9 +78,16 @@ class TaskEditModelForm(forms.ModelForm):
 
 
 class AddApplyOrderModelForm(StarkForm):
+    # 在 Django 的表单中，required=False 在 attrs 字典里设置是不正确的用法，
+    # attrs 主要用于设置 HTML 标签的属性，而 required 是 Django 表单字段本身的一个参数。
+    # 当你想要让某个字段变为可选（非必填）时，需要在表单类的字段定义中进行设置。
+    po_number = forms.CharField(required=False, label="PO号", widget=forms.TextInput(attrs={
+        'onkeydown': 'if(event.keyCode==13) return false;',
+    }))
+
     class Meta:
         model = ApplyOrder
-        fields = ['order_type', 'customer', 'goods', 'term', 'currency', 'amount', 'remark', 'discharge_port']
+        fields = ['order_type', 'po_number','customer', 'goods', 'term', 'currency', 'amount', 'remark', 'discharge_port']
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
             'customer': forms.Select(attrs={'required':True}),
@@ -94,7 +101,8 @@ class AddApplyOrderModelForm(StarkForm):
 class EditApplyOrderModelForm(StarkForm):
     class Meta:
         model = ApplyOrder
-        fields = '__all__'
+        fields = ['confirm_date', 'order_number', 'sub_sequence', 'po_number', 'customer', 'goods', 'discharge_port',
+                  'currency', 'amount', 'remark']
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
             # 'create_date': forms.DateInput(attrs={'type': 'date'}),
@@ -116,9 +124,10 @@ class EditApplyOrderModelForm(StarkForm):
                 field.help_text = model_name
 
 class ConfirmApplyOrderModelForm(StarkForm):
+    po_number = forms.CharField(required=False, label="PO号",)
     class Meta:
         model = ApplyOrder
-        fields = ['confirm_date','order_number','sub_sequence','customer','goods','discharge_port','currency','amount','remark']
+        fields = ['confirm_date','order_number','sub_sequence','po_number','customer','goods','discharge_port','currency','amount','remark']
 
         widgets = {
             'remark': forms.Textarea(attrs={'cols': 30, 'rows': 3}),
