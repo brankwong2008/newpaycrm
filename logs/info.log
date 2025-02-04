@@ -519,3 +519,28 @@ INFO "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 3303
 INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
 INFO Watching for file changes with StatReloader
 INFO "GET /stark/dipay/applyorder/edit/973/?_filter=q%3DJ4360 HTTP/1.1" 200 30172
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/views/applyorder.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/followorder/list/ HTTP/1.1" 200 134733
+INFO "GET /static/css/dipay.css HTTP/1.1" 200 8478
+INFO "GET /index/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 44863
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41157
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41648
+INFO "GET /media/ttcopy/20240406235343_326.jpg HTTP/1.1" 200 178899
+INFO "GET /media/feeinvoice/inv20250203224049_420.png HTTP/1.1" 200 152610
+INFO "GET /media/ttcopy/WechatIMG9302_eE4JEEo.jpeg HTTP/1.1" 200 37253
+INFO "GET /media/ttcopy/learning_EaWgPTu.jpg HTTP/1.1" 200 31455
+INFO "GET /media/ttcopy/plastic_fisher_with_screw.png HTTP/1.1" 200 181331
+INFO "GET /media/ttcopy/learning.ico HTTP/1.1" 200 132349
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-26_08.00.39_Sw15UcT.png HTTP/1.1" 200 47595
+INFO "GET /media/ttcopy/WechatIMG1739_uXy7vVh.png HTTP/1.1" 200 59693
+INFO "GET /media/ttcopy/WechatIMG3475xx.png HTTP/1.1" 200 445046
+INFO "GET /media/ttcopy/%E6%88%AA%E5%B1%8F2022-10-28_18.44.49.png HTTP/1.1" 200 819004
+INFO "GET /media/ttcopy/WechatIMG3475_vDXnFjQ.png HTTP/1.1" 200 1248328
+INFO "GET /stark/dipay/chargepay/edit/41/ HTTP/1.1" 200 23921
+INFO "POST /stark/dipay/chargepay/edit/41/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41751
+INFO "GET /media/feeinvoice/inv20250205075312_740.png HTTP/1.1" 200 133725
+INFO "GET /media/feeinvoice/inv20250205075312_740.png HTTP/1.1" 304 0

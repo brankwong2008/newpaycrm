@@ -6,3 +6,5 @@ package-lock.json
 package.jsonv
 secret.py
 venv/*
+log/*
+logs/*

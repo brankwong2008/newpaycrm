@@ -103,9 +103,14 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
                     item.save()
         form.save()
 
-        # 压缩图片
+        # 压缩图片ttcopy
         if form.instance.ttcopy:
             t = threading.Thread(target=compress_image, args=(form.instance.ttcopy.path, 800))
+            t.start()
+
+        # 压缩图片fee invoice
+        if form.instance.fee_invoice:
+            t = threading.Thread(target=compress_image, args=(form.instance.fee_invoice.path, 800))
             t.start()
 
     def get_model_form(self,handle_type=None):

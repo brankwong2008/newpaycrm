@@ -275,12 +275,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         # 给审核者发送提示短信
         order_number = request.user.username
 
-        # send_sms(
-        #     sign_name='文安县金凯建材有限公司',
-        #     template_code='SMS_475870960',
-        #     phone_numbers='18500490622',
-        #     template_param='{"time":"%s", "order":"%s"}' % (send_time, order_number)
-        # )
+        send_sms(
+            sign_name='文安县金凯建材有限公司',
+            template_code='SMS_475870960',
+            phone_numbers='18500490622',
+            template_param='{"time":"%s", "order":"%s"}' % (send_time, order_number)
+        )
         print("short msg sent")
 
 

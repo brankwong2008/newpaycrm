@@ -141,7 +141,7 @@ textarea[id^="amount"] {
 /*PO号*/
 .po-number-display {
     font-size: small;
-    color: #337ab7;
+    /*color: #337ab7;*/
 }
 
 
