@@ -980,3 +980,7 @@ INFO 2025-02-12 11:21:02,686 basehttp 3857 13084467200 "GET /media/ttcopy/fwd202
 INFO 2025-02-12 11:21:02,687 basehttp 3857 13089722368 "GET /media/feeinvoice/inv20250212112041_914.jpg HTTP/1.1" 200 199508
 INFO 2025-02-13 00:13:46,125 autoreload 3857 8676131392 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/paycrm/secret.py changed, reloading.
 INFO 2025-02-13 00:13:47,034 autoreload 5567 8594760256 Watching for file changes with StatReloader
+INFO 2025-02-13 00:26:42,780 autoreload 5567 8594760256 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-13 00:26:43,502 autoreload 5726 8594334272 Watching for file changes with StatReloader
+INFO 2025-02-13 00:27:04,202 autoreload 5726 8594334272 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-13 00:27:04,938 autoreload 5744 8672027200 Watching for file changes with StatReloader

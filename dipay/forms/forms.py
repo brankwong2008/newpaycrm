@@ -281,6 +281,7 @@ class ChanceModelForm(StarkForm):
 
 class ChargePayModelForm(StarkForm):
     ttcopy = forms.ImageField(required=False, label='付款水单',widget=forms.FileInput())
+    fee_invoice = forms.ImageField(required=False, label='费用发票',widget=forms.FileInput())
     class Meta:
         model = ChargePay
         fields = "__all__"

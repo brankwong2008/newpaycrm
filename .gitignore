@@ -8,3 +8,5 @@ secret.py
 venv/*
 log/*
 logs/*
+/logs/
+/log/
