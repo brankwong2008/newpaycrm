@@ -2,9 +2,12 @@ import os
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import PermissionHanlder
 from django.conf.urls import url
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect,reverse
 from openpyxl import load_workbook
 from dipay.models import UserInfo
+from django.utils.safestring import mark_safe
+from dipay.utils.create_random_string import get_string
+from paycrm.secret import SITE_HEAD
 
 
 class CustomerHandler(PermissionHanlder, StarkHandler):
@@ -18,7 +21,16 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
             control_list= [ each.nickname  for each in UserInfo.objects.filter(roles__title__in=["外销员",])]
         )]
 
-    fields_display = ['id', 'title', 'owner']
+
+    def get_follow_link_display(self, obj=None, is_header=False, *args, **kwargs):
+        if is_header:
+            return "跟单链接"
+        else:
+            link = self.reverse_url("get_follow_link", pk=obj.pk)
+            link_btn = f"<a href='{link}' target='_blank'>获取链接</a>"
+            return mark_safe(link_btn)
+
+    fields_display = ['id', 'title', 'owner', get_follow_link_display]
 
     def get_per_page(self):
         return 10
@@ -34,9 +46,39 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
     def get_extra_urls(self):
         return [
             url("^upload/$", self.wrapper(self.upload_customer), name=self.get_url_name('upload_customer')),
+            url("^get_follow_link/(?P<pk>\d+)$", self.wrapper(self.get_follow_link), name=self.get_url_name('get_follow_link')),
         ]
 
-        # 删除一条记录
+
+
+    # 获取该客户的订单跟进表链接地址
+    def get_follow_link(self, request,pk, *args, **kwargs):
+        print("get_follow_link", pk)
+        # 生成20位随机字符串
+        customer_obj = self.model_class.objects.filter(pk=pk).first()
+        if not customer_obj:
+            return HttpResponse(f'customer number {pk} does NOT exist')
+        if customer_obj.follow_id:
+            follow_id = customer_obj.follow_id
+        else:
+            follow_id = get_string(length=20)
+            customer_obj.follow_id = follow_id
+            customer_obj.save()
+        link = reverse("stark:dipay_followorder_follow", kwargs={"follow_id":follow_id})
+        link = SITE_HEAD + link
+        btn = """<br><button id="copyButton">复制内容到剪贴板</button><script>
+        const copyButton = document.getElementById('copyButton');
+        const contentToCopy = '""" + link +  """';
+        copyButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText(contentToCopy);
+                window.alert('内容已成功复制到剪贴板');
+            } catch (error) {
+                window.alert('复制内容到剪贴板时出错:', error);
+            }
+        });
+    </script>"""
+        return HttpResponse(mark_safe(link+btn))
 
     def upload_customer(self, request, *args, **kwargs):
         print(request.POST, request.FILES)

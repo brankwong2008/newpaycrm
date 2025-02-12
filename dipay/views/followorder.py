@@ -10,14 +10,14 @@ from stark.utils.display import get_date_display, get_choice_text, PermissionHan
 from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
-    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details
+    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details,order_number_display
 
 from django.db.models import ForeignKey
 
 from dipay.forms.forms import AddApplyOrderModelForm, EditFollowOrderModelForm
 from django.db import models
 from django.conf.urls import url
-from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo, FollowOrder
+from dipay.models import ApplyOrder, Pay2Orders, ApplyRelease, UserInfo, FollowOrder, Customer
 from decimal import Decimal
 from dipay.utils.order_updates import order_payment_update
 from openpyxl import load_workbook
@@ -356,9 +356,35 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             url("^neating/$", self.wrapper(self.neating), name=self.get_url_name('neating')),
             url("^tests/$", self.wrapper(self.tests), name=self.get_url_name('tests')),
             url("^download/$", self.wrapper(self.download), name=self.get_url_name('download')),
+            url("^follow/(?P<follow_id>[a-zA-Z0-9]+)$", self.wrapper(self.follow), name=self.get_url_name('follow')),
         ]
 
         return patterns
+
+    def follow(self, request, follow_id, *args, **kwarg):
+        """给客户端查看的英文版跟单表，客户无须登录"""
+        print("follow_id",follow_id )
+        # 通过follow—id拿到customer id
+        customer_obj = Customer.objects.filter(follow_id=follow_id).first()
+        if not customer_obj:
+            return HttpResponse('customer id does not exist')
+
+        data_query_set = self.model_class.objects.filter(order__customer_id= customer_obj.pk)
+        print(self.model_class, customer_obj.pk, customer_obj)
+        print("data_query_set",data_query_set)
+        if data_query_set:
+            response = f" count is {data_query_set.count()}"
+            # return HttpResponse(response)
+        fields_display = [
+            order_number_display("order_number","Order No."),
+            order_number_display("po_number","PO No."),
+            "ETD",
+            "ETA",
+            ]
+        header_list, data_list = self.get_table_data(data_query_set=data_query_set,fields_display=fields_display)
+
+        return render(request, "dipay/follow_show_list.html", locals())
+
 
     def show_pay_details(self, request, order_id, *args, **kwarg):
         order_obj = ApplyOrder.objects.filter(pk=order_id).first()

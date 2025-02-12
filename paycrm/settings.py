@@ -171,6 +171,7 @@ MENU_LIST_KEY = '89ljfaljfa8fa-fa'
 WHITE_URL_LIST = [
     '/login/',
     '/admin/.*',
+    '/stark/dipay/followorder/follow/.*',
 ]
 
 # 需要登录，不需要特殊授权的权限

@@ -304,6 +304,16 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
                      f'<span>{salesperson}</span>'
         return mark_safe(basic_info)
 
+# （订单号，下单日期）
+def order_number_display(field, title=None, ):
+    def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
+        if is_header:
+            return title or handler_obj.model_class._meta.get_field(field).verbose_name
+        else:
+            order_obj = getattr(obj, "order")
+            return getattr(order_obj,field) or "-"
+    return inner
+
 
 # 订舱信息展示，加入船公司和集装箱信息
 def book_info_display(field, title=None, time_format="%Y-%m-%d", hidden_xs='', max_width=562):

@@ -47,6 +47,7 @@ class Customer(models.Model):
     email = models.CharField(max_length=128, verbose_name='邮件地址', default='-')
     owner = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='所属外销员',
                               limit_choices_to={"department": 1}, null=True)
+    follow_id = models.CharField(max_length=20, verbose_name='followID', null=True)
 
     def __str__(self):
         if self is None:

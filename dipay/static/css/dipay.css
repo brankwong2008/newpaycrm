@@ -116,6 +116,8 @@ textarea[id^="amount"] {
 
 }
 
+
+
 /*等款*/
 .status-display.status-3 {
     color: blue;
@@ -148,7 +150,6 @@ textarea[id^="amount"] {
 .invoice-amount-display {
     font-size: small;
     font-weight: bolder;
-
 }
 
 /* 欠款和收款金额*/
@@ -162,6 +163,12 @@ textarea[id^="amount"] {
     color: orangered;
 }
 
+
+/* 客户名称显示 */
+.customer-title {
+    margin-right: 30px;
+    font-size: large;
+}
 
 /*标签导航active*/
 .nav-tabs li a {

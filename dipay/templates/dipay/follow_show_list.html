@@ -1,0 +1,231 @@
+{% extends 'zero_base_layout.html' %}
+{% load static %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+
+    <style>
+
+        li.dropdown {
+            list-style-type: none;
+        }
+
+        .fa-caret-down {
+            font-size: large;
+        }
+
+        .time-search-chozen {
+            background-color: paleturquoise;
+        }
+
+        .random-search-input{
+            width: 226px;
+        }
+
+        .search-select {
+            width: 150px;
+            margin-left: 30px;
+        }
+        .handle-block{
+            width: 130px;
+        }
+
+        .search-item {
+            padding: 0 3px;
+            height: 24px;
+        }
+
+        i:hover {
+            cursor: pointer;
+        }
+
+        i.unchecked {
+            color: lightgrey;
+        }
+
+        i.unchecked, i.checked {
+            font-size: small;
+        }
+
+    .download-icon{
+        margin-right: 30px;
+        padding-top: 10px ;
+    }
+
+
+    </style>
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="container-fluid">
+
+        <div class="col-md-12">
+
+
+            <!-- 组合筛选功能区 -->
+            {% if option_group_dict %}
+                <div class="panel panel-default">
+                    {#                    <div class="panel-heading">#}
+                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
+                    {#                    </div>#}
+                    <div class="panel-body">
+                        {% for field, row in option_group_dict.items %}
+
+                            <div class="search-group">
+                                <div class="row">
+                                    {% for each in row %}
+                                        {{ each|safe }}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endif %}
+
+            {% if extra_render_func_data %}
+                 <div style="color: lightgray;margin-bottom: 10px"> 常搜:
+                     {% for item in extra_render_func_data.often_clicks %}
+
+                        <a href="{{ item.link }}" style="color: lightgray;margin-right: 12px"> {{ item.title }} </a>
+
+                     {% endfor %}
+
+                 </div>
+
+
+            {% endif %}
+
+
+
+            <!-- 模糊搜索 字段 -->
+            {% if search_list %}
+
+                <form action="" method="get" class="form-group pull-left">
+                    <input name="q" class="random-search-input" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"></i></button>
+                </form>
+            {% endif %}
+
+           <div> <span class="customer-title">Customer:</span> <span class="customer-title">{{ customer_obj.title }}</span> </div>
+
+            <form action="" method="post" id="form_contain_table">
+                <!-- 批量处理按钮 -->
+                {% csrf_token %}
+                {% if batch_process_dict %}
+                    <div class="input-group handle-block pull-right hidden-xs">
+                        <select name="handle_type" class="form-control search-item" >
+                             <option value="">处理方式</option>
+                            {% for func,text in batch_process_dict.items %}
+                                <option value="{{ func }}">{{ text }}</option>
+                            {% endfor %}
+
+                        </select>
+                        <span class="input-group-btn">
+                        <button type='submit' class="btn btn-default search-item" type="button"><i class="fa fa-send"></i></button>
+                        </span>
+                    </div><!-- /input-group -->
+
+                {% endif %}
+
+
+                <div>{{ msg }}</div>
+
+                <table class="table table-striped">
+
+                    <thead>
+                    {% for item in header_list %}
+                        <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
+
+                    {% endfor %}
+
+
+                    </thead>
+                    <tbody>
+                    {% for row in data_list %}
+                        <tr>
+                            {% for item in row.data %}
+                                {% if forloop.counter == 2 %}
+                                    <td class="txt-ell" nowrap>{{ item }} </td>
+                                {% else %}
+                                    <td class="txt-ell">{{ item }} </td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+
+                    {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </form>
+
+
+            <!-- 分页器    -->
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+
+                    {{ pager.page_html|safe }}
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+    </div>
+
+
+    <!-- 这个方法有点麻烦，后面再研究 用模态框解决临时弹出输入问题  Button trigger modal -->
+    {#<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">#}
+    {#  Launch demo modal#}
+    {#</button>#}
+
+
+    <!-- 模态对话框的btn， 显示收款明细
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> -->
+
+    <!-- Modal 模态对话框  显示收款明细 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="myModalLabel">title</h5>
+                    <div class="modal-error" style="color: red"></div>
+                </div>
+                <div class="modal-body">
+                    <div class="mymodal-details"></div>
+
+                </div>
+                {#      <div class="modal-footer">#}
+                {#        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
+                {#      </div>#}
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
+    <script>
+        new ClipboardJS('.clipboard_btn')
+    </script>
+
+    <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/decimal.js/decimal.js" %}"></script>
+    <script src="{% static "js/edit-charge-list.js" %}"></script>
+    <script src="{% static "js/edit-dailyplan.js" %}"></script>
+
+
+
+{% endblock %}
