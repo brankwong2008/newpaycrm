@@ -984,3 +984,35 @@ INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.p
 INFO Watching for file changes with StatReloader
 INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
 INFO Watching for file changes with StatReloader
+INFO "GET / HTTP/1.1" 302 0
+INFO "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 45118
+INFO "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41445
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO "GET /media/ttcopy/fwd20250212112102_189.jpg HTTP/1.1" 304 0
+INFO "GET /media/feeinvoice/inv20250212112041_914.jpg HTTP/1.1" 304 0
+INFO "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 200 957328
+INFO "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 200 191535
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO Watching for file changes with StatReloader
+INFO "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41445
+INFO "POST /stark/dipay/charge/list/ HTTP/1.1" 200 108
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41930
+INFO "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 304 0
+INFO "GET /stark/dipay/chargepay/edit/44/ HTTP/1.1" 200 24050
+INFO "POST /stark/dipay/chargepay/edit/44/ HTTP/1.1" 302 0
+INFO "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42107
+INFO "GET /media/feeinvoice/inv20250213005144_132.jpg HTTP/1.1" 200 358213
+INFO "GET /stark/dipay/chargepay/edit/44/ HTTP/1.1" 200 24168

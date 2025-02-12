@@ -984,3 +984,35 @@ INFO 2025-02-13 00:26:42,780 autoreload 5567 8594760256 /Users/wongbrank/Pycharm
 INFO 2025-02-13 00:26:43,502 autoreload 5726 8594334272 Watching for file changes with StatReloader
 INFO 2025-02-13 00:27:04,202 autoreload 5726 8594334272 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
 INFO 2025-02-13 00:27:04,938 autoreload 5744 8672027200 Watching for file changes with StatReloader
+INFO 2025-02-13 00:34:33,064 basehttp 5744 13079343104 "GET / HTTP/1.1" 302 0
+INFO 2025-02-13 00:34:33,183 basehttp 5744 13079343104 "GET /stark/dipay/inwardpay/list/ HTTP/1.1" 200 45118
+INFO 2025-02-13 00:34:33,200 basehttp 5744 13079343104 "GET /static/css/dipay.css HTTP/1.1" 304 0
+INFO 2025-02-13 00:34:36,593 basehttp 5744 13079343104 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41445
+INFO 2025-02-13 00:34:39,346 basehttp 5744 13079343104 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO 2025-02-13 00:34:39,376 basehttp 5744 13079343104 "GET /media/ttcopy/fwd20250212112102_189.jpg HTTP/1.1" 304 0
+INFO 2025-02-13 00:34:39,383 basehttp 5744 13084598272 "GET /media/feeinvoice/inv20250212112041_914.jpg HTTP/1.1" 304 0
+INFO 2025-02-13 00:34:44,576 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO 2025-02-13 00:34:50,304 basehttp 5744 13084598272 "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO 2025-02-13 00:34:50,566 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO 2025-02-13 00:34:55,642 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO 2025-02-13 00:35:04,003 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO 2025-02-13 00:35:17,809 basehttp 5744 13084598272 "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO 2025-02-13 00:35:17,918 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO 2025-02-13 00:35:17,942 basehttp 5744 13084598272 "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 200 957328
+INFO 2025-02-13 00:35:39,895 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/edit/43/ HTTP/1.1" 200 24052
+INFO 2025-02-13 00:35:44,234 basehttp 5744 13084598272 "POST /stark/dipay/chargepay/edit/43/ HTTP/1.1" 302 0
+INFO 2025-02-13 00:35:44,457 basehttp 5744 13084598272 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42119
+INFO 2025-02-13 00:35:44,491 basehttp 5744 13084598272 "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 200 191535
+INFO 2025-02-13 00:49:43,357 autoreload 5744 8672027200 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-13 00:49:43,930 autoreload 6052 8630039104 Watching for file changes with StatReloader
+INFO 2025-02-13 00:51:14,370 autoreload 6052 8630039104 /Users/wongbrank/PycharmProjects/pythonProjec/newpaycrm/dipay/forms/forms.py changed, reloading.
+INFO 2025-02-13 00:51:15,087 autoreload 6078 8659292736 Watching for file changes with StatReloader
+INFO 2025-02-13 00:51:17,071 basehttp 6078 13054111744 "GET /stark/dipay/charge/list/ HTTP/1.1" 200 41445
+INFO 2025-02-13 00:51:25,053 basehttp 6078 13054111744 "POST /stark/dipay/charge/list/ HTTP/1.1" 200 108
+INFO 2025-02-13 00:51:26,403 basehttp 6078 13054111744 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 41930
+INFO 2025-02-13 00:51:26,449 basehttp 6078 13054111744 "GET /media/feeinvoice/inv20250213003517_637.jpg HTTP/1.1" 304 0
+INFO 2025-02-13 00:51:29,686 basehttp 6078 13054111744 "GET /stark/dipay/chargepay/edit/44/ HTTP/1.1" 200 24050
+INFO 2025-02-13 00:51:44,885 basehttp 6078 13054111744 "POST /stark/dipay/chargepay/edit/44/ HTTP/1.1" 302 0
+INFO 2025-02-13 00:51:44,991 basehttp 6078 13054111744 "GET /stark/dipay/chargepay/list/ HTTP/1.1" 200 42107
+INFO 2025-02-13 00:51:45,014 basehttp 6078 13054111744 "GET /media/feeinvoice/inv20250213005144_132.jpg HTTP/1.1" 200 358213
+INFO 2025-02-13 00:51:51,553 basehttp 6078 13054111744 "GET /stark/dipay/chargepay/edit/44/ HTTP/1.1" 200 24168
