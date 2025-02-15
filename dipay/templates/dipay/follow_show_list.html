@@ -113,7 +113,9 @@
                 </form>
             {% endif %}
 
-           <div> <span class="customer-title">Customer:</span> <span class="customer-title">{{ customer_obj.title }}</span> </div>
+           <div> <span class="">Customer:</span> <span class="customer-title">{{ customer_obj.title }}</span> </div>
+
+            <hr>
 
             <form action="" method="post" id="form_contain_table">
                 <!-- 批量处理按钮 -->
@@ -141,7 +143,7 @@
 
                     <thead>
                     {% for item in header_list %}
-                        <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
+                        <th class="customerfollow-table-head-{{ forloop.counter }}">{{ item }} </th>
 
                     {% endfor %}
 

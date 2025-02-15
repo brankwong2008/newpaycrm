@@ -166,8 +166,9 @@ textarea[id^="amount"] {
 
 /* 客户名称显示 */
 .customer-title {
-    margin-right: 30px;
+    margin-left: 30px;
     font-size: large;
+    font-weight: bold;
 }
 
 /*标签导航active*/
@@ -269,7 +270,6 @@ a.add-record-btn {
 /* 控制表格列宽  生产信息 */
 .followorder-table-head-9, .weekly-plan-col-9 {
     width: 10%;
-
 }
 
 /* 集装箱号的span格式 */
@@ -355,6 +355,41 @@ tr.active {
 .search-group .others {
     display: inline-block;
 }
+
+
+
+/* 控制客户follow表格列宽  下单时间 */
+.customerfollow-table-head-1 {
+    width: 6%;
+}
+
+/* 控制客户follow表格列宽  order number */
+.customerfollow-table-head-2 {
+    width: 6%;
+}
+
+/* 控制客户follow表格列宽  po number */
+.customerfollow-table-head-3 {
+    width: 6%;
+}
+
+/* 控制客户follow表格列宽  goods */
+.customerfollow-table-head-4 {
+    width: 12%;
+}
+
+/* 控制客户follow表格列宽   customer */
+.customerfollow-table-head-5 {
+    width: 6%;
+}
+
+/* 控制客户follow表格列宽   ETD ETA */
+.customerfollow-table-head-6,.customerfollow-table-head-7 {
+    width: 7%;
+}
+
+
+
 
 /* ***********弹窗图片的样式 *************/
 /* 弹窗背景 */

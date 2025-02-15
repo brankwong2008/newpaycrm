@@ -304,15 +304,60 @@ def basic_info_display(handler, obj=None, is_header=False, *args, **kwargs):
                      f'<span>{salesperson}</span>'
         return mark_safe(basic_info)
 
-# （订单号，下单日期）
-def order_number_display(field, title=None, ):
+# （获取applyorder中的内容，按字段和title显示信息）
+def order_info_display(field, title=None, ):
     def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
         if is_header:
             return title or handler_obj.model_class._meta.get_field(field).verbose_name
         else:
             order_obj = getattr(obj, "order")
-            return getattr(order_obj,field) or "-"
+            field_val = getattr(order_obj,field)
+            if not field_val:
+                return "-"
+            if field == "confirm_date" or field =="create_date":
+                return field_val.strftime("%Y-%m-%d")
+            return field_val
     return inner
+
+# （获取applyorder中的内容，按字段和title显示信息）
+def followorder_info_display(field, title=None, ):
+    def inner(handler_obj, obj=None, is_header=None, *args, **kwargs):
+        if is_header:
+            return title or handler_obj.model_class._meta.get_field(field).verbose_name
+        else:
+            return getattr(obj,field) or "-"
+    return inner
+
+def follow_port_display(handler, obj=None, is_header=None, *args, **kwargs):
+    if is_header:
+        return "Load Port/ Discharge Port"
+    else:
+        load_port = obj.load_port
+        discharge_port = obj.discharge_port
+        ports_div = f"<span>{load_port}</span> <br> <span>{discharge_port}</span>"
+        return mark_safe(ports_div)
+
+
+def follow_status_display(handler, obj=None, is_header=False, *args, **kwargs):
+    """
+    在列表页显示编辑按钮
+    :param obj:
+    :param is_header:
+    :return:
+    """
+    if is_header:
+        return "Status"
+    else:
+        follow_choices = [(0, 'Producing'),
+                          (1, 'Almost Ready'),
+                          (2, 'waiting BL'),
+                          (3, 'Balance to Pay'),
+                          (4, 'Done'),
+                          (5, 'ready to load'),
+                          ]
+        status = follow_choices[obj.status][1]
+        status_div = f'<span class="status-display status-{obj.status}">{status}</span>'
+        return mark_safe(status_div)
 
 
 # 订舱信息展示，加入船公司和集装箱信息

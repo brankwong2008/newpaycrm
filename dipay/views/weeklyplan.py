@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
 from dipay.utils.displays import status_display,  info_display, save_display, follow_date_display,  \
-    port_display,order_number_display, sales_display,goods_display, confirm_date_display,\
+    port_display,order_info_display, sales_display,goods_display, confirm_date_display,\
     customer_display, basic_info_display, customer_goods_port_display
 from dipay.models import CurrentNumber, Customer, FollowOrder
 from django.conf.urls import url

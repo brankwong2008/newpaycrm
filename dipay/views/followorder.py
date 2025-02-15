@@ -8,9 +8,10 @@ from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler, Option
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder, checkbox_display,checkbox_display_func
 from dipay.utils.displays import status_display, info_display, save_display, \
-    follow_date_display, order_number_display, sales_display, port_display, goods_display, customer_display, \
+    follow_date_display, order_info_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
-    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details,order_number_display
+    customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details,\
+    order_info_display,follow_status_display,followorder_info_display,follow_port_display
 
 from django.db.models import ForeignKey
 
@@ -289,6 +290,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             detail_url = self.reverse_url('show_detail', pk=obj.pk)
             return mark_safe("<a href='%s' class='hidden-lg'><i class='fa fa-caret-down'></i></a>" % detail_url)
 
+
     # 跟单列表显示的字段内容
     fields_display = [checkbox_display_func(hidden_xs='hidden-xs'),
                       basic_info_display,
@@ -361,6 +363,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
         return patterns
 
+
     def follow(self, request, follow_id, *args, **kwarg):
         """给客户端查看的英文版跟单表，客户无须登录"""
         print("follow_id",follow_id )
@@ -375,11 +378,19 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         if data_query_set:
             response = f" count is {data_query_set.count()}"
             # return HttpResponse(response)
-        fields_display = [
-            order_number_display("order_number","Order No."),
-            order_number_display("po_number","PO No."),
-            "ETD",
-            "ETA",
+            fields_display = [
+                order_info_display("confirm_date", "Order Date"),
+                order_info_display("order_number", "Order#."),
+                order_info_display("po_number", "Client PO#."),
+                order_info_display("goods", "Goods & Qty"),
+                # followorder_info_display("load_port","Loading Port"),
+                # followorder_info_display("discharge_port","Discharging Port"),
+                follow_port_display,
+                "ETD",
+                "ETA",
+                follow_status_display,
+                order_info_display("amount", "Invoice Value "),
+                followorder_info_display("shipline","Carrier"),
             ]
         header_list, data_list = self.get_table_data(data_query_set=data_query_set,fields_display=fields_display)
 
