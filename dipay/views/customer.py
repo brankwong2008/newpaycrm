@@ -31,6 +31,7 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
             return mark_safe(link_btn)
 
     fields_display = ['id', 'title', 'owner', get_follow_link_display]
+    detail_fields_display = ['title','shortname', 'remark','email','owner', get_follow_link_display]
 
     def get_per_page(self):
         return 10

@@ -375,17 +375,17 @@ tr.active {
 
 /* 控制客户follow表格列宽  goods */
 .customerfollow-table-head-4 {
-    width: 12%;
+    width: 8%;
 }
 
-/* 控制客户follow表格列宽   customer */
+/* 控制客户follow表格列宽   ports */
 .customerfollow-table-head-5 {
-    width: 6%;
+    width: 12%;
 }
 
 /* 控制客户follow表格列宽   ETD ETA */
 .customerfollow-table-head-6,.customerfollow-table-head-7 {
-    width: 7%;
+    width: 8%;
 }
 
 

@@ -363,26 +363,20 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
         return patterns
 
-
+    # 给客户端查看的英文版跟单表，客户无须登录
     def follow(self, request, follow_id, *args, **kwarg):
-        """给客户端查看的英文版跟单表，客户无须登录"""
-        print("follow_id",follow_id )
         # 通过follow—id拿到customer id
         customer_obj = Customer.objects.filter(follow_id=follow_id).first()
         if not customer_obj:
             return HttpResponse('customer id does not exist')
 
         data_query_set = self.model_class.objects.filter(order__customer_id= customer_obj.pk)
-        print(self.model_class, customer_obj.pk, customer_obj)
-        print("data_query_set",data_query_set)
         if data_query_set:
-            response = f" count is {data_query_set.count()}"
-            # return HttpResponse(response)
             fields_display = [
                 order_info_display("confirm_date", "Order Date"),
                 order_info_display("order_number", "Order#."),
                 order_info_display("po_number", "Client PO#."),
-                order_info_display("goods", "Goods & Qty"),
+                order_info_display("goods", "Qty & Goods"),
                 # followorder_info_display("load_port","Loading Port"),
                 # followorder_info_display("discharge_port","Discharging Port"),
                 follow_port_display,
@@ -392,6 +386,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 order_info_display("amount", "Invoice Value "),
                 followorder_info_display("shipline","Carrier"),
             ]
+        else:
+            fields_display = []
         header_list, data_list = self.get_table_data(data_query_set=data_query_set,fields_display=fields_display)
 
         return render(request, "dipay/follow_show_list.html", locals())

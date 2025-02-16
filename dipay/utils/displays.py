@@ -5,6 +5,7 @@ import json
 from dipay.utils.tools import str_width_control
 from dipay.models import Pay2Orders, FollowOrder
 import pytz
+import re
 from django.db.models.functions import TruncMonth
 
 
@@ -316,6 +317,10 @@ def order_info_display(field, title=None, ):
                 return "-"
             if field == "confirm_date" or field =="create_date":
                 return field_val.strftime("%Y-%m-%d")
+            if field == "goods":
+                pattern = r'(?:\d+(?:万|千|百)?(?:支|只|个|套|pcs|件))|(?:\d+(?:\.\d+)?(?:x|\*)(?:20|40)[a-zA-Z\']*)(?:\+\d+(?:\.\d+)?(?:x|\*)(?:20|40)[a-zA-Z\']*)*'
+                matches = re.findall(pattern, field_val)
+                return " ".join(matches) if matches else "-"
             return field_val
     return inner
 
@@ -330,7 +335,7 @@ def followorder_info_display(field, title=None, ):
 
 def follow_port_display(handler, obj=None, is_header=None, *args, **kwargs):
     if is_header:
-        return "Load Port/ Discharge Port"
+        return "Port From/To"
     else:
         load_port = obj.load_port
         discharge_port = obj.discharge_port
@@ -350,10 +355,10 @@ def follow_status_display(handler, obj=None, is_header=False, *args, **kwargs):
     else:
         follow_choices = [(0, 'Producing'),
                           (1, 'Almost Ready'),
-                          (2, 'waiting BL'),
-                          (3, 'Balance to Pay'),
+                          (2, 'Waiting BL'),
+                          (3, 'Doc Ready'),
                           (4, 'Done'),
-                          (5, 'ready to load'),
+                          (5, 'Ready to Load'),
                           ]
         status = follow_choices[obj.status][1]
         status_div = f'<span class="status-display status-{obj.status}">{status}</span>'
