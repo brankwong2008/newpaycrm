@@ -219,7 +219,6 @@ function trackShipment(atag) {
     var pk = $(atag).attr('pk');
     // console.log($('#clipboard-btn-'+pk));
     $('#clipboard-btn-' + pk).trigger('click');
-    console.log("document.body.clientWidth", document.body.clientWidth)
     var new_win_width = document.body.clientWidth * 0.725
     var win = window.open(atag.href, 'trackship', `left=600,top=300,width=${new_win_width},height=850`);
     win.focus();

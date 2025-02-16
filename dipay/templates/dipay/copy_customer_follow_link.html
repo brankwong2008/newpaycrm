@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/clipboard/dist/clipboard.min.js' %}"></script>
+
+</head>
+<body>
+
+<span id="foo">{{ link }}</span>
+
+<br>
+
+<button class="clip_btn" type="button" data-clipboard-demo="" data-clipboard-target="#foo" onclick="alert('成功复制到剪贴板')">
+    复制到剪贴板
+</button>
+
+<script>
+     new ClipboardJS('.clip_btn');
+</script>
+
+
+</body>

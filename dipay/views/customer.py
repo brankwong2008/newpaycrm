@@ -65,20 +65,9 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
             customer_obj.follow_id = follow_id
             customer_obj.save()
         link = reverse("stark:dipay_followorder_follow", kwargs={"follow_id":follow_id})
-        link = SITE_HEAD + link
-        btn = """<br><button id="copyButton">复制内容到剪贴板</button><script>
-        const copyButton = document.getElementById('copyButton');
-        const contentToCopy = '""" + link +  """';
-        copyButton.addEventListener('click', async () => {
-            try {
-                await navigator.clipboard.writeText(contentToCopy);
-                window.alert('内容已成功复制到剪贴板');
-            } catch (error) {
-                window.alert('复制内容到剪贴板时出错:', error);
-            }
-        });
-    </script>"""
-        return HttpResponse(mark_safe(link+btn))
+        link = SITE_HEAD+link
+
+        return render(request,'dipay/copy_customer_follow_link.html',locals())
 
     def upload_customer(self, request, *args, **kwargs):
         print(request.POST, request.FILES)
