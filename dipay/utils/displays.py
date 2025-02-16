@@ -330,6 +330,8 @@ def followorder_info_display(field, title=None, ):
         if is_header:
             return title or handler_obj.model_class._meta.get_field(field).verbose_name
         else:
+            if field == "shipline":
+                return obj.shipline.shortname if obj.shipline else "-"
             return getattr(obj,field) or "-"
     return inner
 
@@ -427,6 +429,7 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
         customer = str_width_control(obj.order.customer.shortname,16)[0] if obj.order.customer else '-'
         goods = obj.order.goods[:15]
         discharge_port = port_display('discharge_port')(handler, obj, False)
+        load_port = port_display('load_port')(handler, obj, False)
         term = obj.order.get_term_display()
         if obj.order.customer:
             customer_details_url = reverse("stark:dipay_customer_show_detail", kwargs={"pk":obj.order.customer.pk})
@@ -444,7 +447,7 @@ def customer_goods_port_display(handler, obj=None, is_header=False, *args, **kwa
 
         basic_info = f'<span style="font-weight:bolder"><a class="customer-link" href="{customer_details_url}" target="_blank">{customer}</a></span> <br>' \
                      f' <span>{goods}</span><br>' \
-                     f'{discharge_port} &nbsp&nbsp <span>{term}</span>{update_date_tag} '
+                     f'{load_port}|{discharge_port} &nbsp&nbsp {update_date_tag} '
         return mark_safe(basic_info)
 
 

@@ -167,6 +167,10 @@ class EditFollowOrderModelForm(StarkForm):
                                             }),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 
 class AddInwardPayModelForm(StarkForm):
     class Meta:
