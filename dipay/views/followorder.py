@@ -370,7 +370,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         if not customer_obj:
             return HttpResponse('customer id does not exist')
 
-        data_query_set = self.model_class.objects.filter(order__customer_id= customer_obj.pk)
+        data_query_set = self.model_class.objects.filter(order__customer_id= customer_obj.pk).order_by("-order__confirm_date","-order__order_number")
         if data_query_set:
             fields_display = [
                 order_info_display("confirm_date", "Order Date"),
