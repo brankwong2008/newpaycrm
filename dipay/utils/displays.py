@@ -157,6 +157,24 @@ def rcvd_amount_blance_display(handler, obj=None, is_header=False, *args, **kwar
                 return_url, obj.order.customer, obj.order.rcvd_amount, collect_amount_value_css,obj.order.collect_amount))
 
 
+# 已收和应收金额
+def rcvd_amount_blance_english_display(handler, obj=None, is_header=False, *args, **kwargs):
+    if is_header:
+        return 'paid & owe'
+    else:
+        hilighted_red = ""
+        if obj.status in [2,3] and obj.order.collect_amount>0:
+            hilighted_red = "hilighted_red"
+        rcvd_amount = "%s%s" % (obj.order.currency.icon,obj.order.rcvd_amount) if obj.order.rcvd_amount else "-"
+        collect_amount = "%s%s" % (obj.order.currency.icon,obj.order.collect_amount) if obj.order.collect_amount else "-"
+        return mark_safe(
+            "<span> paid:</span> <span class='amount-paid'>%s</span> <br>"
+            "<span>owe:</span> <span class='amount-owe %s'>%s</span>" % (
+                 rcvd_amount, hilighted_red,collect_amount)
+        )
+
+
+
 # 发票金额
 def amount_display(handler, obj=None, is_header=False, *args, **kwargs):
     if is_header:
@@ -315,6 +333,8 @@ def order_info_display(field, title=None, ):
             field_val = getattr(order_obj,field)
             if not field_val:
                 return "-"
+            if field == "po_number":
+                return mark_safe(f"<span class='bold-po-number'>{field_val}</span>")
             if field == "confirm_date" or field =="create_date":
                 return field_val.strftime("%Y-%m-%d")
             if field == "goods":
@@ -470,6 +490,23 @@ def amount_rvcd_collect_display(handler, obj=None, is_header=False, is_hidden="h
                   f'{rcvd_collect_amount}'
 
         return mark_safe(f"<div class='{is_hidden}'>%s</div>" % content)
+
+
+def amount_rvcd_collect_english_display(handler, obj=None, is_header=False, is_hidden="hidden-xs", *args, **kwargs):
+    if is_header:
+        return mark_safe(f"<span>Inv & Pay</span>")
+    else:
+        amount_tag = "<span class='amount-invoice' >%s%s</span>" % (
+           obj.order.currency.icon, obj.order.amount
+        )
+
+        rcvd_collect_amount = rcvd_amount_blance_english_display(handler, obj, False)
+
+        content = f'<span>Inv：</span>{amount_tag} <br>' \
+                  f'{rcvd_collect_amount}'
+
+        return mark_safe(f"<div class='{is_hidden}'>%s</div>" % content)
+
 
 
 def amount_details(is_hidden):

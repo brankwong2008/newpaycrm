@@ -168,6 +168,11 @@
 
             </form>
 
+           <!--  页面记录数显示   -->
+            {% if total_count %}
+                <div style="float: right; color: lightgray"> {{ this_page_count }}/{{ total_count }}</div>
+            {% endif %}
+
 
             <!-- 分页器    -->
             <nav aria-label="Page navigation">

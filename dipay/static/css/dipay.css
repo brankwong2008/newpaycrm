@@ -388,7 +388,27 @@ tr.active {
     width: 8%;
 }
 
+/* 控制客户follow表格  po-number的字体 */
+.bold-po-number {
+    font-weight: bold;
+    font-size: larger;
+}
 
+/* 控制客户follow表格  已付款的字体 欠款的字体 */
+.amount-paid,.amount-owe {
+     margin-left: 10px;
+}
+
+.hilighted_red {
+    color: orangered;
+}
+
+/* 控制客户follow表格 发票字体 */
+.amount-invoice{
+    margin-left: 12px;
+    font-weight: bolder;
+
+}
 
 
 /* ***********弹窗图片的样式 *************/

@@ -11,7 +11,7 @@ from dipay.utils.displays import status_display, info_display, save_display, \
     follow_date_display, order_info_display, sales_display, port_display, goods_display, customer_display, \
     term_display, amount_display, confirm_date_display, rcvd_amount_blance_display,basic_info_display,\
     customer_goods_port_display,amount_rvcd_collect_display,book_info_display, more_tag_display,amount_details,\
-    order_info_display,follow_status_display,followorder_info_display,follow_port_display
+    order_info_display,follow_status_display,followorder_info_display,follow_port_display,amount_rvcd_collect_english_display
 
 from django.db.models import ForeignKey
 
@@ -26,6 +26,7 @@ from openpyxl.styles import Font, Alignment
 from django_redis import get_redis_connection
 from dipay.utils.ali_sms import send_sms
 import logging
+from stark.service.pagination import Pagination
 
 logger = logging.getLogger('django')
 
@@ -383,12 +384,33 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 "ETD",
                 "ETA",
                 follow_status_display,
-                order_info_display("amount", "Invoice Value "),
+                # order_info_display("amount", "Invoice Value "),
+                amount_rvcd_collect_english_display,
                 followorder_info_display("shipline","Carrier"),
             ]
         else:
             fields_display = []
-        header_list, data_list = self.get_table_data(data_query_set=data_query_set,fields_display=fields_display)
+
+        # 分页
+        query_params = request.GET.copy()
+        query_params._mutable = True
+        per_page = 10
+        pager = Pagination(
+            current_page=request.GET.get("page"),
+            all_count=data_query_set.count(),
+            base_url=request.path,
+            query_params=query_params,
+            per_page=per_page,
+        )
+
+        paged_data_query_set = data_query_set[pager.start:pager.end]
+        total_count = data_query_set.count()
+        if isinstance(paged_data_query_set,list):
+            this_page_count = len(paged_data_query_set)
+        else:
+            this_page_count = paged_data_query_set.count()
+
+        header_list, data_list = self.get_table_data(data_query_set=paged_data_query_set,fields_display=fields_display)
 
         return render(request, "dipay/follow_show_list.html", locals())
 
