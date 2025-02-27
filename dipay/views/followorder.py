@@ -427,7 +427,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         payment_list = Pay2Orders.objects.filter(order=order_obj).order_by('-payment__create_date')
         ETA = order_obj.followorder.ETD if order_obj.followorder.ETD else 'to be updated'
 
-
         title = '固定定金' if order_obj.order_number.startswith('L') else '收款明细'
         # 催款的邮件链接
         if order_obj.customer:
