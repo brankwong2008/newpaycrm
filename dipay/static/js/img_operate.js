@@ -71,7 +71,7 @@ function uploadImg(iconTag) {
                 },
                 success: function (data) {
                     ShowMsg(data.msg)
-                    setTimeout("location.reload()", 800);
+                    setTimeout("location.reload()", 1000);
                 },
                 error: function () {
                     alert("error, cannot proceed")
