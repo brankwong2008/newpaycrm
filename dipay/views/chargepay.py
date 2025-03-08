@@ -3,7 +3,7 @@ import os
 import threading
 from django.utils.safestring import mark_safe
 from stark.service.starksite import StarkHandler,Option
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse,redirect
 from stark.utils.display import PermissionHanlder, get_date_display,get_choice_text
 from dipay.utils.displays import ttcopy_display,forwarder_display,fee_invoice_display
 from django.http import JsonResponse
@@ -172,3 +172,51 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
             except Exception as e:
                 print(e)
                 return HttpResponse("下载失败")
+
+    def edit_list(self, request, pk, *args, **kwargs):
+        page_title = self.page_title
+
+        form_class = self.get_model_form("edit")
+        edit_obj = self.get_edit_obj(request, pk, *args, **kwargs)
+
+        if not edit_obj:
+            return HttpResponse("编辑的记录不存在")
+
+        if request.is_ajax():
+            fee_invoice_file = request.FILES.get("fee_invoice")
+            if fee_invoice_file:
+                edit_obj.fee_invoice = fee_invoice_file
+                edit_obj.save()
+                response = {"status":True, "msg":"发票信息更新成功"}
+                # 压缩图片
+                t = threading.Thread(target=compress_image, args=(edit_obj.fee_invoice.path, 800))
+                t.start()
+            else:
+                response = {"status":False, "msg":"发票信息更新失败"}
+
+            return JsonResponse(response)
+
+
+
+        if request.method == "GET":
+            form = form_class(instance=edit_obj)
+            back_url = self.reverse_list_url(*args, **kwargs)
+            namespace = self.namespace
+            app_label = self.app_label
+            # 自定义列表，外键字段快速添加数据，在前端显示加号
+            popup_list = self.popup_list
+            return render(request, self.edit_list_template or "stark/change_list.html", locals())
+
+        if request.method == "POST":
+
+            if request.FILES:
+                form = form_class(request.POST, request.FILES, instance=edit_obj)
+            else:
+                form = form_class(instance=edit_obj, data=request.POST)
+
+            if form.is_valid():
+                responds = self.save_form(form, request, True, *args, **kwargs)
+                return responds or redirect(self.reverse_list_url(*args, **kwargs))
+            else:
+                print("Form errors:", form.errors)  # 打印表单验证错误信息
+                return render(request, self.edit_list_template or "stark/change_list.html", locals())

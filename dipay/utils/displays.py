@@ -555,7 +555,12 @@ def fee_invoice_display(handler,obj=None, is_header=False, *args, **kwargs):
             img_tag = f"<img class='ttcopy-small-img hidden-xs' src={obj.fee_invoice.url} " \
                       f"onclick='return popupImg(this)' width='30px' height='30px'>"
         else:
-            img_tag = '<i class="fa fa-minus-square hidden-xs"></i>'
+            # img_tag = '<i class="fa fa-minus-square hidden-xs"></i>'
+            img_tag = """ <input type="file" id="imageInput-%s" name="fee_invoice" style="display: none;"> 
+            <i class="fa fa-upload upload-small-icon" id="uploadIcon-%s" link="/stark/dipay/chargepay/edit/%s/"
+            onclick="return uploadImg(this)"></i>
+            """ %(obj.pk,obj.pk,obj.pk)
+
     return mark_safe(img_tag)
 
 

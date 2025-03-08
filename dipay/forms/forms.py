@@ -297,6 +297,7 @@ class ChargePayModelForm(StarkForm):
         self.fields["fee_invoice"].required = False
 
 
+
 class ForwarderChargeModelForm(StarkForm):
     class Meta:
         model = Charge

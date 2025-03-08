@@ -40,3 +40,48 @@ function Zoomin() {
     // 把max-width和height属性去掉，否则不能比原图形大
     $img.css("max-width","200%").css("max-height","200%");
 }
+
+// 付费单页面上传文件的图标控制
+// 点击上传图标触发文件选择框
+function uploadImg(iconTag) {
+    const pk = $(iconTag).attr("id").split("-")[1]
+    const link = $(iconTag).attr("link")
+    const csrfmiddlewaretoken = $(`[name=csrfmiddlewaretoken]`).val()
+    const name = $(`#imageInput-${pk}`).attr("name");
+    console.log(name);
+
+
+    $(`#imageInput-${pk}`).on('change', function() {
+        const file = this.files[0];
+        console.log("imageinput changed")
+        if (file) {
+            const formData = new FormData();
+            const imageName = $(`#imageInput-${pk}`).attr("name")
+            formData.append(imageName, file);
+            // formData.append("csrfmiddlewaretoken", csrfmiddlewaretoken);
+
+            $.ajax({
+                url: link,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRFToken': csrfmiddlewaretoken
+                },
+                success: function (data) {
+                    ShowMsg(data.msg)
+                    setTimeout("location.reload()", 800);
+                },
+                error: function () {
+                    alert("error, cannot proceed")
+                }
+            });
+        }
+    })
+
+    $(`#imageInput-${pk}`).click()
+
+
+}
+

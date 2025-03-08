@@ -23,7 +23,7 @@ class RbacMiddleWare(MiddlewareMixin):
         # 1.  访问的是白名单，直接放行
         for reg in settings.WHITE_URL_LIST:
             match_result = re.match(reg, current_url)
-            print('reg, match result:', reg, match_result)
+            # print('reg, match result:', reg, match_result)
             if match_result:
                 return
 
@@ -39,7 +39,7 @@ class RbacMiddleWare(MiddlewareMixin):
                 return
 
         # 3.  需要权限的，需要判断用户是否有权限
-        print('following step need permission,user is: ', request.user)
+        # print('following step need permission,user is: ', request.user)
         user_obj = rbac_user_model_class.objects.filter(pk=login_session.get("id")).first()
         if not user_obj:
             request.user = AnonymousUser()

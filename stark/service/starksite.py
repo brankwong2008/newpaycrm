@@ -643,15 +643,16 @@ class StarkHandler(object):
             return render(request, self.edit_list_template or "stark/change_list.html", locals())
 
         if request.method == "POST":
-            form = form_class(instance=edit_obj, data=request.POST)
             if request.FILES:
                 form = form_class(request.POST, request.FILES, instance=edit_obj)
+            else:
+                form = form_class(instance=edit_obj, data=request.POST)
+
             if form.is_valid():
                 responds = self.save_form(form, request, True, *args, **kwargs)
-
                 return responds or redirect(self.reverse_list_url(*args, **kwargs))
-                # return responds
             else:
+                print("Form errors:", form.errors)  # 打印表单验证错误信息
                 return render(request, self.edit_list_template or "stark/change_list.html", locals())
 
     # 删除一条记录
