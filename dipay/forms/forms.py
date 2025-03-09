@@ -287,7 +287,7 @@ class ChargePayModelForm(StarkForm):
     class Meta:
         model = ChargePay
         fields = "__all__"
-        exclude = ['status', ]
+        exclude = ['status', 'charge']
         widgets={
             "create_date":forms.DateInput(attrs={'type': 'date'}),
         }

@@ -77,7 +77,7 @@ function uploadImg(iconTag) {
                 },
                 success: function (data) {
                     ShowMsg(data.msg)
-                    setTimeout("location.reload()", 1000);
+                    setTimeout("location.reload()", 1500);
                 },
                 error: function () {
                     alert("error, cannot proceed")
@@ -132,7 +132,7 @@ function submitPaymentslip(spanTag) {
             if(response.status) {
                 $('#myModal').modal('hide');
                 ShowMsg(response.msg)
-                setTimeout("location.reload()", 1000);
+                setTimeout("location.reload()", 1500);
             }
         },
         error: function () {

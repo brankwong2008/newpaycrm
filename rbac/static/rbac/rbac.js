@@ -46,6 +46,6 @@ function ShowTip(tip, type,time=2000) {
 
 function ShowMsg(msg,time=2000) {
     console.log('show msg....:', msg)
-    ShowTip(msg, 'info',time)
+    ShowTip(msg, 'success',time)
 }
 
