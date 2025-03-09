@@ -15,6 +15,24 @@ from openpyxl import load_workbook
 from rbac.utils.common import compress_image
 
 
+def update_related_charges(edit_obj):
+    currency_code = 1 if edit_obj.currency.title == '美元' else 2
+    for item in Charge.objects.filter(chargepay=edit_obj):
+        # 如果currency与费用表中的状态值相等，说明已经更新过了
+        if item.status < 3 and item.status != currency_code:
+            item.status += currency_code
+            # 如果只有美元账单或者人民币账单，则结清的要求小于3
+            total_USD = item.insurance + item.seafreight
+
+            total_CNY = item.port_charge + item.trailer_charge + item.other_charge
+            status_ceiling = 3
+            if total_USD <= 0 and total_CNY > 0:
+                status_ceiling = 2
+            elif total_USD > 0 and total_CNY <= 0:
+                status_ceiling = 1
+            item.status = 3 if item.status >= status_ceiling else item.status
+            item.save()
+
 class ChargePayHandler(PermissionHanlder,StarkHandler):
     page_title = "付费记录"
     show_detail_template = "dipay/show_chargepay_detail.html"
@@ -81,26 +99,9 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
 
             # 更新支付日期为传水单的当日, 这个地方不应该自动，有可能第二天或者第三天传水单，还是应允许用户修改
             # form.instance.create_date = datetime.now()
-
             # 且同时要把相关联的付费单的状态改变美元已付，人民币已付，或者结清
-            currency_code = 1 if form.instance.currency.title == '美元' else 2
+            update_related_charges(edit_obj=form.instance)
 
-            for item in Charge.objects.filter(chargepay=form.instance):
-                # 如果currency与费用表中的状态值相等，说明已经更新过了
-                if item.status < 3 and item.status != currency_code:
-                    item.status += currency_code
-                    # 如果只有美元账单或者人民币账单，则结清的要求小于3
-                    total_USD = item.insurance + item.seafreight
-
-                    total_CNY = item.port_charge + item.trailer_charge + item.other_charge
-                    status_ceiling = 3
-                    if total_USD <= 0 and total_CNY > 0:
-                        status_ceiling = 2
-                    elif total_USD >0 and total_CNY <=0:
-                        status_ceiling = 1
-                    item.status = 3 if item.status >= status_ceiling else item.status
-
-                    item.save()
         form.save()
 
         # 压缩图片ttcopy
@@ -175,28 +176,12 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
 
     def edit_list(self, request, pk, *args, **kwargs):
         page_title = self.page_title
-
         form_class = self.get_model_form("edit")
         edit_obj = self.get_edit_obj(request, pk, *args, **kwargs)
+        name_control_list = ["ttcopy","bank","remark"]
 
         if not edit_obj:
             return HttpResponse("编辑的记录不存在")
-
-        if request.is_ajax():
-            fee_invoice_file = request.FILES.get("fee_invoice")
-            if fee_invoice_file:
-                edit_obj.fee_invoice = fee_invoice_file
-                edit_obj.save()
-                response = {"status":True, "msg":"发票信息更新成功"}
-                # 压缩图片
-                t = threading.Thread(target=compress_image, args=(edit_obj.fee_invoice.path, 800))
-                t.start()
-            else:
-                response = {"status":False, "msg":"发票信息更新失败"}
-
-            return JsonResponse(response)
-
-
 
         if request.method == "GET":
             form = form_class(instance=edit_obj)
@@ -205,9 +190,54 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
             app_label = self.app_label
             # 自定义列表，外键字段快速添加数据，在前端显示加号
             popup_list = self.popup_list
-            return render(request, self.edit_list_template or "stark/change_list.html", locals())
+
+            # 用户点击水单图标直接上传时，指定get_type为simple，此时只给出上传水单和银行以及备注三个信息即可，其他非必要信息不展示
+            get_type = request.GET.get('get_type')
+            print("get_type request.method == GET", get_type)
+            if get_type == 'simple':
+                link = self.reverse_edit_url(pk=edit_obj.pk)
+                return render(request, "dipay/upload_payslip_chargepay.html", locals())
+            return render(request, "stark/change_list.html", locals())
 
         if request.method == "POST":
+            print("request.POST, request.FILES",request.POST, request.FILES)
+            # 列表页面直接上传fee invoice时，前端发起ajax POST，首先由ajax来处理返回JsonResponse
+            if request.is_ajax():
+                queryparams = self.get_query_param()
+                get_type = request.GET.get("get_type")
+                if queryparams:
+                    querylist = queryparams.split("=")
+                    querydict = {querylist[0]:querylist[1]}
+                    get_type = querydict.get("get_type")
+
+                if get_type == "simple":
+                    edit_obj.bank_id = request.POST.get("bank")
+                    edit_obj.remark = request.POST.get("remark")
+                    edit_obj.ttcopy = request.FILES.get("ttcopy")
+                    # 更新为已付
+                    edit_obj.status = 1
+                    try:
+                        edit_obj.save()
+                        update_related_charges(edit_obj)
+                        t = threading.Thread(target=compress_image, args=(edit_obj.ttcopy.path, 800))
+                        t.start()
+                        response = {"status": True, "msg": "水单上传成功"}
+                    except:
+                        response = {"status": False, "msg": "水单保存失败"}
+                    return JsonResponse(response)
+
+
+                fee_invoice_file = request.FILES.get("fee_invoice")
+                if fee_invoice_file:
+                    edit_obj.fee_invoice = fee_invoice_file
+                    edit_obj.save()
+                    response = {"status": True, "msg": "发票信息更新成功"}
+                    # 压缩图片
+                    t = threading.Thread(target=compress_image, args=(edit_obj.fee_invoice.path, 800))
+                    t.start()
+                else:
+                    response = {"status": False, "msg": "发票信息更新失败"}
+                return JsonResponse(response)
 
             if request.FILES:
                 form = form_class(request.POST, request.FILES, instance=edit_obj)
@@ -220,3 +250,4 @@ class ChargePayHandler(PermissionHanlder,StarkHandler):
             else:
                 print("Form errors:", form.errors)  # 打印表单验证错误信息
                 return render(request, self.edit_list_template or "stark/change_list.html", locals())
+
