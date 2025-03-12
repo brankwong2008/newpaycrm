@@ -18,6 +18,7 @@ from dipay.utils.order_updates import order_payment_update
 from django_redis import get_redis_connection
 import uuid
 from dipay.utils.ali_sms import send_sms
+from paycrm import secret
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     # 每页显示记录数
@@ -247,6 +248,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         form.instance.sequence = sequence
 
         form.instance.order_number = "%s%s" % (order_type, form.instance.sequence)
+        order_number = form.instance.order_number
         # 应收初始金额等于订单金额
         form.instance.collect_amount = form.instance.amount
 
@@ -273,12 +275,12 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         msg = mark_safe('订单号申请提交成功，%s' % mailto)
 
         # 给审核者发送提示短信
-        order_number = request.user.username
+        order_number = request.user.username+"_%s"%order_number
 
         send_sms(
             sign_name='文安县金凯建材有限公司',
             template_code='SMS_475870960',
-            phone_numbers='18500490622',
+            phone_numbers= secret.PHONE_NUMBER,
             template_param='{"time":"%s", "order":"%s"}' % (send_time, order_number)
         )
         print("short msg sent")
