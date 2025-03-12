@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, \
-    DailyPlan, FollowChance, Chance, ChargePay, Charge
+    DailyPlan, FollowChance, Chance, ChargePay, Charge,Customer
 from datetime import datetime
 from dipay.models import ProductPhoto
 
@@ -282,6 +282,12 @@ class ChanceModelForm(StarkForm):
         fields = "__all__"
         exclude = ['owner',]
 
+
+class CustomerModelForm(StarkForm):
+    class Meta:
+        model = Customer
+        fields = "__all__"
+        exclude = ['follow_id', ]
 
 class ChargePayModelForm(StarkForm):
     class Meta:

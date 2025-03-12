@@ -8,6 +8,8 @@ from dipay.models import UserInfo
 from django.utils.safestring import mark_safe
 from dipay.utils.create_random_string import get_string
 from paycrm.secret import SITE_HEAD
+from dipay.forms.forms import CustomerModelForm
+
 
 
 class CustomerHandler(PermissionHanlder, StarkHandler):
@@ -51,6 +53,8 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
         ]
 
 
+    def get_model_form(self, handle_type=None):
+        return  CustomerModelForm
 
     # 获取该客户的订单跟进表链接地址
     def get_follow_link(self, request,pk, *args, **kwargs):
@@ -59,7 +63,7 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
         customer_obj = self.model_class.objects.filter(pk=pk).first()
         if not customer_obj:
             return HttpResponse(f'customer number {pk} does NOT exist')
-        if customer_obj.follow_id:
+        if customer_obj.follow_id and len(customer_obj.follow_id) == 20:
             follow_id = customer_obj.follow_id
         else:
             follow_id = get_string(length=20)
