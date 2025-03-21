@@ -5,6 +5,7 @@ from stark.utils.display import get_date_display, get_choice_text, checkbox_disp
 from dipay.models import ApplyOrder, Customer, FollowOrder
 from django.conf.urls import url
 from datetime import datetime
+from dipay.utils.ali_sms import send_sms
 
 
 class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
@@ -46,6 +47,18 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
             order_obj.order_number = "%s%s" % (order_obj.get_order_type_display(), sequence)
             order_obj.status = 1
             order_obj.save()
+
+            phone_number = order_obj.salesperson.phone
+            send_time = order_obj.create_date.strftime("%Y-%m-%d")
+            order = order_obj.order_number
+
+            send_sms(
+                sign_name='文安县金凯建材有限公司',
+                template_code='SMS_478145053',
+                phone_numbers=phone_number,
+                template_param='{"time":"%s", "order":"%s"}' % (send_time, order)
+            )
+            print("short msg sent")
 
         return redirect(self.reverse_list_url())
 

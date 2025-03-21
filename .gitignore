@@ -6,8 +6,10 @@ package-lock.json
 package.jsonv
 secret.py
 venv/*
+venv_py38/*
 log/*
 logs/*
 /logs/
 /log/
 tests.py
+ocr_module.py
