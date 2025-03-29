@@ -24,7 +24,7 @@ class StarkForm(forms.ModelForm):
             field.widget.attrs["class"] = " form-control"
 
             if isinstance(field, forms.DateField):
-                field.widget = forms.DateInput(attrs={ "required":True,"type":"date","class":"form-control"})
+                field.widget = forms.DateInput(attrs={ "required":False,"type":"date","class":"form-control"})
 
             if isinstance(field, forms.CharField) and isinstance(field.widget,forms.Textarea):
                 field.widget = forms.Textarea(attrs={ "rows":4,"class":"form-control"})
@@ -99,6 +99,7 @@ class AddApplyOrderModelForm(StarkForm):
 
 
 class EditApplyOrderModelForm(StarkForm):
+    po_number = forms.CharField(required=False, label="PO号", )
     class Meta:
         model = ApplyOrder
         fields = ['confirm_date', 'order_number', 'sub_sequence', 'po_number', 'customer', 'goods', 'discharge_port',
@@ -122,6 +123,7 @@ class EditApplyOrderModelForm(StarkForm):
             if isinstance(field,forms.ModelChoiceField):
                 model_name = field.queryset.first()._meta.model_name
                 field.help_text = model_name
+
 
 class ConfirmApplyOrderModelForm(StarkForm):
     po_number = forms.CharField(required=False, label="PO号",)
