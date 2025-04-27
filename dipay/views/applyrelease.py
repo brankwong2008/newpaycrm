@@ -1,18 +1,9 @@
-from django.shortcuts import HttpResponse, redirect, render, reverse
-from decimal import Decimal
-from django.http import JsonResponse
+
 from django.conf.urls import url
-from django.db.models import Q
 from django.utils.safestring import mark_safe
-from django.forms.models import modelformset_factory, formset_factory
-from django import forms
 from stark.service.starksite import StarkHandler
 from stark.utils.display import get_date_display, get_choice_text, PermissionHanlder
-from dipay.forms.forms import AddInwardPayModelForm, Inwardpay2OrdersModelForm, ConfirmInwardpayModelForm, \
-    EditInwardPayModelForm
-from dipay.models import ApplyOrder, FollowOrder, Payer, Pay2Orders, Inwardpay, CurrentNumber
-from django.db import transaction
-
+from paycrm import secret
 
 class ApplyReleaseHandler(PermissionHanlder, StarkHandler):
     has_add_btn = False
@@ -20,6 +11,15 @@ class ApplyReleaseHandler(PermissionHanlder, StarkHandler):
     page_title = "放单管理"
 
     order_by_list = ['-apply_date']
+
+    # 控制浏览权限
+    # 根据用户筛选数据源
+    def get_queryset_data(self, request, *args, **kwargs):
+        if request.user.username in secret.SUPERUSER_LIST:
+            return self.model_class.objects.all()
+        if request.user:
+            return self.model_class.objects.filter(order__salesperson=request.user)
+        return self.model_class.objects.all()
 
     # 订单金额显示
     def amount_display(self, obj=None, is_header=False, *args, **kwargs):

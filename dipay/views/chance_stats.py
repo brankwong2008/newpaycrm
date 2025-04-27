@@ -6,12 +6,13 @@ from django.conf.urls import url
 from dipay.models import Chance
 from stark.service.pagination import Pagination
 from django.db.models import Q,ForeignKey,ManyToManyField, TextField
+from paycrm import secret
 
 class ChanceStatsHandler(PermissionHanlder,StarkHandler):
 
     show_list_template = "dipay/show_chance_list.html"
 
-    option_group = [Option('owner',control_list=['Echo','Cindy','Brank'])]
+    option_group = [Option('owner',control_list=secret.SALEPERSONS)]
 
     page_title = "商机统计"
 

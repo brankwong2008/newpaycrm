@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from dipay.utils.tools import str_width_control
 from dipay.forms.forms import ChanceModelForm
+from paycrm import secret
 
 class ChanceHandler(PermissionHanlder,StarkHandler):
     page_title = "商机"
@@ -70,7 +71,7 @@ class ChanceHandler(PermissionHanlder,StarkHandler):
                       'owner']
 
     def  get_queryset_data(self,request,is_search=None,*args,**kwargs):
-        if request.user.username in ["brank","zhangweiguo"] :
+        if request.user.username in secret.SUPERUSER_LIST :
             return self.model_class.objects.all()
         else:
             return self.model_class.objects.filter(owner=request.user)

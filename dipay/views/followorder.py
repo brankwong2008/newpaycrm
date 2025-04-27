@@ -27,6 +27,7 @@ from django_redis import get_redis_connection
 from dipay.utils.ali_sms import send_sms
 import logging
 from stark.service.pagination import Pagination
+from paycrm import secret
 
 logger = logging.getLogger('django')
 
@@ -336,7 +337,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return []
 
     def get_queryset_data(self, request, *args, **kwargs):
-        if request.user.username == 'brank':
+        if request.user.username in secret.SUPERUSER_LIST:
             return self.model_class.objects.all()
 
         if request.user.roles.all().filter(title='外销员').exists():
@@ -546,7 +547,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
             return render(request, "dipay/download_followup.html",locals())
 
         filter_param = {"order__confirm_date__gte":start_date,"order__confirm_date__lte":end_date }
-        if request.user.roles.filter(title__in=["外销员"]).exists() and request.user.username !="brank":
+        if request.user.roles.filter(title__in=["外销员"]).exists() and request.user.username != secret.ROOTUSER:
             filter_param["salesman"]=request.user
 
 

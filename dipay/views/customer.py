@@ -7,7 +7,7 @@ from openpyxl import load_workbook
 from dipay.models import UserInfo
 from django.utils.safestring import mark_safe
 from dipay.utils.create_random_string import get_string
-from paycrm.secret import SITE_HEAD
+from paycrm import secret
 from dipay.forms.forms import CustomerModelForm
 
 
@@ -39,7 +39,7 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
         return 10
 
     def get_queryset_data(self, request, *args, **kwargs):
-        if request.user.username == 'brank':
+        if request.user.username == secret.ROOTUSER:
             return self.model_class.objects.all()
         if request.user.department == 8:
             return self.model_class.objects.all()
@@ -70,7 +70,7 @@ class CustomerHandler(PermissionHanlder, StarkHandler):
             customer_obj.follow_id = follow_id
             customer_obj.save()
         link = reverse("stark:dipay_followorder_follow", kwargs={"follow_id":follow_id})
-        link = SITE_HEAD+link
+        link = secret.SITE_HEAD+link
 
         return render(request,'dipay/copy_customer_follow_link.html',locals())
 
