@@ -42,7 +42,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
     search_list = ['order__order_number__icontains', 'order__goods__icontains', 'order__customer__shortname__icontains',
                    'order__customer__title__icontains','book_info__icontains','load_info__icontains',"order__po_number__icontains"]
-    search_placeholder = '搜 订单号/客户/货物/装箱/订舱'
+    search_placeholder = ''
     save_user_query2redis_ison = True   # 模糊搜索存入redis的开关
 
 
