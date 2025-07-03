@@ -4,7 +4,7 @@ import pymysql
 import datetime
 
 
-dollar_names = ["美元","加拿大元","港币"]
+dollar_names = ["美元","加拿大元","港币","澳大利亚元"]
 
 def get_exchange_rates():
     # 中国银行外汇牌价的URL（请替换为实际网址）
