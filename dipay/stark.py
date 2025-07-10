@@ -30,7 +30,7 @@ from dipay.views.quote import QuoteHandler
 from dipay.views.modelnumbers import ModelNumbersHandler
 from dipay.views.orderstatistic import OrderStatisticHandler
 from dipay.views.exchange_rate import ExchangeRateHandler
-
+from dipay.views.currency import CurrencyHandler
 
 # 汇率管理
 site.register(models.ExchangeRate, ExchangeRateHandler)
@@ -57,7 +57,7 @@ site.register(models.FollowOrder, OrderStatisticHandler,prev='statistic')
 site.register(models.FollowOrder, WeekelyPlanHandler,prev='plan')
 
 # 币种
-site.register(models.Currency)
+site.register(models.Currency,CurrencyHandler)
 
 # 银行
 site.register(models.Bank)
