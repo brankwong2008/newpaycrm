@@ -37,10 +37,10 @@ class CurrencyHandler(PermissionHanlder,StarkHandler):
                             print("target:", line)
                             # get all current currencies titles.
                             currency_objs = self.model_class.objects.all()
-                            dollars_line = '['
+                            dollars_line = 'DOLLAR_NAMES=['
                             for currency in currency_objs:
                                 dollars_line+= '"%s",' % currency.title
-                            dollars_line = "DOLLAR_NAMES=" + dollars_line + ']'
+                            dollars_line += ']'
                             content = lines[:idx] + dollars_line.splitlines(True) + lines[idx + 1:]
                             print(content)
                             with open(file_path, "w") as f:

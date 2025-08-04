@@ -370,9 +370,37 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
         # 通过follow—id拿到customer id
         customer_obj = Customer.objects.filter(follow_id=follow_id).first()
         if not customer_obj:
-            return HttpResponse('customer id does not exist')
+            return HttpResponse('customer  id does not exist')
 
         data_query_set = self.model_class.objects.filter(order__customer_id= customer_obj.pk).order_by("-order__confirm_date","-order__order_number")
+
+        # 此处要从url中获取筛选条件，给出字典格式
+        query_dict = self.request.GET.copy()
+        query_dict._mutable = True
+        status_query = query_dict.getlist("status")
+        if status_query:
+            data_query_set = data_query_set.filter(status__in=status_query )
+
+        # 生产筛选标签
+        follow_status_choices = FollowOrder.follow_choices
+        tag = '<div class="row"> Status <div class="others">'
+        tag += '<a href="?" class="">全部</a>'
+        for each in follow_status_choices:
+            val_list = status_query.copy()
+            val =  str(each[0])
+            text = each[1]
+            if val not in status_query:
+                val_list.append(val)
+                is_active = ""
+            else:
+                val_list.remove(val)
+                is_active = "active"
+            # 给每个筛选按钮定制url，要考虑下次点击之后的效果
+            query_dict.setlist("status", val_list)
+            label = '<a href="?%s" class="%s">%s</a>' % (query_dict.urlencode(), is_active, text)
+            tag += label
+        tag += '</div></div>'
+
         if data_query_set:
             fields_display = [
                 order_info_display("confirm_date", "Order Date"),

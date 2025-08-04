@@ -13,3 +13,4 @@ logs/*
 /log/
 tests.py
 ocr_module.py
+get_exchange_rate.py

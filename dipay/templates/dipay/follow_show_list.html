@@ -52,7 +52,18 @@
         margin-right: 30px;
         padding-top: 10px ;
     }
+    .others {
+    display: inline-block;
+}
+    .others a{
+        padding: 5px;
+        margin: 5px;
+        border: 1px solid lightgrey;
 
+    }
+    .others a.active{
+        background-color: paleturquoise;
+    }
 
     </style>
 
@@ -66,23 +77,13 @@
 
 
             <!-- 组合筛选功能区 -->
-            {% if option_group_dict %}
+            {% if tag %}
                 <div class="panel panel-default">
                     {#                    <div class="panel-heading">#}
                     {#                        <i class="fa fa-filter"></i> 快速筛选#}
                     {#                    </div>#}
                     <div class="panel-body">
-                        {% for field, row in option_group_dict.items %}
-
-                            <div class="search-group">
-                                <div class="row">
-                                    {% for each in row %}
-                                        {{ each|safe }}
-                                    {% endfor %}
-                                </div>
-                            </div>
-
-                        {% endfor %}
+                       {{ tag|safe }}
                     </div>
                 </div>
 
