@@ -49,7 +49,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
         Option(field='status', is_multi=False, default='1'),
-        Option(field='salesman', filter_param={'roles__title': '外销员'}, verbose_name='业务'),
+        Option(field='salesman', filter_param={'roles__title': '外销员',"is_onjob":True}, verbose_name='业务'),
         # Option(field='depart'),
     ]
 

@@ -35,6 +35,7 @@ class UserInfo(MyUser):
     department = models.SmallIntegerField(choices=department_choices, verbose_name='部门', default=1)
     forwarder = models.ForeignKey(to=Forwarder, on_delete=models.CASCADE, verbose_name='绑定货代', null=True)
     phone =  models.CharField(max_length=11, verbose_name='手机',null=True)  # 新增手机号
+    is_onjob = models.BooleanField(verbose_name='在职状态', default=True)
 
     def __str__(self):
         return self.nickname
