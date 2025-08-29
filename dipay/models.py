@@ -117,7 +117,7 @@ class ApplyOrder(models.Model):
                     ]
     order_type = models.SmallIntegerField(choices=type_choices, verbose_name='订单类型')
     order_number = models.CharField(max_length=32, verbose_name='订单号', unique=True, null=True, blank=True)
-    po_number = models.CharField(max_length=20, verbose_name='PO号', null=True)
+    po_number = models.CharField(max_length=30, verbose_name='PO号', null=True)
     sequence = models.IntegerField(verbose_name='订单序号', null=True, blank=True)
     sub_sequence = models.IntegerField(verbose_name='分批号', default=0)
     customer = models.ForeignKey(to=Customer, on_delete=models.RESTRICT, verbose_name='客户', null=True, blank=True)
