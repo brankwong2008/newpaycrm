@@ -61,10 +61,19 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
     search_placeholder = '搜索 日期 金额 客户名 '
 
     def add_btn_display(self, request, *args, **kwargs):
+        query_names = ['bank','confirm_status']
+        query_param = request.GET.copy()
+        is_active = ''
+        for item in query_names:
+            query = query_param.get(item)
+            print(item, query)
+            if not (query=='all' or query is None):
+                is_active = 'active'
+                break
 
         add_url = self.reverse_add_url(*args, **kwargs)
         add_btn = "<span><a href='%s' class='btn btn-primary inwardpay-add-record'> + </a></span>" % (add_url)
-        return add_btn+ "<span class='btn btn-default' onclick='toggleOptionSection()'> 筛选 </span>"
+        return add_btn+ f"<span class='btn btn-default {is_active}' onclick='toggleOptionSection()'> 筛选 </span>"
 
     def get_model_form(self, handle_type=None):
         if handle_type == 'add':

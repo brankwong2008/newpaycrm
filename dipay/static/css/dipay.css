@@ -28,6 +28,10 @@ table {
     font-size: 12px;
 }
 
+span.btn.btn-default.active {
+    background-color: #fdc00f;
+}
+
 .panel-body {
     font-size: 12px;
 }
