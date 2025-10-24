@@ -13,6 +13,22 @@
 
     </style>
 
+    <script type="text/javascript">
+
+    window.onload = function(){
+        console.log("HTML文档及所有资源已加载完成，执行JS代码");
+        const filterBtn = document.getElementById("inwardpay-filter-btn");
+        const hasActive = filterBtn.classList.contains('active')
+        if (hasActive) {
+            filterBtn.click()
+        }
+
+    }
+
+    </script>
+
+
+
 {% endblock %}
 
 
