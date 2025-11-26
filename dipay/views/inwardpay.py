@@ -294,7 +294,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 return self.model_class.objects.all()
             else:
                 # 关联了订单的，显示该业务员名下的款项， 或者是还待关联订单的款项
-                return self.model_class.objects.filter(Q(orders__salesperson=request.user) | Q(orders__isnull=True))
+                return self.model_class.objects.filter(Q(orders__salesperson=request.user) | Q(orders__isnull=True)).distinct()
 
 
     # 认领款项
