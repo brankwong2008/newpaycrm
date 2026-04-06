@@ -1,16 +1,145 @@
+/* 手机端显示 任务*/
+@media (max-width: 767px) {
+    /* 1. 强制表格固定布局并占满全屏 */
+    #dailyplan_page_date_container_id .table-striped {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    /* 2. 隐藏所有单元格（表头和内容） */
+    #dailyplan_page_date_container_id .table-striped th,
+    #dailyplan_page_date_container_id .table-striped td {
+        display: none;
+    }
+
+    /* 3. 仅显示第 1、2、5 列，并均分宽度 */
+    /* 第1、2列合并写，第5列单独写 */
+    #dailyplan_page_date_container_id .table-striped th:nth-child(1),
+    #dailyplan_page_date_container_id .table-striped td:nth-child(1) {
+        display: table-cell !important;
+        width: 15% !important;
+        word-wrap: break-word; /* 防止长内容撑破表格 */
+    }
+
+    #dailyplan_page_date_container_id .table-striped th:nth-child(2),
+    #dailyplan_page_date_container_id .table-striped td:nth-child(2) {
+        display: table-cell !important;
+        width: 60% !important;
+        word-wrap: break-word; /* 防止长内容撑破表格 */
+    }
+
+    #dailyplan_page_date_container_id .table-striped th:nth-child(5),
+    #dailyplan_page_date_container_id .table-striped td:nth-child(5) {
+        display: table-cell !important;
+        width: 25% !important;
+        word-wrap: break-word; /* 防止长内容撑破表格 */
+    }
+}
+
+/* 手机端显示 询盘*/
+@media (max-width: 767px) {
+    /* 1. 全局设置：固定布局，强制撑满全屏 */
+    #chance_page_data_container_id .table-striped {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    /* 2. 统一隐藏所有列（包含表头和单元格） */
+    #chance_page_data_container_id .table-striped th,
+    #chance_page_data_container_id .table-striped td {
+        display: none;
+    }
+
+    /* 3. 单独显示第 1、4、8 列，并均分宽度 */
+    #chance_page_data_container_id .table-striped th:nth-child(1),
+    #chance_page_data_container_id .table-striped td:nth-child(1),
+    #chance_page_data_container_id .table-striped th:nth-child(4),
+    #chance_page_data_container_id .table-striped td:nth-child(4),
+    #chance_page_data_container_id .table-striped th:nth-child(8),
+    #chance_page_data_container_id .table-striped td:nth-child(8) {
+        display: table-cell !important;
+        width: 33.33% !important;
+        word-wrap: break-word; /* 防止长单词撑破表格 */
+    }
+}
+
+
+/* 手机端显示 订单审核*/
+@media (max-width: 767px) {
+    /* 1. 全局设置：固定布局，强制撑满全屏 */
+    #order-verify-page-data .table-striped {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    /* 2. 统一隐藏所有列 */
+    #order-verify-page-data .table-striped th,
+    #order-verify-page-data .table-striped td {
+        display: none;
+    }
+
+    /* 3. 单独显示第 1, 4, 5, 6, 7 列，并均分宽度 (25%) */
+    #order-verify-page-data .table-striped th:nth-child(1),
+    #order-verify-page-data .table-striped td:nth-child(1){
+         display: table-cell !important;
+        width: 10% !important;
+        word-wrap: break-word; /* 允许文字换行，防止撑破表格 */
+    }
+    #order-verify-page-data .table-striped th:nth-child(7),
+    #order-verify-page-data .table-striped td:nth-child(7),
+    #order-verify-page-data .table-striped th:nth-child(4),
+    #order-verify-page-data .table-striped td:nth-child(4),
+    #order-verify-page-data .table-striped th:nth-child(5),
+    #order-verify-page-data .table-striped td:nth-child(5),
+    #order-verify-page-data .table-striped th:nth-child(6),
+    #order-verify-page-data .table-striped td:nth-child(6) {
+        display: table-cell !important;
+        width: 22.5% !important;
+        word-wrap: break-word; /* 允许文字换行，防止撑破表格 */
+    }
+}
+
+
+/* 手机端显示 任务列表*/
+@media (max-width: 600px) {
+    .followorder-table-head-2, .weekly-plan-col-1 {
+        width: 9%;
+    }
+
+    .followorder-table-head-3, .weekly-plan-col-2 {
+        width: 12%;
+    }
+
+    .weekly-plan-col-3 {
+        display: none;
+    }
+
+    .followorder-table-head-7, .weekly-plan-col-7 {
+        width: 24%;
+    }
+
+    .followorder-table-head-8, .weekly-plan-col-8 {
+        width: 23%;
+    }
+
+    .followorder-table-head-9, .weekly-plan-col-9 {
+        display: none;
+    }
+}
+
 
 /*无a标签显示*/
-a.normal-a{
+a.normal-a {
     text-decoration: none;
     color: black;
 }
 
-a.normal-a:hover{
+a.normal-a:hover {
     color: darkorange;
 }
 
 /*批量处理组件*/
-.batch-process-div{
+.batch-process-div {
     margin-left: 67px;
 }
 
@@ -61,7 +190,7 @@ span.btn.btn-default.active {
 
 }
 
-.error{
+.error {
     color: orangered !important;
 }
 
@@ -119,7 +248,6 @@ textarea[id^="amount"] {
     color: orange;
 
 }
-
 
 
 /*等款*/
@@ -361,7 +489,6 @@ tr.active {
 }
 
 
-
 /* 控制客户follow表格列宽  下单时间 */
 .customerfollow-table-head-1 {
     width: 6%;
@@ -388,7 +515,7 @@ tr.active {
 }
 
 /* 控制客户follow表格列宽   ETD ETA */
-.customerfollow-table-head-6,.customerfollow-table-head-7 {
+.customerfollow-table-head-6, .customerfollow-table-head-7 {
     width: 8%;
 }
 
@@ -399,8 +526,8 @@ tr.active {
 }
 
 /* 控制客户follow表格  已付款的字体 欠款的字体 */
-.amount-paid,.amount-owe {
-     margin-left: 10px;
+.amount-paid, .amount-owe {
+    margin-left: 10px;
 }
 
 .hilighted_red {
@@ -408,7 +535,7 @@ tr.active {
 }
 
 /* 控制客户follow表格 发票字体 */
-.amount-invoice{
+.amount-invoice {
     margin-left: 12px;
     font-weight: bolder;
 
@@ -534,8 +661,8 @@ span[id^="content"].red {
     width: 112px;
 }
 
-#id_cc{
-    width:80px
+#id_cc {
+    width: 80px
 }
 
 #id_remind_date, #task_input, #id_cc {
@@ -545,6 +672,7 @@ span[id^="content"].red {
 span.dailyplan {
     margin-top: 30px
 }
+
 /* end of  任务页面的css */
 
 

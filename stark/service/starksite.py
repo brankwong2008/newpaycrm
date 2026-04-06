@@ -162,6 +162,7 @@ class Option:
 
 
 class StarkHandler(object):
+    page_data_container_id = None
     verify_similarity_list = []  # 添加时检查相似度
     edit_list_template = None  # 编辑页面模板
     add_list_template = None  # 添加页面模板
@@ -333,6 +334,7 @@ class StarkHandler(object):
     def show_list(self, request, *args, **kwargs):
         fields_display = self.get_fields_display(request, *args, **kwargs)
         page_title = self.page_title
+        page_data_container_id = self.page_data_container_id
         header_list = []
         data_list = []
         filter_hidden = self.filter_hidden

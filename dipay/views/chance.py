@@ -12,9 +12,12 @@ from dipay.forms.forms import ChanceModelForm
 from paycrm import secret
 
 class ChanceHandler(PermissionHanlder,StarkHandler):
-    page_title = "商机"
+    page_title = "询盘"
+
+    page_data_container_id = "chance_page_data_container_id"
 
     show_list_template = "dipay/show_chance_list.html"
+
 
     search_list = ['company__icontains','contact__icontains']
     search_placeholder = "搜索 客户 联系人"

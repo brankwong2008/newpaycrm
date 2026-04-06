@@ -16,6 +16,8 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
     show_list_template = 'dipay/show_dailyplan_list.html'
     page_title = "日计划"
 
+    page_data_container_id = "dailyplan_page_date_container_id"
+
     def get_per_page(self):
         return 15
 

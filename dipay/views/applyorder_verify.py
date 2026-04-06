@@ -10,14 +10,16 @@ from dipay.utils.ali_sms import send_sms
 
 class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
     has_add_btn =  False
-
     page_title = "订单审核"
+
+    page_data_container_id = "order-verify-page-data"
 
     # 加入一个组合筛选框
     option_group = [
         Option(field='status'),
         # Option(field='depart'),
     ]
+
 
     # 模糊搜索
     search_list = ['customer__title__icontains', 'goods__icontains', 'order_number__contains']
