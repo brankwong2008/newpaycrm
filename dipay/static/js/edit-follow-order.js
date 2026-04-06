@@ -333,7 +333,6 @@ function dropButtonEachRecord(atag) {
 
 
 
-
 // 可关联订单中，点击每行分配金额的show inputbox
 
 // 点击后将文本替换为输入框

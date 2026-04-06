@@ -1,3 +1,85 @@
+
+
+/* 手机端显示 订单*/
+@media (max-width: 767px) {
+    /* 1. 强制表格固定布局并占满全屏 */
+    #orders_page_data_container .table-striped {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    /* 2. 隐藏所有单元格（表头和内容） */
+    #orders_page_data_container .table-striped th,
+    #orders_page_data_container .table-striped td {
+        display: none;
+    }
+
+    /* 3. 仅显示第 1, 2, 3, 4, 5 列，并均分宽度 */
+    #orders_page_data_container .table-striped th:nth-child(1),
+    #orders_page_data_container .table-striped td:nth-child(1),
+    #orders_page_data_container .table-striped th:nth-child(2),
+    #orders_page_data_container .table-striped td:nth-child(2),
+    #orders_page_data_container .table-striped th:nth-child(3),
+    #orders_page_data_container .table-striped td:nth-child(3){
+        display: table-cell !important;
+        width: 18% !important;
+        word-wrap: break-word;
+    }
+    #orders_page_data_container .table-striped th:nth-child(4),
+    #orders_page_data_container .table-striped td:nth-child(4),
+    #orders_page_data_container .table-striped th:nth-child(5),
+    #orders_page_data_container .table-striped td:nth-child(5) {
+        display: table-cell !important;
+        width: 28% !important;
+        word-wrap: break-word;
+    }
+}
+
+
+/* 手机端显示 跟单*/
+@media (max-width: 767px) {
+    /* 1. 强制表格固定布局并占满全屏 */
+    #followorder_page_data_container_id .table-striped {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+
+    /* 2. 隐藏所有单元格（表头和内容） */
+    #followorder_page_data_container_id .table-striped th,
+    #followorder_page_data_container_id .table-striped td {
+        display: none;
+    }
+
+    /* 3. 仅显示第 2, 3, 4, 5, 6, 9 列，并均分宽度 */
+     #followorder_page_data_container_id .table-striped th:nth-child(2),
+    #followorder_page_data_container_id .table-striped td:nth-child(2){
+          display: table-cell !important;
+        width: 20% !important;
+        word-wrap: break-word;
+     }
+    #followorder_page_data_container_id .table-striped th:nth-child(3),
+    #followorder_page_data_container_id .table-striped td:nth-child(3){
+        display: table-cell !important;
+        width:35% !important;
+        word-wrap: break-word;
+    }
+    #followorder_page_data_container_id .table-striped th:nth-child(4),
+    #followorder_page_data_container_id .table-striped td:nth-child(4),
+    #followorder_page_data_container_id .table-striped th:nth-child(5),
+    #followorder_page_data_container_id .table-striped td:nth-child(5),
+    #followorder_page_data_container_id .table-striped th:nth-child(6),
+    #followorder_page_data_container_id .table-striped td:nth-child(6),
+    #followorder_page_data_container_id .table-striped th:nth-child(11),
+    #followorder_page_data_container_id .table-striped td:nth-child(11) {
+        display: table-cell !important;
+        width: 11.25% !important;
+        word-wrap: break-word;
+    }
+}
+
+
+
+
 /* 手机端显示 任务*/
 @media (max-width: 767px) {
     /* 1. 强制表格固定布局并占满全屏 */

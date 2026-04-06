@@ -35,6 +35,7 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     # 添加按钮
     has_add_btn = False
     show_detail_template = "dipay/show_follow_order_details.html"
+    page_data_container_id = "followorder_page_data_container_id"
 
     page_title = "跟单"
     show_list_template = 'dipay/show_follow_order_list.html'
@@ -294,14 +295,14 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
 
 
     # 跟单列表显示的字段内容
-    fields_display = [checkbox_display_func(hidden_xs='hidden-xs'),
+    fields_display = [checkbox_display_func(),
                       basic_info_display,
                       customer_goods_port_display,
                        status_display,
                       follow_date_display('ETD', time_format='%m/%d'),
                       follow_date_display('ETA', time_format='%m/%d'),
-                      info_display('load_info',hidden_xs='hidden-xs'),
-                      book_info_display('book_info',hidden_xs='hidden-xs'),
+                      info_display('load_info'),
+                      book_info_display('book_info'),
                       # info_display('produce_info',hidden_xs='hidden-xs'),
                       amount_rvcd_collect_display,
                       more_tag_display,

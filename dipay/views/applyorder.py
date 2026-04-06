@@ -27,6 +27,8 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
     page_title = "订单管理"
 
+    page_data_container_id = "orders_page_data_container"
+
     # 自定义列表，外键字段快速添加数据，在前端显示加号
     popup_list = ['customer','discharge_port' ]
 
