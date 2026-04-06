@@ -1,5 +1,17 @@
 
 
+.navbar-header button.navbar-toggle{
+    margin-right: 40px;
+}
+
+
+/* 控制移动端的所有的右侧边距*/
+@media (max-width: 767px){
+    .container-fluid{
+        padding-right: 2px;
+    }
+}
+
 /* 手机端显示 订单*/
 @media (max-width: 767px) {
     /* 1. 强制表格固定布局并占满全屏 */
@@ -54,7 +66,7 @@
      #followorder_page_data_container_id .table-striped th:nth-child(2),
     #followorder_page_data_container_id .table-striped td:nth-child(2){
           display: table-cell !important;
-        width: 20% !important;
+        width: 25% !important;
         word-wrap: break-word;
      }
     #followorder_page_data_container_id .table-striped th:nth-child(3),
@@ -72,7 +84,7 @@
     #followorder_page_data_container_id .table-striped th:nth-child(11),
     #followorder_page_data_container_id .table-striped td:nth-child(11) {
         display: table-cell !important;
-        width: 11.25% !important;
+        width: 10% !important;
         word-wrap: break-word;
     }
 }
