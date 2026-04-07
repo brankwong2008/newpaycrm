@@ -3,7 +3,7 @@ from django import forms
 from dipay.models import ApplyOrder, Inwardpay, Currency, FollowOrder, \
     DailyPlan, FollowChance, Chance, ChargePay, Charge,Customer
 from datetime import datetime
-from dipay.models import ProductPhoto
+from dipay.models import ProductPhoto,Bank
 
 
 
@@ -193,6 +193,7 @@ class AddInwardPayModelForm(StarkForm):
         super().__init__(*args, **kwargs)
         self.fields["currency"].initial = Currency.objects.get(pk=1)
         self.fields["create_date"].initial = datetime.now()
+        self.fields['bank'].queryset = Bank.objects.all().order_by('-frequency')
 
 
 class EditInwardPayModelForm(StarkForm):

@@ -16,6 +16,7 @@ import threading
 from rbac.utils.common import compress_image_task
 from datetime import datetime
 from dipay.utils.order_updates import order_payment_update
+from dipay.models import Bank
 from django_redis import get_redis_connection
 
 
@@ -55,7 +56,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     ]
 
-    popup_list = ['payer', 'bank']
+    popup_list = ['payer']
 
     search_list = ['create_date', 'amount', 'customer__title__icontains','customer__shortname__icontains', "orders__order_number__icontains",]
     search_placeholder = '搜索 日期 金额 客户名 '
@@ -180,7 +181,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
         """新增一笔收款"""
         page_title = self.page_title
         #  外键字段快速添加一条记录，弹窗式
-        fast_add_list = ['payer', 'bank', ]
+        fast_add_list = ['payer']
         conn = get_redis_connection()
 
         if request.method == "GET":
@@ -247,7 +248,12 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 if exchangerate_obj is not None:
                     form.instance.remark += f" 参考汇率 {exchangerate_obj.rate}"
 
+
+
                 form.save()   # 这里直接改写了ImageStorage的_save方法，参考dipay/utiles/storage
+                bank_obj = form.instance.bank
+                bank_obj.frequency += 1
+                bank_obj.save()
                 # 删除redis中防抖用的token
                 conn.delete(token)
                 currentnumber_obj.save()
@@ -259,16 +265,19 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
             else:
                 return render(request, 'dipay/inwardpay_add.html', locals())
 
-    def save_form(self, form, request, is_update=False, *args, **kwargs):
-        if is_update:
-            form.save()
-        else:
-            print("save_form: ",form.instance.ttcopy.path)
-
-            form.save()
-            # 压缩图片
-            t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path, 550))
-            t.start()
+    # def save_form(self, form, request, is_update=False, *args, **kwargs):
+    #     if is_update:
+    #         form.save()
+    #     else:
+    #         print("save_form: ",form.instance.ttcopy.path)
+    #         bank_obj = form.instance.bank
+    #         bank_obj.frequency += 1
+    #         print(bank_obj)
+    #         form.save()
+    #         bank_obj.save()
+    #         # 压缩图片
+    #         t = threading.Thread(target=compress_image_task, args=(form.instance.ttcopy.path, 550))
+    #         t.start()
 
 
     def get_extra_urls(self):
