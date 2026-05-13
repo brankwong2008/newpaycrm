@@ -86,7 +86,8 @@ class ApplyOrderVerifyHandler(PermissionHanlder, StarkHandler):
 
     batch_to_workshop.text = '批量下单'
 
-    batch_process_list = [batch_verify, batch_to_workshop]
+    # batch_process_list = [batch_verify, batch_to_workshop]
+    batch_process_list = [batch_verify,]
 
     def amount_display(self, obj=None, is_header=False, *args, **kwargs):
         """
