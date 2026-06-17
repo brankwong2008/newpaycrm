@@ -58,8 +58,8 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
 
     popup_list = ['payer']
 
-    search_list = ['create_date', 'amount', 'customer__title__icontains','customer__shortname__icontains', "orders__order_number__icontains",]
-    search_placeholder = '搜索 日期 金额 客户名 '
+    search_list = ['create_date', 'amount', 'got_amount', 'payer__title__icontains','customer__title__icontains','customer__shortname__icontains', "orders__order_number__icontains",]
+    search_placeholder = '搜 日期/金额/客户名/付款人 '
 
     def add_btn_display(self, request, *args, **kwargs):
         query_names = ['bank','confirm_status']
