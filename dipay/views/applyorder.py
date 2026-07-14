@@ -850,7 +850,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                 initial_data['customer'] = str(initial_data['customer'])
 
             # 排除不应该被复制的字段
-            fields_to_exclude = ['id', 'order_number', 'sequence', 'sub_sequence', 'create_date', 'status']
+            fields_to_exclude = ['id', 'order_number', 'sequence', 'sub_sequence', 'create_date', 'status','po_number']
             for field in fields_to_exclude:
                 initial_data.pop(field, None)
 
