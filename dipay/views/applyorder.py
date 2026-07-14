@@ -19,6 +19,7 @@ from django_redis import get_redis_connection
 import uuid
 from dipay.utils.ali_sms import send_sms
 from paycrm import secret
+from django.forms.models import model_to_dict
 
 class ApplyOrderHandler(PermissionHanlder, StarkHandler):
     # 每页显示记录数
@@ -141,6 +142,21 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
             else:
                 return '-'
 
+    def copy_display(self, obj=None, is_header=False, *args, **kwargs):
+        """
+        在列表页显示编辑按钮
+        :param obj:
+        :param is_header:
+        :return:
+        """
+        if is_header:
+            return "复制"
+        else:
+
+            # 复制按钮 (新增)
+            copy_url = self.reverse_url('copy_order', pk=obj.id)
+            return mark_safe(f"<a href='{copy_url}' style='margin-left:10px;' title='复制此订单'><i class='fa fa-copy'></i></a>")
+
     fields_display = ['create_date',
                       'salesperson',
                       order_number_display,
@@ -151,6 +167,7 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
                       to_workshop_display,
                       amount_display,
                       rcvd_amount_display,
+                      copy_display,
                       ]
 
     # 自定义添加和编辑所用的ModelForm
@@ -291,12 +308,25 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
         return render(request, 'dipay/msg_after_submit.html', {'msg': msg})
 
     # 自定义路由： 上传，下载，下单，手动新增订单
+    # def get_extra_urls(self):
+    #     patterns = [
+    #         url("^upload/$", self.wrapper(self.upload), name=self.get_url_name('upload')),
+    #         url("^download/(?P<file_name>.*)/$", self.wrapper(self.download), name=self.get_url_name('download')),
+    #         url("^to_workshop/(?P<pk>\d+)/$", self.wrapper(self.to_workshop), name=self.get_url_name('to_workshop')),
+    #         url("^manual_add/$", self.wrapper(self.manual_add), name=self.get_url_name('manual_add')),
+    #     ]
+    #     return patterns
+
+    # 在 get_extra_urls 方法中
+
     def get_extra_urls(self):
         patterns = [
             url("^upload/$", self.wrapper(self.upload), name=self.get_url_name('upload')),
             url("^download/(?P<file_name>.*)/$", self.wrapper(self.download), name=self.get_url_name('download')),
             url("^to_workshop/(?P<pk>\d+)/$", self.wrapper(self.to_workshop), name=self.get_url_name('to_workshop')),
             url("^manual_add/$", self.wrapper(self.manual_add), name=self.get_url_name('manual_add')),
+            # 新增：复制订单的路由
+            url("^copy_order/(?P<pk>\d+)/$", self.wrapper(self.copy_order), name=self.get_url_name('copy_order')),
         ]
         return patterns
 
@@ -789,7 +819,57 @@ class ApplyOrderHandler(PermissionHanlder, StarkHandler):
 
             return render(request, 'dipay/msg_after_submit.html', locals())
 
+    # 在 ApplyOrderHandler 类中添加 从历史订单中直接获取信息并创建新订单的方法
+    # 在 ApplyOrderHandler 类中
+    def copy_order(self, request, pk, *args, **kwargs):
+        """
+        复制一个历史订单来创建新订单
+        """
+        # 1. 获取要复制的源订单对象
+        source_order = self.model_class.objects.filter(pk=pk).first()
+        if not source_order:
+            return HttpResponse('订单不存在')
 
+        # 2. 处理 GET 请求：显示预填充了数据的表单
+        if request.method == "GET":
+            # --- 关键修改开始：生成并设置 Token ---
+            conn = get_redis_connection()
+            token = str(uuid.uuid4())
+            conn.set(token, 1, ex=600)  # 存入Redis，有效期600秒
+            request.session["add_list_token"] = token  # 存入Session
+            # --- 关键修改结束 ---
+
+            # 获取新增订单的表单类
+            form_class = self.get_model_form("add")
+
+            # 将源订单的数据转换为字典，作为表单的初始值
+            initial_data = model_to_dict(source_order)
+
+            # 处理 customer 字段，确保其 ID 是字符串类型
+            if initial_data.get('customer'):
+                initial_data['customer'] = str(initial_data['customer'])
+
+            # 排除不应该被复制的字段
+            fields_to_exclude = ['id', 'order_number', 'sequence', 'sub_sequence', 'create_date', 'status']
+            for field in fields_to_exclude:
+                initial_data.pop(field, None)
+
+            form = form_class(initial=initial_data)
+
+            # 重新处理客户 choices
+            choices = [(None, '----------'), ]
+            user_customers = Customer.objects.filter(owner=request.user).values_list('id', 'title')
+            for cid, title in user_customers:
+                choices.append((str(cid), title))
+            form.fields['customer'].choices = choices
+
+            page_title = f"复制订单: {source_order.order_number}"
+            back_url = self.reverse_list_url()
+            return render(request, "dipay/apply_new_order.html", locals())
+
+        # 3. 处理 POST 请求
+        if request.method == "POST":
+            return self.add_list(request, *args, **kwargs)
     # 手动创建订单
     def manual_add(self, request, *args, **kwargs):
         """ 手动创建订单  """
