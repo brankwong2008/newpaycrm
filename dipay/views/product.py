@@ -9,7 +9,7 @@ from dipay.models import ProductPhoto, Quote, ModelNumbers, Supplier
 class ProductHandler(PermissionHanlder,StarkHandler):
     page_title = "产品管理"
 
-    search_list = ['title__icontains', "title_English__icontains"]
+    search_list = ['title__icontains', "title_English__icontains",""]
     search_placeholder = "搜索 品名 英文品名"
 
     popup_list = ["supplier", ]

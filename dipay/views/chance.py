@@ -19,8 +19,8 @@ class ChanceHandler(PermissionHanlder,StarkHandler):
     show_list_template = "dipay/show_chance_list.html"
 
 
-    search_list = ['company__icontains','contact__icontains']
-    search_placeholder = "搜索 客户 联系人"
+    search_list = ['company__icontains','contact__icontains',"remark__icontains","company__icontains","contact__icontains"]
+    search_placeholder = "搜索"
 
     # 加入一个组合筛选框, default是默认筛选的值，必须是字符串
     option_group = [
