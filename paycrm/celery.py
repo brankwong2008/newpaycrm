@@ -16,5 +16,15 @@ app = Celery('celerytask')
 #   should have a `CELERY_` prefix.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
+# 定时任务调度：每天早上 8 点给提醒日期已到的任务发短信
+from celery.schedules import crontab
+app.conf.beat_schedule = {
+    'send-dailyplan-remind-sms': {
+        'task': 'dipay.tasks.send_dailyplan_remind_sms',
+        'schedule': crontab(hour=8, minute=0),
+    },
+}
+app.conf.timezone = 'Asia/Shanghai'
+
 # Load task modules from all registered Django app configs.  去注册的apps中读取tasks.py
 app.autodiscover_tasks()

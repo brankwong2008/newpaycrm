@@ -245,10 +245,11 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
                     # 提醒日期设置了，需要检查设置是否合格，如合格存入数据库
                     if item == 'remind_date':
                         remind_date = datetime.datetime.strptime(val, '%Y-%m-%d')
-                        if remind_date <= datetime.datetime.today():
+                        # 提醒日期必须大于今天，当天不允许
+                        if remind_date.date() <= datetime.date.today():
                             data_dict['status'] = False
                             data_dict['field'] = 'remind_date'
-                            data_dict['error'] = '提醒日期要大于当前日期'
+                            data_dict['error'] = '请设置提醒日期大于今天的日期'
                             return JsonResponse(data_dict)
 
                         save_obj.status = 2
@@ -276,10 +277,11 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
         if remind_date:
             print("enter into save form remind_date ")
             remind_date = datetime.datetime.strptime(remind_date, '%Y-%m-%d')
-            if remind_date > datetime.datetime.today():
+            # 提醒日期必须大于今天，当天不允许
+            if remind_date.date() > datetime.date.today():
                 form.instance.status = 2
             else:
-                return JsonResponse({"status": False, "msg": '提醒日期要大于当前日期'})
+                return JsonResponse({"status": False, "msg": '请设置提醒日期大于今天的日期'})
 
         # 新增一条任务
         if not is_update:

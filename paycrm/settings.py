@@ -216,6 +216,9 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_RESULT_BACKEND = "redis://0.0.0.0:6379"
 CELERY_TASK_SERIALIZER = "json"
 
+# 定时任务时区（beat 调度配置见 paycrm/celery.py，避免在 settings 里导入 celery 触发循环导入）
+CELERY_TIMEZONE = "Asia/Shanghai"
+
 
 LOGS_DIRS = os.path.join(BASE_DIR, 'logs')
 if not os.path.exists(LOGS_DIRS):

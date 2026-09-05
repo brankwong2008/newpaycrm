@@ -283,6 +283,7 @@ class DailyPlan(models.Model):
     link = models.ForeignKey(to=FollowOrder, on_delete=models.CASCADE, verbose_name='关联', null=True, blank=True)
     remark = models.TextField(verbose_name='备注', default='-')
     urgence = models.BooleanField(verbose_name="紧急", default=False)
+    is_sms_sent = models.BooleanField(verbose_name="短信已发否", default=False)
     user = models.ForeignKey(to=UserInfo, on_delete=models.CASCADE, verbose_name='创建人', default=3)
     cc = models.ManyToManyField(to=UserInfo, related_name='cc', verbose_name='抄送', null=True, blank=True)
 

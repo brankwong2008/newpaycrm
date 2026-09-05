@@ -34,6 +34,9 @@ def send_sms(sign_name,template_code,phone_numbers,template_param):
         template_code='SMS_154950909',
         phone_numbers='13910566706',
         template_param='{"code":"1234"}'
+
+    返回阿里云响应体 body（含 Code 字段），Code == 'OK' 才代表发送成功。
+    注意：阿里云短信接口即使发送失败也返回 HTTP 200，业务错误码在 body.Code 中。
     """
     client = create_client()
     send_sms_request = dysmsapi_20170525_models.SendSmsRequest(
@@ -44,15 +47,14 @@ def send_sms(sign_name,template_code,phone_numbers,template_param):
     )
     runtime = util_models.RuntimeOptions()
     try:
-        # 复制代码运行请自行打印 API 的返回值
-        client.send_sms_with_options(send_sms_request, runtime)
+        response = client.send_sms_with_options(send_sms_request, runtime)
+        return response.body
     except Exception as error:
-        # 此处仅做打印展示，请谨慎对待异常处理，在工程项目中切勿直接忽略异常。
-        # 错误 message
+        # 网络/鉴权级别异常。打印并抛出，让调用方感知失败
         print(error.message)
-        # 诊断地址
-        print(error.data.get("Recommend"))
-        UtilClient.assert_as_string(error.message)
+        if error.data and hasattr(error.data, "get"):
+            print(error.data.get("Recommend"))
+        raise
 
 
 # order_number = "J4750"

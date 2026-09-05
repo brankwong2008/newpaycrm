@@ -61,6 +61,8 @@ function simpleAddDailyPlan(atag) {
         data: '',
         success: function (respond) {
             $('#taskModalLabel').text(title);
+            // 清空上一次提交留下的错误提示
+            $('#taskModal .modal-header .modal-error').html('');
             $('#taskModal .modal-body .mymodal-details').replaceWith(respond);
             // 给form的action加上url
             $('#taskModal .modal-body .mymodal-details form').attr('action', href);
