@@ -24,6 +24,15 @@ from dipay.tasks import send_dailyplan_remind_sms
 
 if __name__ == '__main__':
     # .apply() 表示在当前进程内同步执行（不经过 redis 队列），
-    # 与 celery worker 执行的是同一个函数，行为完全一致
+    # 与 celery worker 执行的是同一个函数，行为完全一致。
+    # 注意：无 celery 环境下（生产环境）apply() 直接返回普通 dict，
+    # 有 celery 时返回 Result 对象，这里对两种情况都做兼容
     result = send_dailyplan_remind_sms.apply()
-    print('执行结果:', result.get() if result.successful() else result)
+    if isinstance(result, dict):
+        # 无 celery：函数已同步执行完毕，result 就是返回值
+        print('执行结果:', result)
+    elif hasattr(result, 'get'):
+        # 有 celery：Result 对象
+        print('执行结果:', result.get() if result.successful() else result)
+    else:
+        print('执行结果:', result)
