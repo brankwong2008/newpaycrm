@@ -1,12 +1,35 @@
-from celery import shared_task
-from celery.utils.log import get_task_logger
+# celery 兼容层：生产环境(/opt/env2)未安装 celery，短信提醒脚本由 crontab 直接拉起，
+# 不需要 celery 也能运行；装了 celery 则自动使用真正的 shared_task。
+try:
+    from celery import shared_task
+    from celery.utils.log import get_task_logger
+    logger = get_task_logger(__name__)
+except ImportError:
+    import logging
+    from functools import wraps
+
+    logger = logging.getLogger(__name__)
+    logging.basicConfig(level=logging.INFO)
+
+    def shared_task(func):
+        """无 celery 环境下的同步替身：.apply()/.delay() 均直接执行函数本身"""
+        @wraps(func)
+        def _sync_call(*args, **kwargs):
+            return func(*args, **kwargs)
+
+        def _apply(*args, **kwargs):
+            return func(*args, **kwargs)
+
+        _sync_call.apply = _apply
+        _sync_call.delay = _sync_call
+        _sync_call.name = getattr(func, '__name__', 'task')
+        return _sync_call
+
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
 from dipay.utils.ali_sms import send_sms
-
-logger = get_task_logger(__name__)
 
 # ===== 任务提醒短信模板配置 =====
 # 当前模板 SMS_475870960 的 order 变量是"其他号码"类型（只接受字母数字下划线），
