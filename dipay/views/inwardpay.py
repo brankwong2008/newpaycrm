@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse, redirect, render, reverse
+from django.conf import settings
 from decimal import Decimal
 import uuid
 from django.http import JsonResponse
@@ -145,6 +146,18 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 return obj.customer.shortname
             return '-'
 
+    # 复制收款入口：单独一列，按copy_pay权限控制可见性（业务员无编辑/删除权限看不到操作列）
+    def copy_display(self, obj=None, is_header=False, *args, **kwargs):
+        if is_header:
+            return "复制"
+        else:
+            permission_dict = self.request.session.get(settings.PERMISSION_KEY) or {}
+            copy_url_name = '%s:%s' % (self.namespace, self.get_url_name('copy_pay'))
+            if copy_url_name not in permission_dict:
+                return '-'
+            copy_url = self.reverse_url('copy_pay', inwardpay_id=obj.pk)
+            return mark_safe("<a href='%s' title='复制此收款记录'><i class='fa fa-copy'></i></a>" % copy_url)
+
     def got_confirm_status_display(self, obj=None, is_header=False, *args, **kwargs):
         """
                显示币种和金额
@@ -172,6 +185,7 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                       related_orders_display,
                       ttcopy_display,
                       got_confirm_status_display,
+                      copy_display,
                       ]
 
     detail_fields_display = fields_display + ['remark', 'keyin_user',]
@@ -289,6 +303,9 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 name=self.get_url_name('confirm_pay')),
             url("^transfer/(?P<order_id>\d+)/$", self.wrapper(self.transfer),
                 name=self.get_url_name('transfer')),
+            # 复制收款记录的路由
+            url("^copy_pay/(?P<inwardpay_id>\d+)/$", self.wrapper(self.copy_pay),
+                name=self.get_url_name('copy_pay')),
         ]
         return extra_pattern
 
@@ -305,6 +322,41 @@ class InwardPayHandler(PermissionHanlder, StarkHandler):
                 # 关联了订单的，显示该业务员名下的款项， 或者是还待关联订单的款项
                 return self.model_class.objects.filter(Q(orders__salesperson=request.user) | Q(orders__isnull=True)).distinct()
 
+
+    # 复制收款记录：只保留 收款行(bank)、付款人(payer)、币种(currency)，其余按新增走默认值
+    def copy_pay(self, request, inwardpay_id, *args, **kwargs):
+        source_obj = self.model_class.objects.filter(pk=inwardpay_id).first()
+        if not source_obj:
+            return HttpResponse('收款记录不存在')
+
+        if request.method == "GET":
+            page_title = self.page_title
+            # 外键字段快速添加一条记录，弹窗式（与add_list保持一致，模板需要form.payer.url）
+            fast_add_list = ['payer']
+            conn = get_redis_connection()
+
+            form = self.get_model_form("add")(initial={
+                'bank': source_obj.bank,
+                'payer': source_obj.payer,
+                'currency': source_obj.currency,
+            })
+            for field in form:
+                if field.name in fast_add_list:
+                    field_obj = self.model_class._meta.get_field(field.name)
+                    related_model_name = field_obj.related_model._meta.model_name
+                    related_url = '/%s/%s/%s/create/' % (self.namespace, self.app_label, related_model_name)
+                    setattr(field, 'url', related_url)
+            form.instance.create_date = datetime.now()
+            # 防抖处理，POST时由add_list校验token
+            token = str(uuid.uuid4())
+            conn.set(token, 1, ex=600)
+            request.session["add_list_token"] = token
+
+            return render(request, "dipay/inwardpay_add.html", locals())
+
+        if request.method == "POST":
+            # 完整复用新增收款逻辑：防抖校验、水单上传、reference自增、手续费记录、收款行计数、图片压缩
+            return self.add_list(request, *args, **kwargs)
 
     # 认领款项
     def confirm_pay(self, request, inwardpay_id, *args, **kwargs):
