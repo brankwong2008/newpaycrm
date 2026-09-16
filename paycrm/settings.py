@@ -201,19 +201,19 @@ SESSION_COOKIE_AGE = 259200  # 用户的cookie存储最长时间3天，3天后�
 CACHES = {
     'default' : {
     "BACKEND": 'django_redis.cache.RedisCache',
-    "LOCATION": 'redis://0.0.0.0:6379',
+    "LOCATION": 'redis://:wong8578@127.0.0.1:6379/0',
     "OPTIONS" :{
         "CLIENT_CLASS" : "django_redis.client.DefaultClient",
-        # "PASSWORD": '123',
+        "PASSWORD": 'wong8578',
     }
 }
 }
 
 
 ############## celery的配置 ##############
-CELERY_BROKER_URL = "redis://0.0.0.0:6379"
+CELERY_BROKER_URL = "redis://:wong8578@127.0.0.1:6379/1"
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_RESULT_BACKEND = "redis://0.0.0.0:6379"
+CELERY_RESULT_BACKEND = "redis://:wong8578@127.0.0.1:6379/2"
 CELERY_TASK_SERIALIZER = "json"
 
 # 定时任务时区（beat 调度配置见 paycrm/celery.py，避免在 settings 里导入 celery 触发循环导入）
