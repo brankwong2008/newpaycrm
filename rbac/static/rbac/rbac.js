@@ -1,22 +1,23 @@
 (function (jq) {
+    // 页面加载时：给服务端渲染为展开状态的分组标题补上 .open 高亮
+    jq('.multi-menu .sub-titles').each(function () {
+        if (!jq(this).hasClass('hide')) {
+            jq(this).prev('.title').addClass('open');
+        }
+    });
+
     jq('.multi-menu .title').click(function () {
-        // var $status = $(this).next().hasClass('hide');
-        //
-        // $('.multi-menu .sub-titles').addClass('hide');
-        // if ($status) {
-        //     $(this).next().removeClass('hide')
-        // } else {
-        //     $(this).next().addClass('hide')
-        // }
-
-        // 第二种写法
-        $(this).css("background", '#79a4cf')
-        $(this).next().toggleClass('hide');
-        // 将其他菜单收拢
-        $(this).parent().siblings().children('.sub-titles').addClass('hide');
-        $(this).parent().siblings().children('.title').css('background', '')
-
-
+        var $title = jq(this);
+        // 记录点击前是否处于收起状态
+        var willOpen = $title.next().hasClass('hide');
+        // 先收拢所有菜单
+        jq('.multi-menu .sub-titles').addClass('hide');
+        jq('.multi-menu .title').removeClass('open');
+        // 再展开当前点击的分组（重复点击同一分组则仅收拢）
+        if (willOpen) {
+            $title.next().removeClass('hide');
+            $title.addClass('open');
+        }
     });
 })(jQuery);
 

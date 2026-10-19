@@ -264,15 +264,10 @@ span.btn.btn-default.active {
 
 .search-group .row a {
     display: inline-block;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid lightgrey;
     font-size: 13px;
 }
 
-.search-group .row a.active {
-    background-color: paleturquoise;
-}
+/* 筛选胶囊样式统一由 css/modern_ui.css 提供 */
 
 .search-group .others {
     display: inline-block;
@@ -567,15 +562,10 @@ tr.active {
 
 .search-group .row a {
     display: inline-block;
-    padding: 5px;
-    margin: 5px;
-    border: 1px solid lightgrey;
     font-size: 13px;
 }
 
-.search-group .row a.active {
-    background-color: paleturquoise;
-}
+/* 筛选胶囊样式统一由 css/modern_ui.css 提供 */
 
 .search-group .others {
     display: inline-block;

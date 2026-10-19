@@ -1,0 +1,511 @@
+/* ============================================================
+   paycrm 全局现代化样式 · 扁平柔和风
+   基调：浅灰底 + 白色圆角卡片 + 柔和阴影 + 蓝色强调
+   由 base_layout.html 统一引入，作用于所有页面
+   ============================================================ */
+:root {
+    --ui-bg: #eef1f6;           /* 页面底色 */
+    --ui-card: #f7f9fc;         /* 卡片底色 */
+    --ui-white: #ffffff;
+    --ui-accent: #3568f0;       /* 主强调蓝 */
+    --ui-accent-hover: #2a57d4;
+    --ui-accent-soft: #e8eefe;  /* 强调蓝浅底 */
+    --ui-text: #2b3245;         /* 主文字 */
+    --ui-text-sub: #8a93a6;     /* 次要文字 */
+    --ui-line: #e9edf3;         /* 分隔线 */
+    --ui-danger: #e5484d;
+    --ui-shadow: 0 6px 18px rgba(160, 170, 190, .28),
+                 0 2px 6px rgba(160, 170, 190, .15);
+    --ui-shadow-sm: 0 3px 8px rgba(160, 170, 190, .22);
+    --ui-radius: 16px;
+}
+
+/* ---------- 页面基调 ---------- */
+body {
+    background: var(--ui-bg);
+    color: var(--ui-text);
+}
+.base-content {
+    background: var(--ui-bg);
+}
+
+a { color: var(--ui-accent); }
+a:hover { color: var(--ui-accent-hover); }
+
+hr { border-top: 1px solid var(--ui-line); }
+
+/* ---------- 顶部导航：保持深色，仅做质感和圆角微调 ---------- */
+.navbar-inverse.mynavbar {
+    background: #232a3b;
+    border: none;
+    box-shadow: 0 2px 12px rgba(35, 42, 59, .35);
+}
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.navbar-inverse .navbar-brand:hover { color: #9db6ff; }
+.navbar-inverse .navbar-nav > li > a {
+    color: #b9c0cf;
+    transition: color .2s ease;
+}
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+    color: #ffffff;
+    background: transparent;
+}
+/* 当前页高亮：淡蓝底胶囊 + 橙色字（沿用旧版橙色选中惯例） */
+.navbar-inverse .navbar-nav > li > a.active {
+    color: #ff8c00;
+    background: rgba(53, 104, 240, .22);
+    border-radius: 20px;
+    font-weight: bolder;
+}
+.navbar-inverse .navbar-nav > li > a.active:hover {
+    color: #ffa133;
+}
+/* 右上角用户区文字 */
+.navbar-inverse .navbar-nav > li > a .nickname { color: inherit; }
+/* 深色导航下的下拉菜单也保持深色，避免割裂 */
+.navbar-inverse .dropdown-menu {
+    background: #2b3346;
+}
+.navbar-inverse .dropdown-menu > li > a { color: #cfd5e2; }
+.navbar-inverse .dropdown-menu > li > a:hover,
+.navbar-inverse .dropdown-menu > li > a:focus {
+    background: rgba(53, 104, 240, .25);
+    color: #ffffff;
+}
+.navbar-inverse .dropdown-menu .divider { background-color: #3a4359; }
+
+/* ---------- 路径导航弱化 ---------- */
+.my_navilist {
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 18px;   /* 与下方筛选卡片留出距离，避免视觉交叉 */
+    padding: 0 4px;
+}
+.my_navilist a { color: var(--ui-text-sub); text-decoration: none; }
+.my_navilist a.active { color: var(--ui-accent); font-weight: 600; }
+.my_navilist span { color: var(--ui-text-sub); }
+.my_navilist hr { display: none; }
+
+/* ---------- 模糊搜索：全局统一（followorder 与 stark 各列表页一致） ---------- */
+input[name='q'],
+.random-search-input {
+    width: 240px;
+    height: 38px;
+    border: none;
+    border-radius: 22px;
+    background: var(--ui-white);
+    box-shadow: inset 3px 3px 6px rgba(174, 182, 196, .18),
+                inset -3px -3px 6px rgba(255, 255, 255, .9);
+    padding: 0 16px;
+    outline: none;
+    color: var(--ui-text);
+    vertical-align: middle;
+    transition: box-shadow .2s ease;
+}
+input[name='q']:focus,
+.random-search-input:focus {
+    box-shadow: 0 0 0 2px var(--ui-accent-soft),
+                inset 3px 3px 6px rgba(174, 182, 196, .18);
+}
+/* 搜索表单里的按钮统一为圆形图标钮（stark 列表页搜索/重置） */
+form.form-group > button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: var(--ui-white);
+    box-shadow: var(--ui-shadow-sm);
+    color: var(--ui-accent);
+    margin-left: 10px;
+    outline: none;
+    transition: all .2s ease;
+    vertical-align: middle;
+}
+form.form-group > button:hover {
+    color: #fff;
+    background: var(--ui-accent);
+}
+
+/* stark 通用列表页：批量处理（处理方式+发送）与跟单页胶囊风格统一 */
+.batch-process-div {
+    display: inline-flex;
+    align-items: center;
+    background: var(--ui-white);
+    border-radius: 22px;
+    box-shadow: var(--ui-shadow-sm);
+    overflow: hidden;
+}
+.batch-process-div .handle-select {
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    color: var(--ui-text);
+    height: 38px;
+    padding: 0 4px 0 16px;
+    outline: none;
+}
+.batch-process-div .handle-btn {
+    border: none;
+    background: transparent;
+    color: var(--ui-accent);
+    height: 38px;
+    padding: 0 16px;
+    outline: none;
+    transition: all .2s ease;
+}
+.batch-process-div .handle-btn:hover {
+    color: #fff;
+    background: var(--ui-accent);
+}
+
+/* ---------- 卡片化容器 ---------- */
+.luffy-container,
+.body-content .panel.panel-default {
+    background: var(--ui-card);
+    border: none;
+    border-radius: var(--ui-radius);
+    box-shadow: var(--ui-shadow);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+}
+/* 关键修复：luffy-container 的子元素是浮动列（col-md-12 等），
+   不清除浮动容器会塌陷成一条细带，内容全部溢出到卡片外 */
+.luffy-container {
+    display: flow-root;
+}
+.body-content .panel.panel-default { padding: 10px 18px; }
+.body-content .panel.panel-default > .panel-body { padding: 8px 0; }
+
+/* stark 列表页：筛选面板嵌在 luffy-container 大卡片内，
+   内层去掉卡片底色和阴影，避免双层卡片边缘交叉 */
+.luffy-container .panel.panel-default {
+    background: transparent;
+    box-shadow: none;
+    padding: 4px 6px 0;
+    margin-bottom: 6px;
+}
+.luffy-container .panel.panel-default > .panel-body { padding: 0; }
+
+/* 通用卡片（页面内可用 fo-card 自行包裹区块） */
+.fo-card {
+    background: var(--ui-card);
+    border: none;
+    border-radius: var(--ui-radius);
+    box-shadow: var(--ui-shadow);
+    padding: 18px 22px;
+    margin-bottom: 24px;
+}
+
+/* 组合筛选胶囊按钮 */
+.search-group { margin-bottom: 8px; }
+/* 字头（裸文本）与选项区之间留出呼吸空间，适用于所有列表页 */
+.search-group .others { margin-left: 14px; }
+.search-group a {
+    display: inline-block;
+    padding: 5px 16px;
+    margin: 4px 6px 4px 0;
+    border-radius: 18px;
+    background: var(--ui-white);
+    box-shadow: var(--ui-shadow-sm);
+    color: var(--ui-text-sub);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all .2s ease;
+}
+.search-group a:hover { color: var(--ui-text); }
+.search-group a.active {
+    background: var(--ui-accent-soft);
+    color: var(--ui-text);
+    box-shadow: inset 2px 2px 5px rgba(53, 104, 240, .12),
+                inset -2px -2px 5px rgba(255, 255, 255, .9);
+}
+
+/* ---------- 表单控件 ---------- */
+.form-control {
+    border: 1px solid var(--ui-line);
+    border-radius: 10px;
+    background: var(--ui-white);
+    color: var(--ui-text);
+    box-shadow: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+.form-control:focus {
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px var(--ui-accent-soft);
+}
+.form-control[disabled], .form-control[readonly],
+fieldset[disabled] .form-control {
+    background: var(--ui-bg);
+}
+
+.input-group-addon {
+    background: var(--ui-white);
+    border: 1px solid var(--ui-line);
+    color: var(--ui-text-sub);
+}
+
+/* 下拉搜索（bootstrap-select）与原生 select 一致化 */
+.bootstrap-select .dropdown-toggle {
+    border: 1px solid var(--ui-line);
+    border-radius: 10px;
+    background: var(--ui-white);
+    box-shadow: none;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+    border-radius: 20px;
+    transition: all .2s ease;
+}
+.btn.btn-primary {
+    background: var(--ui-accent);
+    border: none;
+    box-shadow: 3px 3px 10px rgba(53, 104, 240, .30);
+}
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    background: var(--ui-accent-hover);
+    border: none;
+}
+.btn.btn-default {
+    border: 1px solid transparent;
+    background: var(--ui-white);
+    box-shadow: var(--ui-shadow-sm);
+    color: var(--ui-accent);
+}
+.btn.btn-default:hover,
+.btn.btn-default:focus {
+    background: var(--ui-accent);
+    border-color: transparent;
+    color: #fff;
+}
+.btn.btn-danger {
+    border: none;
+    background: var(--ui-danger);
+}
+/* 表格内的小图标链接统一强调色 */
+.table a i { color: var(--ui-accent); }
+/* 订舱船舶图标例外：与箱号/费用等图标保持灰色一致，不跟随链接强调色 */
+.table a i.fa-ship { color: #808080; }
+
+/* ---------- 表格 ---------- */
+.table > thead > tr > th {
+    border-bottom: none !important;
+    color: var(--ui-text-sub);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: .5px;
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+.table > tbody > tr > td {
+    border-top: 1px solid var(--ui-line);
+    padding: 10px;
+    vertical-align: middle !important;
+    color: var(--ui-text);
+}
+.table > tbody > tr { transition: background .15s ease; }
+.table > tbody > tr:hover > td { background: #f0f4fb; }
+/* 去掉斑马纹，保留纯净底色 */
+.table-striped > tbody > tr:nth-of-type(odd) { background: transparent; }
+
+/* ---------- 分页器：圆形胶囊 ---------- */
+.pagination { margin: 16px 4px 0; }
+.pagination > li > a, .pagination > li > span {
+    border: none !important;
+    background: var(--ui-white);
+    color: var(--ui-text);
+    margin: 0 4px;
+    border-radius: 50% !important;
+    min-width: 34px;
+    height: 34px;
+    line-height: 32px;
+    padding: 0 8px;
+    text-align: center;
+    box-shadow: var(--ui-shadow-sm);
+    transition: all .2s ease;
+}
+.pagination > li > a:hover,
+.pagination > li > span:hover {
+    color: #fff;
+    background: var(--ui-accent);
+}
+/* 当前页：浅色底纹 + 蓝字，避免亮蓝大色块抢视线 */
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover {
+    color: var(--ui-accent) !important;
+    background: var(--ui-accent-soft) !important;
+    font-weight: 600;
+    box-shadow: none;
+}
+
+/* ---------- 下拉菜单 ---------- */
+.dropdown-menu {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 6px 6px 18px rgba(120, 132, 155, .25);
+    overflow: hidden;
+}
+.dropdown-menu > li > a { padding: 8px 20px; }
+.dropdown-menu > li > a:hover {
+    background: var(--ui-accent-soft);
+    color: var(--ui-accent);
+}
+
+/* ---------- 模态框 ---------- */
+.modal-content {
+    border: none;
+    border-radius: var(--ui-radius);
+    box-shadow: 12px 12px 32px rgba(120, 132, 155, .35);
+    background: var(--ui-card);
+}
+.modal-header { border-bottom: 1px solid var(--ui-line); }
+.modal-footer { border-top: 1px solid var(--ui-line); }
+
+/* ---------- 徽标 ---------- */
+.label { border-radius: 10px; padding: .25em .7em; }
+
+/* ---------- 滚动条（Webkit） ---------- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb {
+    background: #c8cfdb;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: #aeb7c6; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================
+   左侧菜单栏 · 现代化改造
+   白色圆角卡片 + 分组标题 + 胶囊子项 + 橙色选中（与顶部导航呼应）
+   ============================================================ */
+
+/* 桌面端：固定宽侧栏 + 自适应主区（收窄菜单栏） */
+@media (min-width: 992px) {
+    .body-content > .row {
+        display: flex;
+        align-items: stretch;
+    }
+    /* 直铺式侧栏：全高白色列 + 右侧细线，与内容区卡片自然分区 */
+    .body-content > .row > .col-md-2 {
+        float: none;
+        flex: 0 0 176px;
+        width: 176px;
+        padding: 0;
+        margin-top: -10px;   /* 抵消 body-content 顶部 10px 间距，白底与顶部导航齐平 */
+        background: var(--ui-white);
+        border-right: 1px solid var(--ui-line);
+        min-height: calc(100vh - 50px);
+    }
+    .body-content > .row > .col-md-2 .pg-body {
+        position: sticky;
+        top: 50px;
+        padding: 10px 0 24px;
+    }
+    .body-content > .row > .col-md-10 {
+        float: none;
+        flex: 1 1 auto;
+        width: auto;
+        min-width: 0;
+        padding-left: 18px;
+    }
+}
+
+/* 菜单整体：直铺通栏，去掉圆角卡片感 */
+.menu-body .multi-menu {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 0 !important;
+}
+
+/* 一级分组标题：通栏扁平行 */
+.multi-menu .item {
+    background: transparent;
+}
+.multi-menu .item > .title {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 12px 18px;
+    color: #4a5368;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease;
+}
+.multi-menu .item > .title i {
+    width: 18px;
+    text-align: center;
+    margin-right: 8px;
+    color: var(--ui-text-sub);
+    transition: color .18s ease;
+}
+.multi-menu .item > .title:hover {
+    background: #f2f5fa;
+    color: var(--ui-text);
+}
+/* 展开状态（由 rbac.js 切换 .open）：仅文字变橙，不加底纹 */
+.multi-menu .item > .title.open,
+.multi-menu .item > .title.open:hover {
+    background: transparent;
+    color: #e07b00;
+}
+.multi-menu .item > .title.open i { color: #e07b00; }
+
+/* 二级菜单：通栏扁平子项（left_menu.html 中子项本身是 a.body.list-group-item） */
+.multi-menu .item > .body,
+.multi-menu .item > .body.list-group-item,
+.multi-menu .sub-titles {
+    border: none;
+    background: transparent;
+    padding: 2px 0 4px;
+}
+.multi-menu .sub-titles a.body.list-group-item,
+.multi-menu .item > .body a {
+    display: block;
+    margin: 0;
+    padding: 9px 16px 9px 36px;
+    border: none;
+    border-left: none;
+    border-radius: 0;
+    background: transparent;
+    color: #5a6478;
+    font-size: 13px;
+    text-decoration: none;
+    box-shadow: none;
+    transition: background .18s ease, color .18s ease;
+}
+.multi-menu .sub-titles a.body.list-group-item i,
+.multi-menu .item > .body a i {
+    color: var(--ui-text-sub);
+    margin-right: 6px;
+}
+.multi-menu .sub-titles a.body.list-group-item:hover,
+.multi-menu .item > .body a:hover {
+    background: #f2f5fa;
+    color: var(--ui-text);
+}
+/* 选中项：仅橙色文字 + 左侧橙色条，不加底纹 */
+.multi-menu .sub-titles a.body.list-group-item.hilight,
+.multi-menu .sub-titles a.body.list-group-item.hilight:hover,
+.multi-menu .item > .body a.hilight,
+.multi-menu .item > .body a.hilight:hover {
+    background: transparent;
+    color: #e07b00;
+    font-weight: 600;
+    box-shadow: inset 3px 0 0 #f08c00;
+}
+.multi-menu .sub-titles a.body.list-group-item.hilight i,
+.multi-menu .item > .body a.hilight i { color: #e07b00; }

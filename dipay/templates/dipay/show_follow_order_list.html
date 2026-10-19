@@ -3,9 +3,10 @@
 
 
 {% block css %}
-    <link rel="stylesheet" href="{% static '/css/dipay.css' %}">
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}?v=20261019g">
 
     <style>
+        /* 全局设计系统见 css/modern_ui.css，此处只保留本页专属样式 */
 
         li.dropdown {
             list-style-type: none;
@@ -15,44 +16,132 @@
             font-size: large;
         }
 
-        .time-search-chozen {
-            background-color: paleturquoise;
+        /* 模糊搜索胶囊输入框：全局样式见 modern_ui.css（input[name='q']），此处仅适配本页布局 */
+
+        form.fo-search-form { display: flex; align-items: center; margin-bottom: 0; }
+
+        /* 工具栏卡片：flex 布局，搜索/ETD 靠左，批量处理/下载靠右 */
+        .fo-toolbar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .fo-toolbar > div:last-child { flex-basis: 100%; }  /* msg 独占一行 */
+        .fo-toolbar-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
 
-        .random-search-input{
-            width: 226px;
+        form.form-group { margin-bottom: 0; }
+
+        /* 主卡片：筛选区、工具栏、表格全部在同一张卡内 */
+        .fo-main-card { padding: 14px 22px 10px; }
+        /* 卡片内的筛选面板去掉自身卡片感，融进主卡片 */
+        .fo-main-card .panel.panel-default {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+        }
+        .fo-main-card .panel.panel-default > .panel-body { padding: 2px 0 0; }
+        .fo-divider {
+            height: 1px;
+            background: var(--ui-line);
+            margin: 16px -22px 14px;   /* 贯穿整卡宽度，区分筛选区与主体内容 */
         }
 
+        /* 常搜链接：纯文字，无底纹 */
+        .fo-often { color: var(--ui-text-sub) !important; margin-bottom: 14px; }
+        .fo-often a {
+            color: var(--ui-text-sub) !important;
+            text-decoration: none;
+            margin-right: 16px;
+            transition: color .2s ease;
+        }
+        /* 常搜标签与第一个关键词之间留出间距 */
+        .fo-often a:first-of-type { margin-left: 16px; }
+        .fo-often a:hover { color: var(--ui-accent) !important; }
+
+        /* 圆形图标按钮（搜索/重置） */
+        .fo-icon-btn {
+            width: 38px; height: 38px;
+            border: none;
+            border-radius: 50%;
+            background: var(--ui-white);
+            box-shadow: var(--ui-shadow-sm);
+            color: var(--ui-accent);
+            margin-left: 10px;
+            outline: none;
+            transition: all .2s ease;
+        }
+        .fo-icon-btn:hover { color: #fff; background: var(--ui-accent); }
+
+        /* 时间筛选 / 批量处理 下拉 */
         .search-select {
             width: 150px;
-            margin-left: 30px;
+            margin-left: 0;
         }
-        .handle-block{
+        .handle-block {
             width: 130px;
         }
-
+        .input-group.search-select, .input-group.handle-block {
+            box-shadow: var(--ui-shadow-sm);
+            border-radius: 22px;
+            background: var(--ui-white);
+            overflow: hidden;
+        }
+        .input-group .form-control, .input-group .search-item {
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent;
+            color: var(--ui-text);
+        }
+        .input-group-addon.search-item {
+            background: transparent;
+            color: var(--ui-text-sub);
+            border: none;
+        }
+        .input-group-addon.search-item:hover { color: var(--ui-accent); }
         .search-item {
             padding: 0 3px;
             height: 24px;
         }
+        .input-group.search-select .search-item,
+        .input-group.handle-block .search-item { height: auto; padding: 9px 3px; }
+        .time-search-chozen { background: var(--ui-accent-soft) !important; }
 
-        i:hover {
-            cursor: pointer;
+        /* 下载图标按钮 */
+        .download-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            background: var(--ui-white);
+            box-shadow: var(--ui-shadow-sm);
+            color: var(--ui-accent);
+            font-size: 15px;
+            transition: all .2s ease;
         }
+        .download-icon:hover { color: #fff; background: var(--ui-accent); }
 
-        i.unchecked {
-            color: lightgrey;
+        i:hover { cursor: pointer; }
+        i.unchecked { color: lightgrey; }
+        i.unchecked, i.checked { font-size: small; }
+
+        /* 表格卡片头：添加 / 下载 / 批量处理 */
+        .fo-table-toolbar {
+            padding: 6px 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-
-        i.unchecked, i.checked {
-            font-size: small;
-        }
-
-    .download-icon{
-        margin-right: 30px;
-        padding-top: 10px ;
-    }
-
+        .fo-table-toolbar .pull-right { margin-left: auto; }
+        .fo-table-toolbar .btn.btn-primary { padding: 9px 22px; }
 
     </style>
 
@@ -64,12 +153,12 @@
 
         <div class="col-md-12">
 
-            <!-- 组合筛选功能区 -->
+            <!-- 单卡片：筛选区 + 主体内容，中间只用一条横细线分隔 -->
+            <div class="fo-card fo-main-card">
+
+            <!-- 筛选部分 -->
             {% if option_group_dict %}
                 <div class="panel panel-default">
-                    {#                    <div class="panel-heading">#}
-                    {#                        <i class="fa fa-filter"></i> 快速筛选#}
-                    {#                    </div>#}
                     <div class="panel-body">
                         {% for field, row in option_group_dict.items %}
 
@@ -87,11 +176,14 @@
 
             {% endif %}
 
+            <!-- 筛选区与主体内容的唯一分隔线 -->
+            <div class="fo-divider"></div>
+
             {% if extra_render_func_data %}
-                 <div style="color: lightgray;margin-bottom: 10px"> 常搜:
+                 <div class="fo-often"> 常搜:
                      {% for item in extra_render_func_data.often_clicks %}
 
-                        <a href="{{ item.link }}" style="color: lightgray;margin-right: 12px"> {{ item.title }} </a>
+                        <a href="{{ item.link }}"> {{ item.title }} </a>
 
                      {% endfor %}
 
@@ -100,113 +192,112 @@
 
             {% endif %}
 
+                <!-- 工具栏：搜索 + 时间筛选 + 批量处理 + 下载 -->
+                <div class="fo-toolbar">
 
+                    <!-- 模糊搜索 字段 -->
+                    {% if search_list %}
 
+                        <form action="" method="get" class="fo-search-form">
 
+                            <input name="q" class="random-search-input" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
+                            <button type="submit" class="fo-icon-btn" title="搜索"><i class="fa fa-search"></i></button>
+                            <button id="id-clear-search" onclick="clearSearch()" class="fo-icon-btn" title="重置"><i class="fa fa-rotate-left"></i></button>
 
+                        </form>
+                    {% endif %}
 
-            <!-- 模糊搜索 字段 -->
-            {% if search_list %}
+                    <!-- 按月筛选 字段 -->
+                    {% if time_search %}
+                        {% for row in time_search %}
 
-                <form action="" method="get" class="form-group pull-left">
+                            <div class="input-group search-select">
+                                <span class="input-group-addon search-item">{{ row.title }}</span>
+                                <select id="search-{{ row.field }}"
+                                        onchange="filterTime(this)"
+                                        class="{{ row.active }} form-control search-item">
+                                    <option value>按月筛选</option>
+                                    {% for each in row.options %}
+                                        <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
+                                    {% endfor %}
 
-                    <input name="q" class="random-search-input" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"></i></button>
+                                </select>
+                                <span class="input-group-addon search-item" onclick="clearTimeSearch()"><i
+                                        class="fa fa-rotate-left"
+                                        style="margin: 3px 2px 3px"></i></span>
+                            </div>
 
+                        {% endfor %}
+                    {% endif %}
 
-                </form>
-            {% endif %}
+                    <!-- 右侧：批量处理 + 下载 -->
+                    <div class="fo-toolbar-right">
+                        {% if batch_process_dict %}
+                            <div class="input-group handle-block hidden-xs">
+                                <select id="batch_handle_type" class="form-control search-item" >
+                                     <option value="">处理方式</option>
+                                    {% for func,text in batch_process_dict.items %}
+                                        <option value="{{ func }}">{{ text }}</option>
+                                    {% endfor %}
 
-            <!-- 按月筛选 字段 -->
-            {% if time_search %}
-                {% for row in time_search %}
+                                </select>
+                                <span class="input-group-btn">
+                                <button type='button' class="btn btn-default search-item" onclick="submitBatch()"><i class="fa fa-send"></i></button>
+                                </span>
+                            </div><!-- /input-group -->
 
-                    <div class="input-group search-select pull-left">
-                        <span class="input-group-addon search-item">{{ row.title }}</span>
-                        <select id="search-{{ row.field }}"
-                                onchange="filterTime(this)"
-                                class="{{ row.active }} form-control search-item">
-                            <option value>按月筛选</option>
-                            {% for each in row.options %}
-                                <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
-                            {% endfor %}
+                        {% endif %}
 
-                        </select>
-                        <span class="input-group-addon search-item" onclick="clearTimeSearch()"><i
-                                class="fa fa-rotate-left"
-                                style="margin: 3px 2px 3px"></i></span>
+                        <!-- 下载跟单表按钮 -->
+                        <i class="fa fa-download download-icon" link="/stark/dipay/followorder/download/"  onclick="showDownloadBox(this)"></i>
+
                     </div>
 
-                {% endfor %}
-            {% endif %}
+                    <div>{{ msg }}</div>
+                </div>
+
+                <form action="" method="post" id="form_contain_table">
+                    {% csrf_token %}
+                    <!-- 批量处理方式由工具栏的 select 经 JS 同步到该隐藏域后随本表单提交 -->
+                    <input type="hidden" name="handle_type" id="id_batch_handle_type" value="">
+
+                    <!-- 卡片头：添加按钮 -->
+                    {% if add_btn %}
+                        <div class="fo-table-toolbar">
+                            {{ add_btn|safe }}
+                        </div>
+                    {% endif %}
+
+                    <table class="table table-striped">
+
+                        <thead>
+                        {% for item in header_list %}
+                            <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
+
+                        {% endfor %}
 
 
+                        </thead>
+                        <tbody>
+                        {% for row in data_list %}
+                            <tr>
+                                {% for item in row.data %}
+                                    {% if forloop.counter == 2 %}
+                                        <td class="txt-ell" nowrap>{{ item }} </td>
+                                    {% else %}
+                                        <td class="txt-ell">{{ item }} </td>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
 
+                        {% endfor %}
+                        </tbody>
 
-            <form action="" method="post" id="form_contain_table">
-                <!-- 批量处理按钮 -->
-                {% csrf_token %}
-                {% if batch_process_dict %}
-                    <div class="input-group handle-block pull-right hidden-xs">
-                        <select name="handle_type" class="form-control search-item" >
-                             <option value="">处理方式</option>
-                            {% for func,text in batch_process_dict.items %}
-                                <option value="{{ func }}">{{ text }}</option>
-                            {% endfor %}
+                    </table>
 
-                        </select>
-                        <span class="input-group-btn">
-                        <button type='submit' class="btn btn-default search-item" type="button"><i class="fa fa-send"></i></button>
-                        </span>
-                    </div><!-- /input-group -->
-
-                {% endif %}
-
-
-            <!-- 下载跟单表按钮 -->
-            <div class="pull-right" >
-                <i class="fa fa-download download-icon" link="/stark/dipay/followorder/download/"  onclick="showDownloadBox(this)"></i>
+                </form>
 
             </div>
-
-
-
-                <!-- 添加按钮 -->
-                {% if add_btn %}
-                    {{ add_btn|safe }}
-                {% endif %}
-
-                <div>{{ msg }}</div>
-
-                <table class="table table-striped">
-
-                    <thead>
-                    {% for item in header_list %}
-                        <th class="followorder-table-head-{{ forloop.counter }}">{{ item }} </th>
-
-                    {% endfor %}
-
-
-                    </thead>
-                    <tbody>
-                    {% for row in data_list %}
-                        <tr>
-                            {% for item in row.data %}
-                                {% if forloop.counter == 2 %}
-                                    <td class="txt-ell" nowrap>{{ item }} </td>
-                                {% else %}
-                                    <td class="txt-ell">{{ item }} </td>
-                                {% endif %}
-                            {% endfor %}
-                        </tr>
-
-                    {% endfor %}
-                    </tbody>
-
-                </table>
-
-            </form>
 
 
             <!-- 分页器    -->
@@ -225,18 +316,7 @@
     </div>
 
 
-    <!-- 这个方法有点麻烦，后面再研究 用模态框解决临时弹出输入问题  Button trigger modal -->
-    {#<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">#}
-    {#  Launch demo modal#}
-    {#</button>#}
-
-
-    <!-- 模态对话框的btn， 显示收款明细
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Launch demo modal
-</button> -->
-
-    <!-- Modal 模态对话框  显示收款明细 -->
+    <!-- 模态对话框  显示收款明细 -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -250,9 +330,6 @@
                     <div class="mymodal-details"></div>
 
                 </div>
-                {#      <div class="modal-footer">#}
-                {#        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>#}
-                {#      </div>#}
             </div>
         </div>
     </div>
@@ -267,6 +344,19 @@
     <script src="{% static "js/decimal.js/decimal.js" %}"></script>
     <script src="{% static "js/edit-charge-list.js" %}"></script>
     <script src="{% static "js/edit-dailyplan.js" %}"></script>
+
+    <script>
+        // 批量处理：工具栏的 select 不在表格表单内，提交前同步到隐藏域再提交
+        function submitBatch() {
+            var v = $('#batch_handle_type').val();
+            if (!v) {
+                ShowMsg('请先选择处理方式');
+                return;
+            }
+            $('#id_batch_handle_type').val(v);
+            $('#form_contain_table').submit();
+        }
+    </script>
 
 
 

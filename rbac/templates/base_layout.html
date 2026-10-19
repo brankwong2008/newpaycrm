@@ -21,6 +21,9 @@
     <link href="{% static "plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.css" %} " rel="stylesheet">
 
     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+
+    {# 全局现代化样式：浅灰底+圆角卡片+柔和阴影+蓝色强调（v=版本号，样式更新时递增以强制刷新缓存） #}
+    <link rel="stylesheet" href="{% static 'css/modern_ui.css' %}?v=20261019g">
     <style type="text/css">
         @media (max-width: 767px) {
             .col-md-2, .col-md-10 {
@@ -182,7 +185,7 @@
 </footer>
 
 
-<script src="{% static '/rbac/rbac.js' %}"></script>
+<script src="{% static '/rbac/rbac.js' %}?v=20261019g"></script>
 
 {% block js %}
 
