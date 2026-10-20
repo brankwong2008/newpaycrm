@@ -306,6 +306,7 @@ fieldset[disabled] .form-control {
     vertical-align: middle;
 }
 .table > tbody > tr > td {
+    background: var(--ui-white);
     border-top: 1px solid var(--ui-line);
     padding: 10px;
     vertical-align: middle !important;
