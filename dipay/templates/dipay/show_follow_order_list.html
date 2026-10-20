@@ -143,6 +143,28 @@
         .fo-table-toolbar .pull-right { margin-left: auto; }
         .fo-table-toolbar .btn.btn-primary { padding: 9px 22px; }
 
+        /* 申请放单提示框：紧凑页头，隐藏右上角关闭按钮（统一用底部“确定”关闭） */
+        #applyReleaseResultModal .modal-dialog {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+        }
+        #applyReleaseResultModal .modal-header {
+            padding: 8px 16px;
+            min-height: 0;
+            border-bottom: 1px solid var(--ui-line);
+        }
+        #applyReleaseResultModal .modal-header .close { display: none; }
+        #applyReleaseResultModal .modal-title {
+            font-size: 14px;
+            line-height: 1.4;
+            margin: 0;
+        }
+        #applyReleaseResultModal .modal-body { padding: 16px; }
+        #applyReleaseResultModal .modal-footer { padding: 10px 16px; }
+
     </style>
 
 {% endblock %}
@@ -230,23 +252,8 @@
                         {% endfor %}
                     {% endif %}
 
-                    <!-- 右侧：批量处理 + 下载 -->
+                    <!-- 右侧：下载（处理方式已移到每行的 Handle 下拉菜单中） -->
                     <div class="fo-toolbar-right">
-                        {% if batch_process_dict %}
-                            <div class="input-group handle-block hidden-xs">
-                                <select id="batch_handle_type" class="form-control search-item" >
-                                     <option value="">处理方式</option>
-                                    {% for func,text in batch_process_dict.items %}
-                                        <option value="{{ func }}">{{ text }}</option>
-                                    {% endfor %}
-
-                                </select>
-                                <span class="input-group-btn">
-                                <button type='button' class="btn btn-default search-item" onclick="submitBatch()"><i class="fa fa-send"></i></button>
-                                </span>
-                            </div><!-- /input-group -->
-
-                        {% endif %}
 
                         <!-- 下载跟单表按钮 -->
                         <i class="fa fa-download download-icon" link="/stark/dipay/followorder/download/"  onclick="showDownloadBox(this)"></i>
@@ -258,7 +265,7 @@
 
                 <form action="" method="post" id="form_contain_table">
                     {% csrf_token %}
-                    <!-- 批量处理方式由工具栏的 select 经 JS 同步到该隐藏域后随本表单提交 -->
+                    <!-- 行内 Handle 菜单点击时由 JS 写入该隐藏域，随本表单提交 -->
                     <input type="hidden" name="handle_type" id="id_batch_handle_type" value="">
 
                     <!-- 卡片头：添加按钮 -->
@@ -334,30 +341,34 @@
         </div>
     </div>
 
+    <!-- 申请放单成功提示框 -->
+    <div class="modal fade" id="applyReleaseResultModal" tabindex="-1" role="dialog" aria-labelledby="applyReleaseResultLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="applyReleaseResultLabel">提示</h5>
+                </div>
+                <div class="modal-body">
+                    <p id="applyReleaseResultMsg" style="margin: 0; line-height: 1.8;"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="{% static "js/clipboard/dist/clipboard.min.js" %}"></script>
     <script>
         new ClipboardJS('.clipboard_btn')
     </script>
 
-    <script src="{% static "js/edit-follow-order.js" %}"></script>
+    <script src="{% static "js/edit-follow-order.js" %}?v=20261020c"></script>
     <script src="{% static "js/decimal.js/decimal.js" %}"></script>
     <script src="{% static "js/edit-charge-list.js" %}"></script>
     <script src="{% static "js/edit-dailyplan.js" %}"></script>
-
-    <script>
-        // 批量处理：工具栏的 select 不在表格表单内，提交前同步到隐藏域再提交
-        function submitBatch() {
-            var v = $('#batch_handle_type').val();
-            if (!v) {
-                ShowMsg('请先选择处理方式');
-                return;
-            }
-            $('#id_batch_handle_type').val(v);
-            $('#form_contain_table').submit();
-        }
-    </script>
-
-
 
 {% endblock %}

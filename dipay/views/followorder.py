@@ -222,13 +222,16 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
     def apply_release(self, request, *args, **kwargs):
         pk_list = request.POST.getlist('pk')
         if len(pk_list) != 1:
-            return render(request, 'dipay/msg_after_submit.html', {'msg': '请选择一单仅且一单'})
+            return JsonResponse({'status': False, 'msg': '请选择一单仅且一单'})
 
         pk = pk_list[0]
         followorder_obj = self.model_class.objects.filter(pk=pk).first()
+        if not followorder_obj:
+            return JsonResponse({'status': False, 'msg': '跟单记录不存在，请刷新后重试'})
+
         order_obj = followorder_obj.order
         if ApplyRelease.objects.filter(order=order_obj).exists():
-            return render(request, 'dipay/msg_after_submit.html', {'msg': '已经申请过，不用重复提交'})
+            return JsonResponse({'status': False, 'msg': '已经申请过，不用重复提交'})
 
         user = request.user
         verifier = UserInfo.objects.filter(roles__title__contains='财务').first()
@@ -238,7 +241,6 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                                         verifier=verifier,
                                         )
         applyrelease_obj.save()
-        apply_release_url = reverse('stark:dipay_applyrelease_list')
 
         # 短信通知财务审核放单
         # 排除X和D开头的订单  王姐电话： 15933166226
@@ -257,7 +259,8 @@ class FollowOrderHandler(PermissionHanlder, StarkHandler):
                 print("error:", e)
                 logger.error(e)
 
-        return redirect(apply_release_url)
+        return JsonResponse({'status': True,
+                             'msg': '%s 订单已经放单成功，请提醒财务审核' % order_number})
 
     apply_release.text = '申请放单'
 

@@ -303,30 +303,66 @@ function addDailyPlan(atag) {
 function dropButtonEachRecord(atag) {
     var pk = $(atag).attr('pk');
     var handle_type = $(atag).attr('handle_type');
+    var $form = $("#form_contain_table");
 
-    // 直接发ajax更新后台数据只进行局部更新，不能利用原有form功能模块，然后直接且简单但效果不太一样
-    // var data = {
-    //     'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
-    //     "handle_type": handle_type,
-    //     "pk": pk
-    // };
-    //
-    // $.ajax({
-    //     url: location.href,
-    //     type: 'post',
-    //     data: data,
-    //     success: function (respond) {
-    //         console.log(respond);
-    //         ShowMsg("放单申请成功",3000)
-    //     }
-    // });
+    // 详情页等没有列表表单的页面，给出提示而不是静默失败
+    if (!$form.length) {
+        ShowMsg('请在跟单列表页使用该操作');
+        return false;
+    }
 
-    $("select[name='handle_type']").val(handle_type);
-    $("#form_contain_table table input[name='pk']").attr("checked",false) // 清空所有选择
-    $(`#form_contain_table table input[name='pk'][value=${pk}]`).attr("checked", true) //选择该条记录
-    $("#form_contain_table button[type='submit']").click();  // 提交form
+    // 申请放单：后台成功后直接弹提示框，不跳转页面
+    if (handle_type === 'apply_release') {
+        $.ajax({
+            url: location.href,
+            type: 'post',
+            data: {
+                'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
+                'handle_type': handle_type,
+                'pk': pk
+            },
+            success: function (respond) {
+                // 成功与失败（如重复提交）统一用同一个模态框反馈
+                $('#applyReleaseResultMsg').text(respond.msg || '放单申请失败');
+                $('#applyReleaseResultModal').modal('show');
+            },
+            error: function () {
+                $('#applyReleaseResultMsg').text('网络异常，请稍后重试');
+                $('#applyReleaseResultModal').modal('show');
+            }
+        });
+        return false;
+    }
 
-     return false;  // 取消a标签的默认点击事件
+    // 金额核查返回的是 json，不能走表单提交，单独用 ajax 处理
+    if (handle_type === 'check_amount') {
+        $.ajax({
+            url: location.href,
+            type: 'post',
+            data: {
+                'csrfmiddlewaretoken': $("[name='csrfmiddlewaretoken']").val(),
+                'handle_type': handle_type,
+                'pk': pk
+            },
+            success: function (respond) {
+                ShowMsg(respond.msg || '操作成功');
+                setTimeout(function () { location.reload(); }, 800);
+            }
+        });
+        return false;
+    }
+
+    // 处理方式已改为行内菜单，值直接写入随表单提交的隐藏域
+    $('#id_batch_handle_type').val(handle_type);
+
+    // 清空所有选择，只勾选当前这条记录
+    $("#form_contain_table table input[name='pk']").prop("checked", false);
+    $("#form_contain_table table input[name='pk'][value='" + pk + "']").prop("checked", true);
+
+    // 原提交按钮已不在该表单内，直接提交表单本身
+    $form.submit();
+
+    return false;  // 取消a标签的默认点击事件
 
 }
 

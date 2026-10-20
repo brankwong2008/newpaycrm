@@ -522,15 +522,38 @@ def more_tag_display(handler, obj=None, is_header=False, *args, **kwargs):
         return mark_safe("<span class='hidden-xs'>Handle</span>")
     else:
         add_dailyplan_url = reverse('stark:dipay_dailyplan_add')
+        # 行内 Handle 菜单：申请放单 → 添加任务 → 拆分订单
+        # 批量排产、金额核查不在菜单展示（后端方法保留；金额核查仍可通过表格“票”图标操作）
+        priority = {'apply_release': 0, 'add_task': 1, 'batch_split_order': 2}
+        hidden = {'batch_to_produce', 'check_amount'}
+        batch_funcs = [f for f in (getattr(handler, 'batch_process_list', []) or [])
+                       if f.__name__ not in hidden]
+
+        entries = [('add_task', None)] + [(f.__name__, f) for f in batch_funcs]
+        entries.sort(key=lambda e: priority.get(e[0], 50))
+
+        menu_items = []
+        for name, func in entries:
+            if name == 'add_task':
+                menu_items.append(
+                    "<li><a pk='%s' href='%s?get_type=simple' "
+                    "onclick='return addDailyPlan(this)'>添加任务</a></li>"
+                    % (obj.pk, add_dailyplan_url)
+                )
+            else:
+                menu_items.append(
+                    "<li><a pk='%s' href='javascript:void(0)' handle_type='%s' "
+                    "onclick='return dropButtonEachRecord(this)'>%s</a></li>"
+                    % (obj.pk, func.__name__, getattr(func, 'text', func.__name__))
+                )
+
         return mark_safe(""" <ul class='hidden-xs'> <li class='dropdown'>
                         <a href='#' class='dropdown-toggle' data-toggle='dropdown' role='button' aria-haspopup='true'
                            aria-expanded='false'> <span class='fa fa-navicon'></span></a>
                         <ul class='dropdown-menu'>
-                            <li><a pk='%(pk)s' href='%(url)s?get_type=simple' onclick='return addDailyPlan(this)'>添加任务</a></li>
-                            <li><a pk='%(pk)s' href='%(url)s' handle_type='apply_release' onclick='return dropButtonEachRecord(this)'>申请放单</a></li>
-                            <li><a pk='%(pk)s' href='%(url)s' handle_type='batch_split_order' onclick='return dropButtonEachRecord(this)'>拆分订单</a></li>
+                            %s
                         </ul>
-                    </li></ul>""" % {"pk":obj.pk,"url":add_dailyplan_url})
+                    </li></ul>""" % "".join(menu_items))
 
 
 # 显示水单小图片
