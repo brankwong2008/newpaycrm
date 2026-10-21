@@ -4,6 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title> CRM {{ page_title }} </title>
     <link rel="stylesheet" href="{% static '/plugins/bootstrap/css/bootstrap.css' %}">
@@ -23,7 +24,7 @@
     <link rel="stylesheet" href="{% static 'css/layout.css' %}">
 
     {# 全局现代化样式：浅灰底+圆角卡片+柔和阴影+蓝色强调（v=版本号，样式更新时递增以强制刷新缓存） #}
-    <link rel="stylesheet" href="{% static 'css/modern_ui.css' %}?v=20261020d">
+    <link rel="stylesheet" href="{% static 'css/modern_ui.css' %}?v=20261021l">
     <style type="text/css">
         @media (max-width: 767px) {
             .col-md-2, .col-md-10 {
@@ -186,6 +187,18 @@
 
 
 <script src="{% static '/rbac/rbac.js' %}?v=20261019g"></script>
+
+<script>
+    // 关闭搜索框的浏览器自动补全备选下拉：
+    // 该弹层在 macOS Chrome 上跟随浏览器/系统深色模式，网页无法定制外观，故直接关闭。
+    $(function () {
+        $("input[name='q'], .random-search-input").each(function () {
+            $(this).attr('autocomplete', 'off');
+            $(this).closest('form').attr('autocomplete', 'off');
+        });
+    });
+</script>
+
 
 {% block js %}
 

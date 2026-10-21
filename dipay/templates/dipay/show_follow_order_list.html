@@ -18,7 +18,7 @@
 
         /* 模糊搜索胶囊输入框：全局样式见 modern_ui.css（input[name='q']），此处仅适配本页布局 */
 
-        form.fo-search-form { display: flex; align-items: center; margin-bottom: 0; }
+        form.fo-search-form { display: flex; align-items: center; margin-bottom: 0; flex: 1; }
 
         /* 工具栏卡片：flex 布局，搜索/ETD 靠左，批量处理/下载靠右 */
         .fo-toolbar {
@@ -28,8 +28,12 @@
             gap: 14px;
         }
         .fo-toolbar > div:last-child { flex-basis: 100%; }  /* msg 独占一行 */
+        /* ETD 与下载图标均靠右：搜索框独占剩余宽度，把两者推到右端；
+           margin-left 36px + flex gap 14px = 50px 间距 */
         .fo-toolbar-right {
-            margin-left: auto;
+            flex: none;
+            margin-left: 36px;
+            justify-content: flex-end;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -38,7 +42,8 @@
         form.form-group { margin-bottom: 0; }
 
         /* 主卡片：筛选区、工具栏、表格全部在同一张卡内 */
-        .fo-main-card { padding: 14px 22px 10px; }
+        /* padding-top 22px（+面板内 2px = 24px），与筛选区到分隔线的 24px 保持一致 */
+        .fo-main-card { padding: 22px 22px 10px; }
         /* 卡片内的筛选面板去掉自身卡片感，融进主卡片 */
         .fo-main-card .panel.panel-default {
             background: transparent;
@@ -51,13 +56,14 @@
         .fo-divider {
             height: 1px;
             background: var(--ui-line);
-            margin: 16px -22px 14px;   /* 贯穿整卡宽度，区分筛选区与主体内容 */
+            margin: 16px -22px 28px;   /* 贯穿整卡宽度；下边距 28px 使搜索框与上方留白加倍 */
         }
 
-        /* 常搜链接：纯文字，无底纹 */
-        .fo-often { color: var(--ui-text-sub) !important; margin-bottom: 14px; }
+        /* 常搜链接：纯文字，无底纹（现位于搜索框行下方） */
+        /* padding-left 10px 与表格单元格内边距一致，使“常搜:”与下方“选择”表头文字左对齐 */
+        .fo-often { color: #6b768c !important; margin: 6px 0 14px; padding-left: 10px; }
         .fo-often a {
-            color: var(--ui-text-sub) !important;
+            color: #6b768c !important;
             text-decoration: none;
             margin-right: 16px;
             transition: color .2s ease;
@@ -66,24 +72,23 @@
         .fo-often a:first-of-type { margin-left: 16px; }
         .fo-often a:hover { color: var(--ui-accent) !important; }
 
-        /* 圆形图标按钮（搜索/重置） */
+        /* 圆形图标按钮（搜索/重置）：比主强调色更沉一档 */
         .fo-icon-btn {
             width: 38px; height: 38px;
             border: none;
             border-radius: 50%;
             background: var(--ui-white);
             box-shadow: var(--ui-shadow-sm);
-            color: var(--ui-accent);
+            color: #2a4f9e;
             margin-left: 10px;
             outline: none;
             transition: all .2s ease;
         }
-        .fo-icon-btn:hover { color: #fff; background: var(--ui-accent); }
+        .fo-icon-btn:hover { color: #fff; background: #2a4f9e; }
 
-        /* 时间筛选 / 批量处理 下拉 */
+        /* 时间筛选 / 批量处理 下拉：与左右两栏等宽 flex 布局配合，始终居于工具栏正中 */
         .search-select {
             width: 150px;
-            margin-left: 0;
         }
         .handle-block {
             width: 130px;
@@ -123,11 +128,11 @@
             border-radius: 50%;
             background: var(--ui-white);
             box-shadow: var(--ui-shadow-sm);
-            color: var(--ui-accent);
+            color: #2b3245;
             font-size: 15px;
             transition: all .2s ease;
         }
-        .download-icon:hover { color: #fff; background: var(--ui-accent); }
+        .download-icon:hover { color: #fff; background: #2b3245; }
 
         i:hover { cursor: pointer; }
         i.unchecked { color: lightgrey; }
@@ -201,19 +206,6 @@
             <!-- 筛选区与主体内容的唯一分隔线 -->
             <div class="fo-divider"></div>
 
-            {% if extra_render_func_data %}
-                 <div class="fo-often"> 常搜:
-                     {% for item in extra_render_func_data.often_clicks %}
-
-                        <a href="{{ item.link }}"> {{ item.title }} </a>
-
-                     {% endfor %}
-
-                 </div>
-
-
-            {% endif %}
-
                 <!-- 工具栏：搜索 + 时间筛选 + 批量处理 + 下载 -->
                 <div class="fo-toolbar">
 
@@ -237,7 +229,8 @@
                                 <span class="input-group-addon search-item">{{ row.title }}</span>
                                 <select id="search-{{ row.field }}"
                                         onchange="filterTime(this)"
-                                        class="{{ row.active }} form-control search-item">
+                                        class="{{ row.active }} form-control search-item"
+                                        style="{% if not row.active %}color: #9aa3b5;{% endif %}">
                                     <option value>按月筛选</option>
                                     {% for each in row.options %}
                                         <option value="{{ each.val }}" {{ each.selected }}>{{ each.val }}</option>
@@ -262,6 +255,18 @@
 
                     <div>{{ msg }}</div>
                 </div>
+
+                <!-- 常搜：位于搜索框所在行下方 -->
+                {% if extra_render_func_data %}
+                    <div class="fo-often"> 常搜:
+                        {% for item in extra_render_func_data.often_clicks %}
+
+                            <a href="{{ item.link }}"> {{ item.title }} </a>
+
+                        {% endfor %}
+
+                    </div>
+                {% endif %}
 
                 <form action="" method="post" id="form_contain_table">
                     {% csrf_token %}

@@ -4,6 +4,7 @@
    由 base_layout.html 统一引入，作用于所有页面
    ============================================================ */
 :root {
+    color-scheme: light;        /* 强制浏览器控件（自动补全下拉、日期选择等）用浅色渲染 */
     --ui-bg: #eef1f6;           /* 页面底色 */
     --ui-card: #f7f9fc;         /* 卡片底色 */
     --ui-white: #ffffff;
@@ -96,21 +97,20 @@ input[name='q'],
 .random-search-input {
     width: 240px;
     height: 38px;
-    border: none;
+    border: 1px solid #ccd5e3;
     border-radius: 22px;
     background: var(--ui-white);
-    box-shadow: inset 3px 3px 6px rgba(174, 182, 196, .18),
-                inset -3px -3px 6px rgba(255, 255, 255, .9);
+    box-shadow: 0 1px 2px rgba(174, 182, 196, .12);
     padding: 0 16px;
     outline: none;
     color: var(--ui-text);
     vertical-align: middle;
-    transition: box-shadow .2s ease;
+    transition: border-color .2s ease, box-shadow .2s ease;
 }
 input[name='q']:focus,
 .random-search-input:focus {
-    box-shadow: 0 0 0 2px var(--ui-accent-soft),
-                inset 3px 3px 6px rgba(174, 182, 196, .18);
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px var(--ui-accent-soft);
 }
 /* 搜索表单里的按钮统一为圆形图标钮（stark 列表页搜索/重置） */
 form.form-group > button {
@@ -212,7 +212,7 @@ form.form-group > button:hover {
     border-radius: 18px;
     background: var(--ui-white);
     box-shadow: var(--ui-shadow-sm);
-    color: var(--ui-text-sub);
+    color: #6b768c;              /* 筛选关键词比辅助色深一档，更易读 */
     text-decoration: none;
     font-size: 13px;
     transition: all .2s ease;
@@ -220,7 +220,7 @@ form.form-group > button:hover {
 .search-group a:hover { color: var(--ui-text); }
 .search-group a.active {
     background: var(--ui-accent-soft);
-    color: var(--ui-text);
+    color: #e07b00;              /* 选中项文字用橙色，与左侧菜单高亮一致 */
     box-shadow: inset 2px 2px 5px rgba(53, 104, 240, .12),
                 inset -2px -2px 5px rgba(255, 255, 255, .9);
 }
@@ -298,7 +298,7 @@ fieldset[disabled] .form-control {
 /* ---------- 表格 ---------- */
 .table > thead > tr > th {
     border-bottom: none !important;
-    color: var(--ui-text-sub);
+    color: #c3cad8;              /* 表头文字减淡 */
     font-weight: 600;
     font-size: 12px;
     letter-spacing: .5px;
@@ -316,6 +316,36 @@ fieldset[disabled] .form-control {
 .table > tbody > tr:hover > td { background: #f0f4fb; }
 /* 去掉斑马纹，保留纯净底色 */
 .table-striped > tbody > tr:nth-of-type(odd) { background: transparent; }
+/* 选择列小方框：默认态边框浅灰（减淡），勾选后填充主题蓝 + 白色对勾 */
+.table input[type='checkbox'] {
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid #dadee8;
+    border-radius: 3px;
+    background: var(--ui-white);
+    vertical-align: middle;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+.table input[type='checkbox']:hover { border-color: #b9c3d6; }
+.table input[type='checkbox']:checked {
+    background: var(--ui-accent);
+    border-color: var(--ui-accent);
+}
+.table input[type='checkbox']:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #fff;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+}
 
 /* ---------- 分页器：圆形胶囊 ---------- */
 .pagination { margin: 16px 4px 0; }
