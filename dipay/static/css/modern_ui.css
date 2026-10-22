@@ -295,10 +295,56 @@ fieldset[disabled] .form-control {
 /* 订舱船舶图标例外：与箱号/费用等图标保持灰色一致，不跟随链接强调色 */
 .table a i.fa-ship { color: #808080; }
 
+/* ---------- 订单列表 / 订单审核页：表格正文黑色 ---------- */
+/* 状态列文字为带内联颜色的 span，不受影响；复制/操作按钮列保持蓝色 */
+#orders_page_data_container .table > tbody > tr > td,
+#order-verify-page-data .table > tbody > tr > td {
+    color: #000;
+}
+#orders_page_data_container .table > tbody > tr > td a,
+#order-verify-page-data .table > tbody > tr > td a {
+    color: #000;
+}
+/* 复制 / 操作按钮保持蓝色（列表页最后两列，审核页最后一列） */
+#orders_page_data_container .table > tbody > tr > td:last-child a,
+#orders_page_data_container .table > tbody > tr > td:nth-last-child(2) a,
+#order-verify-page-data .table > tbody > tr > td:last-child a {
+    color: var(--ui-accent);
+}
+/* “下单”列的操作链接同样保持蓝色（按链接地址定位，不受列顺序影响） */
+#orders_page_data_container .table > tbody > tr > td a[href*="/to_workshop/"] {
+    color: var(--ui-accent);
+}
+
+/* 订单列表页：行高与收款列表页一致（收款页因行内 31px 图标撑到 55px，
+   订单页内容多为单行文字仅 38px，用 td height 补齐；td 的 height 等效最小高度，
+   内容换行时仍会自动撑开） */
+#orders_page_data_container .table > tbody > tr > td {
+    height: 55px;
+}
+
+/* 所有列表页：筛选区与搜索框之间加分割线（与跟单页一致：上 16px 下 28px）
+   .options-section 是 stark 列表页筛选面板的公共类名，全站统一生效。
+   不用 border-bottom（会跟随面板 16px 圆角、且只占面板宽度），
+   改用伪元素并向左右各外扩 43px（卡片内边距 22 + 列内边距 15 + 面板内边距 6），
+   让线条贯通整张卡片，两端不带圆弧 */
+.luffy-container .panel.options-section {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 28px;
+}
+.luffy-container .panel.options-section::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: var(--ui-line);
+    margin: 16px -43px 0;
+}
+
 /* ---------- 表格 ---------- */
 .table > thead > tr > th {
     border-bottom: none !important;
-    color: #c3cad8;              /* 表头文字减淡 */
+    color: #cdd3e0;              /* 表头文字减淡 */
     font-weight: 600;
     font-size: 12px;
     letter-spacing: .5px;
