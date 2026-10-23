@@ -212,7 +212,7 @@ form.form-group > button:hover {
     border-radius: 18px;
     background: var(--ui-white);
     box-shadow: var(--ui-shadow-sm);
-    color: #6b768c;              /* 筛选关键词比辅助色深一档，更易读 */
+    color: #4c566b;              /* 筛选关键词：再深一档，接近正文的辅助深度 */
     text-decoration: none;
     font-size: 13px;
     transition: all .2s ease;
