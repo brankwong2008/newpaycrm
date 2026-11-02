@@ -181,6 +181,7 @@ NO_PERMISSION_LIST = [
     '/stark/dipay/customer/create/',
     '^/$',
     '/media/.*',
+    '/pricecalc/',
 ]
 
 # 自动发现项目权限中要排除的路径

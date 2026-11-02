@@ -255,7 +255,7 @@ span.btn.btn-default.active {
 }
 
 .panel-body {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .search-group .row {
@@ -264,7 +264,7 @@ span.btn.btn-default.active {
 
 .search-group .row a {
     display: inline-block;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 /* 筛选胶囊样式统一由 css/modern_ui.css 提供 */
@@ -553,7 +553,7 @@ tr.active {
 
 
 .panel-body {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .search-group .row {
@@ -562,7 +562,7 @@ tr.active {
 
 .search-group .row a {
     display: inline-block;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 /* 筛选胶囊样式统一由 css/modern_ui.css 提供 */

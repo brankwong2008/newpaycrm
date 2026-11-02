@@ -436,3 +436,13 @@ class Quote(models.Model):
     supplier = models.ForeignKey(to=Supplier, on_delete=models.CASCADE, verbose_name='供应商', default=1)
     create_date = models.DateField(auto_now_add=True, verbose_name='报价日期')
     remark = models.TextField(verbose_name='备注', default='--')
+
+
+# 价格计算工具-可调参数（税率、加成率等），在 stark 后台维护
+class PriceConfig(models.Model):
+    key = models.CharField(max_length=30, unique=True, verbose_name='参数名')
+    value = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='参数值')
+    title = models.CharField(max_length=50, verbose_name='说明', default='')
+
+    def __str__(self):
+        return '%s = %s' % (self.title or self.key, self.value)

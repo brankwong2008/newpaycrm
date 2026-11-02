@@ -80,16 +80,35 @@ hr { border-top: 1px solid var(--ui-line); }
 }
 .navbar-inverse .dropdown-menu .divider { background-color: #3a4359; }
 
-/* ---------- 路径导航弱化 ---------- */
+/* ---------- 路径导航（面包屑）：黑色文字 + 放大字号 ---------- */
 .my_navilist {
     background: transparent !important;
     border: none !important;
     margin-bottom: 18px;   /* 与下方筛选卡片留出距离，避免视觉交叉 */
     padding: 0 4px;
+    font-size: 15px;       /* 整体字号放大（原 14px） */
+    line-height: 1.6;
 }
-.my_navilist a { color: var(--ui-text-sub); text-decoration: none; }
-.my_navilist a.active { color: var(--ui-accent); font-weight: 600; }
-.my_navilist span { color: var(--ui-text-sub); }
+.my_navilist,
+.my_navilist a,
+.my_navilist span,
+.my_navilist i {
+    color: #1f2329;        /* 黑色文字 */
+}
+.my_navilist a {
+    text-decoration: none;
+    font-size: 15px;
+}
+.my_navilist a:hover,
+.my_navilist a:focus { color: #000000; text-decoration: none; }
+/* 首页（第一级）不加粗；二级及以后路径加粗 */
+.my_navilist a,
+.my_navilist a.active,
+.my_navilist a.bc-root { font-weight: 400; }
+.my_navilist a.bc-item,
+.my_navilist span.bc-current { font-weight: 700; }
+/* 分隔符与末尾当前页文字 */
+.my_navilist span { font-size: 15px; }
 .my_navilist hr { display: none; }
 
 /* ---------- 模糊搜索：全局统一（followorder 与 stark 各列表页一致） ---------- */
@@ -131,6 +150,73 @@ form.form-group > button:hover {
     background: var(--ui-accent);
 }
 
+/* ---------- 胶囊搜索框：放大镜/月份筛选/清除全部内嵌（样式参考微信搜索框） ---------- */
+.search-pill {
+    display: inline-flex;
+    align-items: center;
+    width: 300px;
+    max-width: 46vw;
+    height: 40px;
+    padding: 0 8px 0 14px;
+    background: var(--ui-white);
+    border: 1px solid #ccd5e3;
+    border-radius: 22px;
+    box-shadow: 0 1px 2px rgba(174, 182, 196, .12);
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+.search-pill:focus-within {
+    border-color: var(--ui-accent);
+    box-shadow: 0 0 0 3px var(--ui-accent-soft);
+}
+.search-pill > i.fa-search {
+    flex: none;
+    color: #9aa3b5;
+    font-size: 14px;
+    margin-right: 8px;
+}
+/* 输入框在胶囊内去边框、透明背景 */
+.search-pill input[name='q'],
+.search-pill .random-search-input {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 40px;
+    height: 38px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.search-pill input[name='q']:focus,
+.search-pill .random-search-input:focus {
+    border: none;
+    box-shadow: none;
+}
+/* 内嵌清除按钮（×）：默认隐藏，有输入内容时由脚本显示 */
+.search-pill .pill-clear {
+    display: none;
+    flex: none;
+    width: 26px;
+    height: 26px;
+    margin-left: 4px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #7a8496;
+    font-size: 15px;
+    line-height: 26px;
+    outline: none;
+    cursor: pointer;
+    transition: all .15s ease;
+}
+.search-pill .pill-clear:hover {
+    background: #eef0f4;
+    color: #333;
+}
+/* 放大镜可点击提交搜索 */
+.search-pill > i.fa-search { cursor: pointer; }
+
 /* stark 通用列表页：批量处理（处理方式+发送）与跟单页胶囊风格统一 */
 .batch-process-div {
     display: inline-flex;
@@ -143,10 +229,10 @@ form.form-group > button:hover {
 .batch-process-div .handle-select {
     border: none;
     box-shadow: none;
-    background: transparent;
+    background-color: transparent;
     color: var(--ui-text);
     height: 38px;
-    padding: 0 4px 0 16px;
+    padding: 0 26px 0 16px;   /* 右侧留出自定义箭头位置 */
     outline: none;
 }
 .batch-process-div .handle-btn {
@@ -214,7 +300,7 @@ form.form-group > button:hover {
     box-shadow: var(--ui-shadow-sm);
     color: #4c566b;              /* 筛选关键词：再深一档，接近正文的辅助深度 */
     text-decoration: none;
-    font-size: 13px;
+    font-size: 14px;
     transition: all .2s ease;
 }
 .search-group a:hover { color: var(--ui-text); }
@@ -247,6 +333,46 @@ fieldset[disabled] .form-control {
     background: var(--ui-white);
     border: 1px solid var(--ui-line);
     color: var(--ui-text-sub);
+}
+
+/* ---------- 下拉框跨浏览器统一（修复 Safari 原生灰底+步进箭头） ---------- */
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a93a6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 26px;
+    font-family: inherit;
+}
+/* 胶囊内的下拉：底色保持透明，仅保留自定义箭头
+   （页面内 .input-group .form-control { background: transparent } 会重置背景图，
+   故用更高权重的选择器把箭头加回来） */
+.input-group.search-select select,
+.input-group.handle-block select {
+    background-color: transparent;
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a93a6' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 26px !important;   /* 覆盖页面内 .search-item 的 padding: 9px 3px，给箭头留位 */
+    line-height: 20px;
+}
+
+/* ---------- 筛选区文字整体调大一号（仅搜索框/下拉/批量处理，
+   表格正文与其余全站文字保持原字号，避免影响列表密度） ---------- */
+.search-pill input[name='q'],
+.search-pill .random-search-input,
+.search-pill > i.fa-search,
+.input-group.search-select .search-item,
+.input-group.search-select select,
+.input-group.search-select .input-group-addon,
+.input-group.handle-block .search-item,
+.input-group.handle-block select,
+.input-group.handle-block .input-group-addon,
+.batch-process-div .handle-select,
+.batch-process-div .handle-btn {
+    font-size: 15px;
 }
 
 /* 下拉搜索（bootstrap-select）与原生 select 一致化 */

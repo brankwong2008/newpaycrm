@@ -234,6 +234,8 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
             pk = data_dict.get('pk')
             res = {}
             data_dict.pop('csrfmiddlewaretoken')
+            # 前端“延后”按钮带来的标记：只改提醒日期，不发送短信
+            postpone_flag = data_dict.pop('postpone_flag', None)
 
             save_obj = DailyPlan.objects.filter(pk=pk).first()
             if not save_obj:
@@ -254,7 +256,14 @@ class DailyPlanHandler(PermissionHanlder, StarkHandler):
 
                         save_obj.status = 2
                         save_obj.urgence = False
-                        res['msg'] = '提醒设置成功'
+                        if postpone_flag:
+                            # 延后：只把任务推到第二天，不再发送短信提醒
+                            save_obj.is_sms_sent = True
+                            res['msg'] = '已延后到第二天，不发送短信提醒'
+                        else:
+                            # 手动设置提醒日期：恢复正常短信提醒
+                            save_obj.is_sms_sent = False
+                            res['msg'] = '提醒设置成功'
                     setattr(save_obj, item, val)
                 save_obj.save()
                 data_dict['status'] = True

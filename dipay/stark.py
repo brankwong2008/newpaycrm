@@ -31,6 +31,10 @@ from dipay.views.modelnumbers import ModelNumbersHandler
 from dipay.views.orderstatistic import OrderStatisticHandler
 from dipay.views.exchange_rate import ExchangeRateHandler
 from dipay.views.currency import CurrencyHandler
+from dipay.views.priceconfig import PriceConfigHandler
+
+# 价格计算参数（税率、加成率等）
+site.register(models.PriceConfig, PriceConfigHandler)
 
 # 汇率管理
 site.register(models.ExchangeRate, ExchangeRateHandler)

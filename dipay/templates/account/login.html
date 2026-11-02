@@ -9,7 +9,7 @@
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="{% static "plugins/bootstrap/css/bootstrap.css" %}">
     <!-- 全局现代化风格（与列表页一致），版本号与 base_layout 保持同步 -->
-    <link rel="stylesheet" href="{% static "css/modern_ui.css" %}?v=20261023a">
+    <link rel="stylesheet" href="{% static "css/modern_ui.css" %}?v=20261102g">
     <script src="{% static "js/jquery-3.3.1.min.js" %}"></script>
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="{% static "plugins/bootstrap/js/bootstrap.js" %}"></script>
@@ -56,12 +56,29 @@
             font-size: 15px;
             letter-spacing: 6px;    /* “登录”两字拉开一点，视觉居中 */
             text-indent: 6px;
+            color: #fff;            /* 蓝底白字 */
+        }
+        .login-card input[type='submit']:hover,
+        .login-card input[type='submit']:focus,
+        .login-card input[type='submit']:active {
+            color: #fff;
         }
         .login-msg {
             display: block;
             text-align: center;
             margin-top: 12px;
             color: #d9534f;
+        }
+        /* 页脚版权：与其他页面统一的灰色小字风格 */
+        .login-footer {
+            position: absolute;
+            bottom: 18px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--ui-text-sub);
+            letter-spacing: .5px;
         }
     </style>
 
@@ -99,7 +116,6 @@
 
                 {% else %}
                     <li><a href="/login/">登录</a></li>
-                    <li><a href="/register/">注册</a></li>
                 {% endif %}
 
 
@@ -126,6 +142,8 @@
 
     </div>
 
+
+    <div class="login-footer">© Wenan Jinkai Building 2022 - 2025</div>
 
 </div>
 

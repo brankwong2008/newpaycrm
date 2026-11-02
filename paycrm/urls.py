@@ -18,6 +18,7 @@ from django.urls import path,include
 from django.conf.urls import url
 from stark.service.starksite import site
 from dipay.views import account
+from dipay.views import pricecalc
 from django.views.static import serve
 from django.conf import settings
 
@@ -28,6 +29,7 @@ urlpatterns = [
     url(r'^login/$', account.login, name='login'),
     url(r'^logout/$', account.logout, name='logout'),
     url(r'^index/$', account.index, name='index'),
+    url(r'^pricecalc/$', pricecalc.price_calc, name='price_calc'),
     url(r'^$', account.index, name='index'),
     url(r"^media/(?P<path>.*)$",serve,{"document_root":settings.MEDIA_ROOT}),
 

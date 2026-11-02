@@ -3,7 +3,7 @@
 
 
 {% block css %}
-    <link rel="stylesheet" href="{% static '/css/dipay.css' %}?v=20261019g">
+    <link rel="stylesheet" href="{% static '/css/dipay.css' %}?v=20261102b">
 
     <style>
 
@@ -24,7 +24,7 @@
         }
 
         .search-select {
-            width: 150px;
+            width: 172px;   /* 字号调大后加宽，避免"按月筛选"被箭头挤压 */
             margin-left: 30px;
         }
         .handle-block{
@@ -107,10 +107,10 @@
             <!-- 模糊搜索 字段 -->
             {% if search_list %}
 
-                <form action="" method="get" class="form-group pull-left">
-                    <input name="q" class="random-search-input" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                    <button id="id-clear-search" onclick="clearSearch()"><i class="fa fa-rotate-left"></i></button>
+                <form action="" method="get" class="form-group pull-left search-pill">
+                    <i class="fa fa-search" title="搜索"></i>
+                    <input name="q" type="text" value="{{ user_query }}" placeholder="{{ search_placeholder }}" autocomplete="off">
+                    <button type="button" class="pill-clear" title="清空搜索"><i class="fa fa-times"></i></button>
                 </form>
             {% endif %}
 
@@ -232,7 +232,7 @@
     <script src="{% static "js/edit-follow-order.js" %}?v=20261020c"></script>
     <script src="{% static "js/decimal.js/decimal.js" %}"></script>
     <script src="{% static "js/edit-charge-list.js" %}"></script>
-    <script src="{% static "js/edit-dailyplan.js" %}"></script>
+    <script src="{% static "js/edit-dailyplan.js" %}?v=20261028a"></script>
 
 
 

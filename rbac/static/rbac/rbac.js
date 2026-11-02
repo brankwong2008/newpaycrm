@@ -23,7 +23,7 @@
 
 // 清除搜索框的内容的js
 function clearSearch() {
-    $("input[name='q']").val('');
+    $("input[name='q']").val('').trigger('input');
 
 }
 

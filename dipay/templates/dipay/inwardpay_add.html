@@ -21,8 +21,12 @@
             justify-content: space-between;
         }
         .row-div, .row-flex-div{
-            margin-top:15px;
+            margin-top:18px;
         }
+
+        /* 清掉 p 标签自带的下边距，保证各行间距完全一致（统一由行距 15px 控制） */
+        .luffy-container form p { margin-bottom: 0; }
+        .luffy-container form p:last-child { margin-bottom: 0; }
 
         .col-date {
             width: 25%;
@@ -34,7 +38,98 @@
         }
 
         .col-currency .filter-option-inner-inner {
-            color: orange;
+            color: #e07b00;             /* 币种橙色，与下单确认页一致 */
+        }
+
+        /* ---------- 现代风格：标签灰、数据黑，与其他页面统一 ---------- */
+        .luffy-container label {
+            color: var(--ui-text-sub);  /* 灰色标签 */
+            font-size: 13px;
+            font-weight: normal;
+            margin-bottom: 6px;
+            display: inline-block;
+        }
+        .luffy-container input[type='text'],
+        .luffy-container input[type='number'],
+        .luffy-container input[type='date'],
+        .luffy-container select,
+        .luffy-container textarea {
+            width: 100%;
+            height: 38px;
+            border: 1px solid #ccd5e3;
+            border-radius: 10px;
+            background: var(--ui-white);
+            color: #000;                /* 数据黑色 */
+            font-size: 13px;
+            padding: 0 12px;
+            outline: none;
+            box-shadow: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .luffy-container select { padding: 0 8px; }
+        .luffy-container textarea { height: auto; min-height: 74px; padding: 10px 12px; resize: vertical; }
+        .luffy-container input:focus,
+        .luffy-container select:focus,
+        .luffy-container textarea:focus {
+            border-color: var(--ui-accent);
+            box-shadow: 0 0 0 3px var(--ui-accent-soft);
+        }
+        /* 文件上传：现代设计，选择文件按钮用蓝色浅底 */
+        .luffy-container input[type='file'] {
+            width: 100%;
+            height: 38px;
+            box-sizing: border-box;
+            border: 1px solid #ccd5e3;
+            border-radius: 10px;
+            background: var(--ui-white);
+            color: #000;
+            font-size: 13px;
+            padding: 4px 12px;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+        .luffy-container input[type='file']:focus {
+            border-color: var(--ui-accent);
+            box-shadow: 0 0 0 3px var(--ui-accent-soft);
+        }
+        .luffy-container input[type='file']::file-selector-button {
+            border: none;
+            background: var(--ui-accent-soft);
+            color: var(--ui-accent);
+            border-radius: 8px;
+            padding: 6px 16px;
+            margin-right: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .luffy-container input[type='file']::file-selector-button:hover {
+            background: var(--ui-accent);
+            color: #fff;
+        }
+
+        /* bootstrap-select 下拉按钮：文字黑色，与输入框一致 */
+        .col-md-7 .bootstrap-select .dropdown-toggle { color: #000; }
+        /* 币种下拉保持橙色 */
+        .col-currency .bootstrap-select .dropdown-toggle,
+        .col-currency .bootstrap-select .dropdown-toggle .filter-option { color: #e07b00; }
+
+        /* 提交按钮改为蓝色主按钮，与全站一致 */
+        .luffy-container .btn.btn-success {
+            background: var(--ui-accent);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            padding: 9px 28px;
+            font-size: 14px;
+            margin-top: 24px;   /* 与上方行保持间距（原先由 p 的下边距提供，现已清零） */
+            box-shadow: 3px 3px 10px rgba(53, 104, 240, .30);
+            transition: all .2s ease;
+        }
+        .luffy-container .btn.btn-success:hover,
+        .luffy-container .btn.btn-success:focus {
+            background: var(--ui-accent-hover);
+            color: #fff;
         }
 
         .col-amount, .col-got-amount, .col-payer {

@@ -169,6 +169,9 @@ function deferToNextDay(spanTag) {
     var inputTag = `<input type="date" id="remind_date-id-${pk}" value="${year}-${month}-${day}">`;
     $(`#remind_date-id-`+pk).replaceWith(inputTag);
 
+    // 标记本次是“延后”：只把提醒日期改到第二天，不发送短信提醒
+    $(`#remind_date-id-${pk}`).after(`<input type="hidden" id="postpone_flag-id-${pk}" value="1">`);
+
     $(`.save-sequence[pk="${pk}"]`).trigger('click');
     return false;
 

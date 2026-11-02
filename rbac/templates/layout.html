@@ -30,12 +30,12 @@
             <div class="my_navilist">
                 {% for item in request.navi_list %}
                     {% if forloop.first %}
-                        <a href="{{ item.url }}" class="active">{{ item.title }}</a>
+                        <a href="{{ item.url }}" class="active bc-root">{{ item.title }}</a>
                     {% else %}
                         {% if item.url %}
-                            <span> >  </span>  <a href="{{ item.url }}" class="active">{{ item.title }}</a>
+                            <span class="bc-sep"> >  </span>  <a href="{{ item.url }}" class="active bc-item">{{ item.title }}</a>
                         {% else %}
-                            <span> >  </span> <span>{{ item.title }}</span>
+                            <span class="bc-sep"> >  </span> <span class="bc-current">{{ item.title }}</span>
                         {% endif %}
                     {% endif %}
 
