@@ -1,0 +1,431 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="light">
+    <title>价格计算</title>
+    <link rel="stylesheet" href="{% static "css/modern_ui.css" %}?v=20261102g">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--ui-bg);
+            color: var(--ui-text);
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+            font-size: 14px;
+            padding-bottom: 40px;
+        }
+        .topbar {
+            background: #232a3b;
+            color: #fff;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .page { padding: 14px 12px; max-width: 520px; margin: 0 auto; }
+        .card {
+            background: var(--ui-white);
+            border-radius: 14px;
+            box-shadow: var(--ui-shadow-sm);
+            padding: 16px 14px;
+            margin-bottom: 14px;
+        }
+        .card-title {
+            font-size: 13px;
+            color: var(--ui-text-sub);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .grid2 { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+        .fi { flex: 1 1 calc(33.3% - 9px); min-width: 96px; }
+        .fi-wide { flex: 1 1 calc(50% - 6px); }
+        .fi label {
+            display: block;
+            font-size: 12px;
+            color: var(--ui-text-sub);
+            margin-bottom: 4px;
+        }
+        .fi input {
+            width: 100%;
+            height: 40px;
+            border: 1px solid #ccd5e3;
+            border-radius: 10px;
+            padding: 0 10px;
+            font-size: 15px;
+            color: #000;
+            background: var(--ui-white);
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .fi input:focus { border-color: var(--ui-accent); box-shadow: 0 0 0 3px var(--ui-accent-soft); }
+        .unit { font-size: 11px; color: var(--ui-text-sub); font-weight: normal; }
+
+        /* 折叠 */
+        .collapse-toggle { cursor: pointer; user-select: none; }
+        .collapse-toggle .arrow { transition: transform .2s; display: inline-block; font-size: 11px; }
+        .collapsed .arrow { transform: rotate(-90deg); }
+        .collapse-body.hide { display: none; }
+
+        /* 产品类别切换 */
+        .seg {
+            display: flex;
+            background: #eef1f7;
+            border-radius: 11px;
+            padding: 3px;
+            margin-bottom: 14px;
+        }
+        .seg-btn {
+            flex: 1;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--ui-text-sub);
+            font-size: 14px;
+            transition: all .2s ease;
+        }
+        .seg-btn.active {
+            background: var(--ui-white);
+            color: var(--ui-accent);
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,.08);
+        }
+
+        /* 结果卡 */
+        .result-main {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 0 4px;
+        }
+        .result-main .num { font-size: 40px; font-weight: 700; color: var(--ui-accent); }
+        .result-main .cur { font-size: 16px; color: var(--ui-text-sub); }
+        .result-sub {
+            text-align: center;
+            font-size: 12px;
+            color: var(--ui-text-sub);
+            padding-bottom: 12px;
+        }
+        .rows { border-top: 1px solid var(--ui-line); }
+        .rrow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 2px;
+            border-bottom: 1px solid var(--ui-line);
+            font-size: 13px;
+        }
+        .rrow:last-child { border-bottom: none; }
+        .rrow .k { color: var(--ui-text-sub); }
+        .rrow .v { color: #000; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .rrow .v.orange { color: #e07b00; }
+        .rrow.hl { background: var(--ui-accent-soft); border-radius: 8px; padding: 9px 8px; margin-top: 4px; }
+        .rrow.hl .k { color: var(--ui-accent); font-weight: 600; }
+        .rrow.hl .v { color: var(--ui-accent); }
+
+        .hint { font-size: 11px; color: var(--ui-text-sub); line-height: 1.6; margin-top: 8px; }
+        .formula {
+            font-size: 12px;
+            color: var(--ui-text);
+            background: #f4f6fb;
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+
+        /* 计算按钮 */
+        .calc-btn {
+            width: 100%;
+            height: 46px;
+            margin-top: 14px;
+            border: none;
+            border-radius: 23px;
+            background: var(--ui-accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 8px;
+            text-indent: 8px;
+            box-shadow: 3px 3px 10px rgba(53, 104, 240, .30);
+            transition: all .2s ease;
+        }
+        .calc-btn:active { background: var(--ui-accent-hover); transform: scale(.98); }
+    </style>
+</head>
+<body>
+
+<div class="topbar">价格计算</div>
+
+<div class="page">
+
+    <!-- 当前价格（公共数据） -->
+    <div class="card" id="priceCard">
+        <div class="card-title collapse-toggle" onclick="toggleCard('priceCard')">
+            <span>当前价格 <span class="unit">（公共数据，可临时修改）</span></span><span class="arrow">▼</span>
+        </div>
+        <div class="collapse-body">
+            <div class="grid2">
+                <div class="fi">
+                    <label>汇率 <span class="unit">USD→CNY{% if exchange_date %}（{{ exchange_date }}）{% endif %}</span></label>
+                    <input type="number" step="0.0001" inputmode="decimal" id="rate" value="{{ exchange_rate }}">
+                </div>
+                <div class="fi">
+                    <label>0.3普钢价 <span class="unit">元/吨</span></label>
+                    <input type="number" step="1" inputmode="numeric" id="steelBase" value="{{ steel_base }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.16</label>
+                    <input type="number" step="1" inputmode="numeric" id="c016" value="{{ color_prices.c016 }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.18</label>
+                    <input type="number" step="1" inputmode="numeric" id="c018" value="{{ color_prices.c018 }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.20</label>
+                    <input type="number" step="1" inputmode="numeric" id="c020" value="{{ color_prices.c020 }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.30</label>
+                    <input type="number" step="1" inputmode="numeric" id="c030" value="{{ color_prices.c030 }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.35</label>
+                    <input type="number" step="1" inputmode="numeric" id="c035" value="{{ color_prices.c035 }}">
+                </div>
+                <div class="fi">
+                    <label>彩涂 0.40</label>
+                    <input type="number" step="1" inputmode="numeric" id="c040" value="{{ color_prices.c040 }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 产品输入 -->
+    <div class="card">
+        <div class="card-title"><span>产品参数</span></div>
+
+        <!-- 类别切换 -->
+        <div class="seg">
+            <button type="button" class="seg-btn active" id="segLight" onclick="setCat('light')">轻钢产品</button>
+            <button type="button" class="seg-btn" id="segKeel" onclick="setCat('keel')">烤漆龙骨</button>
+        </div>
+
+        <!-- 轻钢产品：单一原料镀锌钢带 -->
+        <div id="panelLight" class="cat-panel">
+            <div class="grid2">
+                <div class="fi">
+                    <label>长度 <span class="unit">m</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="lLen" value="3.0">
+                </div>
+                <div class="fi">
+                    <label>展开宽 <span class="unit">mm</span></label>
+                    <input type="number" step="1" inputmode="numeric" id="lWidth" value="60">
+                </div>
+                <div class="fi">
+                    <label>厚度 <span class="unit">mm</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="lThick" value="0.30">
+                </div>
+                <div class="fi fi-wide">
+                    <label>加点 <span class="unit">元/吨（普通轻钢常用 {{ default_markup }}）</span></label>
+                    <input type="number" step="10" inputmode="numeric" id="lMarkup" value="{{ default_markup }}">
+                </div>
+            </div>
+            <div class="formula">计算公式：（原料价 + 加点）× 单支重 × {{ tax_rate }} ÷ 汇率<br>原料为镀锌钢带，价格按厚度阶梯自动取值；税率在后台「价格参数」维护</div>
+        </div>
+
+        <!-- 烤漆龙骨：镀锌底带 + 烤漆彩带 -->
+        <div id="panelKeel" class="cat-panel" style="display:none">
+            <div class="grid2">
+                <div class="fi">
+                    <label>长度 <span class="unit">m</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="kLen" value="3.0">
+                </div>
+                <div class="fi">
+                    <label>展开宽 <span class="unit">mm</span></label>
+                    <input type="number" step="1" inputmode="numeric" id="kWidth" value="60">
+                </div>
+                <div class="fi">
+                    <label>底带厚 <span class="unit">mm</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="kThick" value="0.30">
+                </div>
+                <div class="fi">
+                    <label>面带宽 <span class="unit">mm</span></label>
+                    <input type="number" step="1" inputmode="numeric" id="kFaceW" value="40">
+                </div>
+                <div class="fi">
+                    <label>面带厚 <span class="unit">mm</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="kFaceT" value="0.20">
+                </div>
+                <div class="fi">
+                    <label>纸箱费 <span class="unit">元/只</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="kCarton" value="0.45">
+                </div>
+                <div class="fi fi-wide">
+                    <label>加成率 <span class="unit">成本加成系数</span></label>
+                    <input type="number" step="0.01" inputmode="decimal" id="kRate" value="{{ default_markup_rate }}">
+                </div>
+            </div>
+            <div class="hint">纸箱费默认按长度自动建议（≥3.6m：0.50 / &lt;3.6m：0.45），可手动修改；手动改过后不再自动覆盖。</div>
+            <div class="formula">计算公式：（底带成本 + 面带成本 + 纸箱成本）× 加成率 ÷ 汇率<br>面带成本已扣 0.02 镀层、÷1.09 转不含税</div>
+        </div>
+
+        <button type="button" class="calc-btn" onclick="doCalc()">计 算</button>
+    </div>
+
+    <!-- 结果：轻钢 -->
+    <div class="card" id="resLight">
+        <div class="result-main"><span class="cur">FOB</span><span class="num" id="rLFob">--</span><span class="cur">USD/只</span></div>
+        <div class="result-sub">（原料价 + 加点）× 单支重 × {{ tax_rate }} ÷ 汇率</div>
+        <div class="rows">
+            <div class="rrow"><span class="k">单只重</span><span class="v" id="rLWeight">--</span></div>
+            <div class="rrow"><span class="k">原料价 <span class="unit">元/吨（厚度阶梯）</span></span><span class="v" id="rLBase">--</span></div>
+            <div class="rrow"><span class="k">加点 <span class="unit">元/吨</span></span><span class="v" id="rLMarkup">--</span></div>
+            <div class="rrow hl"><span class="k">人民币价 <span class="unit">元/只（×{{ tax_rate }}）</span></span><span class="v" id="rLRmb">--</span></div>
+        </div>
+    </div>
+
+    <!-- 结果：烤漆龙骨 -->
+    <div class="card" id="resKeel" style="display:none">
+        <div class="result-main"><span class="cur">FOB</span><span class="num" id="rKFob">--</span><span class="cur">USD/只</span></div>
+        <div class="result-sub">（底带成本 + 面带成本 + 纸箱成本）× 加成率 ÷ 汇率</div>
+        <div class="rows">
+            <div class="rrow"><span class="k">单只重 <span class="unit">底带</span></span><span class="v" id="rKWeight">--</span></div>
+            <div class="rrow"><span class="k">底带价 <span class="unit">元/吨（厚度阶梯）</span></span><span class="v" id="rKBase">--</span></div>
+            <div class="rrow"><span class="k">面带含税 <span class="unit">元/吨（彩价阶梯）</span></span><span class="v orange" id="rKFace">--</span></div>
+            <div class="rrow"><span class="k">底带成本 <span class="unit">元/只</span></span><span class="v" id="rKCostBase">--</span></div>
+            <div class="rrow"><span class="k">面带成本 <span class="unit">元/只（扣0.02镀层、÷1.09）</span></span><span class="v" id="rKCostFace">--</span></div>
+            <div class="rrow"><span class="k">纸箱成本 <span class="unit">元/只</span></span><span class="v" id="rKCostCarton">--</span></div>
+            <div class="rrow hl"><span class="k">人民币净成本 <span class="unit">元/只</span></span><span class="v" id="rKNet">--</span></div>
+        </div>
+    </div>
+
+    <div class="hint" style="text-align:center">计算逻辑与《价格自动计算表2.xlsx》保持一致 · 汇率以汇率表为准</div>
+
+</div>
+
+<script>
+    // ===== 阶梯规则（与 price_config.py 同步） =====
+    const THICK_LADDER = [
+        [0.70, -300], [0.66, -250], [0.56, -200], [0.46, -150],
+        [0.38, -100], [0.35, -50], [0.30, 0], [0.27, +50],
+        [0.25, +150], [0.23, +300], [0.20, +450]
+    ];
+    const FOB_MARGIN = {{ tax_rate }}, COATING = 0.02, VAT = 1.09;
+
+    const $ = id => document.getElementById(id);
+    const num = id => { const v = parseFloat($(id).value); return isNaN(v) ? null : v; };
+    const fmt = (v, d) => (v === null || isNaN(v)) ? '--' : v.toFixed(d === undefined ? 2 : d);
+
+    // ===== 类别切换 =====
+    let cat = 'light';
+    function setCat(c) {
+        cat = c;
+        $('segLight').classList.toggle('active', c === 'light');
+        $('segKeel').classList.toggle('active', c === 'keel');
+        $('panelLight').style.display = c === 'light' ? '' : 'none';
+        $('panelKeel').style.display = c === 'keel' ? '' : 'none';
+        $('resLight').style.display = c === 'light' ? '' : 'none';
+        $('resKeel').style.display = c === 'keel' ? '' : 'none';
+    }
+
+    function basePrice(t) {
+        if (t === null) return null;
+        const base = num('steelBase') || 0;
+        for (const [th, diff] of THICK_LADDER) { if (t >= th) return base + diff; }
+        return base + 450;
+    }
+    function facePrice(h) {
+        if (h === null) return null;
+        const c = { p16: num('c016'), p20: num('c020'), p30: num('c030'), p35: num('c035'), p40: num('c040') };
+        h = Math.round(h * 100) / 100;
+        if (h === 0.40 || h === 0.39) return c.p40;
+        if (h === 0.35) return c.p35;
+        if (h === 0.30) return c.p30;
+        if (h === 0.25) return c.p30 === null ? null : c.p30 + 200;
+        if (h === 0.20) return c.p20;
+        if (h === 0.18) return c.p16;
+        return null;
+    }
+
+    // ===== 轻钢产品：（原料价+加点）×单支重×1.08÷汇率 =====
+    function calcLight() {
+        const len = num('lLen'), w = num('lWidth'), t = num('lThick');
+        const mk = num('lMarkup'), rate = num('rate');
+        if (len === null || w === null || t === null || mk === null || rate === null || rate <= 0) return;
+
+        const weight = w * t * len * 7.85 / 1000;      // 单只重 kg
+        const f = basePrice(t);                         // 原料价 元/吨
+        const rmb = (f + mk) * weight / 1000 * FOB_MARGIN;  // 人民币价 元/只
+        const fob = rmb / rate;
+
+        $('rLFob').textContent = fmt(fob, 3);
+        $('rLWeight').textContent = fmt(weight, 4) + ' kg';
+        $('rLBase').textContent = fmt(f, 0);
+        $('rLMarkup').textContent = fmt(mk, 0);
+        $('rLRmb').textContent = fmt(rmb, 3) + ' 元';
+    }
+
+    // ===== 烤漆龙骨：（底带+面带+纸箱）×加成率÷汇率 =====
+    let cartonTouched = false;
+    $('kCarton').addEventListener('input', () => cartonTouched = true);
+
+    function calcKeel() {
+        const len = num('kLen'), w = num('kWidth'), t = num('kThick');
+        const fw = num('kFaceW'), fh = num('kFaceT');
+        const mr = num('kRate'), rate = num('rate');
+        if (len === null || w === null || t === null || fw === null || fh === null ||
+            mr === null || rate === null || rate <= 0) return;
+
+        // 纸箱费自动建议（未被手动修改时）
+        if (!cartonTouched) { $('kCarton').value = len >= 3.6 ? '0.50' : '0.45'; }
+        const carton = num('kCarton');
+        if (carton === null) return;
+
+        const weight = w * t * len * 7.85 / 1000;               // 底带单只重 kg
+        const f = basePrice(t);                                  // 底带价 元/吨
+        const i = facePrice(fh);                                 // 面带含税 元/吨
+        const costBase = w * t * len * 7.85 * f / 1e6;           // 底带成本 元
+        const costFace = (i === null) ? null :
+            fw * (fh - COATING) * len * 7.85 * i / VAT / 1e6;    // 面带成本 元
+        const net = costBase + costFace + carton;                // 人民币净成本 元
+        const fob = net * mr / rate;
+
+        $('rKFob').textContent = fmt(fob, 3);
+        $('rKWeight').textContent = fmt(weight, 4) + ' kg';
+        $('rKBase').textContent = fmt(f, 0);
+        $('rKFace').textContent = i === null ? '--' : fmt(i, 0);
+        $('rKCostBase').textContent = fmt(costBase, 3);
+        $('rKCostFace').textContent = costFace === null ? '--' : fmt(costFace, 3);
+        $('rKCostCarton').textContent = fmt(carton, 2);
+        $('rKNet').textContent = fmt(net, 3) + ' 元';
+    }
+
+    function doCalc() {
+        if (cat === 'light') calcLight(); else calcKeel();
+    }
+
+    function toggleCard(id) {
+        const card = $(id);
+        const body = card.querySelector('.collapse-body');
+        body.classList.toggle('hide');
+        card.classList.toggle('collapsed');
+    }
+
+    // 初始化：默认轻钢，保证面板/页签/结果区状态一致
+    setCat('light');
+</script>
+
+</body>
+</html>
